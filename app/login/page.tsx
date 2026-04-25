@@ -53,8 +53,8 @@ function LoginForm() {
         setMessage({ type: 'error', text: error.message })
         setLoading(false)
       } else {
-        router.push(redirect)
-        router.refresh()
+        // Full page reload ensures server-side session cookie is picked up by middleware
+        window.location.href = redirect
       }
     } else {
       const { error } = await supabase.auth.signUp({
