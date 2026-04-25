@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import CookieConsent from '@/components/CookieConsent'
+import AuthButton from '@/components/AuthButton'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -113,6 +114,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <a href="/category/relationships" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden lg:block">
               Love
             </a>
+            <div className="ml-2 pl-2 border-l border-[var(--border)]">
+              <AuthButton />
+            </div>
           </div>
         </nav>
         <main>{children}</main>
