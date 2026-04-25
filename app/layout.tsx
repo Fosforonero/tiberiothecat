@@ -4,6 +4,7 @@ import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
+import AdBlockBanner from '@/components/AdBlockBanner'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -68,9 +69,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('set', 'url_passthrough', true);
           `}
         </Script>
-        {/* Google Analytics 4 */}
+        {/* Google Analytics 4 — first-party proxy (bypasses adblock URL filters) */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-5MPQ8PW0CE"
+          src="/api/_g/script?id=G-5MPQ8PW0CE"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -78,13 +79,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-5MPQ8PW0CE');
+            gtag('config', 'G-5MPQ8PW0CE', {
+              transport_url: 'https://splitvote.io/api/_g',
+              first_party_collection: true
+            });
           `}
         </Script>
-        {/* Google AdSense */}
+        {/* Google AdSense — first-party proxy (bypasses adblock URL filters) */}
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232020244793649"
+          src="/api/_g/ads?client=ca-pub-5232020244793649"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
@@ -122,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Analytics />
         <CookieConsent />
+        <AdBlockBanner />
         <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16 space-y-2">
           <p>© 2026 SplitVote.io — No right answers. Just honest ones.</p>
           <p className="flex items-center justify-center gap-4">
