@@ -150,14 +150,9 @@ export default async function DashboardPage() {
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
-          <div>
-            <p className="font-bold text-blue-400 text-sm">Free Plan</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade to submit polls, unlock badges, and remove ads.</p>
-          </div>
-          <a href="/#pricing" className="flex-shrink-0 text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
-            Upgrade →
-          </a>
+        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8">
+          <p className="font-bold text-blue-400 text-sm">Free Plan</p>
+          <p className="text-[var(--muted)] text-xs mt-0.5">Premium features coming soon — stay tuned!</p>
         </div>
       )}
 

@@ -86,10 +86,10 @@ export default function SubmitPollPage() {
         <p className="text-5xl mb-4">⭐</p>
         <h1 className="text-2xl font-black text-white mb-3">Premium Feature</h1>
         <p className="text-[var(--muted)] mb-6">
-          Publishing polls to the global audience requires a premium subscription.
+          Poll submission is coming soon. Stay tuned for updates!
         </p>
-        <a href="/#pricing" className="inline-block px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm transition-colors">
-          See Plans →
+        <a href="/" className="inline-block px-6 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-white font-bold text-sm transition-colors">
+          ← Back to dilemmas
         </a>
       </div>
     )

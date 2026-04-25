@@ -176,10 +176,7 @@ function LoginForm() {
 
         {/* Premium notice */}
         <p className="text-center text-xs text-[var(--muted)] mt-6">
-          Premium features require an active subscription.{' '}
-          <a href="/#pricing" className="text-blue-400 hover:text-blue-300 transition-colors">
-            See plans →
-          </a>
+          Free to use. Premium features coming soon.
         </p>
       </div>
     </div>
