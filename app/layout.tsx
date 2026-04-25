@@ -1,30 +1,57 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'SplitVote — What Would the World Choose?',
-  description: 'Real-time global polls on impossible moral dilemmas. Vote and see how the world splits.',
+  metadataBase: new URL('https://splitvote.io'),
+  title: {
+    default: 'SplitVote — What Would the World Choose?',
+    template: '%s | SplitVote',
+  },
+  description: 'Real-time global votes on impossible moral dilemmas. Trolley problem, lifeboat, privacy vs security — no right answers, just honest ones.',
+  keywords: ['moral dilemma', 'trolley problem', 'ethics poll', 'global vote', 'would you rather', 'philosophy', 'moral philosophy', 'real-time vote'],
+  authors: [{ name: 'SplitVote' }],
+  creator: 'SplitVote',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   openGraph: {
     title: 'SplitVote — What Would the World Choose?',
-    description: 'Real-time global polls on impossible moral dilemmas.',
+    description: 'Real-time global votes on impossible moral dilemmas. No right answers — just honest ones.',
     url: 'https://splitvote.io',
     siteName: 'SplitVote',
-    images: [{ url: 'https://splitvote.io/og-default.png', width: 1200, height: 630 }],
+    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'SplitVote — Real-time global moral dilemmas' }],
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SplitVote — What Would the World Choose?',
-    description: 'Real-time global polls on impossible moral dilemmas.',
+    description: 'Real-time global votes on impossible moral dilemmas.',
+    site: '@splitvote',
+    creator: '@splitvote',
+  },
+  alternates: {
+    canonical: 'https://splitvote.io',
   },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232020244793649"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-screen" style={{ background: 'var(--bg)' }}>
         <nav className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between">
           <a href="/" className="text-xl font-black tracking-tight text-white">
