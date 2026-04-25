@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
+import CookieConsent from '@/components/CookieConsent'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -116,6 +117,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </nav>
         <main>{children}</main>
         <Analytics />
+        <CookieConsent />
         <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16 space-y-2">
           <p>© 2026 SplitVote.io — No right answers. Just honest ones.</p>
           <p className="flex items-center justify-center gap-4">

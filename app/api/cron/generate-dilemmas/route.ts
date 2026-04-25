@@ -27,7 +27,7 @@ async function fetchGoogleTrends(): Promise<string[]> {
     )
     const xml = await res.text()
     // Extract <title> values (skip the first which is the feed title)
-    const matches = [...xml.matchAll(/<item>[\s\S]*?<title><!\[CDATA\[(.*?)\]\]><\/title>/g)]
+    const matches = Array.from(xml.matchAll(/<item>[\s\S]*?<title><!\[CDATA\[(.*?)\]\]><\/title>/g))
     return matches.slice(0, 8).map((m) => m[1].trim())
   } catch {
     return []
