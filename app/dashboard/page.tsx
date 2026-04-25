@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getScenario } from '@/lib/scenarios'
+import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 
-export const metadata = { title: 'Dashboard' }
+export const metadata = { title: 'Dashboard | SplitVote' }
 
 type PollStatus = 'pending' | 'approved' | 'rejected' | 'flagged'
 
@@ -14,10 +16,32 @@ interface UserPoll {
   created_at: string
 }
 
+interface DilemmaVote {
+  dilemma_id: string
+  choice: 'A' | 'B'
+  voted_at: string
+  can_change_until: string
+}
+
+interface UserBadge {
+  badge_id: string
+  earned_at: string
+  is_equipped: boolean
+  badges: {
+    name: string
+    emoji: string
+    rarity: string
+    description: string
+  }
+}
+
 interface Profile {
   display_name: string | null
   email: string | null
   is_premium: boolean
+  votes_count: number
+  equipped_frame: string | null
+  equipped_badge: string | null
 }
 
 const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
@@ -27,147 +51,252 @@ const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
   flagged:  { label: '🚩 Flagged',          classes: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
 }
 
+const RARITY_STYLES: Record<string, string> = {
+  common:    'border-slate-500/40 bg-slate-500/10 text-slate-300',
+  rare:      'border-blue-500/40  bg-blue-500/10  text-blue-300',
+  epic:      'border-purple-500/40 bg-purple-500/10 text-purple-300',
+  legendary: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-300',
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login?redirect=/dashboard')
 
-  // Fetch profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name, email, is_premium')
-    .eq('id', user.id)
-    .single<Profile>()
+  // Fetch all data in parallel
+  const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge')
+      .eq('id', user.id)
+      .single<Profile>(),
+    supabase
+      .from('user_polls')
+      .select('id, question, status, votes_a, votes_b, created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(20),
+    supabase
+      .from('dilemma_votes')
+      .select('dilemma_id, choice, voted_at, can_change_until')
+      .eq('user_id', user.id)
+      .order('voted_at', { ascending: false })
+      .limit(30),
+    supabase
+      .from('user_badges')
+      .select('badge_id, earned_at, is_equipped, badges(name, emoji, rarity, description)')
+      .eq('user_id', user.id)
+      .order('earned_at', { ascending: false }),
+  ])
 
-  // Fetch user's submitted polls
-  const { data: polls } = await supabase
-    .from('user_polls')
-    .select('id, question, status, votes_a, votes_b, created_at')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(20)
+  const profile = profileRes.data
+  const typedPolls = (pollsRes.data ?? []) as UserPoll[]
+  const dilemmaVotes = (dilemmaVotesRes.data ?? []) as DilemmaVote[]
+  const userBadges = (badgesRes.data ?? []) as UserBadge[]
 
-  const typedPolls = (polls ?? []) as UserPoll[]
-
-  const totalVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
+  const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
   const approvedCount = typedPolls.filter(p => p.status === 'approved').length
+  const votesCount = profile?.votes_count ?? 0
+
+  // Resolve dilemma titles for the history
+  const dilemmaDetails = await Promise.all(
+    dilemmaVotes.map(async (v) => {
+      const scenario = getScenario(v.dilemma_id) ?? await getDynamicScenario(v.dilemma_id)
+      return {
+        ...v,
+        question: scenario?.question ?? v.dilemma_id,
+        optionA: scenario?.optionA ?? 'Option A',
+        optionB: scenario?.optionB ?? 'Option B',
+        emoji: scenario?.emoji ?? '🤔',
+        canChange: new Date(v.can_change_until) > new Date(),
+      }
+    })
+  )
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-1">
-          Hey, {profile?.display_name?.split(' ')[0] ?? 'there'} 👋
-        </h1>
-        <p className="text-[var(--muted)] text-sm">{profile?.email ?? user.email}</p>
+    <div className="max-w-3xl mx-auto px-4 py-12">
+
+      {/* ── Header ── */}
+      <div className="mb-10 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-white mb-1">
+            Hey, {profile?.display_name?.split(' ')[0] ?? 'there'} 👋
+          </h1>
+          <p className="text-[var(--muted)] text-sm">{profile?.email ?? user.email}</p>
+        </div>
+        {userBadges.length > 0 && (
+          <div className="flex gap-1.5 flex-wrap justify-end mt-1">
+            {userBadges.slice(0, 5).map(b => (
+              <span
+                key={b.badge_id}
+                title={b.badges.name}
+                className={`text-xl px-2.5 py-1 rounded-xl border ${RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common}`}
+              >
+                {b.badges.emoji}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Premium status */}
+      {/* ── Premium status ── */}
       {profile?.is_premium ? (
         <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5 mb-8 flex items-center gap-4">
           <div className="text-2xl">⭐</div>
           <div>
             <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">You have access to all premium features. No ads, unlimited polls.</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">You have access to all premium features.</p>
           </div>
         </div>
       ) : (
         <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="font-bold text-blue-400 text-sm">Free Plan</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade to submit polls, remove ads, and unlock micro-learning.</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade to submit polls, unlock badges, and remove ads.</p>
           </div>
-          <a
-            href="/#pricing"
-            className="flex-shrink-0 text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors"
-          >
+          <a href="/#pricing" className="flex-shrink-0 text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
             Upgrade →
           </a>
         </div>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      {/* ── Stats ── */}
+      <div className="grid grid-cols-4 gap-3 mb-10">
         {[
+          { label: 'Dilemmas voted', value: votesCount },
           { label: 'Polls submitted', value: typedPolls.length },
-          { label: 'Polls live',      value: approvedCount },
-          { label: 'Total votes',     value: totalVotes.toLocaleString() },
+          { label: 'Polls live', value: approvedCount },
+          { label: 'Badges earned', value: userBadges.length },
         ].map(stat => (
-          <div
-            key={stat.label}
-            className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 text-center"
-          >
+          <div key={stat.label} className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-4 text-center">
             <p className="text-2xl font-black text-white">{stat.value}</p>
             <p className="text-[var(--muted)] text-xs mt-1">{stat.label}</p>
           </div>
         ))}
       </div>
 
-      {/* Polls section */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-black text-white">Your Polls</h2>
-        {profile?.is_premium && (
-          <a
-            href="/submit-poll"
-            className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors"
-          >
-            + Submit new
-          </a>
+      {/* ── Badge collection ── */}
+      {userBadges.length > 0 && (
+        <div className="mb-10">
+          <h2 className="text-lg font-black text-white mb-4">🏆 Your Badges</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {userBadges.map(b => (
+              <div
+                key={b.badge_id}
+                className={`rounded-2xl border p-4 flex items-center gap-3 ${RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common}`}
+              >
+                <span className="text-3xl">{b.badges.emoji}</span>
+                <div className="min-w-0">
+                  <p className="font-bold text-sm text-white">{b.badges.name}</p>
+                  <p className="text-xs opacity-70 truncate">{b.badges.description}</p>
+                  <p className="text-xs opacity-50 mt-0.5 capitalize">{b.badges.rarity}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-[var(--muted)] mt-3 text-center">
+            Collect more badges by voting on dilemmas — some are rare 👀
+          </p>
+        </div>
+      )}
+
+      {/* ── Answer History ── */}
+      <div className="mb-10">
+        <h2 className="text-lg font-black text-white mb-4">🗳️ Your Vote History</h2>
+        {dilemmaDetails.length === 0 ? (
+          <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-10 text-center">
+            <p className="text-4xl mb-3">🤔</p>
+            <p className="text-[var(--muted)] text-sm">You haven&apos;t voted yet. Go explore some dilemmas!</p>
+            <a href="/" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
+              Start voting →
+            </a>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {dilemmaDetails.map(v => (
+              <a
+                key={v.dilemma_id}
+                href={`/results/${v.dilemma_id}`}
+                className="block rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-4 hover:border-blue-500/30 transition-colors group"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl flex-shrink-0 mt-0.5">{v.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white font-medium leading-snug mb-2 line-clamp-2">{v.question}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                        v.choice === 'A'
+                          ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                      }`}>
+                        You chose {v.choice === 'A' ? v.optionA : v.optionB}
+                      </span>
+                      {v.canChange && (
+                        <span className="text-xs text-yellow-400/70 border border-yellow-500/20 px-2 py-0.5 rounded-lg">
+                          ⏱ Can change for {Math.ceil((new Date(v.can_change_until).getTime() - Date.now()) / 3600000)}h
+                        </span>
+                      )}
+                      {!v.canChange && (
+                        <span className="text-xs text-[var(--muted)] border border-white/10 px-2 py-0.5 rounded-lg">
+                          🔒 Locked
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-[var(--muted)] text-xs group-hover:text-blue-400 transition-colors">
+                    See results →
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
         )}
       </div>
 
-      {typedPolls.length === 0 ? (
-        <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-10 text-center">
-          <p className="text-4xl mb-3">🗳️</p>
-          <p className="text-[var(--muted)] text-sm">No polls submitted yet.</p>
-          {profile?.is_premium ? (
-            <a href="/submit-poll" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
-              Submit your first poll →
-            </a>
-          ) : (
-            <a href="/#pricing" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
-              Upgrade to submit polls →
-            </a>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {typedPolls.map(poll => {
-            const badge = STATUS_BADGE[poll.status]
-            const total = poll.votes_a + poll.votes_b
-            const pctA = total ? Math.round((poll.votes_a / total) * 100) : 50
-            return (
-              <div
-                key={poll.id}
-                className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5"
-              >
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <p className="text-sm text-white font-semibold leading-snug flex-1">{poll.question}</p>
-                  <span className={`flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg border ${badge.classes}`}>
-                    {badge.label}
-                  </span>
-                </div>
-                {total > 0 && (
-                  <div>
-                    <div className="flex justify-between text-xs text-[var(--muted)] mb-1">
-                      <span>A: {pctA}%</span>
-                      <span>{total.toLocaleString()} votes</span>
-                      <span>B: {100 - pctA}%</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                        style={{ width: `${pctA}%` }}
-                      />
-                    </div>
+      {/* ── Submitted Polls ── */}
+      {typedPolls.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-black text-white">Your Submitted Polls</h2>
+            {profile?.is_premium && (
+              <a href="/submit-poll" className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
+                + Submit new
+              </a>
+            )}
+          </div>
+          <div className="space-y-3">
+            {typedPolls.map(poll => {
+              const badge = STATUS_BADGE[poll.status]
+              const total = poll.votes_a + poll.votes_b
+              const pctA = total ? Math.round((poll.votes_a / total) * 100) : 50
+              return (
+                <div key={poll.id} className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5">
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <p className="text-sm text-white font-semibold leading-snug flex-1">{poll.question}</p>
+                    <span className={`flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg border ${badge.classes}`}>
+                      {badge.label}
+                    </span>
                   </div>
-                )}
-              </div>
-            )
-          })}
+                  {total > 0 && (
+                    <div>
+                      <div className="flex justify-between text-xs text-[var(--muted)] mb-1">
+                        <span>A: {pctA}%</span>
+                        <span>{total.toLocaleString()} votes</span>
+                        <span>B: {100 - pctA}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style={{ width: `${pctA}%` }} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
+
     </div>
   )
 }

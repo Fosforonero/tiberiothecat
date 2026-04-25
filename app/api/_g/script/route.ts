@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
           'Accept-Encoding': 'gzip, deflate, br',
         },
         // Edge cache 1h
-        // @ts-expect-error next.revalidate is Edge-specific
         next: { revalidate: 3600 },
       }
     )

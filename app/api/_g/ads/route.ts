@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
           'User-Agent': request.headers.get('user-agent') || 'Mozilla/5.0',
           'Referer': 'https://splitvote.io/',
         },
-        // @ts-expect-error next.revalidate is Edge-specific
         next: { revalidate: 3600 },
       }
     )

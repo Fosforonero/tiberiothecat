@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { redis, incrementVote } from '@/lib/redis'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { createClient } from '@/lib/supabase/server'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
@@ -45,7 +46,6 @@ export async function POST(request: NextRequest) {
       const rateKey = `ratelimit:${ip}`
       const count = await redis.incr(rateKey)
       if (count === 1) {
-        // Set expiry on first increment so the key auto-cleans
         await redis.expire(rateKey, IP_WINDOW_SECONDS)
       }
       if (count > IP_RATE_LIMIT) {
@@ -56,12 +56,48 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ── Increment vote in Redis ──
     await incrementVote(id, option)
+
+    // ── Track vote in Supabase for logged-in users ──
+    try {
+      const supabase = await createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user) {
+        const choice = option.toUpperCase() as 'A' | 'B'
+
+        // Upsert: se l'utente vota di nuovo entro 24h, aggiorna la scelta
+        const { error: voteError } = await supabase
+          .from('dilemma_votes')
+          .upsert(
+            {
+              user_id: user.id,
+              dilemma_id: id,
+              choice,
+              can_change_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            },
+            {
+              onConflict: 'user_id,dilemma_id',
+              // Solo aggiorna se ancora nella finestra di 24h
+              ignoreDuplicates: false,
+            }
+          )
+
+        if (!voteError) {
+          // Incrementa votes_count su profiles + controlla badge
+          await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
+        }
+      }
+    } catch {
+      // Non-blocking: il voto Redis è già stato registrato
+      // Il tracking Supabase fallisce silenziosamente
+    }
 
     const response = NextResponse.json({ ok: true })
     response.cookies.set(cookieName, option, {
       maxAge: COOKIE_MAX_AGE,
-      httpOnly: false, // client needs to read it for redirect
+      httpOnly: false,
       sameSite: 'lax',
       path: '/',
     })
