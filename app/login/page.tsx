@@ -48,12 +48,19 @@ function LoginForm() {
     setMessage(null)
 
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setMessage({ type: 'error', text: error.message })
         setLoading(false)
+      } else if (!data.session) {
+        // Supabase returned success but no session = email confirmation still required
+        setMessage({
+          type: 'success',
+          text: 'Please confirm your email address before signing in. Check your inbox!',
+        })
+        setLoading(false)
       } else {
-        // Full page reload ensures server-side session cookie is picked up by middleware
+        // Session established — full page reload so middleware picks up the session cookie
         window.location.href = redirect
       }
     } else {
