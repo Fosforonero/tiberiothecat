@@ -17,14 +17,34 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted }: Props) {
   const [mounted, setMounted] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [captionCopied, setCaptionCopied] = useState(false)
+
   useEffect(() => setMounted(true), [])
 
   const shareUrl = `${BASE_URL}/play/${scenario.id}`
-  const shareText = `"${scenario.question}" — The world is split ${pctA}% vs ${pctB}%. What would YOU choose? 🌍`
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`
+  const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
+
+  const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+  const twitterText = `"${scenario.question}" — The world is split ${pctA}% vs ${pctB}%. What would YOU choose? 🌍`
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${twitterText}\n${shareUrl}`)}`
 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
+  const majorityPct = pctA > pctB ? pctA : pctB
+  const majorityLabel = pctA > pctB ? scenario.optionA : scenario.optionB
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(shareUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const copyCaption = () => {
+    navigator.clipboard.writeText(tiktokCaption)
+    setCaptionCopied(true)
+    setTimeout(() => setCaptionCopied(false), 2000)
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
@@ -90,50 +110,97 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted }
       </div>
 
       {/* Winner label */}
-      {winnerOption && (
-        <div className="text-center mb-8 text-[var(--muted)] text-sm">
-          {pctA === pctB ? (
-            <span>🤝 The world is perfectly split.</span>
-          ) : (
-            <span>
-              🌍 <span className="text-white font-semibold">{winnerOption === 'a' ? pctA : pctB}%</span> of the world chose:{' '}
-              <em className="not-italic text-white">{winnerOption === 'a' ? scenario.optionA : scenario.optionB}</em>
-            </span>
-          )}
-        </div>
-      )}
+      <div className="text-center mb-10 text-[var(--muted)] text-sm">
+        {pctA === pctB ? (
+          <span>🤝 The world is perfectly split.</span>
+        ) : (
+          <span>
+            🌍 <span className="text-white font-semibold">{majorityPct}%</span> of the world chose:{' '}
+            <em className="not-italic text-white">{majorityLabel}</em>
+          </span>
+        )}
+      </div>
 
-      {/* Share buttons */}
-      <div className="text-center">
-        <p className="text-sm text-[var(--muted)] mb-4 font-medium">Challenge your friends →</p>
-        <div className="flex gap-3 justify-center flex-wrap">
-          <a
-            href={twitterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border border-[#1DA1F2]/30 text-[#1DA1F2] font-bold text-sm px-5 py-3 rounded-xl transition-colors"
-          >
-            𝕏 Share on X
-          </a>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 font-bold text-sm px-5 py-3 rounded-xl transition-colors"
-          >
-            💬 WhatsApp
-          </a>
-          <button
-            onClick={() => navigator.clipboard.writeText(shareUrl)}
-            className="inline-flex items-center gap-2 bg-[var(--surface)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--muted)] hover:text-white font-bold text-sm px-5 py-3 rounded-xl transition-colors"
-          >
-            🔗 Copy link
-          </button>
+      {/* ── VIRAL SHARE SECTION ── */}
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden mb-8">
+        {/* Share card preview */}
+        <div className="relative bg-[#0a0a0f] group cursor-pointer" onClick={() => window.open(ogImageUrl, '_blank')}>
+          <img
+            src={ogImageUrl}
+            alt="Share card"
+            className="w-full h-auto"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 backdrop-blur-sm text-white font-bold text-sm px-4 py-2 rounded-xl border border-white/20">
+              Open full size ↗
+            </span>
+          </div>
+        </div>
+
+        {/* Share action buttons */}
+        <div className="p-5">
+          <p className="text-xs text-[var(--muted)] font-semibold uppercase tracking-widest mb-4">
+            🔥 Challenge your friends
+          </p>
+
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            {/* Instagram / Save image */}
+            <a
+              href={ogImageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download={`splitvote-${scenario.id}.svg`}
+              className="flex flex-col items-center gap-1.5 bg-gradient-to-br from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 border border-purple-500/30 text-purple-300 font-bold text-sm px-4 py-3.5 rounded-xl transition-all text-center"
+            >
+              <span className="text-xl">📸</span>
+              <span>Save for Instagram</span>
+            </a>
+
+            {/* TikTok caption */}
+            <button
+              onClick={copyCaption}
+              className="flex flex-col items-center gap-1.5 bg-[#010101]/30 hover:bg-[#010101]/50 border border-white/10 text-white font-bold text-sm px-4 py-3.5 rounded-xl transition-all text-center"
+            >
+              <span className="text-xl">🎵</span>
+              <span>{captionCopied ? '✅ Copied!' : 'Copy TikTok caption'}</span>
+            </button>
+          </div>
+
+          <div className="flex gap-2">
+            {/* X / Twitter */}
+            <a
+              href={twitterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border border-[#1DA1F2]/30 text-[#1DA1F2] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              𝕏 Share on X
+            </a>
+
+            {/* WhatsApp */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              💬 WhatsApp
+            </a>
+
+            {/* Copy link */}
+            <button
+              onClick={copyLink}
+              className="flex items-center justify-center bg-[var(--surface)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--muted)] hover:text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              {copied ? '✅' : '🔗'}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Next dilemma */}
-      <div className="mt-12 text-center">
+      <div className="text-center">
         <Link
           href="/"
           className="inline-block border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
@@ -142,7 +209,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted }
         </Link>
       </div>
 
-      {/* AdSense placeholder */}
+      {/* AdSense slot */}
       <div className="mt-12 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-6 text-center text-[var(--muted)] text-xs">
         <span className="opacity-30">Advertisement</span>
       </div>

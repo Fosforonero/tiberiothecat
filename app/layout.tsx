@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <span className="text-xs text-[var(--muted)]">Real-time global dilemmas</span>
         </nav>
         <main>{children}</main>
+        <Analytics />
         <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16">
           © 2026 SplitVote.io — No right answers. Just honest ones.
         </footer>
