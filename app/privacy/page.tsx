@@ -37,10 +37,9 @@ export default function PrivacyPage() {
               any identifier linked to your vote.
             </li>
             <li>
-              <strong className="text-white">Country of origin</strong> — we read the{' '}
-              <code className="bg-white/10 px-1 rounded">x-vercel-ip-country</code> header provided by
-              our hosting platform (Vercel) to show country-level vote breakdowns. This header is not
-              stored or logged.
+              <strong className="text-white">Country of origin</strong> — we detect the approximate
+              country of your request to show country-level vote breakdowns. This information is not
+              stored or logged beyond the aggregated result.
             </li>
             <li>
               <strong className="text-white">Analytics data</strong> — with your consent, Google Analytics
@@ -146,7 +145,7 @@ export default function PrivacyPage() {
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li><strong className="text-white">Strictly necessary</strong> — vote session cookie (localStorage only, not transmitted to servers).</li>
-            <li><strong className="text-white">Analytics</strong> (consent required) — Google Analytics cookies (_ga, _gid).</li>
+            <li><strong className="text-white">Analytics</strong> (consent required) — Google Analytics cookies (set only after your explicit consent).</li>
             <li><strong className="text-white">Advertising</strong> (consent required) — Google AdSense cookies.</li>
           </ul>
         </div>
