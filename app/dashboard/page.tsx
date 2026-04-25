@@ -93,7 +93,7 @@ export default async function DashboardPage() {
   const profile = profileRes.data
   const typedPolls = (pollsRes.data ?? []) as UserPoll[]
   const dilemmaVotes = (dilemmaVotesRes.data ?? []) as DilemmaVote[]
-  const userBadges = (badgesRes.data ?? []) as UserBadge[]
+  const userBadges = (badgesRes.data ?? []) as unknown as UserBadge[]
 
   const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
   const approvedCount = typedPolls.filter(p => p.status === 'approved').length
