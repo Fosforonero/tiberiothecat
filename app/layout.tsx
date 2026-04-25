@@ -42,6 +42,7 @@ export const metadata: Metadata = {
   },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
+    'google-site-verification': '',
   },
 }
 
@@ -49,9 +50,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <head>
+        {/* Google Consent Mode v2 — must run BEFORE GA4 loads */}
+        <Script id="consent-mode" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied',
+              'wait_for_update': 500
+            });
+            gtag('set', 'ads_data_redaction', true);
+            gtag('set', 'url_passthrough', true);
+          `}
+        </Script>
         {/* Google Analytics 4 */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-LT0NRHENKT"
+          src="https://www.googletagmanager.com/gtag/js?id=G-5MPQ8PW0CE"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -59,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-LT0NRHENKT');
+            gtag('config', 'G-5MPQ8PW0CE');
           `}
         </Script>
         {/* Google AdSense */}
@@ -79,8 +96,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </nav>
         <main>{children}</main>
         <Analytics />
-        <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16">
-          © 2026 SplitVote.io — No right answers. Just honest ones.
+        <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16 space-y-2">
+          <p>© 2026 SplitVote.io — No right answers. Just honest ones.</p>
+          <p className="flex items-center justify-center gap-4">
+            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <span>·</span>
+            <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+          </p>
         </footer>
       </body>
     </html>
