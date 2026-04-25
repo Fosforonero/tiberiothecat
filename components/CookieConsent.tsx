@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react'
 
 const CONSENT_KEY = 'sv_cookie_consent' // 'granted' | 'denied'
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void
+  }
+}
+
 function updateConsentMode(granted: boolean) {
   if (typeof window === 'undefined' || !window.gtag) return
   window.gtag('consent', 'update', {
