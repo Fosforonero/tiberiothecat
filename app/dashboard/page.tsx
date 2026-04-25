@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import BadgeSection from './BadgeSection'
+import OnboardingModal from './OnboardingModal'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -42,6 +44,7 @@ interface Profile {
   votes_count: number
   equipped_frame: string | null
   equipped_badge: string | null
+  onboarding_done: boolean
 }
 
 const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
@@ -68,7 +71,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge')
+      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge, onboarding_done')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -124,6 +127,9 @@ export default async function DashboardPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
 
+      {/* ── Onboarding modal (first login) ── */}
+      {profile && !profile.onboarding_done && <OnboardingModal />}
+
       {/* ── Header ── */}
       <div className="mb-10 flex items-start justify-between gap-4">
         <div>
@@ -178,29 +184,9 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* ── Badge collection ── */}
+      {/* ── Badge collection (with equip toggle) ── */}
       {userBadges.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-lg font-black text-white mb-4">🏆 Your Badges</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {userBadges.map(b => (
-              <div
-                key={b.badge_id}
-                className={`rounded-2xl border p-4 flex items-center gap-3 ${RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common}`}
-              >
-                <span className="text-3xl">{b.badges.emoji}</span>
-                <div className="min-w-0">
-                  <p className="font-bold text-sm text-white">{b.badges.name}</p>
-                  <p className="text-xs opacity-70 truncate">{b.badges.description}</p>
-                  <p className="text-xs opacity-50 mt-0.5 capitalize">{b.badges.rarity}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-[var(--muted)] mt-3 text-center">
-            Collect more badges by voting on dilemmas — some are rare 👀
-          </p>
-        </div>
+        <BadgeSection initialBadges={userBadges as unknown as Parameters<typeof BadgeSection>[0]['initialBadges']} />
       )}
 
       {/* ── Answer History ── */}
