@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getScenario, getRandomScenario, scenarios } from '@/lib/scenarios'
+import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
 import type { Metadata } from 'next'
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = getScenario(params.id)
+  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) return {}
   return {
     title: `Results: ${scenario.question.slice(0, 50)}… | SplitVote`,
@@ -28,7 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const dynamic = 'force-dynamic'
 
 export default async function ResultsPage({ params, searchParams }: Props) {
-  const scenario = getScenario(params.id)
+  // Supporta sia gli scenari statici che quelli AI generati dal cron
+  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) notFound()
 
   const votes = await getVotes(params.id)

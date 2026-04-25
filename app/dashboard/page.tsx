@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getScenario } from '@/lib/scenarios'
-import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -99,20 +99,27 @@ export default async function DashboardPage() {
   const approvedCount = typedPolls.filter(p => p.status === 'approved').length
   const votesCount = profile?.votes_count ?? 0
 
-  // Resolve dilemma titles for the history
-  const dilemmaDetails = await Promise.all(
-    dilemmaVotes.map(async (v) => {
-      const scenario = getScenario(v.dilemma_id) ?? await getDynamicScenario(v.dilemma_id)
-      return {
-        ...v,
-        question: scenario?.question ?? v.dilemma_id,
-        optionA: scenario?.optionA ?? 'Option A',
-        optionB: scenario?.optionB ?? 'Option B',
-        emoji: scenario?.emoji ?? '🤔',
-        canChange: new Date(v.can_change_until) > new Date(),
-      }
-    })
-  )
+  // Fetch dynamic scenarios ONCE (no N+1 Redis calls)
+  let dynamicMap = new Map<string, Awaited<ReturnType<typeof getDynamicScenarios>>[number]>()
+  try {
+    const dynamicList = await getDynamicScenarios()
+    dynamicMap = new Map(dynamicList.map(s => [s.id, s]))
+  } catch {
+    // Redis unavailable — only static scenarios resolvable
+  }
+
+  // Resolve dilemma titles for the history (no awaits inside the map)
+  const dilemmaDetails = dilemmaVotes.map((v) => {
+    const scenario = getScenario(v.dilemma_id) ?? dynamicMap.get(v.dilemma_id)
+    return {
+      ...v,
+      question: scenario?.question ?? v.dilemma_id,
+      optionA: scenario?.optionA ?? 'Option A',
+      optionB: scenario?.optionB ?? 'Option B',
+      emoji: scenario?.emoji ?? '🤔',
+      canChange: new Date(v.can_change_until) > new Date(),
+    }
+  })
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">

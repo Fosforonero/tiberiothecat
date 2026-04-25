@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getScenario } from '@/lib/scenarios'
+import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotes } from '@/lib/redis'
 
 export const runtime = 'edge'
@@ -32,7 +33,8 @@ function escapeXml(text: string): string {
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id') ?? 'trolley'
-  const scenario = getScenario(id)
+  // Supporta sia scenari statici che AI generati dal cron
+  const scenario = getScenario(id) ?? await getDynamicScenario(id)
 
   let pctA = 50
   let pctB = 50
