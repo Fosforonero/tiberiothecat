@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://splitvote.io',
   },
+  other: {
+    'google-adsense-account': 'ca-pub-5232020244793649',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
