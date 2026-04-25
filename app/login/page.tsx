@@ -64,20 +64,24 @@ function LoginForm() {
         window.location.href = redirect
       }
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
       })
       if (error) {
         setMessage({ type: 'error', text: error.message })
+        setLoading(false)
+      } else if (signUpData.session) {
+        // Email confirmation is off — user is immediately logged in
+        window.location.href = redirect
       } else {
         setMessage({
           type: 'success',
           text: 'Check your email to confirm your account!',
         })
+        setLoading(false)
       }
-      setLoading(false)
     }
   }
 
