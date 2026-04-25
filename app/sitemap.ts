@@ -38,6 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...categoryRoutes,
     ...scenarioRoutes,
     {
+      url: `${BASE}/trending`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
       url: `${BASE}/privacy`,
       lastModified: now,
       changeFrequency: 'monthly' as const,

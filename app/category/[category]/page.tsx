@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
-import DilemmaGrid from '@/components/DilemmaGrid'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: Props) {
 
   // Static + dynamic dilemmas for this category
   const staticFiltered = scenarios.filter((s) => s.category === category)
-  let dynamicFiltered = []
+  let dynamicFiltered: DynamicScenario[] = []
   try {
     const dynamic = await getDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))

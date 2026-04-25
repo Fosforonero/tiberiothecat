@@ -14,7 +14,8 @@ import { saveDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import type { Category } from '@/lib/scenarios'
 
-const client = new Anthropic()
+// Must run in Node.js runtime (Anthropic SDK uses Node-only APIs)
+export const runtime = 'nodejs'
 
 // ── Fetch trending topics ──────────────────────────────────────
 
@@ -56,7 +57,7 @@ async function fetchRedditNews(): Promise<string[]> {
 // ── Generate dilemmas via Claude ───────────────────────────────
 
 async function generateDilemmas(trends: string[]): Promise<DynamicScenario[]> {
-  const today = new Date().toISOString().split('T')[0]
+  const client = new Anthropic()
   const trendList = trends.map((t, i) => `${i + 1}. ${t}`).join('\n')
 
   const prompt = `You are generating viral moral dilemma polls for splitvote.io — a site where people vote on impossible ethical questions in real time.

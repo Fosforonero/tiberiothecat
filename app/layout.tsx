@@ -92,11 +92,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="bg-orbs" aria-hidden="true" />
         <div className="bg-orb-mid" aria-hidden="true" />
 
-        <nav className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between">
-          <a href="/" className="text-xl font-black tracking-tight text-white">
+        <nav className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between gap-4">
+          <a href="/" className="text-xl font-black tracking-tight text-white flex-shrink-0">
             Split<span className="text-blue-400">Vote</span>
           </a>
-          <span className="text-xs text-[var(--muted)]">Real-time global dilemmas</span>
+          <div className="flex items-center gap-1 flex-wrap justify-end">
+            <a href="/trending" className="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors px-3 py-1.5 rounded-lg hover:bg-purple-500/10 border border-transparent hover:border-purple-500/20">
+              ✨ Trending
+            </a>
+            <a href="/category/morality" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
+              Morality
+            </a>
+            <a href="/category/technology" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
+              Tech
+            </a>
+            <a href="/category/society" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
+              Society
+            </a>
+            <a href="/category/relationships" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden lg:block">
+              Love
+            </a>
+          </div>
         </nav>
         <main>{children}</main>
         <Analytics />
