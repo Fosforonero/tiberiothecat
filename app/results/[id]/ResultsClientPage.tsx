@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
+import AdSlot from '@/components/AdSlot'
 
 interface Props {
   scenario: Scenario
@@ -11,11 +12,13 @@ interface Props {
   pctB: number
   total: number
   voted: 'a' | 'b' | null
+  nextId: string  // pre-computed on the server
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
+const SLOT_RESULTS = process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? 'TODO'
 
-export default function ResultsClientPage({ scenario, pctA, pctB, total, voted }: Props) {
+export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId }: Props) {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
@@ -199,19 +202,23 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted }
         </div>
       </div>
 
-      {/* Next dilemma */}
-      <div className="text-center">
+      {/* ── AdSense — shown after results, before CTA ── */}
+      <AdSlot slot={SLOT_RESULTS} className="rounded-2xl mb-8" />
+
+      {/* ── Next dilemma CTA ── */}
+      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <Link
+          href={`/play/${nextId}`}
+          className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
+        >
+          Next dilemma →
+        </Link>
         <Link
           href="/"
-          className="inline-block border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
+          className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
         >
-          Try another dilemma →
+          All dilemmas
         </Link>
-      </div>
-
-      {/* AdSense slot */}
-      <div className="mt-12 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-6 text-center text-[var(--muted)] text-xs">
-        <span className="opacity-30">Advertisement</span>
       </div>
     </div>
   )

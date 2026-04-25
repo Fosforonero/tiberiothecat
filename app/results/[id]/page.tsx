@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getScenario, scenarios } from '@/lib/scenarios'
+import { getScenario, getRandomScenario, scenarios } from '@/lib/scenarios'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
 import type { Metadata } from 'next'
@@ -39,6 +39,8 @@ export default async function ResultsPage({ params, searchParams }: Props) {
     ? searchParams.voted
     : null
 
+  const nextScenario = getRandomScenario(params.id)
+
   return (
     <ResultsClientPage
       scenario={scenario}
@@ -47,6 +49,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
       pctB={pctB}
       total={total}
       voted={voted}
+      nextId={nextScenario.id}
     />
   )
 }

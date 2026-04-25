@@ -88,6 +88,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen" style={{ background: 'var(--bg)' }}>
+        {/* Animated background orbs */}
+        <div className="bg-orbs" aria-hidden="true" />
+        <div className="bg-orb-mid" aria-hidden="true" />
+
         <nav className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between">
           <a href="/" className="text-xl font-black tracking-tight text-white">
             Split<span className="text-blue-400">Vote</span>

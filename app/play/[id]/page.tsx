@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getScenario, scenarios } from '@/lib/scenarios'
+import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import VoteClientPage from './VoteClientPage'
 import type { Metadata } from 'next'
 
@@ -12,7 +13,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = getScenario(params.id)
+  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) return {}
   return {
     title: `${scenario.question.slice(0, 60)}… | SplitVote`,
@@ -28,8 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function PlayPage({ params }: Props) {
-  const scenario = getScenario(params.id)
+export const dynamic = 'force-dynamic'
+
+export default async function PlayPage({ params }: Props) {
+  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) notFound()
   return <VoteClientPage scenario={scenario} />
 }

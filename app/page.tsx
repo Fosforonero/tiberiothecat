@@ -1,11 +1,33 @@
 import { scenarios } from '@/lib/scenarios'
-import Link from 'next/link'
+import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import DilemmaGrid from '@/components/DilemmaGrid'
+import AdSlot from '@/components/AdSlot'
+import type { Scenario } from '@/lib/scenarios'
 
-export default function HomePage() {
+const SLOT_HOME = process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? 'TODO'
+
+export const revalidate = 3600 // revalidate every hour to pick up new AI dilemmas
+
+export default async function HomePage() {
+  // Merge static + AI-generated dilemmas (AI ones shown first with ✨ badge)
+  let dynamicScenarios: Scenario[] = []
+  try {
+    dynamicScenarios = await getDynamicScenarios()
+  } catch {
+    // Redis unavailable — gracefully fall back to static only
+  }
+
+  // Deduplicate: if an AI scenario has same id as static one, skip it
+  const staticIds = new Set(scenarios.map((s) => s.id))
+  const uniqueDynamic = dynamicScenarios.filter((d) => !staticIds.has(d.id))
+
+  // Dynamic first so they appear at the top (or interspersed after filter)
+  const allScenarios: Scenario[] = [...uniqueDynamic, ...scenarios]
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       {/* Hero */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-12">
         <div className="inline-block bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-blue-500/20">
           Real-time global votes
         </div>
@@ -21,41 +43,12 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Scenario grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {scenarios.map((scenario) => (
-          <Link
-            key={scenario.id}
-            href={`/play/${scenario.id}`}
-            className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-blue-500/40 hover:bg-[#16162a] transition-all duration-200 hover:-translate-y-0.5"
-          >
-            <div className="flex items-start gap-4">
-              <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-2 block">
-                  {scenario.category}
-                </span>
-                <p className="font-semibold text-[var(--text)] leading-snug mb-4 line-clamp-3">
-                  {scenario.question}
-                </p>
-                <div className="flex gap-2">
-                  <span className="text-xs bg-red-500/10 text-red-400 border border-red-500/20 rounded-full px-3 py-1 line-clamp-1">
-                    {scenario.optionA.split('.')[0]}
-                  </span>
-                  <span className="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-3 py-1 line-clamp-1">
-                    {scenario.optionB.split('.')[0]}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {/* Dilemma grid with category filter (client component) */}
+      <DilemmaGrid scenarios={allScenarios} />
 
-      {/* Ad slot placeholder */}
-      <div className="mt-16 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-8 text-center text-[var(--muted)] text-sm">
-        {/* AdSense slot — activated after approval */}
-        <span className="opacity-30">Advertisement</span>
+      {/* AdSense — below the grid */}
+      <div className="mt-12">
+        <AdSlot slot={SLOT_HOME} className="rounded-2xl" />
       </div>
     </div>
   )

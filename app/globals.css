@@ -22,3 +22,99 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Animated background ────────────────────────────── */
+
+/* Slow-drifting gradient orbs behind content */
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-orbs::before,
+.bg-orbs::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.12;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* Red orb — top left */
+.bg-orbs::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #ef4444, transparent 70%);
+  top: -200px;
+  left: -200px;
+  animation-name: orb-drift-a;
+  animation-duration: 14s;
+}
+
+/* Blue orb — bottom right */
+.bg-orbs::after {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, #3b82f6, transparent 70%);
+  bottom: -250px;
+  right: -200px;
+  animation-name: orb-drift-b;
+  animation-duration: 18s;
+}
+
+@keyframes orb-drift-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(80px, 120px) scale(1.12); }
+  100% { transform: translate(40px, 60px) scale(0.95); }
+}
+
+@keyframes orb-drift-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-100px, -80px) scale(1.08); }
+  100% { transform: translate(-50px, -40px) scale(1.15); }
+}
+
+/* Purple orb — center, faint */
+.bg-orb-mid {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #7c3aed, transparent 70%);
+  filter: blur(140px);
+  opacity: 0.06;
+  top: 30%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  animation: orb-drift-b 22s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure all page content is above orbs */
+nav, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Subtle scanline texture for depth */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.012) 2px,
+    rgba(255,255,255,0.012) 4px
+  );
+}
