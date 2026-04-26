@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-})
-
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
+  // Lazy init — only called at runtime, never at build time
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2025-02-24.acacia',
+  })
+
   const body = await req.text()
   const sig = req.headers.get('stripe-signature')
 
@@ -40,7 +42,6 @@ export async function POST(req: NextRequest) {
 
     const admin = createAdminClient()
 
-    // Fetch current name_changes count
     const { data: profile } = await admin
       .from('profiles')
       .select('name_changes')
@@ -49,13 +50,9 @@ export async function POST(req: NextRequest) {
 
     const currentChanges = (profile?.name_changes ?? 0) as number
 
-    // Apply name change
     const { error } = await admin
       .from('profiles')
-      .update({
-        display_name: newName,
-        name_changes: currentChanges + 1,
-      })
+      .update({ display_name: newName, name_changes: currentChanges + 1 })
       .eq('id', userId)
 
     if (error) {

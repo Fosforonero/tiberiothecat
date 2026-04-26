@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-})
+export const dynamic = 'force-dynamic'
 
 const FORBIDDEN_NAMES = ['admin', 'splitvote', 'moderator']
 
 export async function POST(req: NextRequest) {
+  // Lazy init — only called at runtime, never at build time
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2025-02-24.acacia',
+  })
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -18,7 +21,6 @@ export async function POST(req: NextRequest) {
 
   const { newName } = await req.json()
 
-  // Validate name
   if (!newName || typeof newName !== 'string') {
     return NextResponse.json({ error: 'newName required' }, { status: 400 })
   }
@@ -32,27 +34,14 @@ export async function POST(req: NextRequest) {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
-  // Create Stripe checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    line_items: [
-      {
-        price: process.env.STRIPE_PRICE_ID_NAME_CHANGE!,
-        quantity: 1,
-      },
-    ],
+    line_items: [{ price: process.env.STRIPE_PRICE_ID_NAME_CHANGE!, quantity: 1 }],
     mode: 'payment',
     success_url: `${baseUrl}/profile?name_changed=1`,
     cancel_url: `${baseUrl}/profile?payment=cancelled`,
-    metadata: {
-      userId: user.id,
-      newName: name,
-      type: 'name_change',
-    },
-    // Pre-fill email if available
+    metadata: { userId: user.id, newName: name, type: 'name_change' },
     customer_email: user.email ?? undefined,
-    // Auto tax (optional — comment out if not configured in Stripe)
-    // automatic_tax: { enabled: true },
   })
 
   return NextResponse.json({ url: session.url })
