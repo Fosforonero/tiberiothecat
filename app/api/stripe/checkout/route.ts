@@ -9,7 +9,7 @@ const FORBIDDEN_NAMES = ['admin', 'splitvote', 'moderator']
 export async function POST(req: NextRequest) {
   // Lazy init — only called at runtime, never at build time
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2026-04-22.dahlia',
+    apiVersion: '2025-02-24.acacia',
   })
 
   const supabase = await createClient()
