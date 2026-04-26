@@ -56,7 +56,7 @@ export default async function PublicProfilePage({ params }: Props) {
   if (!profileRes.data) notFound()
 
   const profile = profileRes.data
-  const badges = ((badgesRes.data ?? []) as {
+  const badges = ((badgesRes.data ?? []) as unknown as {
     badge_id: string
     earned_at: string
     is_equipped: boolean
