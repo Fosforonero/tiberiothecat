@@ -32,16 +32,19 @@ export default async function BusinessPage() {
     .neq('role', 'owner')
     .maybeSingle()
 
-  const activeOrg = org ?? (memberOrg?.organizations as Record<string, unknown> | null)
+  // Supabase types nested joins as arrays — flatten to single object via unknown cast
+  const memberOrgData = memberOrg?.organizations
+  const activeOrg = org ?? (Array.isArray(memberOrgData) ? (memberOrgData[0] as unknown as Record<string, unknown>) : (memberOrgData as unknown as Record<string, unknown> | null))
   const userRole = org ? 'owner' : (memberOrg?.role ?? null)
 
   // Fetch promoted polls for this org
   let polls: Record<string, unknown>[] = []
   if (activeOrg) {
+    const orgId = (activeOrg as { id: string }).id
     const { data } = await supabase
       .from('promoted_polls')
       .select('*')
-      .eq('org_id', (activeOrg as { id: string }).id)
+      .eq('org_id', orgId)
       .order('created_at', { ascending: false })
     polls = data ?? []
   }
