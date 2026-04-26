@@ -1,11 +1,13 @@
 import { notFound } from 'next/navigation'
 import { getScenario, scenarios } from '@/lib/scenarios'
-import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from './VoteClientPage'
 import JsonLd from '@/components/JsonLd'
+import RelatedDilemmas from '@/components/RelatedDilemmas'
 import type { Metadata } from 'next'
+import type { Scenario } from '@/lib/scenarios'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -88,6 +90,16 @@ export default async function PlayPage({ params, searchParams }: Props) {
 
   const isChallenge = searchParams.challenge === '1'
 
+  // Collect all scenarios for internal linking (related dilemmas)
+  let allScenarios: Scenario[] = [...scenarios]
+  try {
+    const dynamic = await getDynamicScenarios()
+    const staticIds = new Set(scenarios.map((s) => s.id))
+    allScenarios = [...scenarios, ...dynamic.filter((d) => !staticIds.has(d.id))]
+  } catch {
+    // Non-blocking
+  }
+
   // JSON-LD: BreadcrumbList
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -146,6 +158,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
         totalVotes={totalVotes}
         isChallenge={isChallenge}
       />
+      <RelatedDilemmas current={scenario} all={allScenarios} />
     </>
   )
 }
