@@ -64,6 +64,12 @@ export const metadata: Metadata = {
       'x-default': 'https://splitvote.io',
     },
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/logo-icon.svg',
+  },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
     'google-site-verification': '',
@@ -137,8 +143,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
 
           {/* Logo */}
-          <a href="/" className="text-xl font-black tracking-tight text-white flex-shrink-0 neon-text-blue">
-            Split<span className="text-blue-400">Vote</span>
+          <a href="/" className="flex-shrink-0 flex items-center gap-2 group" aria-label="SplitVote home">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-icon.svg" alt="" width={32} height={32} className="w-8 h-8" />
+            <span className="text-xl font-black tracking-tight">
+              <span className="text-white">Split</span>
+              <span className="text-blue-400">Vote</span>
+            </span>
           </a>
 
           {/* Desktop category links */}
