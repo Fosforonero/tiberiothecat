@@ -6,6 +6,7 @@ import { getVotesBatch } from '@/lib/redis'
 import DilemmaCard from '@/components/DilemmaCard'
 import JsonLd from '@/components/JsonLd'
 import LangSwitcher from '@/components/LangSwitcher'
+import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import type { Metadata } from 'next'
 import type { Scenario } from '@/lib/scenarios'
 
@@ -65,40 +66,6 @@ const FEATURED_DILEMMA_IDS = [
   'privacy-terror',
 ]
 
-// Italian overrides for static featured dilemmas
-const IT_TRANSLATIONS: Record<string, { question: string; optionA: string; optionB: string }> = {
-  trolley: {
-    question: "Un tram fuori controllo sta per investire 5 persone. Puoi deviarlo verso un binario dove c'è 1 persona sola.",
-    optionA: 'Devio il tram. Salvo 5 e sacrifico 1.',
-    optionB: 'Non faccio nulla. Il destino decida.',
-  },
-  'organ-harvest': {
-    question: "Sei un medico. Gli organi di un paziente sano potrebbero salvare 5 moribondi. Nessuno lo saprebbe mai.",
-    optionA: 'Prelevi gli organi. 5 vite > 1.',
-    optionB: 'Impossibile. Non si uccide un innocente.',
-  },
-  lifeboat: {
-    question: "La scialuppa di salvataggio regge solo 8 persone, ma ce ne sono 10. Chi lasci affogare?",
-    optionA: 'Scelgo i più forti. Massimizzare le chance.',
-    optionB: 'Sorteggio casuale. Ogni vita vale uguale.',
-  },
-  'truth-friend': {
-    question: "Il tuo migliore amico ti chiede se il suo partner lo tradisce. Tu sai che sì. Gli dici la verità?",
-    optionA: 'Sì, merita la verità.',
-    optionB: 'No, non sono affari miei.',
-  },
-  'self-driving-crash': {
-    question: "La tua auto autonoma deve scegliere: investire te oppure 3 pedoni. Come la programmi?",
-    optionA: 'Proteggi me. Ho scelto la macchina.',
-    optionB: 'Proteggi i pedoni. Più vite salvate.',
-  },
-  'privacy-terror': {
-    question: "Il governo vuole sorvegliare tutte le comunicazioni private per prevenire attacchi terroristici.",
-    optionA: 'Accetto. La sicurezza viene prima.',
-    optionB: 'Rifiuto. La privacy è un diritto.',
-  },
-}
-
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -154,10 +121,7 @@ export default async function ItPage() {
     .map((id) => scenarios.find((s) => s.id === id))
     .filter((s): s is Scenario => Boolean(s))
 
-  const featured = featuredBase.map((s) => {
-    const it = IT_TRANSLATIONS[s.id]
-    return it ? { ...s, question: it.question, optionA: it.optionA, optionB: it.optionB } : s
-  })
+  const featured = featuredBase.map(translateScenarioToItalian)
 
   // Dynamic IT dilemmas from Redis
   let dynamicIT: DynamicScenario[] = []
@@ -220,7 +184,7 @@ export default async function ItPage() {
               <DilemmaCard
                 key={s.id}
                 scenario={s}
-                playHref={`/play/${s.id}`}
+                playHref={`/it/play/${s.id}`}
                 totalVotes={voteMap.get(s.id)}
               />
             ))}

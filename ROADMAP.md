@@ -33,7 +33,7 @@ Ultimo aggiornamento: 26 Aprile 2026
 - [x] `migration_v3_engagement.sql`
 - [x] `migration_v4_security_hotfix.sql`
 - [x] `migration_v5_vote_daily_stats.sql`
-- [ ] `migration_v6_feedback.sql` — da applicare prima del prossimo deploy
+- [x] `migration_v6_feedback.sql`
 
 ---
 

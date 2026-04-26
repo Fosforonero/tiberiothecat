@@ -15,6 +15,7 @@ interface Props {
   existingVote?: ExistingVote | null
   totalVotes?: number
   isChallenge?: boolean
+  localePrefix?: '' | '/it'
 }
 
 function getCookie(name: string): string | null {
@@ -34,7 +35,7 @@ function formatTimeRemaining(canChangeUntil: string): string {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
-export default function VoteClientPage({ scenario, existingVote, totalVotes = 0, isChallenge = false }: Props) {
+export default function VoteClientPage({ scenario, existingVote, totalVotes = 0, isChallenge = false, localePrefix = '' }: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
@@ -45,9 +46,9 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
     if (existingVote) return // Supabase vote takes precedence
     const previousVote = getCookie(`sv_voted_${scenario.id}`)
     if (previousVote === 'a' || previousVote === 'b') {
-      router.replace(`/results/${scenario.id}?voted=${previousVote}`)
+      router.replace(`${localePrefix}/results/${scenario.id}?voted=${previousVote}`)
     }
-  }, [scenario.id, router, existingVote])
+  }, [scenario.id, router, existingVote, localePrefix])
 
   // Update time remaining every minute
   useEffect(() => {
@@ -69,7 +70,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: scenario.id, option }),
       })
-      router.push(`/results/${scenario.id}?voted=${option}`)
+      router.push(`${localePrefix}/results/${scenario.id}?voted=${option}`)
     } catch {
       setLoading(false)
       setSelected(null)
@@ -82,21 +83,21 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
     '@type': 'Question',
     name: scenario.question,
     text: scenario.question,
-    url: `${BASE_URL}/play/${scenario.id}`,
+    url: `${BASE_URL}${localePrefix}/play/${scenario.id}`,
     suggestedAnswer: [
       {
         '@type': 'Answer',
         text: scenario.optionA,
-        url: `${BASE_URL}/results/${scenario.id}`,
+        url: `${BASE_URL}${localePrefix}/results/${scenario.id}`,
       },
       {
         '@type': 'Answer',
         text: scenario.optionB,
-        url: `${BASE_URL}/results/${scenario.id}`,
+        url: `${BASE_URL}${localePrefix}/results/${scenario.id}`,
       },
     ],
     dateCreated: '2026-01-01',
-    inLanguage: 'en',
+    inLanguage: localePrefix === '/it' ? 'it' : 'en',
     author: { '@type': 'Organization', name: 'SplitVote', url: BASE_URL },
   }
 
@@ -113,8 +114,8 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
 
       <div className="max-w-2xl mx-auto px-4 py-16">
         {/* Back */}
-        <a href="/" className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
-          ← All dilemmas
+        <a href={localePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
+          {localePrefix === '/it' ? '← Tutti i dilemmi' : '← All dilemmas'}
         </a>
 
         {/* ── Challenge banner ── */}
@@ -203,13 +204,13 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
             {/* CTA to results */}
             <div className="flex gap-3 mt-6">
               <a
-                href={`/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`}
+                href={`${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`}
                 className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm text-center transition-colors"
               >
                 See results →
               </a>
               <a
-                href="/"
+                href={localePrefix || '/'}
                 className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
               >
                 Next dilemma

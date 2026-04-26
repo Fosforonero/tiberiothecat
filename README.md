@@ -83,7 +83,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v3_engagement.sql` | XP, streak, companion fields | ✅ Applied |
 | `migration_v4_security_hotfix.sql` | pseudonymous identity + RPC grants | ✅ Applied |
 | `migration_v5_vote_daily_stats.sql` | admin vote charts incl. anonymous votes | ✅ Applied |
-| `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | Pending manual apply before deploy |
+| `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | ✅ Applied |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -130,7 +130,7 @@ Italian SEO is implemented with a lightweight `/it` route family:
 - `/it/category/[category]`
 - `/it/faq`, `/it/privacy`, `/it/terms`, `/it/personality`
 
-Sitemap is locale-aware and excludes draft dilemmas.
+Sitemap is locale-aware, includes Italian static dilemma URLs, and excludes draft dilemmas.
 
 ### Dilemma feedback
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.

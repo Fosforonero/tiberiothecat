@@ -36,6 +36,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily' as const,
       priority: 0.9,
     },
+    {
+      url: `${BASE}/it/play/${s.id}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.72,
+    },
+    {
+      url: `${BASE}/it/results/${s.id}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.82,
+    },
   ])
 
   // AI-generated scenario pages — locale-aware URLs, approvedAt timestamp

@@ -3,6 +3,7 @@ import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import JsonLd from '@/components/JsonLd'
@@ -68,8 +69,9 @@ export default async function ItCategoryPage({ params }: Props) {
   const category = cat.value as Category
   const itMeta = CAT_IT[category] ?? { label: cat.label, description: '' }
 
-  // Static scenarios for this category (link to EN /play since no static IT play)
-  const staticFiltered = scenarios.filter(s => s.category === category)
+  const staticFiltered = scenarios
+    .filter(s => s.category === category)
+    .map(translateScenarioToItalian)
 
   // Dynamic IT scenarios for this category
   let dynamicIT: DynamicScenario[] = []
@@ -160,7 +162,7 @@ export default async function ItCategoryPage({ params }: Props) {
               {staticFiltered.map(scenario => (
                 <Link
                   key={scenario.id}
-                  href={`/play/${scenario.id}`}
+                  href={`/it/play/${scenario.id}`}
                   className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-blue-500/40 hover:bg-[#16162a] transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <div className="flex items-start gap-4">

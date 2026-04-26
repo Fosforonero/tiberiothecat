@@ -484,13 +484,13 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       {/* ── Next dilemma CTA ── */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link
-          href={`/play/${nextId}`}
+          href={`${sharePrefix}/play/${nextId}`}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
         >
           Next dilemma →
         </Link>
         <Link
-          href="/"
+          href={sharePrefix || '/'}
           className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
         >
           All dilemmas

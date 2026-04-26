@@ -1,12 +1,12 @@
 /**
- * /it/results/[id] — Italian results page for AI-generated dilemmas with locale='it'.
- * Non-Italian scenarios redirect to /results/[id].
+ * /it/results/[id] — Italian results page for AI-generated and static dilemmas.
  * Share URLs automatically use /it/play prefix.
  */
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getScenario, getRandomScenario } from '@/lib/scenarios'
+import { getRandomScenario } from '@/lib/scenarios'
+import { getItalianScenario, translateScenarioToItalian } from '@/lib/scenarios-it'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from '@/app/results/[id]/ResultsClientPage'
 import type { Metadata } from 'next'
@@ -19,15 +19,18 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
-  if (!scenario || scenario.locale !== 'it') return {}
+  const dynamicScenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const scenario = dynamicScenario?.locale === 'it'
+    ? dynamicScenario
+    : getItalianScenario(params.id)
+  if (!scenario) return {}
 
-  const title = scenario.seoTitle
-    ? `Risultati: ${scenario.seoTitle}`
+  const title = dynamicScenario?.seoTitle
+    ? `Risultati: ${dynamicScenario.seoTitle}`
     : `Risultati: ${scenario.question.slice(0, 50)}… | SplitVote`
-  const description = scenario.seoDescription
+  const description = dynamicScenario?.seoDescription
     ?? `Scopri come ha votato il mondo su questo dilemma morale. "${scenario.optionA}" contro "${scenario.optionB}".`
-  const keywords = scenario.keywords?.length ? scenario.keywords.join(', ') : undefined
+  const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
 
   return {
     title,
@@ -50,10 +53,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const dynamic = 'force-dynamic'
 
 export default async function ItResultsPage({ params, searchParams }: Props) {
-  const scenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const dynamicScenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const scenario = dynamicScenario?.locale === 'it'
+    ? dynamicScenario
+    : getItalianScenario(params.id)
 
   if (!scenario) notFound()
-  if (scenario.locale !== 'it') redirect(`/results/${params.id}`)
 
   const votes = await getVotes(params.id)
   const total = votes.a + votes.b
@@ -63,8 +68,7 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
     ? searchParams.voted
     : null
 
-  // Next dilemma: prefer another Italian dynamic one, fallback to any static
-  const nextScenario = getRandomScenario(params.id) ?? getScenario('trolley')!
+  const nextScenario = translateScenarioToItalian(getRandomScenario(params.id))
 
   return (
     <ResultsClientPage

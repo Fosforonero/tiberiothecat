@@ -1,11 +1,11 @@
 /**
- * /it/play/[id] — Italian play page for AI-generated dilemmas with locale='it'.
- * Static scenarios (EN-only) redirect to /play/[id].
+ * /it/play/[id] — Italian play page for AI-generated and static dilemmas.
  * Voting is global (same Redis key regardless of locale).
  */
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { getItalianScenario } from '@/lib/scenarios-it'
 import { createClient } from '@/lib/supabase/server'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from '@/app/play/[id]/VoteClientPage'
@@ -20,13 +20,16 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
-  if (!scenario || scenario.locale !== 'it') return {}
+  const dynamicScenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const scenario = dynamicScenario?.locale === 'it'
+    ? dynamicScenario
+    : getItalianScenario(params.id)
+  if (!scenario) return {}
 
-  const title = scenario.seoTitle ?? `${scenario.question.slice(0, 55)}… | SplitVote`
-  const description = scenario.seoDescription
+  const title = dynamicScenario?.seoTitle ?? `${scenario.question.slice(0, 55)}… | SplitVote`
+  const description = dynamicScenario?.seoDescription
     ?? `Vota: "${scenario.optionA}" contro "${scenario.optionB}" — Scopri come si divide il mondo.`
-  const keywords = scenario.keywords?.length ? scenario.keywords.join(', ') : undefined
+  const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
 
   return {
     title,
@@ -36,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `${BASE_URL}/it/play/${params.id}`,
     },
     openGraph: {
-      title: scenario.seoTitle ?? scenario.question,
+      title: dynamicScenario?.seoTitle ?? scenario.question,
       description,
       images: [`${BASE_URL}/api/og?id=${params.id}`],
       url: `${BASE_URL}/it/play/${params.id}`,
@@ -46,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: scenario.seoTitle ?? scenario.question,
+      title: dynamicScenario?.seoTitle ?? scenario.question,
       description,
     },
   }
@@ -55,13 +58,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const dynamic = 'force-dynamic'
 
 export default async function ItPlayPage({ params, searchParams }: Props) {
-  const scenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const dynamicScenario = await getDynamicScenario(params.id) as DynamicScenario | undefined
+  const scenario = dynamicScenario?.locale === 'it'
+    ? dynamicScenario
+    : getItalianScenario(params.id)
 
-  // Not found → 404
   if (!scenario) notFound()
-
-  // Not an Italian scenario → redirect to EN play page
-  if (scenario.locale !== 'it') redirect(`/play/${params.id}`)
 
   // Fetch live votes
   let totalVotes = 0
@@ -111,7 +113,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Quiz',
     name: scenario.question,
-    description: scenario.seoDescription ?? `Un dilemma morale su SplitVote: "${scenario.optionA}" contro "${scenario.optionB}".`,
+    description: dynamicScenario?.seoDescription ?? `Un dilemma morale su SplitVote: "${scenario.optionA}" contro "${scenario.optionB}".`,
     url: `${BASE_URL}/it/play/${params.id}`,
     inLanguage: 'it-IT',
     provider: { '@type': 'Organization', name: 'SplitVote', url: BASE_URL },
@@ -136,6 +138,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
         existingVote={existingVote}
         totalVotes={totalVotes}
         isChallenge={isChallenge}
+        localePrefix="/it"
       />
     </>
   )
