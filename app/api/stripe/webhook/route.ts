@@ -40,7 +40,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
-    const admin = createAdminClient()
+    let admin: ReturnType<typeof createAdminClient>
+    try {
+      admin = createAdminClient()
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('[stripe/webhook] createAdminClient failed:', msg)
+      return NextResponse.json({ error: 'Server config error' }, { status: 500 })
+    }
 
     const { data: profile } = await admin
       .from('profiles')

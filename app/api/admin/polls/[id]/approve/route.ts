@@ -15,7 +15,13 @@ export async function GET(
     return NextResponse.redirect(new URL('/', _req.url))
   }
 
-  const admin = createAdminClient()
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
   await admin.from('user_polls').update({ status: 'approved' }).eq('id', params.id)
 
   return NextResponse.redirect(new URL('/admin', _req.url))

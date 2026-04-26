@@ -37,7 +37,30 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
   const preview = searchParams.preview
 
-  const admin = createAdminClient()
+  // Defensive: show diagnostic rather than crashing if service role key is missing
+  let admin: ReturnType<typeof createAdminClient>
+  try {
+    admin = createAdminClient()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-8">
+          <h1 className="text-2xl font-black text-red-400 mb-3">⚠️ Admin Config Error</h1>
+          <p className="text-white/80 text-sm mb-4">{msg}</p>
+          <div className="rounded-xl bg-[#0a0a1f] border border-white/10 p-4 font-mono text-xs text-white/60 space-y-1">
+            <p className="text-white/40 mb-2">Required Vercel env vars:</p>
+            <p>NEXT_PUBLIC_SUPABASE_URL <span className="text-green-400">✓ public</span></p>
+            <p>NEXT_PUBLIC_SUPABASE_ANON_KEY <span className="text-green-400">✓ public</span></p>
+            <p>SUPABASE_SERVICE_ROLE_KEY <span className="text-red-400">✗ secret — check Vercel dashboard</span></p>
+          </div>
+          <p className="text-white/40 text-xs mt-4">
+            Vercel → Project → Settings → Environment Variables → Add SUPABASE_SERVICE_ROLE_KEY (Production + Preview)
+          </p>
+        </div>
+      </div>
+    )
+  }
   const now = new Date()
   const since14 = new Date(now)
   since14.setUTCDate(since14.getUTCDate() - 13)

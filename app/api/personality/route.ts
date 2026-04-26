@@ -35,7 +35,8 @@ export async function GET(_req: NextRequest) {
       return NextResponse.json({ error: 'Failed to load votes' }, { status: 500 })
     }
 
-    const voteInputs: UserVoteInput[] = (votes ?? []).map(v => ({
+    type VoteRow = { dilemma_id: string; choice: string }
+    const voteInputs: UserVoteInput[] = ((votes ?? []) as VoteRow[]).map((v) => ({
       dilemma_id: v.dilemma_id,
       choice: v.choice,
     }))
