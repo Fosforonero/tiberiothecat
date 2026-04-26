@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
-  <!-- Dark rounded square background -->
-  <rect width="200" height="200" rx="44" fill="#070718"/>
-  <!-- White upper S segment -->
-  <path d="M100 28C136 28 162 50 162 78C162 78 148 62 100 62C68 62 44 78 44 100L28 100C28 60 60 28 100 28Z" fill="white"/>
-  <!-- Blue lower S segment -->
-  <path d="M100 138C64 138 38 118 38 118L52 118C60 130 78 138 100 138C132 138 156 120 156 100L172 100C172 140 140 172 100 172C62 172 34 148 28 118L28 100L44 100C44 122 68 138 100 138Z" fill="#4060FF"/>
-</svg>

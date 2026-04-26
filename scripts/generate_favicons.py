@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 ROOT = Path(__file__).parent.parent
-SRC = ROOT / "public" / "brand" / "splitvote-icon.png"
+SRC = ROOT / "public" / "brand" / "splitvote_icon.png"
 OUT = ROOT / "public"
 
 if not SRC.exists():

@@ -66,12 +66,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/logo-icon-32.png', type: 'image/png', sizes: '32x32' },
-      { url: '/logo-icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
     ],
-    apple: '/apple-icon.png',
-    shortcut: '/logo-icon-32.png',
+    apple: [{ url: '/apple-touch-icon.png' }],
+    shortcut: '/favicon.ico',
   },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
@@ -151,17 +152,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <a href="/" className="flex-shrink-0 flex items-center gap-2.5 group" aria-label="SplitVote home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo-icon.svg"
+              src="/brand/splitvote_icon.png"
               alt="SplitVote"
               width={34} height={34}
               className="w-[34px] h-[34px] flex-shrink-0"
               style={{ borderRadius: '8px' }}
             />
-            {/* Desktop: full wordmark text */}
-            <span className="hidden sm:block text-xl font-black tracking-tight leading-none">
-              <span className="text-white">Split</span>
-              <span style={{ color: '#4060FF' }}>Vote</span>
-            </span>
+            {/* Desktop: wordmark PNG */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/splitvote_wordmark.png"
+              alt="SplitVote"
+              height={22}
+              className="hidden sm:block h-[22px] w-auto flex-shrink-0"
+            />
           </a>
 
           {/* Desktop category links */}
