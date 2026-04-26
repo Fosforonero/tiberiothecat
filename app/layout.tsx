@@ -149,22 +149,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
 
           {/* Logo — icon on mobile, wordmark on desktop */}
-          <a href="/" className="flex-shrink-0 flex items-center gap-2.5 group" aria-label="SplitVote home">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/splitvote_icon.png"
-              alt="SplitVote"
-              width={34} height={34}
-              className="w-[34px] h-[34px] flex-shrink-0"
-              style={{ borderRadius: '8px' }}
-            />
-            {/* Desktop: wordmark PNG */}
+          <a href="/" className="flex-shrink-0 flex items-center group" aria-label="SplitVote home">
+            {/* Wordmark PNG — visible on all screen sizes */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand/splitvote_wordmark.png"
               alt="SplitVote"
-              height={22}
-              className="hidden sm:block h-[22px] w-auto flex-shrink-0"
+              height={28}
+              className="h-[28px] w-auto flex-shrink-0"
             />
           </a>
 
