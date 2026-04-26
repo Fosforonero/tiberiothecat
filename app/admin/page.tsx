@@ -65,14 +65,14 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     // Top 10 voters
     admin
       .from('profiles')
-      .select('display_name, email, votes_count, is_premium, created_at')
+      .select('display_name, votes_count, is_premium, created_at')
       .order('votes_count', { ascending: false })
       .limit(10),
 
     // Recent 10 signups
     admin
       .from('profiles')
-      .select('display_name, email, votes_count, created_at')
+      .select('display_name, votes_count, created_at')
       .order('created_at', { ascending: false })
       .limit(10),
 
@@ -127,8 +127,8 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   }
   const signupsChartData = Object.entries(signupBuckets).map(([date, count]) => ({ date, count }))
 
-  type TopVoter = { display_name: string | null; email: string | null; votes_count: number; is_premium: boolean; created_at: string }
-  type RecentSignup = { display_name: string | null; email: string | null; votes_count: number; created_at: string }
+  type TopVoter = { display_name: string | null; votes_count: number; is_premium: boolean; created_at: string }
+  type RecentSignup = { display_name: string | null; votes_count: number; created_at: string }
   type PendingPoll = { id: string; question: string; created_at: string; user_id: string }
 
   const topVoters = (topVotersRes.data ?? []) as TopVoter[]
@@ -218,11 +218,10 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)] mb-4">🔥 Top voters</h3>
         <div className="space-y-2">
           {topVoters.map((u, i) => (
-            <div key={u.email ?? i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+            <div key={i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
               <span className="text-[var(--muted)] text-xs w-6 text-center font-mono">#{i + 1}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white font-semibold truncate">{u.display_name ?? '—'}</p>
-                <p className="text-xs text-[var(--muted)] truncate">{u.email}</p>
+                <p className="text-sm text-white font-semibold truncate">{u.display_name ?? 'Anonymous'}</p>
               </div>
               {u.is_premium && <span className="text-xs text-yellow-400 font-bold">⭐ PRO</span>}
               <span className="text-sm font-black text-blue-400 w-14 text-right">{u.votes_count.toLocaleString()} v</span>
@@ -236,10 +235,9 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)] mb-4">🆕 Recent signups</h3>
         <div className="space-y-2">
           {recentSignups.map((u, i) => (
-            <div key={u.email ?? i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+            <div key={i} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white font-semibold truncate">{u.display_name ?? '—'}</p>
-                <p className="text-xs text-[var(--muted)] truncate">{u.email}</p>
+                <p className="text-sm text-white font-semibold truncate">{u.display_name ?? 'Anonymous'}</p>
               </div>
               <span className="text-xs text-[var(--muted)]">
                 {new Date(u.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })}

@@ -32,20 +32,28 @@ export async function POST(req: NextRequest) {
     .eq('id', user.id)
     .single()
 
-  // Name change logic: first set is free, subsequent changes tracked
-  // name_changes column: if null (old profiles) treat as 0
+  // Name change logic:
+  //   name_changes = 0 → primo cambio GRATUITO (tutti i nuovi utenti partono da 0)
+  //   name_changes = 1 → hanno già usato il cambio gratuito, dal prossimo si paga (€0.99)
+  //   name_changes >= 2 → tutti i cambi successivi sono a pagamento
   const currentChanges = currentProfile?.name_changes ?? 0
-  const isFirstNameSet = !currentProfile?.display_name
+  const firstFreeAvailable = currentChanges === 0
 
   const updatePayload: Record<string, unknown> = {}
 
   if (displayName !== undefined) {
-    updatePayload.display_name = String(displayName).trim()
-    // Increment only if changing an existing name (not setting for the first time)
-    if (!isFirstNameSet) {
-      updatePayload.name_changes = currentChanges + 1
+    const newName = String(displayName).trim()
+
+    if (firstFreeAvailable) {
+      // Usa il cambio gratuito
+      updatePayload.display_name = newName
+      updatePayload.name_changes = 1
     } else {
-      updatePayload.name_changes = 1 // Mark as "used first free change"
+      // Dal secondo cambio in poi: richiede pagamento Stripe (TODO)
+      return NextResponse.json(
+        { error: 'paid_required', message: 'Il cambio nome costa €0.99 — pagamento Stripe in arrivo!' },
+        { status: 402 }
+      )
     }
   }
 
@@ -83,6 +91,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     success: true,
     nameChangesUsed: updatePayload.name_changes ?? currentChanges,
-    firstNameSet: isFirstNameSet,
+    firstFreeAvailable,
   })
 }

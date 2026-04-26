@@ -60,8 +60,9 @@ export default function ProfileClient({
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [shareCopied, setShareCopied] = useState(false)
 
-  const isFirstNameSet = !initialName
-  const nameChangeCost = isFirstNameSet ? 'Free' : nameChanges >= 1 ? '€0.99 (coming soon)' : 'Free'
+  // name_changes = 0 → primo cambio gratuito; >= 1 → a pagamento
+  const firstFreeAvailable = nameChanges === 0
+  const nameChangeCost = firstFreeAvailable ? '✅ Primo cambio gratuito' : '€0.99'
   const profileUrl = `https://splitvote.io/u/${userId}`
 
   async function save() {
@@ -82,6 +83,8 @@ export default function ProfileClient({
       const data = await res.json()
       if (res.ok) {
         setMessage({ type: 'success', text: '✅ Profile updated!' })
+      } else if (res.status === 402) {
+        setMessage({ type: 'error', text: '🔒 Il cambio nome costa €0.99 — pagamento Stripe in arrivo presto!' })
       } else {
         setMessage({ type: 'error', text: data.error ?? 'Something went wrong' })
       }
@@ -141,7 +144,7 @@ export default function ProfileClient({
         <div className="mb-5">
           <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
             Display Name
-            <span className={`ml-2 normal-case font-normal ${isFirstNameSet ? 'text-green-400' : 'text-orange-400'}`}>
+            <span className={`ml-2 normal-case font-normal ${firstFreeAvailable ? 'text-green-400' : 'text-orange-400'}`}>
               — {nameChangeCost}
             </span>
           </label>
@@ -153,9 +156,9 @@ export default function ProfileClient({
             maxLength={32}
             className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 text-white placeholder-[var(--muted)] focus:outline-none focus:border-blue-500/60 text-sm"
           />
-          {!isFirstNameSet && nameChanges >= 1 && (
+          {!firstFreeAvailable && (
             <p className="text-xs text-orange-400/80 mt-1.5">
-              ⚡ Your next name change will cost €0.99 — Stripe payment coming soon.
+              🔒 Hai già usato il cambio gratuito — il prossimo costerà €0.99 (Stripe in arrivo).
             </p>
           )}
         </div>
