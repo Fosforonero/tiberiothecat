@@ -113,18 +113,32 @@ export async function POST(request: NextRequest) {
         }
 
         // ── First vote for this dilemma by this user ──
-        await incrementVote(id, option)
-
+        // INSERT to Supabase FIRST — only then increment Redis.
+        // This prevents double-counting if the INSERT fails or if a race
+        // condition causes a duplicate unique-constraint violation.
         const { error: voteError } = await supabase
           .from('dilemma_votes')
           .insert({ user_id: user.id, dilemma_id: id, choice, can_change_until: newWindow })
 
-        if (!voteError) {
-          // Increment votes_count + award XP/streak (non-blocking if migration not applied)
-          try {
-            await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
-          } catch { /* migration_v2/v3 not yet applied — non-blocking */ }
+        if (voteError) {
+          if (voteError.code === '23505') {
+            // Race condition: another concurrent request already inserted this vote.
+            // Treat as alreadyVoted — do NOT increment Redis.
+            const res = NextResponse.json({ ok: true, alreadyVoted: true })
+            setCookieOnResponse(res, cookieName, option)
+            return res
+          }
+          console.error('[vote] insert error:', voteError)
+          return NextResponse.json({ error: 'Vote failed' }, { status: 500 })
         }
+
+        // Supabase insert confirmed → safe to increment Redis vote count
+        await incrementVote(id, option)
+
+        // Increment votes_count + award XP/streak (non-blocking)
+        try {
+          await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
+        } catch { /* migration_v3 not applied yet — non-blocking */ }
 
         const res = NextResponse.json({ ok: true })
         setCookieOnResponse(res, cookieName, option)
