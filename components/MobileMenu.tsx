@@ -1,29 +1,33 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Globe, Building2, HelpCircle } from 'lucide-react'
 
 const NAV_LINKS = [
-  { href: '/trending',              label: 'Trending',     icon: TrendingUp, color: 'text-purple-400' },
-  { href: '/category/morality',     label: 'Morality',     icon: Scale,      color: 'text-red-400'    },
-  { href: '/category/technology',   label: 'Technology',   icon: Cpu,        color: 'text-blue-400'   },
-  { href: '/category/society',      label: 'Society',      icon: Users,      color: 'text-green-400'  },
-  { href: '/category/relationships',label: 'Relationships',icon: Heart,      color: 'text-pink-400'   },
-  { href: '/category/philosophy',   label: 'Philosophy',   icon: Globe,      color: 'text-yellow-400' },
-  { href: '/business',              label: 'Business',     icon: Building2,  color: 'text-blue-400'   },
-  { href: '/faq',                   label: 'FAQ',          icon: HelpCircle, color: 'text-cyan-400'   },
+  { href: '/trending',               label: 'Trending',      icon: TrendingUp, color: 'text-purple-400' },
+  { href: '/category/morality',      label: 'Morality',      icon: Scale,      color: 'text-red-400'    },
+  { href: '/category/technology',    label: 'Technology',    icon: Cpu,        color: 'text-blue-400'   },
+  { href: '/category/society',       label: 'Society',       icon: Users,      color: 'text-green-400'  },
+  { href: '/category/relationships', label: 'Relationships', icon: Heart,      color: 'text-pink-400'   },
+  { href: '/category/philosophy',    label: 'Philosophy',    icon: Globe,      color: 'text-yellow-400' },
+  { href: '/business',               label: 'Business',      icon: Building2,  color: 'text-blue-400'   },
+  { href: '/faq',                    label: 'FAQ',           icon: HelpCircle, color: 'text-cyan-400'   },
 ]
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
+  // Track whether we're mounted (SSR-safe for createPortal)
+  const [mounted, setMounted] = useState(false)
 
-  // Lock body scroll when menu is open (prevents background scrolling on mobile)
+  useEffect(() => { setMounted(true) }, [])
+
+  // Lock body scroll when menu is open
   useEffect(() => {
-    if (open) {
-      const prev = document.body.style.overflow
-      document.body.style.overflow = 'hidden'
-      return () => { document.body.style.overflow = prev }
-    }
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
   }, [open])
 
   // Close on Escape
@@ -34,9 +38,81 @@ export default function MobileMenu() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  // The backdrop + dropdown are rendered via a portal directly into <body>.
+  // This ensures they escape the navbar's stacking context, which is created
+  // by backdrop-filter: blur() — a CSS property that forms a new containing
+  // block for position:fixed children. Without the portal, the dropdown
+  // is clipped/offset relative to the nav instead of the viewport.
+  const overlay = open && mounted && createPortal(
+    <>
+      {/* Backdrop */}
+      <button
+        type="button"
+        aria-label="Close menu"
+        onClick={() => setOpen(false)}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 1000,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          border: 'none',
+          cursor: 'default',
+        }}
+      />
+
+      {/* Dropdown */}
+      <div
+        id="mobile-menu-dropdown"
+        role="menu"
+        style={{
+          position: 'fixed',
+          top: '56px',   // height of navbar (py-3 ~12px + icon 32px + border = ~56px)
+          right: '12px',
+          width: '240px',
+          zIndex: 1001,
+          backgroundColor: '#0f0f2a',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          boxShadow: '0 12px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(77,159,255,0.15)',
+        }}
+      >
+        <div style={{ padding: '8px' }}>
+          {NAV_LINKS.map(({ href, label, icon: Icon, color }) => (
+            <a
+              key={href}
+              href={href}
+              onClick={() => setOpen(false)}
+              role="menuitem"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '10px 12px',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            >
+              <Icon size={15} className={`${color} flex-shrink-0`} />
+              <span style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}>
+                {label}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </>,
+    document.body,
+  )
+
   return (
     <>
-      {/* Hamburger button (lives inside the nav) */}
+      {/* Hamburger button — stays inside the nav */}
       <div className="md:hidden">
         <button
           onClick={() => setOpen(o => !o)}
@@ -49,51 +125,8 @@ export default function MobileMenu() {
         </button>
       </div>
 
-      {/* Backdrop + dropdown — rendered with position: fixed and very high z-index
-          to escape the navbar's stacking context (created by backdrop-filter). */}
-      {open && (
-        <>
-          {/* Solid backdrop — closes menu on click and prevents page-content bleed-through */}
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm"
-            style={{ zIndex: 1000 }}
-          />
-
-          {/* Dropdown */}
-          <div
-            id="mobile-menu-dropdown"
-            role="menu"
-            className="mobile-menu-enter md:hidden fixed right-3 top-14 w-60 rounded-2xl border border-[var(--border)] overflow-hidden"
-            style={{
-              zIndex: 1001,
-              // FULLY opaque: no var() that could resolve to a translucent value at runtime,
-              // and an explicit fallback hex so utility purges can't strip it.
-              backgroundColor: '#0f0f2a',
-              boxShadow: '0 12px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(77,159,255,0.15)',
-            }}
-          >
-            <div className="p-2 space-y-0.5">
-              {NAV_LINKS.map(({ href, label, icon: Icon, color }) => (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  role="menuitem"
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors group"
-                >
-                  <Icon size={15} className={`${color} flex-shrink-0`} />
-                  <span className="text-sm font-semibold text-[var(--muted)] group-hover:text-white transition-colors">
-                    {label}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+      {/* Portal-rendered overlay */}
+      {overlay}
     </>
   )
 }

@@ -1,51 +1,135 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { MISSIONS } from '@/lib/missions'
+import { MISSIONS, type MissionId } from '@/lib/missions'
 
 export const dynamic = 'force-dynamic'
 
-/** POST /api/missions/complete — mark a mission as complete and award XP */
+// ── Server-side XP constants (never trust client-supplied XP) ───────
+// Mirror of MISSIONS[].xp — kept here as the single authoritative source
+// for the API. The DB function award_mission_xp also validates mission_id
+// and uses its own hardcoded XP table, so there is no path for
+// arbitrary XP injection from the client.
+const MISSION_XP: Record<MissionId, number> = {
+  vote_3:           30,
+  vote_2_categories: 25,
+  challenge_friend: 20,
+  share_result:     15,
+  daily_dilemma:    50,
+}
+
+// ── Helper: count unique dilemma votes cast by user today ────────────
+async function countVotesToday(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<number> {
+  const todayStart = new Date()
+  todayStart.setHours(0, 0, 0, 0)
+
+  const { count, error } = await supabase
+    .from('dilemma_votes')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .gte('voted_at', todayStart.toISOString())
+
+  if (error) return 0
+  return count ?? 0
+}
+
+// ── Helper: verify mission eligibility server-side ──────────────────
+async function verifyMission(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  missionId: MissionId,
+): Promise<{ eligible: boolean; reason?: string }> {
+  switch (missionId) {
+    case 'vote_3': {
+      const count = await countVotesToday(supabase, userId)
+      if (count < 3) {
+        return { eligible: false, reason: `Only ${count}/3 votes today` }
+      }
+      return { eligible: true }
+    }
+
+    case 'daily_dilemma': {
+      // Verify the user has voted at least once today.
+      // A stricter check (specific daily dilemma ID) can be added once
+      // the daily dilemma is stored in a dedicated DB table.
+      const count = await countVotesToday(supabase, userId)
+      if (count < 1) {
+        return { eligible: false, reason: 'No votes cast today' }
+      }
+      return { eligible: true }
+    }
+
+    case 'vote_2_categories':
+    case 'challenge_friend':
+    case 'share_result':
+      // Honor-system missions: trust the client trigger but enforce
+      // daily idempotency via the mission_completions unique constraint.
+      // XP is low enough that abuse impact is minimal.
+      return { eligible: true }
+
+    default:
+      return { eligible: false, reason: 'Unknown mission' }
+  }
+}
+
+/** POST /api/missions/complete — verify + mark a mission complete + award XP */
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { missionId } = await req.json()
+    const body = await req.json()
+    const { missionId } = body as { missionId: string }
+
+    // Validate mission ID against server-side definitions
     const mission = MISSIONS.find(m => m.id === missionId)
-    if (!mission) return NextResponse.json({ error: 'Unknown mission' }, { status: 400 })
+    if (!mission) {
+      return NextResponse.json({ error: 'Unknown mission' }, { status: 400 })
+    }
+
+    // Server-side eligibility check
+    const { eligible, reason } = await verifyMission(supabase, user.id, missionId as MissionId)
+    if (!eligible) {
+      return NextResponse.json({ error: 'Mission not eligible', reason }, { status: 403 })
+    }
 
     const today = new Date().toISOString().split('T')[0]
+    const xpAwarded = MISSION_XP[missionId as MissionId] ?? mission.xp
 
-    // Insert with conflict ignore — idempotent
-    const { error } = await supabase
+    // Insert mission completion — unique constraint (user_id, mission_id, completed_at)
+    // prevents double-awarding on the same day.
+    const { error: insertError } = await supabase
       .from('mission_completions')
       .insert({
         user_id: user.id,
         mission_id: missionId,
         completed_at: today,
-        xp_awarded: mission.xp,
+        xp_awarded: xpAwarded,
       })
-      .select()
-      .single()
 
-    // If already completed today, still return OK (idempotent)
-    if (error && !error.message.includes('unique')) {
-      console.error('[missions/complete]', error)
+    if (insertError) {
+      // Duplicate = already completed today — idempotent, return OK
+      if (insertError.code === '23505' || insertError.message.includes('unique')) {
+        return NextResponse.json({ ok: true, alreadyCompleted: true, xpAwarded: 0 })
+      }
+      console.error('[missions/complete] insert error:', insertError)
       return NextResponse.json({ error: 'DB error' }, { status: 500 })
     }
 
-    // Award XP (non-blocking if migration_v3 not applied yet)
-    if (!error) {
-      try {
-        await supabase.rpc('award_mission_xp', {
-          p_user_id: user.id,
-          p_xp: mission.xp,
-        })
-      } catch { /* migration_v3 not applied yet */ }
+    // Award XP — uses server-side XP value via mission_id (DB function ignores client XP)
+    try {
+      await supabase.rpc('award_mission_xp', {
+        p_user_id: user.id,
+        p_mission_id: missionId,
+      })
+    } catch {
+      // migration_v3 not applied yet — non-blocking
     }
 
-    return NextResponse.json({ ok: true, xpAwarded: mission.xp })
+    return NextResponse.json({ ok: true, xpAwarded })
   } catch (err) {
     console.error('[missions/complete]', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

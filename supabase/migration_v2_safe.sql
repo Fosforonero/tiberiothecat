@@ -8,6 +8,16 @@
 --  funzioni increment/award badge.
 -- ================================================================
 
+-- ── 0. PREREQUISITE: set_updated_at trigger function ─────────────
+-- Create it if it doesn't exist (safe on fresh or partial DBs).
+create or replace function public.set_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
 -- ── 1. DILEMMA VOTES ────────────────────────────────────────────
 create table if not exists public.dilemma_votes (
   id              uuid primary key default gen_random_uuid(),
@@ -36,8 +46,9 @@ create policy "Users can update own vote within window"
   on public.dilemma_votes for update
   using (auth.uid() = user_id and can_change_until > now());
 
-create index if not exists dilemma_votes_user_id_idx on public.dilemma_votes(user_id);
+create index if not exists dilemma_votes_user_id_idx  on public.dilemma_votes(user_id);
 create index if not exists dilemma_votes_dilemma_id_idx on public.dilemma_votes(dilemma_id);
+create index if not exists dilemma_votes_voted_at_idx  on public.dilemma_votes(voted_at);
 
 -- ── 2. BADGE CATALOG ────────────────────────────────────────────
 create table if not exists public.badges (
@@ -56,19 +67,19 @@ create table if not exists public.badges (
 );
 
 insert into public.badges (id, name, description, emoji, rarity, category, sort_order) values
-  ('first_vote',      'First Vote',        'Cast your very first vote on SplitVote',               '🗳️',  'common',    'earned', 10),
-  ('votes_10',        'Getting Warm',      'Voted on 10 dilemmas',                                 '🔥',  'common',    'earned', 20),
-  ('votes_50',        'Serious Thinker',   'Voted on 50 dilemmas',                                 '🧠',  'rare',      'earned', 30),
-  ('votes_100',       'Centurion',         'Voted on 100 dilemmas',                                '💯',  'epic',      'earned', 40),
-  ('votes_500',       'Oracle',            'Voted on 500 dilemmas. You have seen things.',         '🔮',  'legendary', 'earned', 50),
-  ('contrarian',      'Contrarian',        'Voted with the minority 10 times in a row',            '🦅',  'rare',      'earned', 60),
-  ('early_adopter',   'Early Adopter',     'Joined SplitVote before it was cool',                  '⚡',  'epic',      'earned', 70),
-  ('globe_trotter',   'Globe Trotter',     'Voted in 5 different categories',                      '🌍',  'common',    'earned', 80),
-  ('streak_7',        '7-Day Streak',      'Voted every day for a week',                           '📅',  'rare',      'earned', 90),
-  ('frame_gold',      'Gold Frame',        'Golden profile frame — stand out from the crowd',      '✨',  'rare',      'purchasable', 200),
-  ('frame_neon',      'Neon Frame',        'Cyberpunk neon glow profile frame',                    '💜',  'epic',      'purchasable', 210),
-  ('frame_cosmic',    'Cosmic Frame',      'The universe bends to your aesthetic',                 '🌌',  'legendary', 'purchasable', 220),
-  ('badge_verified',  'Verified Thinker',  'Blue checkmark — because you asked for it',            '✅',  'rare',      'purchasable', 230)
+  ('first_vote',    'First Vote',       'Cast your very first vote on SplitVote',              '🗳️', 'common',    'earned', 10),
+  ('votes_10',      'Getting Warm',     'Voted on 10 dilemmas',                                '🔥', 'common',    'earned', 20),
+  ('votes_50',      'Serious Thinker',  'Voted on 50 dilemmas',                                '🧠', 'rare',      'earned', 30),
+  ('votes_100',     'Centurion',        'Voted on 100 dilemmas',                               '💯', 'epic',      'earned', 40),
+  ('votes_500',     'Oracle',           'Voted on 500 dilemmas. You have seen things.',        '🔮', 'legendary', 'earned', 50),
+  ('contrarian',    'Contrarian',       'Voted with the minority 10 times in a row',           '🦅', 'rare',      'earned', 60),
+  ('early_adopter', 'Early Adopter',    'Joined SplitVote before it was cool',                 '⚡', 'epic',      'earned', 70),
+  ('globe_trotter', 'Globe Trotter',    'Voted in 5 different categories',                     '🌍', 'common',    'earned', 80),
+  ('streak_7',      '7-Day Streak',     'Voted every day for a week',                          '📅', 'rare',      'earned', 90),
+  ('frame_gold',    'Gold Frame',       'Golden profile frame — stand out from the crowd',     '✨', 'rare',      'purchasable', 200),
+  ('frame_neon',    'Neon Frame',       'Cyberpunk neon glow profile frame',                   '💜', 'epic',      'purchasable', 210),
+  ('frame_cosmic',  'Cosmic Frame',     'The universe bends to your aesthetic',                '🌌', 'legendary', 'purchasable', 220),
+  ('badge_verified','Verified Thinker', 'Blue checkmark — because you asked for it',           '✅', 'rare',      'purchasable', 230)
 on conflict (id) do nothing;
 
 update public.badges set price_cents = 99  where id = 'frame_gold';
@@ -203,11 +214,11 @@ declare
 begin
   select votes_count into v_votes_count from public.profiles where id = p_user_id;
 
-  if v_votes_count >= 1   then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'first_vote')   on conflict do nothing; end if;
-  if v_votes_count >= 10  then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_10')     on conflict do nothing; end if;
-  if v_votes_count >= 50  then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_50')     on conflict do nothing; end if;
-  if v_votes_count >= 100 then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_100')    on conflict do nothing; end if;
-  if v_votes_count >= 500 then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_500')    on conflict do nothing; end if;
+  if v_votes_count >= 1   then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'first_vote') on conflict do nothing; end if;
+  if v_votes_count >= 10  then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_10')   on conflict do nothing; end if;
+  if v_votes_count >= 50  then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_50')   on conflict do nothing; end if;
+  if v_votes_count >= 100 then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_100')  on conflict do nothing; end if;
+  if v_votes_count >= 500 then insert into public.user_badges (user_id, badge_id) values (p_user_id, 'votes_500')  on conflict do nothing; end if;
 
   select (created_at < '2026-01-01') into v_is_early from public.profiles where id = p_user_id;
   if v_is_early then
@@ -236,7 +247,6 @@ create trigger set_promoted_polls_updated_at
   for each row execute procedure public.set_updated_at();
 
 -- ── 10. BACKFILL: votes_count per utenti già loggati ────────────
--- (popola votes_count contando le righe esistenti in dilemma_votes)
 update public.profiles p
 set votes_count = coalesce(sub.cnt, 0)
 from (
@@ -246,11 +256,11 @@ from (
 ) sub
 where p.id = sub.user_id and p.votes_count = 0;
 
--- ── 11. DIAGNOSTICA: verifica che tutto sia in ordine ───────────
+-- ── 11. DIAGNOSTICA ─────────────────────────────────────────────
 -- Esegui questa query DOPO la migration per verificare:
 -- select
---   (select count(*) from public.badges) as badges_count,         -- atteso: 13
+--   (select count(*) from public.badges) as badges_count,           -- atteso: 13
 --   (select count(*) from information_schema.columns
---      where table_name='profiles' and column_name='votes_count') as votes_count_col, -- atteso: 1
---   (select to_regclass('public.dilemma_votes')) as dilemma_votes_exists, -- atteso: public.dilemma_votes
---   (select to_regclass('public.user_badges')) as user_badges_exists;      -- atteso: public.user_badges
+--      where table_name='profiles' and column_name='votes_count') as votes_count_col,
+--   (select to_regclass('public.dilemma_votes')) as dilemma_votes_exists,
+--   (select to_regclass('public.user_badges')) as user_badges_exists;

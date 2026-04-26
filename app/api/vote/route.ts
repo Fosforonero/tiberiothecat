@@ -18,6 +18,19 @@ function getClientIp(req: NextRequest): string {
   )
 }
 
+function setCookieOnResponse(
+  res: NextResponse,
+  cookieName: string,
+  value: string,
+): void {
+  res.cookies.set(cookieName, value, {
+    maxAge: COOKIE_MAX_AGE,
+    httpOnly: false,
+    sameSite: 'lax',
+    path: '/',
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -33,13 +46,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
     }
 
-    // ── Cookie-based deduplication (fast path, per scenario per browser) ──
-    const cookieName = `sv_voted_${id}`
-    if (request.cookies.get(cookieName)) {
-      return NextResponse.json({ ok: true, alreadyVoted: true })
-    }
-
     // ── IP-based rate limiting (anti-bot, per hour) ──
+    // Runs before auth to protect even the auth lookup from flood
     const ip = getClientIp(request)
     if (ip !== 'unknown') {
       const rateKey = `ratelimit:${ip}`
@@ -50,19 +58,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Track whether Redis has already been incremented to avoid double-counting
-    let redisIncremented = false
+    const cookieName = `sv_voted_${id}`
+    const choice = option.toUpperCase() as 'A' | 'B'
+    const newWindow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
 
-    // ── Logged-in user: Supabase is the authoritative source for dedup & vote changes ──
+    // ────────────────────────────────────────────────────────────────
+    // LOGGED-IN PATH: Supabase is the authoritative source of truth.
+    // Cookie dedup is NOT used for authenticated users — a user may
+    // log in on a different device and the cookie would wrongly block.
+    // ────────────────────────────────────────────────────────────────
     try {
       const supabase = await createClient()
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
-        const choice = option.toUpperCase() as 'A' | 'B'
-        const newWindow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-
-        // Check for an existing vote for this dilemma (handles multi-device dedup)
+        // Check existing vote in Supabase (cross-device dedup)
         const { data: existing } = await supabase
           .from('dilemma_votes')
           .select('choice, can_change_until')
@@ -71,61 +81,75 @@ export async function POST(request: NextRequest) {
           .maybeSingle()
 
         if (existing) {
-          // Already voted — allow change only within the 24h window and for a different option
-          const canChange = new Date(existing.can_change_until) > new Date()
           const prevOption = existing.choice.toLowerCase() as 'a' | 'b'
+          const withinWindow = new Date(existing.can_change_until) > new Date()
 
-          if (canChange && prevOption !== option) {
-            // Atomically swap Redis counts so totals stay accurate
-            await replaceVote(id, prevOption, option)
-            redisIncremented = true
-            await supabase
-              .from('dilemma_votes')
-              .update({ choice, can_change_until: newWindow })
-              .eq('user_id', user.id)
-              .eq('dilemma_id', id)
+          // ── Same option: no-op ──
+          if (prevOption === option) {
+            const res = NextResponse.json({ ok: true, alreadyVoted: true })
+            setCookieOnResponse(res, cookieName, option)
+            return res
           }
-          // Same option or outside 24h window: no-op — cookie will block the browser
-        } else {
-          // First vote for this dilemma by this user
-          await incrementVote(id, option)
-          redisIncremented = true
 
-          const { error: voteError } = await supabase
+          // ── Different option but outside 24h window: locked ──
+          if (!withinWindow) {
+            const res = NextResponse.json({ ok: true, alreadyVoted: true, locked: true })
+            setCookieOnResponse(res, cookieName, prevOption)
+            return res
+          }
+
+          // ── Different option within 24h: atomic Redis swap, update Supabase ──
+          // votes_count does NOT change on a vote change — the user already counted
+          await replaceVote(id, prevOption, option)
+          await supabase
             .from('dilemma_votes')
-            .insert({ user_id: user.id, dilemma_id: id, choice, can_change_until: newWindow })
+            .update({ choice, can_change_until: newWindow })
+            .eq('user_id', user.id)
+            .eq('dilemma_id', id)
 
-          if (!voteError) {
-            // Increment votes_count. xp is awarded inside the RPC when migration_v3 is applied.
-            try {
-              await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
-            } catch { /* migration not yet applied — non-blocking */ }
-          }
+          const res = NextResponse.json({ ok: true, changed: true })
+          setCookieOnResponse(res, cookieName, option)
+          return res
         }
-      } else {
-        // Anonymous user: Redis only
+
+        // ── First vote for this dilemma by this user ──
         await incrementVote(id, option)
-        redisIncremented = true
+
+        const { error: voteError } = await supabase
+          .from('dilemma_votes')
+          .insert({ user_id: user.id, dilemma_id: id, choice, can_change_until: newWindow })
+
+        if (!voteError) {
+          // Increment votes_count + award XP/streak (non-blocking if migration not applied)
+          try {
+            await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
+          } catch { /* migration_v2/v3 not yet applied — non-blocking */ }
+        }
+
+        const res = NextResponse.json({ ok: true })
+        setCookieOnResponse(res, cookieName, option)
+        return res
       }
-    } catch {
-      // Supabase unavailable: ensure Redis always gets the count
-      if (!redisIncremented) {
-        await incrementVote(id, option)
-        redisIncremented = true
-      }
+      // user is null → fall through to anonymous path below
+    } catch (supabaseErr) {
+      console.error('[vote] supabase error, falling through to anonymous path:', supabaseErr)
+      // Fall through to anonymous path
     }
 
-    // Final safety net
-    if (!redisIncremented) await incrementVote(id, option)
+    // ────────────────────────────────────────────────────────────────
+    // ANONYMOUS PATH (no auth or Supabase unavailable):
+    // Cookie is the only dedup mechanism.
+    // ────────────────────────────────────────────────────────────────
+    if (request.cookies.get(cookieName)) {
+      return NextResponse.json({ ok: true, alreadyVoted: true })
+    }
 
-    const response = NextResponse.json({ ok: true })
-    response.cookies.set(cookieName, option, {
-      maxAge: COOKIE_MAX_AGE,
-      httpOnly: false,
-      sameSite: 'lax',
-      path: '/',
-    })
-    return response
+    await incrementVote(id, option)
+
+    const res = NextResponse.json({ ok: true })
+    setCookieOnResponse(res, cookieName, option)
+    return res
+
   } catch (err) {
     console.error('[vote]', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
