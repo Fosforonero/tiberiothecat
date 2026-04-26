@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import CompanionDisplay from '@/components/CompanionDisplay'
+import type { CompanionSpecies } from '@/lib/companion'
 
 const BASE = 'https://splitvote.io'
 
@@ -43,7 +45,7 @@ export default async function PublicProfilePage({ params }: Props) {
   const [profileRes, badgesRes] = await Promise.all([
     admin
       .from('profiles')
-      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at')
+      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at, companion_species, xp, streak_days')
       .eq('id', params.id)
       .single(),
     admin
@@ -67,6 +69,8 @@ export default async function PublicProfilePage({ params }: Props) {
   const avatar = profile.avatar_emoji ?? '🌍'
   const joinDate = new Date(profile.created_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
   const votesCount = profile.votes_count ?? 0
+  const companionSpecies = ((profile as Record<string, unknown>).companion_species as CompanionSpecies | null) ?? 'spark'
+  const xp = ((profile as Record<string, unknown>).xp as number | null) ?? 0
 
   // Rarity order for sorting
   const RARITY_ORDER = { legendary: 0, epic: 1, rare: 2, common: 3 }
@@ -108,6 +112,13 @@ export default async function PublicProfilePage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {/* ── Companion ── */}
+      <CompanionDisplay
+        species={companionSpecies}
+        votesCount={votesCount}
+        xp={xp}
+      />
 
       {/* ── Trophy Case ── */}
       {sortedBadges.length > 0 ? (
