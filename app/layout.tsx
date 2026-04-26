@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
-import { TrendingUp, Scale, Cpu, Users, Heart } from 'lucide-react'
+import { TrendingUp, Scale, Cpu, Users, Heart, Building2 } from 'lucide-react'
 import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
@@ -82,6 +82,7 @@ const NAV_CATEGORIES = [
   { href: '/category/technology',    label: 'Tech',         icon: Cpu,        color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/category/society',       label: 'Society',      icon: Users,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/category/relationships', label: 'Love',         icon: Heart,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
+  { href: '/business',               label: 'Business',     icon: Building2,  color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
 ]
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
