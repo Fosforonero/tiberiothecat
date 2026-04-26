@@ -8,10 +8,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   // Fetch AI-generated dilemmas from Redis (cron job generates these daily)
-  let dynamicIds: string[] = []
+  let dynamicScenarios: Array<{ id: string; generatedAt: string; locale: string }> = []
   try {
     const dynamic = await getDynamicScenarios()
-    dynamicIds = dynamic.map((s) => s.id)
+    dynamicScenarios = dynamic.map((s) => ({
+      id:          s.id,
+      generatedAt: s.generatedAt,
+      locale:      s.locale,
+    }))
   } catch {
     // Redis unavailable — sitemap falls back to static only
   }
@@ -32,21 +36,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ])
 
-  // AI-generated scenario pages (new ones added daily)
-  const dynamicRoutes = dynamicIds.flatMap((id) => [
-    {
-      url: `${BASE}/play/${id}`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.75,
-    },
-    {
-      url: `${BASE}/results/${id}`,
-      lastModified: now,
-      changeFrequency: 'daily' as const,
-      priority: 0.85,
-    },
-  ])
+  // AI-generated scenario pages — use actual generatedAt as lastModified
+  const dynamicRoutes = dynamicScenarios.flatMap(({ id, generatedAt }) => {
+    const lastMod = generatedAt ? new Date(generatedAt) : now
+    return [
+      {
+        url: `${BASE}/play/${id}`,
+        lastModified: lastMod,
+        changeFrequency: 'weekly' as const,
+        priority: 0.75,
+      },
+      {
+        url: `${BASE}/results/${id}`,
+        lastModified: lastMod,
+        changeFrequency: 'daily' as const,
+        priority: 0.85,
+      },
+    ]
+  })
 
   // Category pages
   const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').map((c) => ({
@@ -71,6 +78,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE}/personality`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
       url: `${BASE}/login`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
@@ -93,7 +106,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes,
     // Static dilemmas
     ...scenarioRoutes,
-    // AI-generated dilemmas (updates daily)
+    // AI-generated dilemmas (updates daily, real timestamps)
     ...dynamicRoutes,
   ]
 }

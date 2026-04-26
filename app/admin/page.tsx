@@ -4,7 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import {
   Users, Vote, Trophy, ClipboardList, Flame, UserPlus,
   Clock, CheckCircle, XCircle, Flag, Star, Settings,
-  LayoutDashboard, UserCircle, TrendingUp,
+  LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 
@@ -50,9 +50,12 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     topVotersRes,
     recentSignupsRes,
     pendingPollsRes,
-    votesByDayRes,
+    // Real vote data: vote_daily_stats includes anon + logged-in
+    voteDailyRes,
     signupsByDayRes,
     badgesRes,
+    // Anonymous vs logged-in breakdown from daily stats
+    anonBreakdownRes,
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('dilemma_votes').select('*', { count: 'exact', head: true }),
@@ -60,9 +63,16 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     admin.from('profiles').select('display_name, votes_count, is_premium, created_at').order('votes_count', { ascending: false }).limit(10),
     admin.from('profiles').select('display_name, votes_count, created_at').order('created_at', { ascending: false }).limit(10),
     admin.from('user_polls').select('id, question, created_at, user_id').eq('status', 'pending').order('created_at', { ascending: false }).limit(20),
-    admin.from('dilemma_votes').select('voted_at').gte('voted_at', since14.toISOString()),
+    // Aggregate votes from daily stats (includes anonymous votes)
+    admin.from('vote_daily_stats')
+      .select('date, total_count, anonymous_count, logged_in_count')
+      .gte('date', since14.toISOString().slice(0, 10))
+      .order('date', { ascending: true }),
     admin.from('profiles').select('created_at').gte('created_at', since14.toISOString()),
     admin.from('user_badges').select('*', { count: 'exact', head: true }),
+    // Total breakdown all-time
+    admin.from('vote_daily_stats')
+      .select('anonymous_count, logged_in_count, total_count'),
   ])
 
   const totalUsers        = profilesRes.count ?? 0
@@ -75,12 +85,34 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     return acc
   }, {} as Record<string, number>)
 
+  // ── Real vote chart data from vote_daily_stats ──
+  // This includes BOTH anonymous and logged-in votes
   const votesBuckets = buildDayBuckets(14)
-  for (const row of votesByDayRes.data ?? []) {
-    const day = (row as { voted_at: string }).voted_at.slice(0, 10)
-    if (day in votesBuckets) votesBuckets[day]++
+  const anonBuckets  = buildDayBuckets(14)
+  const loggedBuckets = buildDayBuckets(14)
+
+  for (const row of voteDailyRes.data ?? []) {
+    const r = row as { date: string; total_count: number; anonymous_count: number; logged_in_count: number }
+    if (r.date in votesBuckets) {
+      votesBuckets[r.date]  += r.total_count
+      anonBuckets[r.date]   += r.anonymous_count
+      loggedBuckets[r.date] += r.logged_in_count
+    }
   }
-  const votesChartData = Object.entries(votesBuckets).map(([date, count]) => ({ date, count }))
+
+  const votesChartData = Object.entries(votesBuckets).map(([date, count]) => ({
+    date,
+    count,
+    anonymous: anonBuckets[date] ?? 0,
+    loggedIn: loggedBuckets[date] ?? 0,
+  }))
+
+  // All-time breakdown
+  const allTimeBreakdown = (anonBreakdownRes.data ?? []) as { anonymous_count: number; logged_in_count: number; total_count: number }[]
+  const totalTrackedVotes  = allTimeBreakdown.reduce((s, r) => s + r.total_count, 0)
+  const totalAnonVotes     = allTimeBreakdown.reduce((s, r) => s + r.anonymous_count, 0)
+  const totalLoggedVotes   = allTimeBreakdown.reduce((s, r) => s + r.logged_in_count, 0)
+  const anonPct = totalTrackedVotes > 0 ? Math.round((totalAnonVotes / totalTrackedVotes) * 100) : 0
 
   const signupBuckets = buildDayBuckets(14)
   for (const row of signupsByDayRes.data ?? []) {
@@ -99,7 +131,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
   const KPI_CARDS = [
     { label: 'Total Users',     value: totalUsers.toLocaleString(),        Icon: Users,         glow: 'neon-glow-blue',   iconColor: 'text-blue-400',   bg: 'from-blue-500/10 to-blue-500/5',     border: 'border-blue-500/25'   },
-    { label: 'Dilemma Votes',   value: totalDilemmaVotes.toLocaleString(), Icon: Vote,          glow: 'neon-glow-purple', iconColor: 'text-purple-400', bg: 'from-purple-500/10 to-purple-500/5', border: 'border-purple-500/25' },
+    { label: 'All Votes (tracked)', value: totalTrackedVotes > 0 ? totalTrackedVotes.toLocaleString() : totalDilemmaVotes.toLocaleString(), Icon: Vote, glow: 'neon-glow-purple', iconColor: 'text-purple-400', bg: 'from-purple-500/10 to-purple-500/5', border: 'border-purple-500/25' },
     { label: 'Badges Awarded',  value: totalBadges.toLocaleString(),       Icon: Trophy,        glow: 'neon-glow-yellow', iconColor: 'text-yellow-400', bg: 'from-yellow-500/10 to-yellow-500/5', border: 'border-yellow-500/25' },
     { label: 'Polls Submitted', value: polls.length.toLocaleString(),      Icon: ClipboardList, glow: 'neon-glow-cyan',   iconColor: 'text-cyan-400',   bg: 'from-cyan-500/10 to-cyan-500/5',     border: 'border-cyan-500/25'   },
   ]
@@ -135,6 +167,10 @@ export default async function AdminPage({ searchParams }: AdminProps) {
               className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-all">
               <Trophy size={11} /> Public ↗
             </a>
+            <a href="/api/admin/dilemmas" target="_blank"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-all">
+              <TrendingUp size={11} /> Dilemmas ↗
+            </a>
           </div>
         </div>
 
@@ -143,7 +179,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       </div>
 
       {/* ── KPI cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
         {KPI_CARDS.map(({ label, value, Icon, glow, iconColor, bg, border }) => (
           <div key={label}
             className={`rounded-2xl border ${border} bg-gradient-to-br ${bg} p-5 text-center ${glow} transition-all hover:scale-[1.02]`}>
@@ -157,6 +193,46 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           </div>
         ))}
       </div>
+
+      {/* ── Anonymous vs Logged-in breakdown ── */}
+      {totalTrackedVotes > 0 && (
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6 mb-8">
+          <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
+            <Vote size={13} /> Vote breakdown (all-time tracked)
+          </h3>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center">
+              <p className="text-2xl font-black text-purple-400">{totalTrackedVotes.toLocaleString()}</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">Total</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <EyeOff size={12} className="text-orange-400" />
+              </div>
+              <p className="text-2xl font-black text-orange-400">{anonPct}%</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">Anonymous ({totalAnonVotes.toLocaleString()})</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Eye size={12} className="text-green-400" />
+              </div>
+              <p className="text-2xl font-black text-green-400">{100 - anonPct}%</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">Logged-in ({totalLoggedVotes.toLocaleString()})</p>
+            </div>
+          </div>
+          {/* Bar */}
+          <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-orange-500 to-green-500 rounded-full"
+              style={{ width: '100%', background: `linear-gradient(to right, #f97316 ${anonPct}%, #22c55e ${anonPct}%)` }}
+            />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="text-xs text-orange-400">Anon {anonPct}%</span>
+            <span className="text-xs text-green-400">Logged-in {100 - anonPct}%</span>
+          </div>
+        </div>
+      )}
 
       {/* ── Poll breakdown ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6 mb-8">
@@ -179,7 +255,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         </div>
       </div>
 
-      {/* ── Charts ── */}
+      {/* ── Charts (real data from vote_daily_stats) ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <VotesChart data={votesChartData} />
         <SignupsChart data={signupsChartData} />

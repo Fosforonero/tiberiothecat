@@ -7,11 +7,15 @@ import { redis } from './redis'
 import type { Scenario } from './scenarios'
 
 const DYNAMIC_KEY = 'dynamic:scenarios'
-const MAX_DYNAMIC = 30 // keep at most 30 AI-generated dilemmas
+const MAX_DYNAMIC = 60 // keep at most 60 AI-generated dilemmas (30 EN + 30 IT)
 
 export interface DynamicScenario extends Scenario {
-  generatedAt: string // ISO timestamp
-  trend: string       // the trend that inspired it
+  generatedAt: string   // ISO timestamp
+  trend:       string   // the trend that inspired it
+  locale:      string   // 'en' | 'it'
+  seoTitle?:       string  // <title> tag for the scenario page
+  seoDescription?: string  // <meta description>
+  keywords?:       string[] // SEO keywords
 }
 
 /**
@@ -24,6 +28,14 @@ export async function getDynamicScenarios(): Promise<DynamicScenario[]> {
   } catch {
     return []
   }
+}
+
+/**
+ * Fetch dynamic scenarios filtered by locale.
+ */
+export async function getDynamicScenariosByLocale(locale: string): Promise<DynamicScenario[]> {
+  const all = await getDynamicScenarios()
+  return all.filter(s => s.locale === locale)
 }
 
 /**

@@ -3,6 +3,7 @@ import { redis, incrementVote, replaceVote } from '@/lib/redis'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
@@ -29,6 +30,31 @@ function setCookieOnResponse(
     sameSite: 'lax',
     path: '/',
   })
+}
+
+/**
+ * Track aggregate vote stats (anon + logged-in) via service_role client.
+ * Non-blocking — errors are logged but never fail the vote response.
+ * No personal data stored: only dilemma_id, option, date, anon flag.
+ */
+async function trackDailyVote(
+  dilemmaId: string,
+  choice: 'A' | 'B',
+  isAnonymous: boolean,
+): Promise<void> {
+  try {
+    const admin = createAdminClient()
+    const today = new Date().toISOString().slice(0, 10) // 'YYYY-MM-DD'
+    await admin.rpc('upsert_vote_daily_stat', {
+      p_date: today,
+      p_dilemma_id: dilemmaId,
+      p_option: choice,
+      p_is_anonymous: isAnonymous,
+    })
+  } catch (err) {
+    // Non-blocking: never fail a vote because of analytics
+    console.error('[vote] trackDailyVote error (non-blocking):', err)
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -107,6 +133,9 @@ export async function POST(request: NextRequest) {
             .eq('user_id', user.id)
             .eq('dilemma_id', id)
 
+          // Track vote change in daily stats (logged-in)
+          // Note: on change we don't increment total_count since user already voted
+          // We only track the option change via Redis swap above
           const res = NextResponse.json({ ok: true, changed: true })
           setCookieOnResponse(res, cookieName, option)
           return res
@@ -135,6 +164,9 @@ export async function POST(request: NextRequest) {
         // Supabase insert confirmed → safe to increment Redis vote count
         await incrementVote(id, option)
 
+        // Track in daily stats — logged-in user, non-blocking
+        void trackDailyVote(id, choice, false)
+
         // Increment votes_count + award XP/streak (non-blocking)
         try {
           await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
@@ -159,6 +191,9 @@ export async function POST(request: NextRequest) {
     }
 
     await incrementVote(id, option)
+
+    // Track in daily stats — anonymous, non-blocking
+    void trackDailyVote(id, choice, true)
 
     const res = NextResponse.json({ ok: true })
     setCookieOnResponse(res, cookieName, option)

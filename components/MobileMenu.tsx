@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Globe, Building2, HelpCircle } from 'lucide-react'
+import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Globe, Building2, HelpCircle, Compass } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/trending',               label: 'Trending',      icon: TrendingUp, color: 'text-purple-400' },
@@ -10,9 +10,10 @@ const NAV_LINKS = [
   { href: '/category/technology',    label: 'Technology',    icon: Cpu,        color: 'text-blue-400'   },
   { href: '/category/society',       label: 'Society',       icon: Users,      color: 'text-green-400'  },
   { href: '/category/relationships', label: 'Relationships', icon: Heart,      color: 'text-pink-400'   },
+  { href: '/personality',            label: 'My Profile',    icon: Compass,    color: 'text-cyan-400'   },
   { href: '/category/philosophy',    label: 'Philosophy',    icon: Globe,      color: 'text-yellow-400' },
   { href: '/business',               label: 'Business',      icon: Building2,  color: 'text-blue-400'   },
-  { href: '/faq',                    label: 'FAQ',           icon: HelpCircle, color: 'text-cyan-400'   },
+  { href: '/faq',                    label: 'FAQ',           icon: HelpCircle, color: 'text-[var(--muted)]' },
 ]
 
 export default function MobileMenu() {
