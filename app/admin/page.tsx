@@ -191,9 +191,9 @@ export default async function AdminPage({ searchParams }: AdminProps) {
               className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-all">
               <Trophy size={11} /> Public ↗
             </a>
-            <a href="/api/admin/dilemmas" target="_blank"
+            <a href="#dynamic-dilemmas"
               className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-all">
-              <TrendingUp size={11} /> Dilemmas ↗
+              <TrendingUp size={11} /> Dilemmas ↓
             </a>
           </div>
         </div>
@@ -362,7 +362,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       )}
 
       {/* ── Cron Debug: Dynamic Dilemmas ── */}
-      <div className="mt-8">
+      <div id="dynamic-dilemmas" className="mt-8">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className="text-purple-400" />

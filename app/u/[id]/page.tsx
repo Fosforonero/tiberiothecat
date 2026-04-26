@@ -60,12 +60,16 @@ export default async function PublicProfilePage({ params }: Props) {
   if (!profileRes.data) notFound()
 
   const profile = profileRes.data
-  const badges = ((badgesRes.data ?? []) as unknown as {
+
+  type RawBadgeRow = {
     badge_id: string
     earned_at: string
     is_equipped: boolean
-    badges: { name: string; emoji: string; rarity: string; description: string }
-  }[])
+    badges: { name: string; emoji: string; rarity: string; description: string } | null
+  }
+  // Filter out rows where the badges join is null (orphaned user_badges rows)
+  const badges = ((badgesRes.data ?? []) as unknown as RawBadgeRow[])
+    .filter((b): b is RawBadgeRow & { badges: NonNullable<RawBadgeRow['badges']> } => b.badges != null)
 
   const displayName = profile.display_name ?? 'Anonymous Voter'
   const avatar = profile.avatar_emoji ?? '🌍'

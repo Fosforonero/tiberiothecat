@@ -7,6 +7,10 @@ export const dynamic = 'force-dynamic'
 const FORBIDDEN_NAMES = ['admin', 'splitvote', 'moderator']
 
 export async function POST(req: NextRequest) {
+  if (!Boolean(process.env.STRIPE_SECRET_KEY) || !Boolean(process.env.STRIPE_PRICE_ID_NAME_CHANGE)) {
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
+  }
+
   // Lazy init — only called at runtime, never at build time
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2025-02-24.acacia',

@@ -8,6 +8,7 @@ import type { Scenario } from '@/lib/scenarios'
 interface Props {
   scenario: Scenario
   totalVotes: number
+  locale?: 'en' | 'it'
 }
 
 function getMidnightCountdown(): string {
@@ -21,9 +22,27 @@ function getMidnightCountdown(): string {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export default function DailyDilemma({ scenario, totalVotes }: Props) {
+const IT_COPY = {
+  label:      'Dilemma del Giorno',
+  resetsIn:   'Cambia tra',
+  votesToday: 'voti oggi',
+  voteNow:    'Vota ora',
+  results:    'Risultati',
+}
+
+const EN_COPY = {
+  label:      'Dilemma of the Day',
+  resetsIn:   'Resets in',
+  votesToday: 'votes today',
+  voteNow:    'Vote now',
+  results:    'Results',
+}
+
+export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Props) {
   const [countdown, setCountdown] = useState('')
   const [mounted, setMounted] = useState(false)
+  const copy = locale === 'it' ? IT_COPY : EN_COPY
+  const prefix = locale === 'it' ? '/it' : ''
 
   useEffect(() => {
     setMounted(true)
@@ -47,11 +66,11 @@ export default function DailyDilemma({ scenario, totalVotes }: Props) {
         <div className="flex items-center gap-2">
           <Zap size={14} className="text-yellow-400 pulse-glow" fill="currentColor" />
           <span className="text-yellow-400 text-xs sm:text-sm font-black uppercase tracking-widest neon-text-yellow">
-            Dilemma of the Day
+            {copy.label}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
-          <span className="hidden sm:inline">Resets in</span>
+          <span className="hidden sm:inline">{copy.resetsIn}</span>
           <span className="font-mono font-bold text-yellow-400 tabular-nums text-xs">
             {mounted ? countdown : '--:--:--'}
           </span>
@@ -73,7 +92,7 @@ export default function DailyDilemma({ scenario, totalVotes }: Props) {
               {totalVotes > 0 && (
                 <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
                   <Globe size={11} />
-                  {totalVotes.toLocaleString()} votes today
+                  {totalVotes.toLocaleString()} {copy.votesToday}
                 </span>
               )}
             </div>
@@ -83,17 +102,17 @@ export default function DailyDilemma({ scenario, totalVotes }: Props) {
         {/* CTA */}
         <div className="mt-5 flex items-center gap-3">
           <Link
-            href={`/play/${scenario.id}`}
+            href={`${prefix}/play/${scenario.id}`}
             className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
           >
-            Vote now
+            {copy.voteNow}
             <ChevronRight size={16} />
           </Link>
           <Link
-            href={`/results/${scenario.id}`}
+            href={`${prefix}/results/${scenario.id}`}
             className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 rounded-xl hover:bg-white/5"
           >
-            Results
+            {copy.results}
           </Link>
         </div>
       </div>

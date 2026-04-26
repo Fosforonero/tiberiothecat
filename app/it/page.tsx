@@ -4,11 +4,18 @@ import { getDynamicScenariosByLocale } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotesBatch } from '@/lib/redis'
 import DilemmaCard from '@/components/DilemmaCard'
+import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
 import LangSwitcher from '@/components/LangSwitcher'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import type { Metadata } from 'next'
 import type { Scenario } from '@/lib/scenarios'
+
+function getDailyScenario(all: Scenario[]): Scenario {
+  if (all.length === 0) return all[0] ?? scenarios[0]
+  const daysSinceEpoch = Math.floor(Date.now() / 86_400_000)
+  return all[daysSinceEpoch % all.length]
+}
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -129,11 +136,22 @@ export default async function ItPage() {
     dynamicIT = await getDynamicScenariosByLocale('it')
   } catch { /* Redis unavailable */ }
 
-  // Batch vote counts for featured + dynamic
+  // Daily dilemma for IT — prefers dynamic IT, falls back to translated static pool
+  const allITPool: Scenario[] = [
+    ...dynamicIT,
+    ...scenarios.map(translateScenarioToItalian),
+  ]
+  const dailyIT = getDailyScenario(allITPool)
+
+  // Batch vote counts for featured + dynamic + daily
   let voteMap = new Map<string, number>()
   try {
-    const ids = [...featured.map((s) => s.id), ...dynamicIT.slice(0, 12).map((s) => s.id)]
-    voteMap = await getVotesBatch(ids)
+    const ids = new Set([
+      dailyIT.id,
+      ...featured.map((s) => s.id),
+      ...dynamicIT.slice(0, 12).map((s) => s.id),
+    ])
+    voteMap = await getVotesBatch([...ids])
   } catch { /* Non-blocking */ }
 
   const trendingIT = [...dynamicIT]
@@ -171,6 +189,13 @@ export default async function ItPage() {
             <LangSwitcher />
           </div>
         </div>
+
+        {/* ── Dilemma del Giorno ── */}
+        <DailyDilemma
+          scenario={dailyIT}
+          totalVotes={voteMap.get(dailyIT.id) ?? 0}
+          locale="it"
+        />
 
         {/* ── Dilemmi in Evidenza ── */}
         <section className="mb-12">

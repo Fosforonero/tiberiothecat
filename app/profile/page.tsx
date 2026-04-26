@@ -25,8 +25,9 @@ export default async function ProfilePage() {
   ])
 
   const profile = profileRes.data
-  const badges = ((badgesRes.data ?? []) as unknown as { badges: { name: string; emoji: string; rarity: string } }[])
+  const badges = ((badgesRes.data ?? []) as unknown as { badges: { name: string; emoji: string; rarity: string } | null }[])
     .map(b => b.badges)
+    .filter((b): b is { name: string; emoji: string; rarity: string } => b != null)
 
   return (
     <ProfileClient

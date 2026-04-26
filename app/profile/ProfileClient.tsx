@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CreditCard, Loader2, Check } from 'lucide-react'
+import { CreditCard, Loader2, Check, Star, ExternalLink } from 'lucide-react'
 
 const AVATARS = ['🌍', '🔥', '⚡', '🧠', '🎭', '👾', '🦁', '🐺', '🦊', '🐉', '🌙', '☀️', '🎯', '🏆', '💎', '🌊', '🎪', '🚀', '🎲', '🧩']
 
@@ -57,10 +57,12 @@ export default function ProfileClient({
   const [gender, setGender]           = useState(initialGender ?? '')
   const [country, setCountry]         = useState(initialCountry ?? '')
   const [avatar, setAvatar]           = useState(initialAvatar ?? '🌍')
-  const [saving, setSaving]           = useState(false)
-  const [redirecting, setRedirecting] = useState(false)
-  const [message, setMessage]         = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [shareCopied, setShareCopied] = useState(false)
+  const [saving, setSaving]                   = useState(false)
+  const [redirecting, setRedirecting]         = useState(false)
+  const [upgradingPremium, setUpgradingPremium] = useState(false)
+  const [managingBilling, setManagingBilling] = useState(false)
+  const [message, setMessage]                 = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [shareCopied, setShareCopied]         = useState(false)
 
   // name_changes = 0 → first change free; >= 1 → paid
   const firstFreeAvailable = nameChanges === 0
@@ -74,6 +76,12 @@ export default function ProfileClient({
       window.history.replaceState({}, '', '/profile')
     } else if (params.get('payment') === 'cancelled') {
       setMessage({ type: 'error', text: 'Payment cancelled — your name was not changed.' })
+      window.history.replaceState({}, '', '/profile')
+    } else if (params.get('premium') === 'activated') {
+      setMessage({ type: 'success', text: '⭐ Welcome to Premium! All features are now unlocked.' })
+      window.history.replaceState({}, '', '/profile')
+    } else if (params.get('premium') === 'cancelled') {
+      setMessage({ type: 'error', text: 'Upgrade cancelled — you remain on the free plan.' })
       window.history.replaceState({}, '', '/profile')
     }
   }, [])
@@ -139,6 +147,46 @@ export default function ProfileClient({
     }
   }
 
+  async function startPremiumCheckout() {
+    setUpgradingPremium(true)
+    setMessage(null)
+    try {
+      const res  = await fetch('/api/stripe/subscription', { method: 'POST' })
+      const data = await res.json()
+      if (res.status === 409) {
+        setMessage({ type: 'success', text: '⭐ You are already on Premium!' })
+        return
+      }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setMessage({ type: 'error', text: data.error ?? 'Could not start upgrade' })
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Network error — try again' })
+    } finally {
+      setUpgradingPremium(false)
+    }
+  }
+
+  async function manageBilling() {
+    setManagingBilling(true)
+    setMessage(null)
+    try {
+      const res  = await fetch('/api/stripe/portal', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setMessage({ type: 'error', text: data.error ?? 'Could not open billing portal' })
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Network error — try again' })
+    } finally {
+      setManagingBilling(false)
+    }
+  }
+
   const copyProfile = () => {
     navigator.clipboard.writeText(profileUrl)
     setShareCopied(true)
@@ -153,6 +201,72 @@ export default function ProfileClient({
         </a>
         <h1 className="text-2xl sm:text-3xl font-black text-white mt-4 mb-1">Profile Settings</h1>
         <p className="text-[var(--muted)] text-sm">Manage your identity, achievements, and preferences.</p>
+      </div>
+
+      {/* ── Membership ── */}
+      <div id="membership" className="rounded-2xl border bg-[var(--surface)] p-5 sm:p-6"
+        style={{ borderColor: isPremium ? 'rgba(234,179,8,0.35)' : 'var(--border)', background: isPremium ? 'rgba(234,179,8,0.04)' : undefined }}>
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
+          ⭐ Membership
+        </h2>
+
+        {isPremium ? (
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center">
+                <Star size={18} className="text-yellow-400" fill="currentColor" />
+              </div>
+              <div>
+                <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5">All features unlocked</p>
+              </div>
+            </div>
+            <button
+              onClick={manageBilling}
+              disabled={managingBilling}
+              className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 transition-colors disabled:opacity-50"
+            >
+              {managingBilling ? <Loader2 size={12} className="animate-spin" /> : <ExternalLink size={12} />}
+              {managingBilling ? 'Opening…' : 'Manage Billing'}
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div className="flex items-start gap-4 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
+                <Star size={18} className="text-blue-400" />
+              </div>
+              <div>
+                <p className="font-bold text-white text-sm">Upgrade to Premium</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5">Unlock all SplitVote features</p>
+              </div>
+            </div>
+            <ul className="space-y-1.5 mb-5">
+              {[
+                'Unlimited display name changes',
+                'Exclusive avatar frames & badges',
+                'Premium ⭐ badge on your public profile',
+                'Early access to new features',
+              ].map(f => (
+                <li key={f} className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                  <Check size={12} className="text-green-400 flex-shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={startPremiumCheckout}
+              disabled={upgradingPremium}
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm px-6 py-3 rounded-xl transition-all disabled:opacity-50 neon-glow-blue"
+            >
+              {upgradingPremium ? (
+                <><Loader2 size={14} className="animate-spin" />Redirecting to payment…</>
+              ) : (
+                <><Star size={14} />Upgrade to Premium</>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ── Avatar + Identity ── */}

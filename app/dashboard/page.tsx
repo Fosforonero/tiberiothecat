@@ -102,7 +102,9 @@ export default async function DashboardPage() {
   const profile = profileRes.data
   const typedPolls = (pollsRes.data ?? []) as UserPoll[]
   const dilemmaVotes = (dilemmaVotesRes.data ?? []) as DilemmaVote[]
-  const userBadges = (badgesRes.data ?? []) as unknown as UserBadge[]
+  // Filter out rows where the badges join returned null (orphaned user_badges rows)
+  const userBadges = ((badgesRes.data ?? []) as unknown as UserBadge[])
+    .filter(b => b.badges != null)
 
   const votesCount = profile?.votes_count ?? 0
   const xp = profile?.xp ?? 0
@@ -183,17 +185,33 @@ export default async function DashboardPage() {
 
       {/* ── Premium status ── */}
       {profile?.is_premium ? (
-        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5 mb-8 flex items-center gap-4">
-          <div className="text-2xl">⭐</div>
-          <div>
-            <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">You have access to all premium features.</p>
+        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5 mb-8 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">⭐</span>
+            <div>
+              <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
+              <p className="text-[var(--muted)] text-xs mt-0.5">All features unlocked.</p>
+            </div>
           </div>
+          <a
+            href="/profile#membership"
+            className="text-xs font-bold px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 transition-colors flex-shrink-0"
+          >
+            Manage →
+          </a>
         </div>
       ) : (
-        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8">
-          <p className="font-bold text-blue-400 text-sm">Free Plan</p>
-          <p className="text-[var(--muted)] text-xs mt-0.5">Premium features coming soon — stay tuned!</p>
+        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="font-bold text-blue-400 text-sm">Free Plan</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade for unlimited features.</p>
+          </div>
+          <a
+            href="/profile#membership"
+            className="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors flex-shrink-0"
+          >
+            Upgrade ✦
+          </a>
         </div>
       )}
 

@@ -34,12 +34,13 @@ Ultimo aggiornamento: 26 Aprile 2026
 - [x] `migration_v4_security_hotfix.sql`
 - [x] `migration_v5_vote_daily_stats.sql`
 - [x] `migration_v6_feedback.sql`
+- [x] `migration_v7_stripe_subscriptions.sql`
 
 ---
 
 ## Blocchi / Rischi
 
-- [ ] **Stripe**: bloccato finché la chiave compromessa non è revocata e sostituita in Vercel.
+- [x] **Stripe MVP**: chiave revocata, env vars configurate, migration v7 applicata, webhook events verificati.
 - [ ] **Build locale**: la shell di default usa Node 14; usare `nvm use` dentro questo repo.
 - [ ] **Upgrade framework**: Next 16 + React 19 + Node 24 è uno sprint dedicato, non va mischiato alla push corrente.
 - [ ] **Social trend sources**: X/Instagram/TikTok solo con API ufficiali o provider conformi. Niente scraping fragile.
@@ -78,16 +79,18 @@ Da verificare post-deploy:
 ## Prossimo Sprint — Stripe MVP
 
 Prerequisito:
-- [ ] Revocare chiave Stripe compromessa
-- [ ] Aggiungere nuova `STRIPE_SECRET_KEY` in Vercel
-- [ ] Aggiungere/validare `STRIPE_WEBHOOK_SECRET`
+- [x] Revocare chiave Stripe compromessa
+- [x] Aggiungere nuova `STRIPE_SECRET_KEY` in Vercel
+- [x] Aggiungere/validare `STRIPE_WEBHOOK_SECRET`
+- [x] Aggiungere `STRIPE_PRICE_ID_PREMIUM`
+- [x] Applicare `migration_v7_stripe_subscriptions.sql`
 
 Scope:
-- [ ] Premium monthly subscription
-- [ ] Customer portal
-- [ ] Webhook robusto per subscription lifecycle
-- [ ] UI upgrade/downgrade in dashboard/profile
-- [ ] Gate premium coerenti
+- [x] Premium monthly subscription
+- [x] Customer portal
+- [x] Webhook robusto per subscription lifecycle
+- [x] UI upgrade/downgrade in dashboard/profile
+- [x] Gate premium coerenti
 
 ---
 

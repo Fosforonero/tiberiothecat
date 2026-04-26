@@ -62,7 +62,7 @@ CRON_SECRET=random-strong-secret
 STRIPE_SECRET_KEY=sk_live_...        # NEVER commit — set in Vercel only
 STRIPE_WEBHOOK_SECRET=whsec_...     # from stripe listen or Stripe dashboard
 STRIPE_PRICE_ID_NAME_CHANGE=price_... # €0.99 one-time
-STRIPE_PRICE_ID_PREMIUM_MONTHLY=price_... # premium subscription
+STRIPE_PRICE_ID_PREMIUM=price_...    # premium subscription
 
 # Public
 NEXT_PUBLIC_BASE_URL=https://splitvote.io
@@ -84,6 +84,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v4_security_hotfix.sql` | pseudonymous identity + RPC grants | ✅ Applied |
 | `migration_v5_vote_daily_stats.sql` | admin vote charts incl. anonymous votes | ✅ Applied |
 | `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | ✅ Applied |
+| `migration_v7_stripe_subscriptions.sql` | Stripe customer/subscription fields | ✅ Applied |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -141,9 +142,10 @@ Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 N
 ### Stripe webhook
 Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBHOOK_SECRET`.
 Test locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
+Required production events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`.
 
 ### Known issues / TODOs
-- Stripe premium subscription/customer portal is still blocked until the compromised key is revoked and replaced in Vercel.
+- Stripe premium subscription/customer portal is implemented. Production requires the Stripe env vars and webhook events to remain configured in Vercel/Stripe.
 - Full framework upgrade (`next@16`, `react@19`, Node 24 LTS) is intentionally deferred to a dedicated sprint.
 - Social trend sources (X/Instagram/TikTok) are scaffolded as feature flags only. Use official APIs/provider contracts; do not add scraping.
 - AdSense slot IDs must be real production slots in Vercel env vars.
