@@ -3,13 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --border: #1e1e2e;
-  --accent-a: #ef4444;
-  --accent-b: #3b82f6;
-  --text: #f1f5f9;
-  --muted: #64748b;
+  /* ── Core palette — dark navy instead of pure black ── */
+  --bg:        #070718;
+  --surface:   #0f0f2a;
+  --surface2:  #141432;
+  --border:    #24245a;
+  --border-hi: #3a3a80;
+  --accent-a:  #ff3366;
+  --accent-b:  #4d9fff;
+  --text:      #e4eaf6;
+  --muted:     #7890b8;
+
+  /* ── Neon accent palette ── */
+  --neon-blue:   #00d4ff;
+  --neon-purple: #b44dff;
+  --neon-red:    #ff3366;
+  --neon-green:  #00ff88;
+  --neon-yellow: #ffd700;
 }
 
 body {
@@ -21,11 +31,10 @@ body {
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
-/* ── Animated background ────────────────────────────── */
-
-/* Slow-drifting gradient orbs behind content */
+/* ── Animated neon background orbs ─────────────────────── */
 .bg-orbs {
   position: fixed;
   inset: 0;
@@ -39,30 +48,28 @@ body {
   content: '';
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.12;
+  filter: blur(110px);
+  opacity: 0.25;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
 
-/* Red orb — top left */
 .bg-orbs::before {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #ef4444, transparent 70%);
-  top: -200px;
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, #ff2060, transparent 70%);
+  top: -220px;
   left: -200px;
   animation-name: orb-drift-a;
   animation-duration: 14s;
 }
 
-/* Blue orb — bottom right */
 .bg-orbs::after {
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, #3b82f6, transparent 70%);
-  bottom: -250px;
+  width: 750px;
+  height: 750px;
+  background: radial-gradient(circle, #1a6bff, transparent 70%);
+  bottom: -260px;
   right: -200px;
   animation-name: orb-drift-b;
   animation-duration: 18s;
@@ -70,51 +77,123 @@ body {
 
 @keyframes orb-drift-a {
   0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(80px, 120px) scale(1.12); }
-  100% { transform: translate(40px, 60px) scale(0.95); }
+  50%  { transform: translate(90px, 130px) scale(1.12); }
+  100% { transform: translate(45px, 65px) scale(0.95); }
 }
 
 @keyframes orb-drift-b {
   0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(-100px, -80px) scale(1.08); }
-  100% { transform: translate(-50px, -40px) scale(1.15); }
+  50%  { transform: translate(-110px, -90px) scale(1.1); }
+  100% { transform: translate(-55px, -45px) scale(1.15); }
 }
 
-/* Purple orb — center, faint */
 .bg-orb-mid {
   position: fixed;
-  width: 500px;
-  height: 500px;
+  width: 550px;
+  height: 550px;
   border-radius: 50%;
-  background: radial-gradient(circle, #7c3aed, transparent 70%);
-  filter: blur(140px);
-  opacity: 0.06;
-  top: 30%;
-  left: 40%;
+  background: radial-gradient(circle, #7c22e0, transparent 70%);
+  filter: blur(130px);
+  opacity: 0.18;
+  top: 35%;
+  left: 45%;
   transform: translate(-50%, -50%);
-  animation: orb-drift-b 22s ease-in-out infinite alternate;
+  animation: orb-drift-b 24s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Ensure all page content is above orbs */
-nav, main, footer {
-  position: relative;
-  z-index: 1;
+.bg-orb-cyan {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00b4d8, transparent 70%);
+  filter: blur(120px);
+  opacity: 0.13;
+  top: -100px;
+  right: -80px;
+  animation: orb-drift-a 20s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Subtle scanline texture for depth */
+/* ── Subtle dot grid texture ────────────────────────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(255,255,255,0.012) 2px,
-    rgba(255,255,255,0.012) 4px
-  );
+  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* ── Page content above orbs ───────────────────────────── */
+nav, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Neon glow utilities ──────────────────────────────── */
+.neon-glow-blue {
+  box-shadow: 0 0 8px rgba(77,159,255,0.4), 0 0 24px rgba(77,159,255,0.2), 0 0 48px rgba(77,159,255,0.08);
+}
+.neon-glow-red {
+  box-shadow: 0 0 8px rgba(255,51,102,0.4), 0 0 24px rgba(255,51,102,0.2), 0 0 48px rgba(255,51,102,0.08);
+}
+.neon-glow-purple {
+  box-shadow: 0 0 8px rgba(180,77,255,0.4), 0 0 24px rgba(180,77,255,0.2);
+}
+.neon-glow-cyan {
+  box-shadow: 0 0 8px rgba(0,212,255,0.4), 0 0 24px rgba(0,212,255,0.2);
+}
+.neon-glow-yellow {
+  box-shadow: 0 0 8px rgba(255,215,0,0.4), 0 0 24px rgba(255,215,0,0.2);
+}
+.neon-text-blue   { text-shadow: 0 0 10px rgba(77,159,255,0.7); }
+.neon-text-red    { text-shadow: 0 0 10px rgba(255,51,102,0.7); }
+.neon-text-purple { text-shadow: 0 0 10px rgba(180,77,255,0.7); }
+.neon-text-cyan   { text-shadow: 0 0 10px rgba(0,212,255,0.8); }
+.neon-text-yellow { text-shadow: 0 0 10px rgba(255,215,0,0.8); }
+
+/* ── Card neon hover ─────────────────────────────────── */
+.card-neon {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.card-neon:hover {
+  border-color: rgba(77,159,255,0.45);
+  background: var(--surface2);
+  box-shadow: 0 4px 24px rgba(77,159,255,0.12), 0 0 0 1px rgba(77,159,255,0.1) inset;
+  transform: translateY(-2px);
+}
+
+/* ── Glowing divider ─────────────────────────────────── */
+.neon-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-blue) 40%, var(--neon-purple) 60%, transparent);
+  opacity: 0.35;
+}
+
+/* ── Pulse animation ─────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* ── Mobile nav slide-down ────────────────────────────── */
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mobile-menu-enter { animation: slide-down 0.18s ease forwards; }
+
+/* ── Mobile: hide scrollbar ──────────────────────────── */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar { display: none; }
+  html { scrollbar-width: none; }
 }

@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
+import { TrendingUp, Scale, Cpu, Users, Heart } from 'lucide-react'
 import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
+import MobileMenu from '@/components/MobileMenu'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -40,20 +42,25 @@ export const metadata: Metadata = {
     site: '@splitvote',
     creator: '@splitvote',
   },
-  alternates: {
-    canonical: 'https://splitvote.io',
-  },
+  alternates: { canonical: 'https://splitvote.io' },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
     'google-site-verification': '',
   },
 }
 
+const NAV_CATEGORIES = [
+  { href: '/trending',               label: 'Trending',     icon: TrendingUp, color: 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 hover:border-purple-500/20' },
+  { href: '/category/morality',      label: 'Morality',     icon: Scale,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
+  { href: '/category/technology',    label: 'Tech',         icon: Cpu,        color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
+  { href: '/category/society',       label: 'Society',      icon: Users,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
+  { href: '/category/relationships', label: 'Love',         icon: Heart,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
+]
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* Google Consent Mode v2 — must run BEFORE GA4 loads */}
         <Script id="consent-mode" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -69,11 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('set', 'url_passthrough', true);
           `}
         </Script>
-        {/* Google Analytics 4 — first-party proxy (bypasses adblock URL filters) */}
-        <Script
-          src="/api/_g/script?id=G-5MPQ8PW0CE"
-          strategy="afterInteractive"
-        />
+        <Script src="/api/_g/script?id=G-5MPQ8PW0CE" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -85,7 +88,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             });
           `}
         </Script>
-        {/* Google AdSense — first-party proxy (bypasses adblock URL filters) */}
         <Script
           async
           src="/api/_g/ads?client=ca-pub-5232020244793649"
@@ -94,41 +96,54 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen" style={{ background: 'var(--bg)' }}>
-        {/* Animated background orbs */}
+        {/* Animated background */}
         <div className="bg-orbs" aria-hidden="true" />
         <div className="bg-orb-mid" aria-hidden="true" />
+        <div className="bg-orb-cyan" aria-hidden="true" />
 
-        <nav className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between gap-4">
-          <a href="/" className="text-xl font-black tracking-tight text-white flex-shrink-0">
+        {/* ── Navbar ── */}
+        <nav className="border-b border-[var(--border)] px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
+          style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
+
+          {/* Logo */}
+          <a href="/" className="text-xl font-black tracking-tight text-white flex-shrink-0 neon-text-blue">
             Split<span className="text-blue-400">Vote</span>
           </a>
-          <div className="flex items-center gap-1 flex-wrap justify-end">
-            <a href="/trending" className="text-xs font-bold uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors px-3 py-1.5 rounded-lg hover:bg-purple-500/10 border border-transparent hover:border-purple-500/20">
-              ✨ Trending
-            </a>
-            <a href="/category/morality" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
-              Morality
-            </a>
-            <a href="/category/technology" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
-              Tech
-            </a>
-            <a href="/category/society" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden md:block">
-              Society
-            </a>
-            <a href="/category/relationships" className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5 hidden lg:block">
-              Love
-            </a>
-            <div className="ml-2 pl-2 border-l border-[var(--border)]">
+
+          {/* Desktop category links */}
+          <div className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
+            {NAV_CATEGORIES.map(({ href, label, icon: Icon, color }) => (
+              <a
+                key={href}
+                href={href}
+                className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-all px-3 py-1.5 rounded-lg border border-transparent ${color}`}
+              >
+                <Icon size={12} />
+                {label}
+              </a>
+            ))}
+          </div>
+
+          {/* Right side: auth + mobile menu */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="border-l border-[var(--border)] pl-3 hidden sm:block">
               <AuthButton />
             </div>
+            <div className="sm:hidden">
+              <AuthButton />
+            </div>
+            <MobileMenu />
           </div>
         </nav>
+
         <main>{children}</main>
         <Analytics />
         <CookieConsent />
         <AdBlockBanner />
-        <footer className="text-center text-[var(--muted)] text-xs py-10 border-t border-[var(--border)] mt-16 space-y-2">
-          <p>© 2026 SplitVote.io — No right answers. Just honest ones.</p>
+
+        <footer className="text-center text-[var(--muted)] text-xs py-10 mt-16">
+          <div className="neon-divider mb-8 mx-auto max-w-2xl" />
+          <p className="mb-2">© 2026 SplitVote.io — No right answers. Just honest ones.</p>
           <p className="flex items-center justify-center gap-4">
             <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
             <span>·</span>

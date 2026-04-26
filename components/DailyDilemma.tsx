@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Zap, Globe, ChevronRight } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 
 interface Props {
@@ -34,35 +35,45 @@ export default function DailyDilemma({ scenario, totalVotes }: Props) {
   }, [])
 
   return (
-    <div className="mb-12 rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/5 via-orange-500/5 to-red-500/5 overflow-hidden">
+    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow"
+      style={{
+        border: '1px solid rgba(255,215,0,0.25)',
+        background: 'linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,140,0,0.04) 50%, rgba(255,51,102,0.04) 100%)'
+      }}>
+
       {/* Header bar */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-yellow-500/10 bg-yellow-500/5">
+      <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b"
+        style={{ borderColor: 'rgba(255,215,0,0.12)', background: 'rgba(255,215,0,0.04)' }}>
         <div className="flex items-center gap-2">
-          <span className="text-yellow-400 text-sm font-black uppercase tracking-widest">⚡ Dilemma of the Day</span>
+          <Zap size={14} className="text-yellow-400 pulse-glow" fill="currentColor" />
+          <span className="text-yellow-400 text-xs sm:text-sm font-black uppercase tracking-widest neon-text-yellow">
+            Dilemma of the Day
+          </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-          <span>Resets in</span>
-          <span className="font-mono font-bold text-yellow-400 tabular-nums">
+        <div className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
+          <span className="hidden sm:inline">Resets in</span>
+          <span className="font-mono font-bold text-yellow-400 tabular-nums text-xs">
             {mounted ? countdown : '--:--:--'}
           </span>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-6 py-6">
-        <div className="flex items-start gap-4">
-          <span className="text-4xl flex-shrink-0 mt-1">{scenario.emoji}</span>
+      <div className="px-4 sm:px-6 py-5">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <span className="text-3xl sm:text-4xl flex-shrink-0 mt-0.5">{scenario.emoji}</span>
           <div className="flex-1 min-w-0">
-            <p className="text-lg md:text-xl font-bold text-white leading-snug mb-3">
+            <p className="text-base sm:text-xl font-bold text-white leading-snug mb-3">
               {scenario.question}
             </p>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-bold uppercase tracking-widest text-yellow-400/70 border border-yellow-500/20 rounded-full px-3 py-1">
                 {scenario.category}
               </span>
               {totalVotes > 0 && (
-                <span className="text-xs text-[var(--muted)]">
-                  🌍 {totalVotes.toLocaleString()} votes today
+                <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
+                  <Globe size={11} />
+                  {totalVotes.toLocaleString()} votes today
                 </span>
               )}
             </div>
@@ -73,15 +84,16 @@ export default function DailyDilemma({ scenario, totalVotes }: Props) {
         <div className="mt-5 flex items-center gap-3">
           <Link
             href={`/play/${scenario.id}`}
-            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
           >
-            Vote now →
+            Vote now
+            <ChevronRight size={16} />
           </Link>
           <Link
             href={`/results/${scenario.id}`}
-            className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3"
+            className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 rounded-xl hover:bg-white/5"
           >
-            See results
+            Results
           </Link>
         </div>
       </div>

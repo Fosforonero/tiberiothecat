@@ -8,9 +8,8 @@ import type { Scenario } from '@/lib/scenarios'
 
 const SLOT_HOME = process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? 'TODO'
 
-export const revalidate = 3600 // revalidate every hour to pick up new AI dilemmas
+export const revalidate = 3600
 
-/** Deterministic daily pick: same scenario for everyone on the same UTC day */
 function getDailyScenario(all: Scenario[]): Scenario {
   if (all.length === 0) return scenarios[0]
   const daysSinceEpoch = Math.floor(Date.now() / 86_400_000)
@@ -18,20 +17,17 @@ function getDailyScenario(all: Scenario[]): Scenario {
 }
 
 export default async function HomePage() {
-  // Merge static + AI-generated dilemmas (AI ones shown first)
   let dynamicScenarios: Scenario[] = []
   try {
     dynamicScenarios = await getDynamicScenarios()
   } catch {
-    // Redis unavailable — gracefully fall back to static only
+    // Redis unavailable
   }
 
-  // Deduplicate: if an AI scenario has same id as static one, skip it
   const staticIds = new Set(scenarios.map((s) => s.id))
   const uniqueDynamic = dynamicScenarios.filter((d) => !staticIds.has(d.id))
   const allScenarios: Scenario[] = [...uniqueDynamic, ...scenarios]
 
-  // Pick today's dilemma and fetch its live vote count
   const dailyScenario = getDailyScenario(allScenarios)
   let dailyVotes = 0
   try {
@@ -42,20 +38,22 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      {/* Hero */}
-      <div className="text-center mb-12">
-        <div className="inline-block bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-blue-500/20">
+    <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
+
+      {/* ── Hero ── */}
+      <div className="text-center mb-10 sm:mb-14">
+        <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-blue-500/20 neon-glow-blue">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-glow" />
           Real-time global votes
         </div>
-        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-none">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-5 sm:mb-6 leading-none">
           What would the
           <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-purple-400 to-blue-400">
             world choose?
           </span>
         </h1>
-        <p className="text-xl text-[var(--muted)] max-w-lg mx-auto">
+        <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
           Impossible moral dilemmas. Millions of real votes. No right answers — just honest ones.
         </p>
       </div>
@@ -63,10 +61,10 @@ export default async function HomePage() {
       {/* ── Dilemma of the Day ── */}
       <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
-      {/* Dilemma grid with category filter (client component) */}
+      {/* ── Dilemma grid ── */}
       <DilemmaGrid scenarios={allScenarios} />
 
-      {/* AdSense — below the grid */}
+      {/* AdSense */}
       <div className="mt-12">
         <AdSlot slot={SLOT_HOME} className="rounded-2xl" />
       </div>
