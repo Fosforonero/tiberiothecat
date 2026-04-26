@@ -4,7 +4,10 @@ import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from './VoteClientPage'
+import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
+
+const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
@@ -18,16 +21,28 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) return {}
+
+  const title = `${scenario.question.slice(0, 55)}… | SplitVote`
+  const description = `Global vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how the world splits on this moral dilemma.`
+
   return {
-    title: `${scenario.question.slice(0, 60)}… | SplitVote`,
-    description: `Vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how the world splits.`,
+    title,
+    description,
+    alternates: {
+      canonical: `${BASE_URL}/play/${params.id}`,
+    },
     openGraph: {
       title: scenario.question,
-      description: `"${scenario.optionA}" vs "${scenario.optionB}"`,
+      description: `"${scenario.optionA}" vs "${scenario.optionB}" — Real-time global vote`,
       images: [`/api/og?id=${params.id}`],
+      url: `${BASE_URL}/play/${params.id}`,
+      siteName: 'SplitVote',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
+      title: scenario.question,
+      description: `Vote: "${scenario.optionA}" vs "${scenario.optionB}"`,
     },
   }
 }
@@ -40,8 +55,12 @@ export default async function PlayPage({ params, searchParams }: Props) {
 
   // Fetch live vote count for "Join X,XXX voters" social proof
   let totalVotes = 0
+  let votesA = 0
+  let votesB = 0
   try {
     const votes = await getVotes(params.id)
+    votesA = votes.a
+    votesB = votes.b
     totalVotes = votes.a + votes.b
   } catch {
     // Non-blocking
@@ -69,12 +88,64 @@ export default async function PlayPage({ params, searchParams }: Props) {
 
   const isChallenge = searchParams.challenge === '1'
 
+  // JSON-LD: BreadcrumbList
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'SplitVote', item: BASE_URL },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: scenario.category.charAt(0).toUpperCase() + scenario.category.slice(1),
+        item: `${BASE_URL}/category/${scenario.category}`,
+      },
+      { '@type': 'ListItem', position: 3, name: scenario.question.slice(0, 60), item: `${BASE_URL}/play/${params.id}` },
+    ],
+  }
+
+  // JSON-LD: Poll/Quiz schema for the dilemma
+  const pollSchema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: scenario.question,
+    description: `A moral dilemma on SplitVote: "${scenario.optionA}" vs "${scenario.optionB}". ${totalVotes.toLocaleString()} people have voted.`,
+    url: `${BASE_URL}/play/${params.id}`,
+    provider: {
+      '@type': 'Organization',
+      name: 'SplitVote',
+      url: BASE_URL,
+    },
+    hasPart: [
+      {
+        '@type': 'Question',
+        name: scenario.question,
+        suggestedAnswer: [
+          {
+            '@type': 'Answer',
+            text: scenario.optionA,
+            ...(totalVotes > 0 ? { upvoteCount: votesA } : {}),
+          },
+          {
+            '@type': 'Answer',
+            text: scenario.optionB,
+            ...(totalVotes > 0 ? { upvoteCount: votesB } : {}),
+          },
+        ],
+      },
+    ],
+  }
+
   return (
-    <VoteClientPage
-      scenario={scenario}
-      existingVote={existingVote}
-      totalVotes={totalVotes}
-      isChallenge={isChallenge}
-    />
+    <>
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={pollSchema} />
+      <VoteClientPage
+        scenario={scenario}
+        existingVote={existingVote}
+        totalVotes={totalVotes}
+        isChallenge={isChallenge}
+      />
+    </>
   )
 }

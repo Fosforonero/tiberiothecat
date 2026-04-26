@@ -8,6 +8,7 @@ import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
 import './globals.css'
+import JsonLd from '@/components/JsonLd'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -18,13 +19,25 @@ export const metadata: Metadata = {
     template: '%s | SplitVote',
   },
   description: 'Real-time global votes on impossible moral dilemmas. Trolley problem, lifeboat, privacy vs security — no right answers, just honest ones.',
-  keywords: ['moral dilemma', 'trolley problem', 'ethics poll', 'global vote', 'would you rather', 'philosophy', 'moral philosophy', 'real-time vote'],
+  keywords: [
+    'moral dilemma', 'trolley problem', 'ethics poll', 'global vote',
+    'would you rather', 'philosophy', 'moral philosophy', 'real-time vote',
+    'ethical question', 'dilemma vote', 'online poll', 'impossible choice',
+    'what would you do', 'moral question', 'ethics quiz', 'social dilemma',
+    'dilemma etico', 'sondaggio morale', 'vota online', 'cosa faresti',
+  ],
   authors: [{ name: 'SplitVote' }],
   creator: 'SplitVote',
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
   },
   openGraph: {
     title: 'SplitVote — What Would the World Choose?',
@@ -34,6 +47,7 @@ export const metadata: Metadata = {
     images: [{ url: '/og-default.png', width: 1200, height: 630, alt: 'SplitVote — Real-time global moral dilemmas' }],
     type: 'website',
     locale: 'en_US',
+    alternateLocale: ['it_IT'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -42,7 +56,14 @@ export const metadata: Metadata = {
     site: '@splitvote',
     creator: '@splitvote',
   },
-  alternates: { canonical: 'https://splitvote.io' },
+  alternates: {
+    canonical: 'https://splitvote.io',
+    languages: {
+      'en': 'https://splitvote.io',
+      'it': 'https://splitvote.io/it',
+      'x-default': 'https://splitvote.io',
+    },
+  },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
     'google-site-verification': '',
@@ -94,6 +115,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+      {/* Organization + site-level JSON-LD */}
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'SplitVote',
+        url: 'https://splitvote.io',
+        logo: 'https://splitvote.io/og-default.png',
+        sameAs: ['https://twitter.com/splitvote'],
+        description: 'Real-time global votes on impossible moral dilemmas.',
+      }} />
       </head>
       <body className="min-h-screen" style={{ background: 'var(--bg)' }}>
         {/* Animated background */}
