@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SplitVote — What Would the World Choose?
 
-## Getting Started
+Real-time global voting on impossible moral dilemmas. No right answers — just honest ones.
 
-First, run the development server:
+Live at **[splitvote.io](https://splitvote.io)**
+
+---
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14.2 (App Router, TypeScript) |
+| Styling | Tailwind CSS + custom CSS variables |
+| Auth & DB | Supabase (PostgreSQL + Row Level Security) |
+| Real-time votes | Upstash Redis (hash per dilemma) |
+| AI dilemmas | Anthropic Claude (daily cron via Vercel) |
+| Payments | Stripe (one-time name change, premium sub) |
+| Analytics | GA4 via first-party proxy |
+| Ads | Google AdSense via first-party proxy |
+| Deploy | Vercel (auto-deploy on push to main) |
+
+---
+
+## Local Setup
 
 ```bash
+git clone https://github.com/your-org/splitvote.git
+cd splitvote
+npm install
+cp .env.local.example .env.local   # fill in the vars below
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires **Node >= 20** (see `.nvmrc`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+All vars must be set in Vercel → Settings → Environment Variables (and in `.env.local` for local dev).
 
-To learn more about Next.js, take a look at the following resources:
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Upstash Redis
+KV_REST_API_URL=https://xxxx.upstash.io
+KV_REST_API_TOKEN=Axxx...
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Anthropic (daily dilemma cron)
+ANTHROPIC_API_KEY=sk-ant-...
 
-## Deploy on Vercel
+# Stripe
+STRIPE_SECRET_KEY=sk_live_...        # NEVER commit — set in Vercel only
+STRIPE_WEBHOOK_SECRET=whsec_...     # from stripe listen or Stripe dashboard
+STRIPE_PRICE_ID_NAME_CHANGE=price_... # €0.99 one-time
+STRIPE_PRICE_ID_PREMIUM_MONTHLY=price_... # premium subscription
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Public
+NEXT_PUBLIC_BASE_URL=https://splitvote.io
+NEXT_PUBLIC_ADSENSE_SLOT_RESULTS=1234567890
+NEXT_PUBLIC_ADSENSE_SLOT_PLAY=1234567890
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Supabase Migrations
+
+Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the Supabase dashboard.
+
+| File | Description | Status |
+|---|---|---|
+| `schema.sql` | Base schema (profiles, user_polls, etc.) | ✅ Applied |
+| `migration_v2_safe.sql` | dilemma_votes, badges, user_badges, orgs | Apply manually |
+| `migration_v3_engagement.sql` | XP, streak, companion fields | Apply manually |
+
+To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
+
+---
+
+## Vercel Cron
+
+The cron job auto-generates new dilemmas daily using Claude. Configured in `vercel.json`:
+
+```json
+{
+  "crons": [{ "path": "/api/cron/generate-dilemmas", "schedule": "0 8 * * *" }]
+}
+```
+
+Requires `ANTHROPIC_API_KEY` in Vercel env vars. Verify in Vercel → Cron Jobs tab.
+
+---
+
+## Architecture Notes
+
+### Vote flow
+1. Cookie dedup (fast path — blocks same browser)
+2. IP rate limit (20 votes/hour via Redis)
+3. Supabase check for logged-in users (authoritative dedup across devices, 24h change window)
+4. Redis increment / replace (atomic, via `incrementVote` / `replaceVote` in `lib/redis.ts`)
+
+### First-party proxies
+`app/api/_g/` proxies GA4 and AdSense to bypass ad blockers. This is a deliberate product choice — see Google's first-party proxy docs. Do not remove without updating analytics/ads setup.
+
+### Stripe webhook
+Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBHOOK_SECRET`.
+Test locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
+
+### Known issues / TODOs
+- ESLint 9 flat config vs eslint@8: `ignoreDuringBuilds: true` is set in `next.config.ts`. Lint locally with `npx eslint .` using the project config.
+- Discord OAuth (#24): provider configured in Supabase, verify callback URL is set to `https://splitvote.io/auth/callback`.
+- i18n (Sprint #48): `next-intl` not yet integrated. IT content lives at `/it` (static page).
+
+---
+
+## Deploy
+
+Push to `main` → Vercel auto-builds and deploys. Use the `.command` scripts in the repo root to copy workspace files, commit, and push from the git repo on the external drive.
+
+```
+push_audit_v2.command    → Sync + reliability fixes
+push_engagement.command  → XP, missions, companion
+push_story_card.command  → IG/TikTok vertical share
+```

@@ -4,6 +4,9 @@ import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import BadgeSection from './BadgeSection'
 import OnboardingModal from './OnboardingModal'
+import CompanionDisplay from '@/components/CompanionDisplay'
+import DailyMissions from '@/components/DailyMissions'
+import type { CompanionSpecies } from '@/lib/companion'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -45,6 +48,9 @@ interface Profile {
   equipped_frame: string | null
   equipped_badge: string | null
   onboarding_done: boolean
+  xp: number | null
+  streak_days: number | null
+  companion_species: string | null
 }
 
 const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
@@ -71,7 +77,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge, onboarding_done')
+      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge, onboarding_done, xp, streak_days, companion_species')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -98,9 +104,13 @@ export default async function DashboardPage() {
   const dilemmaVotes = (dilemmaVotesRes.data ?? []) as DilemmaVote[]
   const userBadges = (badgesRes.data ?? []) as unknown as UserBadge[]
 
+  const votesCount = profile?.votes_count ?? 0
+  const xp = profile?.xp ?? 0
+  const streakDays = profile?.streak_days ?? 0
+  const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
+
   const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
   const approvedCount = typedPolls.filter(p => p.status === 'approved').length
-  const votesCount = profile?.votes_count ?? 0
 
   // Fetch dynamic scenarios ONCE (no N+1 Redis calls)
   let dynamicMap = new Map<string, Awaited<ReturnType<typeof getDynamicScenarios>>[number]>()
@@ -152,6 +162,24 @@ export default async function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* ── Companion ── */}
+      <CompanionDisplay
+        species={companionSpecies}
+        votesCount={votesCount}
+        xp={xp}
+      />
+
+      {/* ── Daily Missions ── */}
+      <DailyMissions
+        userId={user.id}
+        xp={xp}
+        streakDays={streakDays}
+        votesToday={dilemmaVotes.filter(v => {
+          const today = new Date().toISOString().split('T')[0]
+          return v.voted_at?.startsWith(today)
+        }).length}
+      />
 
       {/* ── Premium status ── */}
       {profile?.is_premium ? (

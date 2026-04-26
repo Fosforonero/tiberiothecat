@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { redis, incrementVote } from '@/lib/redis'
+import { redis, incrementVote, replaceVote } from '@/lib/redis'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
@@ -33,10 +33,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
     }
 
-    // ── Cookie-based deduplication (per scenario per browser) ──
+    // ── Cookie-based deduplication (fast path, per scenario per browser) ──
     const cookieName = `sv_voted_${id}`
-    const alreadyVoted = request.cookies.get(cookieName)
-    if (alreadyVoted) {
+    if (request.cookies.get(cookieName)) {
       return NextResponse.json({ ok: true, alreadyVoted: true })
     }
 
@@ -45,54 +44,79 @@ export async function POST(request: NextRequest) {
     if (ip !== 'unknown') {
       const rateKey = `ratelimit:${ip}`
       const count = await redis.incr(rateKey)
-      if (count === 1) {
-        await redis.expire(rateKey, IP_WINDOW_SECONDS)
-      }
+      if (count === 1) await redis.expire(rateKey, IP_WINDOW_SECONDS)
       if (count > IP_RATE_LIMIT) {
-        return NextResponse.json(
-          { error: 'Too many requests. Try again later.' },
-          { status: 429 }
-        )
+        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
       }
     }
 
-    // ── Increment vote in Redis ──
-    await incrementVote(id, option)
+    // Track whether Redis has already been incremented to avoid double-counting
+    let redisIncremented = false
 
-    // ── Track vote in Supabase for logged-in users ──
+    // ── Logged-in user: Supabase is the authoritative source for dedup & vote changes ──
     try {
       const supabase = await createClient()
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
         const choice = option.toUpperCase() as 'A' | 'B'
+        const newWindow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
 
-        // Upsert: se l'utente vota di nuovo entro 24h, aggiorna la scelta
-        const { error: voteError } = await supabase
+        // Check for an existing vote for this dilemma (handles multi-device dedup)
+        const { data: existing } = await supabase
           .from('dilemma_votes')
-          .upsert(
-            {
-              user_id: user.id,
-              dilemma_id: id,
-              choice,
-              can_change_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-            },
-            {
-              onConflict: 'user_id,dilemma_id',
-              // Solo aggiorna se ancora nella finestra di 24h
-              ignoreDuplicates: false,
-            }
-          )
+          .select('choice, can_change_until')
+          .eq('user_id', user.id)
+          .eq('dilemma_id', id)
+          .maybeSingle()
 
-        if (!voteError) {
-          // Incrementa votes_count su profiles + controlla badge
-          await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
+        if (existing) {
+          // Already voted — allow change only within the 24h window and for a different option
+          const canChange = new Date(existing.can_change_until) > new Date()
+          const prevOption = existing.choice.toLowerCase() as 'a' | 'b'
+
+          if (canChange && prevOption !== option) {
+            // Atomically swap Redis counts so totals stay accurate
+            await replaceVote(id, prevOption, option)
+            redisIncremented = true
+            await supabase
+              .from('dilemma_votes')
+              .update({ choice, can_change_until: newWindow })
+              .eq('user_id', user.id)
+              .eq('dilemma_id', id)
+          }
+          // Same option or outside 24h window: no-op — cookie will block the browser
+        } else {
+          // First vote for this dilemma by this user
+          await incrementVote(id, option)
+          redisIncremented = true
+
+          const { error: voteError } = await supabase
+            .from('dilemma_votes')
+            .insert({ user_id: user.id, dilemma_id: id, choice, can_change_until: newWindow })
+
+          if (!voteError) {
+            // Increment votes_count. xp is awarded inside the RPC when migration_v3 is applied.
+            try {
+              await supabase.rpc('increment_user_vote_count', { p_user_id: user.id })
+            } catch { /* migration not yet applied — non-blocking */ }
+          }
         }
+      } else {
+        // Anonymous user: Redis only
+        await incrementVote(id, option)
+        redisIncremented = true
       }
     } catch {
-      // Non-blocking: il voto Redis è già stato registrato
-      // Il tracking Supabase fallisce silenziosamente
+      // Supabase unavailable: ensure Redis always gets the count
+      if (!redisIncremented) {
+        await incrementVote(id, option)
+        redisIncremented = true
+      }
     }
+
+    // Final safety net
+    if (!redisIncremented) await incrementVote(id, option)
 
     const response = NextResponse.json({ ok: true })
     response.cookies.set(cookieName, option, {
