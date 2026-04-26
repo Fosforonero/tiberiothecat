@@ -13,12 +13,14 @@ interface Props {
   total: number
   voted: 'a' | 'b' | null
   nextId: string
+  /** Optional locale prefix for share URLs, e.g. "/it" for Italian results */
+  sharePrefix?: string
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 const SLOT_RESULTS = process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? 'TODO'
 
-export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId }: Props) {
+export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
@@ -30,8 +32,8 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
   useEffect(() => setMounted(true), [])
 
-  const shareUrl = `${BASE_URL}/play/${scenario.id}`
-  const challengeUrl = `${BASE_URL}/play/${scenario.id}?challenge=1`
+  const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
+  const challengeUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
   const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}`
 

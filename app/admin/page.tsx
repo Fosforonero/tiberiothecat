@@ -7,6 +7,7 @@ import {
   LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
+import CronDebug from './CronDebug'
 
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
@@ -359,6 +360,39 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           </div>
         </div>
       )}
+
+      {/* ── Cron Debug: Dynamic Dilemmas ── */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp size={16} className="text-purple-400" />
+            <h2 className="text-lg font-black text-white">Dynamic Dilemmas (Redis)</h2>
+          </div>
+          {/* Dry-run test buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-[var(--muted)] font-bold uppercase tracking-widest">Dry-run:</span>
+            <a
+              href="/api/admin/cron-dryrun?locale=en"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-all"
+            >
+              🇺🇸 EN ↗
+            </a>
+            <a
+              href="/api/admin/cron-dryrun?locale=it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-all"
+            >
+              🇮🇹 IT ↗
+            </a>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-[var(--surface)] p-5">
+          <CronDebug />
+        </div>
+      </div>
 
     </div>
   )

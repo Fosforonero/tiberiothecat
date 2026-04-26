@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getScenario, scenarios } from '@/lib/scenarios'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from './VoteClientPage'
@@ -21,21 +22,27 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
+  const staticScenario = getScenario(params.id)
+  const scenario = staticScenario ?? await getDynamicScenario(params.id)
   if (!scenario) return {}
 
-  const title = `${scenario.question.slice(0, 55)}… | SplitVote`
-  const description = `Global vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how the world splits on this moral dilemma.`
+  // Use AI-generated SEO fields when available (dynamic scenarios only)
+  const ds = staticScenario ? null : scenario as DynamicScenario
+  const title = ds?.seoTitle ?? `${scenario.question.slice(0, 55)}… | SplitVote`
+  const description = ds?.seoDescription
+    ?? `Global vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how the world splits on this moral dilemma.`
+  const keywords = ds?.keywords?.length ? ds.keywords.join(', ') : undefined
 
   return {
     title,
     description,
+    ...(keywords ? { keywords } : {}),
     alternates: {
       canonical: `${BASE_URL}/play/${params.id}`,
     },
     openGraph: {
-      title: scenario.question,
-      description: `"${scenario.optionA}" vs "${scenario.optionB}" — Real-time global vote`,
+      title: ds?.seoTitle ?? scenario.question,
+      description,
       images: [`/api/og?id=${params.id}`],
       url: `${BASE_URL}/play/${params.id}`,
       siteName: 'SplitVote',
@@ -43,8 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: scenario.question,
-      description: `Vote: "${scenario.optionA}" vs "${scenario.optionB}"`,
+      title: ds?.seoTitle ?? scenario.question,
+      description,
     },
   }
 }

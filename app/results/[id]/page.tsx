@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
 import { getScenario, getRandomScenario, scenarios } from '@/lib/scenarios'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
 import type { Metadata } from 'next'
+
+const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
@@ -15,14 +18,32 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
+  const staticScenario = getScenario(params.id)
+  const scenario = staticScenario ?? await getDynamicScenario(params.id)
   if (!scenario) return {}
+
+  const ds = staticScenario ? null : scenario as DynamicScenario
+  const title = ds?.seoTitle
+    ? `Results: ${ds.seoTitle}`
+    : `Results: ${scenario.question.slice(0, 50)}… | SplitVote`
+  const description = ds?.seoDescription
+    ?? `See how the world voted on this moral dilemma. "${scenario.optionA}" vs "${scenario.optionB}".`
+  const keywords = ds?.keywords?.length ? ds.keywords.join(', ') : undefined
+
   return {
-    title: `Results: ${scenario.question.slice(0, 50)}… | SplitVote`,
-    openGraph: {
-      images: [`/api/og?id=${params.id}`],
+    title,
+    description,
+    ...(keywords ? { keywords } : {}),
+    alternates: {
+      canonical: `${BASE_URL}/results/${params.id}`,
     },
-    twitter: { card: 'summary_large_image' },
+    openGraph: {
+      title,
+      description,
+      images: [`/api/og?id=${params.id}`],
+      url: `${BASE_URL}/results/${params.id}`,
+    },
+    twitter: { card: 'summary_large_image', title, description },
   }
 }
 

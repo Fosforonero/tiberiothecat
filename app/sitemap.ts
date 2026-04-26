@@ -36,21 +36,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ])
 
-  // AI-generated scenario pages — use actual generatedAt as lastModified
-  const dynamicRoutes = dynamicScenarios.flatMap(({ id, generatedAt }) => {
+  // AI-generated scenario pages — locale-aware URLs, real generatedAt timestamp
+  const dynamicRoutes = dynamicScenarios.flatMap(({ id, generatedAt, locale }) => {
     const lastMod = generatedAt ? new Date(generatedAt) : now
+    const isIT = locale === 'it'
+    const playUrl    = isIT ? `${BASE}/it/play/${id}`    : `${BASE}/play/${id}`
+    const resultsUrl = isIT ? `${BASE}/it/results/${id}` : `${BASE}/results/${id}`
     return [
       {
-        url: `${BASE}/play/${id}`,
+        url: playUrl,
         lastModified: lastMod,
         changeFrequency: 'weekly' as const,
-        priority: 0.75,
+        priority: isIT ? 0.72 : 0.75,
       },
       {
-        url: `${BASE}/results/${id}`,
+        url: resultsUrl,
         lastModified: lastMod,
         changeFrequency: 'daily' as const,
-        priority: 0.85,
+        priority: isIT ? 0.82 : 0.85,
       },
     ]
   })
@@ -82,6 +85,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
+    },
+    // Italian locale hub pages
+    {
+      url: `${BASE}/it`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/it/trending`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.8,
     },
     {
       url: `${BASE}/login`,
