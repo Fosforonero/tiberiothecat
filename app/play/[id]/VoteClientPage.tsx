@@ -13,6 +13,8 @@ interface ExistingVote {
 interface Props {
   scenario: Scenario
   existingVote?: ExistingVote | null
+  totalVotes?: number
+  isChallenge?: boolean
 }
 
 function getCookie(name: string): string | null {
@@ -32,7 +34,7 @@ function formatTimeRemaining(canChangeUntil: string): string {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
-export default function VoteClientPage({ scenario, existingVote }: Props) {
+export default function VoteClientPage({ scenario, existingVote, totalVotes = 0, isChallenge = false }: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
@@ -115,6 +117,14 @@ export default function VoteClientPage({ scenario, existingVote }: Props) {
           ← All dilemmas
         </a>
 
+        {/* ── Challenge banner ── */}
+        {isChallenge && !existingVote && (
+          <div className="mb-6 rounded-2xl border border-orange-500/30 bg-orange-500/10 px-5 py-4 text-center">
+            <p className="text-orange-400 font-black text-lg mb-0.5">🔥 Someone challenged you!</p>
+            <p className="text-[var(--muted)] text-sm">A friend wants to know which side you're on. Choose wisely.</p>
+          </div>
+        )}
+
         {/* Question */}
         <div className="text-center mb-12">
           <span className="text-5xl mb-6 block">{scenario.emoji}</span>
@@ -124,6 +134,15 @@ export default function VoteClientPage({ scenario, existingVote }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] leading-snug">
             {scenario.question}
           </h1>
+
+          {/* Live vote counter */}
+          {totalVotes > 0 && (
+            <p className="text-sm text-[var(--muted)] mt-4">
+              🌍 Join{' '}
+              <span className="text-white font-semibold">{totalVotes.toLocaleString('en-US')}</span>{' '}
+              people who already voted
+            </p>
+          )}
         </div>
 
         {/* Already voted — locked state */}

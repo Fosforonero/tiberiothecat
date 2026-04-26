@@ -12,7 +12,7 @@ interface Props {
   pctB: number
   total: number
   voted: 'a' | 'b' | null
-  nextId: string  // pre-computed on the server
+  nextId: string
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
@@ -23,10 +23,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [copied, setCopied] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
   const [discordCopied, setDiscordCopied] = useState(false)
+  const [challengeCopied, setChallengeCopied] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
   const shareUrl = `${BASE_URL}/play/${scenario.id}`
+  const challengeUrl = `${BASE_URL}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
 
   const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
@@ -39,6 +41,11 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
   const majorityPct = pctA > pctB ? pctA : pctB
   const majorityLabel = pctA > pctB ? scenario.optionA : scenario.optionB
+
+  // Minority / majority reveal
+  const pctVoted = voted === 'a' ? pctA : voted === 'b' ? pctB : null
+  const isMinority = pctVoted !== null && pctVoted < 50
+  const isTie = pctA === pctB
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl)
@@ -58,6 +65,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     setTimeout(() => setDiscordCopied(false), 2000)
   }
 
+  const copyChallenge = () => {
+    navigator.clipboard.writeText(challengeUrl)
+    setChallengeCopied(true)
+    setTimeout(() => setChallengeCopied(false), 2000)
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
       <a href="/" className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
@@ -74,6 +87,42 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           {total.toLocaleString()} votes worldwide
         </p>
       </div>
+
+      {/* ── Minority / Majority reveal ── */}
+      {voted && pctVoted !== null && total >= 10 && (
+        <div className={`text-center mb-6 rounded-2xl py-5 px-6 border ${
+          isTie
+            ? 'border-purple-500/30 bg-purple-500/10'
+            : isMinority
+            ? 'border-orange-500/30 bg-orange-500/10'
+            : 'border-green-500/30 bg-green-500/10'
+        }`}>
+          {isTie ? (
+            <>
+              <p className="text-2xl font-black text-purple-400 mb-1">🤝 The world is perfectly split!</p>
+              <p className="text-sm text-[var(--muted)]">50/50 — this dilemma divides humanity equally.</p>
+            </>
+          ) : isMinority ? (
+            <>
+              <p className="text-2xl font-black text-orange-400 mb-1">
+                🔥 You're in the rebel {pctVoted}% minority!
+              </p>
+              <p className="text-sm text-[var(--muted)]">
+                Most people disagreed with you. Are you an outsider — or just ahead of the curve?
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-black text-green-400 mb-1">
+                🌍 {pctVoted}% of the world agrees with you!
+              </p>
+              <p className="text-sm text-[var(--muted)]">
+                You're with the majority on this one. Great minds think alike.
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Your vote badge */}
       {voted && (
@@ -133,6 +182,20 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         )}
       </div>
 
+      {/* ── Challenge a friend CTA ── */}
+      <div className="mb-6 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5 text-center">
+        <p className="text-yellow-400 font-black text-base mb-1">⚡ Challenge a friend!</p>
+        <p className="text-[var(--muted)] text-sm mb-4">
+          Send them the link — they'll see your result only after they vote.
+        </p>
+        <button
+          onClick={copyChallenge}
+          className="w-full flex items-center justify-center gap-2 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/40 text-yellow-300 font-bold text-sm px-5 py-3 rounded-xl transition-colors"
+        >
+          {challengeCopied ? '✅ Challenge link copied!' : '🔗 Copy challenge link'}
+        </button>
+      </div>
+
       {/* ── VIRAL SHARE SECTION ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden mb-8">
         {/* Share card preview */}
@@ -153,7 +216,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         {/* Share action buttons */}
         <div className="p-5">
           <p className="text-xs text-[var(--muted)] font-semibold uppercase tracking-widest mb-4">
-            🔥 Challenge your friends
+            🔥 Share your result
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-4">

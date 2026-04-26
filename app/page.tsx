@@ -1,15 +1,24 @@
 import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { getVotes } from '@/lib/redis'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import AdSlot from '@/components/AdSlot'
+import DailyDilemma from '@/components/DailyDilemma'
 import type { Scenario } from '@/lib/scenarios'
 
 const SLOT_HOME = process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? 'TODO'
 
 export const revalidate = 3600 // revalidate every hour to pick up new AI dilemmas
 
+/** Deterministic daily pick: same scenario for everyone on the same UTC day */
+function getDailyScenario(all: Scenario[]): Scenario {
+  if (all.length === 0) return scenarios[0]
+  const daysSinceEpoch = Math.floor(Date.now() / 86_400_000)
+  return all[daysSinceEpoch % all.length]
+}
+
 export default async function HomePage() {
-  // Merge static + AI-generated dilemmas (AI ones shown first with ✨ badge)
+  // Merge static + AI-generated dilemmas (AI ones shown first)
   let dynamicScenarios: Scenario[] = []
   try {
     dynamicScenarios = await getDynamicScenarios()
@@ -20,9 +29,17 @@ export default async function HomePage() {
   // Deduplicate: if an AI scenario has same id as static one, skip it
   const staticIds = new Set(scenarios.map((s) => s.id))
   const uniqueDynamic = dynamicScenarios.filter((d) => !staticIds.has(d.id))
-
-  // Dynamic first so they appear at the top (or interspersed after filter)
   const allScenarios: Scenario[] = [...uniqueDynamic, ...scenarios]
+
+  // Pick today's dilemma and fetch its live vote count
+  const dailyScenario = getDailyScenario(allScenarios)
+  let dailyVotes = 0
+  try {
+    const v = await getVotes(dailyScenario.id)
+    dailyVotes = v.a + v.b
+  } catch {
+    // Non-blocking
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
@@ -42,6 +59,9 @@ export default async function HomePage() {
           Impossible moral dilemmas. Millions of real votes. No right answers — just honest ones.
         </p>
       </div>
+
+      {/* ── Dilemma of the Day ── */}
+      <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
       {/* Dilemma grid with category filter (client component) */}
       <DilemmaGrid scenarios={allScenarios} />

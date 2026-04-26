@@ -2,11 +2,13 @@ import { notFound } from 'next/navigation'
 import { getScenario, scenarios } from '@/lib/scenarios'
 import { getDynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
+import { getVotes } from '@/lib/redis'
 import VoteClientPage from './VoteClientPage'
 import type { Metadata } from 'next'
 
 interface Props {
   params: { id: string }
+  searchParams: { challenge?: string }
 }
 
 export async function generateStaticParams() {
@@ -32,9 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const dynamic = 'force-dynamic'
 
-export default async function PlayPage({ params }: Props) {
+export default async function PlayPage({ params, searchParams }: Props) {
   const scenario = getScenario(params.id) ?? await getDynamicScenario(params.id)
   if (!scenario) notFound()
+
+  // Fetch live vote count for "Join X,XXX voters" social proof
+  let totalVotes = 0
+  try {
+    const votes = await getVotes(params.id)
+    totalVotes = votes.a + votes.b
+  } catch {
+    // Non-blocking
+  }
 
   // Check if logged-in user already voted on this dilemma
   let existingVote: { choice: 'A' | 'B'; canChangeUntil: string } | null = null
@@ -53,8 +64,17 @@ export default async function PlayPage({ params }: Props) {
       }
     }
   } catch {
-    // Non-blocking: se fallisce mostriamo la pagina di voto normale
+    // Non-blocking
   }
 
-  return <VoteClientPage scenario={scenario} existingVote={existingVote} />
+  const isChallenge = searchParams.challenge === '1'
+
+  return (
+    <VoteClientPage
+      scenario={scenario}
+      existingVote={existingVote}
+      totalVotes={totalVotes}
+      isChallenge={isChallenge}
+    />
+  )
 }
