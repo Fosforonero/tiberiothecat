@@ -24,14 +24,19 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [captionCopied, setCaptionCopied] = useState(false)
   const [discordCopied, setDiscordCopied] = useState(false)
   const [challengeCopied, setChallengeCopied] = useState(false)
+  const [storySharing, setStorySharing] = useState(false)
+  const [storyShared, setStoryShared] = useState(false)
+  const [igCaptionCopied, setIgCaptionCopied] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
   const shareUrl = `${BASE_URL}/play/${scenario.id}`
   const challengeUrl = `${BASE_URL}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
+  const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}`
 
   const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+  const instagramCaption = `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇 Link in bio → splitvote.io\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
   const twitterText = `"${scenario.question}" — The world is split ${pctA}% vs ${pctB}%. What would YOU choose? 🌍`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${twitterText}\n${shareUrl}`)}`
@@ -69,6 +74,50 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     navigator.clipboard.writeText(challengeUrl)
     setChallengeCopied(true)
     setTimeout(() => setChallengeCopied(false), 2000)
+  }
+
+  const copyIgCaption = () => {
+    navigator.clipboard.writeText(instagramCaption)
+    setIgCaptionCopied(true)
+    setTimeout(() => setIgCaptionCopied(false), 2000)
+  }
+
+  // Share vertical story card via Web Share API (with SVG file if supported)
+  const shareStory = async () => {
+    if (!mounted) return
+    setStorySharing(true)
+    try {
+      const res = await fetch(storyCardUrl)
+      const blob = await res.blob()
+      const file = new File([blob], `splitvote-story-${scenario.id}.svg`, { type: 'image/svg+xml' })
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `SplitVote — ${scenario.question.slice(0, 60)}`,
+          text: `${pctA}% vs ${pctB}% — What would you choose? 👇`,
+        })
+        setStoryShared(true)
+      } else if (navigator.share) {
+        // Fallback: share URL only
+        await navigator.share({ title: 'SplitVote', url: shareUrl, text: `${pctA}% vs ${pctB}%` })
+        setStoryShared(true)
+      } else {
+        // Final fallback: download
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = `splitvote-story-${scenario.id}.svg`
+        link.click()
+      }
+    } catch (e) {
+      // User cancelled or share failed — download as fallback
+      const link = document.createElement('a')
+      link.href = storyCardUrl
+      link.download = `splitvote-story-${scenario.id}.svg`
+      link.click()
+    } finally {
+      setStorySharing(false)
+    }
   }
 
   return (
@@ -295,6 +344,73 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             </a>
           </div>
         </div>
+      </div>
+
+      {/* ── Share as Story (IG/TikTok vertical card) ── */}
+      <div className="rounded-2xl border border-[var(--border)] bg-[#0a0a1a]/60 overflow-hidden mb-8">
+        <div className="p-5 pb-3">
+          <p className="text-xs text-[var(--muted)] font-semibold uppercase tracking-widest mb-3">
+            📱 Share as Story
+          </p>
+          <p className="text-xs text-[var(--muted)] mb-4">
+            Ready for Instagram Stories & TikTok. Share or download the 9:16 card, then upload manually.
+          </p>
+        </div>
+
+        {/* Story card preview */}
+        <div className="relative mx-5 mb-4" style={{ maxWidth: 200 }}>
+          <img
+            src={storyCardUrl}
+            alt="Story card preview"
+            className="w-full rounded-xl border border-white/10"
+            style={{ aspectRatio: '9/16', objectFit: 'cover' }}
+            loading="lazy"
+          />
+        </div>
+
+        <div className="p-5 pt-0 grid grid-cols-2 gap-2">
+          {/* Web Share / Download */}
+          <button
+            onClick={shareStory}
+            disabled={storySharing}
+            className="flex flex-col items-center gap-1.5 bg-gradient-to-br from-pink-600/20 to-purple-600/20 hover:from-pink-600/30 hover:to-purple-600/30 border border-pink-500/30 text-pink-300 font-bold text-xs px-3 py-3 rounded-xl transition-all"
+          >
+            <span className="text-lg">{storyShared ? '✅' : storySharing ? '⏳' : '📤'}</span>
+            <span>{storyShared ? 'Shared!' : storySharing ? 'Loading…' : 'Share Story'}</span>
+          </button>
+
+          {/* Direct download */}
+          <a
+            href={storyCardUrl}
+            download={`splitvote-story-${scenario.id}.svg`}
+            className="flex flex-col items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--muted)] hover:text-white font-bold text-xs px-3 py-3 rounded-xl transition-all"
+          >
+            <span className="text-lg">⬇️</span>
+            <span>Download Card</span>
+          </a>
+
+          {/* TikTok caption */}
+          <button
+            onClick={copyCaption}
+            className="flex flex-col items-center gap-1.5 bg-[#010101]/30 hover:bg-[#010101]/50 border border-white/10 text-white font-bold text-xs px-3 py-3 rounded-xl transition-all"
+          >
+            <span className="text-lg">🎵</span>
+            <span>{captionCopied ? '✅ Copied!' : 'TikTok Caption'}</span>
+          </button>
+
+          {/* Instagram caption */}
+          <button
+            onClick={copyIgCaption}
+            className="flex flex-col items-center gap-1.5 bg-gradient-to-br from-purple-600/10 to-pink-600/10 hover:from-purple-600/20 hover:to-pink-600/20 border border-purple-500/20 text-purple-300 font-bold text-xs px-3 py-3 rounded-xl transition-all"
+          >
+            <span className="text-lg">📸</span>
+            <span>{igCaptionCopied ? '✅ Copied!' : 'IG Caption'}</span>
+          </button>
+        </div>
+
+        <p className="text-[10px] text-[var(--muted)] text-center pb-4 px-5">
+          Upload to Instagram Stories or TikTok manually — auto-post not available via web.
+        </p>
       </div>
 
       {/* ── AdSense — shown after results, before CTA ── */}
