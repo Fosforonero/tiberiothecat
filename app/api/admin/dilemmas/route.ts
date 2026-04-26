@@ -1,16 +1,16 @@
 /**
  * GET /api/admin/dilemmas
- * Debug endpoint — lists AI-generated dilemmas stored in Redis.
- * Admin-only (same ADMIN_EMAILS whitelist as admin page).
+ * Lists AI-generated dilemmas from Redis. Admin-only.
  *
  * Query params:
- *   ?locale=en|it   — filter by locale (default: all)
- *   ?limit=N        — max results (default: 30, max: 60)
+ *   ?status=approved|draft|all  (default: all)
+ *   ?locale=en|it               (default: all)
+ *   ?limit=N                    (default: 30, max: 60)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getDynamicScenarios, getDynamicScenariosByLocale } from '@/lib/dynamic-scenarios'
+import { getDynamicScenarios, getDraftScenarios } from '@/lib/dynamic-scenarios'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -18,28 +18,38 @@ export const dynamic = 'force-dynamic'
 const ADMIN_EMAILS = ['mat.pizzi@gmail.com']
 
 export async function GET(request: NextRequest) {
-  // Auth check
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user?.email || !ADMIN_EMAILS.includes(user.email)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const locale = request.nextUrl.searchParams.get('locale') as 'en' | 'it' | null
-  const limitParam = parseInt(request.nextUrl.searchParams.get('limit') ?? '30', 10)
-  const limit = Math.min(Math.max(1, isNaN(limitParam) ? 30 : limitParam), 60)
+  const statusParam = request.nextUrl.searchParams.get('status') ?? 'all'
+  const locale      = request.nextUrl.searchParams.get('locale') as 'en' | 'it' | null
+  const limitParam  = parseInt(request.nextUrl.searchParams.get('limit') ?? '30', 10)
+  const limit       = Math.min(Math.max(1, isNaN(limitParam) ? 30 : limitParam), 60)
 
   try {
-    const scenarios = locale
-      ? await getDynamicScenariosByLocale(locale)
-      : await getDynamicScenarios()
+    const [approved, drafts] = await Promise.all([
+      getDynamicScenarios(),
+      getDraftScenarios(),
+    ])
 
-    const results = scenarios.slice(0, limit).map((s) => ({
+    let scenarios = statusParam === 'draft'
+      ? drafts
+      : statusParam === 'approved'
+        ? approved
+        : [...drafts, ...approved]
+
+    if (locale) scenarios = scenarios.filter(s => s.locale === locale)
+
+    const results = scenarios.slice(0, limit).map(s => ({
       id:             s.id,
       locale:         s.locale,
+      status:         s.status ?? 'approved',
       generatedAt:    s.generatedAt,
       trend:          s.trend,
+      trendSource:    s.trendSource ?? null,
       question:       s.question,
       optionA:        s.optionA,
       optionB:        s.optionB,
@@ -51,9 +61,11 @@ export async function GET(request: NextRequest) {
     }))
 
     return NextResponse.json({
-      total:   scenarios.length,
-      showing: results.length,
-      locale:  locale ?? 'all',
+      total:    scenarios.length,
+      showing:  results.length,
+      approved: approved.length,
+      drafts:   drafts.length,
+      locale:   locale ?? 'all',
       results,
     })
   } catch (err) {

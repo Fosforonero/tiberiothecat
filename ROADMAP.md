@@ -1,148 +1,134 @@
 # SplitVote — Roadmap
 
 > Piattaforma globale di behavioral data gamificata.
-> Dilemmi morali in tempo reale → dati demografici aggregati → insight vendibili.
+> Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
+
+Ultimo aggiornamento: 26 Aprile 2026
 
 ---
 
-## ✅ COMPLETATO
+## Stato Attuale
 
-### Infrastruttura
-- [x] Next.js 14 App Router + TypeScript + Tailwind + Vercel
-- [x] Redis (Upstash) per voti in tempo reale
-- [x] Supabase Auth (Google OAuth + email/password)
-- [x] Supabase DB (profiles, user_polls, poll_votes, subscriptions, learning_paths)
-- [x] Middleware protezione route premium (/dashboard, /submit-poll)
-- [x] Security headers (X-Frame, HSTS, CSP, etc.)
-- [x] Rate limiting IP-based sull'API voti
-- [x] Cron giornaliero auto-generazione dilemmi (OpenAI) — 06:00 UTC
+### Live / Implementato
+- [x] Next.js App Router + TypeScript + Tailwind + Vercel
+- [x] Supabase Auth + profili pseudonimi (`Splitvoter-XXXXXX`)
+- [x] Redis per voti real-time
+- [x] Dedup voto: cookie, rate limit IP, Supabase per utenti loggati
+- [x] Cambio voto entro finestra 24h senza doppio conteggio
+- [x] Dashboard utente con storico voti, badge, XP/streak, companion
+- [x] Companion system + daily missions
+- [x] Story cards 9:16 per Instagram/TikTok manual share
+- [x] Admin dashboard con metriche reali da `vote_daily_stats`
+- [x] Google Search Console verificata + sitemap inviata
+- [x] Logo/favicon PNG ufficiali integrati
+- [x] AdBlock banner soft, non bloccante
+- [x] i18n lite EN/IT con route SEO italiane
+- [x] Cron EN/IT per generazione dilemmi da trend
+- [x] Draft queue admin: cron genera draft, admin approva prima della pubblicazione
+- [x] Feedback qualità dilemma: 🔥 / 👎 con Supabase + Redis
+- [x] Sitemap locale-aware che esclude i draft
 
-### Contenuto & SEO
-- [x] 40+ dilemmi con categorie (Morality, Tech, Society, Love, etc.)
-- [x] Filtro per categoria sulla homepage
-- [x] Pagine /category/[slug] con JSON-LD
-- [x] Pagina /trending
-- [x] Sitemap.xml dinamica + robots.ts
-- [x] OG image base per condivisione social
-
-### Monetizzazione base
-- [x] Google AdSense (annunci reali)
-- [x] Adblock bypass: proxy first-party per GA4 e AdSense (/api/_g/)
-- [x] Google Consent Mode v2 (GDPR compliant)
-- [x] Google Analytics GA4 con transport_url first-party
-- [x] Account premium (is_premium flag su profiles)
-- [x] Dashboard utente base
-- [x] Submit-poll per premium (con moderazione)
-
-### UX
-- [x] Cookie consent banner
-- [x] Navbar con categorie + AuthButton
-- [x] Login/signup page (Google OAuth + email)
-- [x] AdBlock detection banner (polite, dismissibile)
+### Migration Supabase Applicate
+- [x] `migration_v2_safe.sql`
+- [x] `migration_v3_engagement.sql`
+- [x] `migration_v4_security_hotfix.sql`
+- [x] `migration_v5_vote_daily_stats.sql`
+- [ ] `migration_v6_feedback.sql` — da applicare prima del prossimo deploy
 
 ---
 
-## 🔧 IN CORSO / PROBLEMI NOTI
+## Blocchi / Rischi
 
-- [ ] **AdSense slot IDs** — inserire gli slot ID reali nei componenti AdSlot
-- [ ] **Google Auth in Supabase** — verificare che il callback funzioni end-to-end (test manuale)
-- [ ] **OG image** — esiste /api/og ma non è ancora collegata alle pagine dilemma individuali
-
----
-
-## 🚀 SPRINT CORRENTE — User Engagement & Virality
-
-### 1. Answer History (vote tracking per utenti loggati)
-- [ ] DB: tabella `dilemma_votes` (user → dilemma_id → A/B, locked after 24h)
-- [ ] API: aggiornare /api/vote per salvare voto se utente loggato
-- [ ] UI: storico risposte nella dashboard (card per ogni dilemma votato)
-- [ ] Lock: dopo 24h il voto è immutabile; mostrare "you voted A" sulla card dilemma
-
-### 2. OG Share Cards virali
-- [ ] /api/og/[id] — immagine OG dinamica per ogni dilemma con risultati in tempo reale
-- [ ] Share button sulla results page con link pre-formattato per Twitter/WhatsApp
-- [ ] "Your result card" — immagine personalizzata "I voted A — 67% agree worldwide"
-
-### 3. Sistema Badge (gamification)
-- [ ] DB: tabelle `badges` e `user_badges`
-- [ ] Badge earned: First Vote, 10 Votes, 50 Votes, 100 Votes
-- [ ] Badge earned: Contrarian (sempre in minoranza), Early Adopter (registrato entro 2025)
-- [ ] Badge earned: Category Master (10 voti per categoria)
-- [ ] Badge purchasable: frame profilo Gold, Neon, Cosmic (€0.99-€2.99 Stripe)
-- [ ] UI: badge display su profilo + badge showcase su share card
-
-### 4. Onboarding Demographics
-- [ ] Modal post-login (una volta sola): anno nascita, genere (opzionale), paese
-- [ ] Salva su `profiles` (birth_year, gender, country_code)
-- [ ] Privacy: dati solo in forma aggregata, mai individuali
+- [ ] **Stripe**: bloccato finché la chiave compromessa non è revocata e sostituita in Vercel.
+- [ ] **Build locale**: la shell di default usa Node 14; usare `nvm use` dentro questo repo.
+- [ ] **Upgrade framework**: Next 16 + React 19 + Node 24 è uno sprint dedicato, non va mischiato alla push corrente.
+- [ ] **Social trend sources**: X/Instagram/TikTok solo con API ufficiali o provider conformi. Niente scraping fragile.
 
 ---
 
-## 📅 SPRINT 2 — Internazionalizzazione (i18n)
+## Sprint Corrente — Viral Loop & SEO EN/IT
 
-**Impatto stimato: +200-300% traffico organico**
+- [x] Ripristino visual neon home EN/IT
+- [x] Sezioni home: Dilemma of the Day, Trending Now, Most Voted, Newly Generated, Browse All
+- [x] `DilemmaCard` condivisa con social proof voti
+- [x] Generazione dilemmi con scoring:
+  - `viralScore`
+  - `seoScore`
+  - `noveltyScore`
+  - `feedbackScore`
+  - `finalScore`
+- [x] Draft queue admin con approve/reject
+- [x] Cron auth compatibile con Vercel `Authorization: Bearer CRON_SECRET`
+- [x] Robots con `/admin/` disallow
+- [x] SERP base EN/IT: route, metadata, canonical, sitemap
 
-- [ ] Installare `next-intl` con routing /[locale]/
-- [ ] Lingue target: EN (default), ES, PT, FR, IT, DE
-- [ ] Tradurre UI strings (navbar, bottoni, meta, footer)
-- [ ] Tradurre tutti i 40+ dilemmi esistenti
-- [ ] Cron: generare dilemmi anche nelle altre lingue (OpenAI)
-- [ ] Sitemap multilingua con hreflang
-- [ ] OG/meta locali per ogni lingua
-- [ ] Google Search Console: aggiungere tutte le proprietà lingua
-
----
-
-## 💼 SPRINT 3 — Business Accounts & Data Platform
-
-**Revenue target: €199-999/mese per account**
-
-### Organizzazioni (associations, brands, media)
-- [ ] DB: `organizations`, `org_members`, `promoted_polls`
-- [ ] Signup business con tipo (brand, NGO, academic, media)
-- [ ] Promoted polls: associazioni creano dilemmi targetizzati
-- [ ] Embed widget: dilemma embeddabile su siti terzi (iframe + API)
-- [ ] Dashboard org: analytics propri poll
-
-### Business Analytics Dashboard
-- [ ] Breakdown demografico: età (fasce), genere, paese — per ogni dilemma
-- [ ] Filtri temporali, filtri categoria
-- [ ] Export CSV (piano Pro)
-- [ ] API accesso dati (piano Enterprise)
-- [ ] Mappe geografiche: heatmap mondiale per ogni dilemma (D3.js o Leaflet)
-
-### Piani e pricing
-- [ ] Free: vota, vedi risultati, profilo base
-- [ ] Premium Individual €4.99/mo: storico, badge, share card pro, filtri avanzati
-- [ ] Business Starter €49/mo: 3 poll/mese, breakdown per paese
-- [ ] Business Pro €199/mo: poll illimitati, dati demografici completi, export
-- [ ] Stripe integration completa (webhooks, portal, upgrade/downgrade)
+Da verificare post-deploy:
+- [ ] `/`
+- [ ] `/it`
+- [ ] `/trending`
+- [ ] `/it/trending`
+- [ ] `/admin`
+- [ ] `/sitemap.xml`
+- [ ] `/robots.txt`
+- [ ] `/api/admin/cron-dryrun?locale=en`
+- [ ] `/api/admin/cron-dryrun?locale=it`
 
 ---
 
-## 🌍 SPRINT 4 — Virality & Growth Loops
+## Prossimo Sprint — Stripe MVP
 
-- [ ] Share card animata (video loop 3s per Twitter/TikTok)
-- [ ] Leaderboard globale (chi ha votato di più, chi è più "contrarian")
-- [ ] Weekly Digest email: "questa settimana i risultati più sorprendenti"
-- [ ] Dilemma of the Day (push notification per utenti premium)
-- [ ] Referral system: invita 3 amici → badge Exclusive
-- [ ] Media kit: dati aggregati per giornalisti (es. "73% degli italiani sceglierebbe X")
-- [ ] API pubblica read-only per ricercatori
+Prerequisito:
+- [ ] Revocare chiave Stripe compromessa
+- [ ] Aggiungere nuova `STRIPE_SECRET_KEY` in Vercel
+- [ ] Aggiungere/validare `STRIPE_WEBHOOK_SECRET`
+
+Scope:
+- [ ] Premium monthly subscription
+- [ ] Customer portal
+- [ ] Webhook robusto per subscription lifecycle
+- [ ] UI upgrade/downgrade in dashboard/profile
+- [ ] Gate premium coerenti
 
 ---
 
-## 📊 METRICHE DA TRACKARE
+## Sprint Upgrade Tecnico
+
+Non fare insieme a feature/product sprint.
+
+- [ ] Usare solo runtime di progetto (`nvm use`), senza cambiare default globale
+- [ ] Valutare Node 24 LTS in `.nvmrc`
+- [ ] Upgrade Next 14 → Next 16
+- [ ] Upgrade React 18 → React 19
+- [ ] Upgrade ESLint config a stack compatibile Next 16
+- [ ] Applicare eventuali codemod App Router (`params/searchParams`)
+- [ ] Build locale con Node moderno
+- [ ] Deploy preview prima di produzione
+
+---
+
+## Growth Backlog
+
+- [ ] Admin scoring dashboard con breakdown di viral/SEO/novelty/feedback
+- [ ] Weekly digest email
+- [ ] Friend challenge leaderboard
+- [ ] Media kit pubblico con insight aggregati
+- [ ] API read-only per ricercatori
+- [ ] Video share cards animate
+- [ ] Referral system
+- [ ] Companion store / cosmetic unlocks
+- [ ] Moral profile compatibility tra amici
+- [ ] Zodiac/ascendant overlay opzionale sul moral profile
+
+---
+
+## Metriche Target
 
 | Metrica | Target 30gg | Target 90gg |
-|---------|------------|------------|
+|---|---:|---:|
 | Voti totali/giorno | 500 | 5.000 |
 | Utenti registrati | 500 | 5.000 |
+| Dilemmi approvati/settimana | 20 | 100 |
+| Share story/giorno | 50 | 500 |
 | Premium subscribers | 20 | 200 |
 | Business accounts | 0 | 5 |
-| Lingue live | 1 (EN) | 6 |
 | Revenue/mese | €0 | €1.000 |
-
----
-
-*Ultimo aggiornamento: 25 Aprile 2026*

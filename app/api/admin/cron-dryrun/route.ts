@@ -36,7 +36,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const res = await fetch(cronUrl, {
-      headers: cronSecret ? { 'x-cron-secret': cronSecret } : {},
+      headers: cronSecret
+        ? { 'x-cron-secret': cronSecret, authorization: `Bearer ${cronSecret}` }
+        : {},
       cache: 'no-store',
     })
 

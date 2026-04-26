@@ -7,6 +7,7 @@ import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
+import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
 
@@ -190,18 +191,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <CookieConsent />
         <AdBlockBanner />
-
-        <footer className="text-center text-[var(--muted)] text-xs py-10 mt-16">
-          <div className="neon-divider mb-8 mx-auto max-w-2xl" />
-          <p className="mb-2">© 2026 SplitVote.io — No right answers. Just honest ones.</p>
-          <p className="flex items-center justify-center gap-4 flex-wrap">
-            <a href="/faq" className="hover:text-white transition-colors">FAQ</a>
-            <span>·</span>
-            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-            <span>·</span>
-            <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-          </p>
-        </footer>
+        <Footer />
       </body>
     </html>
   )

@@ -1,10 +1,13 @@
 import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
-import { getVotes } from '@/lib/redis'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { getVotes, getVotesBatch } from '@/lib/redis'
 import DilemmaGrid from '@/components/DilemmaGrid'
+import DilemmaCard from '@/components/DilemmaCard'
 import AdSlot from '@/components/AdSlot'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
+import Link from 'next/link'
 import type { Scenario } from '@/lib/scenarios'
 
 const SLOT_HOME = process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? 'TODO'
@@ -19,7 +22,7 @@ function getDailyScenario(all: Scenario[]): Scenario {
 }
 
 export default async function HomePage() {
-  let dynamicScenarios: Scenario[] = []
+  let dynamicScenarios: DynamicScenario[] = []
   try {
     dynamicScenarios = await getDynamicScenarios()
   } catch {
@@ -39,7 +42,30 @@ export default async function HomePage() {
     // Non-blocking
   }
 
-  // JSON-LD: WebSite with SearchAction (Google Sitelinks Searchbox)
+  // Batch vote counts for Most Voted section (top 30 by heuristic)
+  let voteMap = new Map<string, number>()
+  try {
+    const batchIds = allScenarios.slice(0, 30).map((s) => s.id)
+    voteMap = await getVotesBatch(batchIds)
+  } catch {
+    // Non-blocking
+  }
+
+  // Sections
+  const trendingNow = [...uniqueDynamic]
+    .sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
+    .slice(0, 6)
+
+  const mostVoted = [...allScenarios.slice(0, 30)]
+    .filter((s) => (voteMap.get(s.id) ?? 0) > 0)
+    .sort((a, b) => (voteMap.get(b.id) ?? 0) - (voteMap.get(a.id) ?? 0))
+    .slice(0, 6)
+
+  const newlyGenerated = [...uniqueDynamic]
+    .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
+    .slice(0, 6)
+
+  // JSON-LD schemas
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -48,15 +74,11 @@ export default async function HomePage() {
     description: 'Real-time global votes on impossible moral dilemmas.',
     potentialAction: {
       '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/?q={search_term_string}`,
-      },
+      target: { '@type': 'EntryPoint', urlTemplate: `${BASE_URL}/?q={search_term_string}` },
       'query-input': 'required name=search_term_string',
     },
   }
 
-  // JSON-LD: ItemList of top dilemmas
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -72,7 +94,6 @@ export default async function HomePage() {
     })),
   }
 
-  // JSON-LD: FAQPage — answers common questions to capture FAQ rich results
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -141,8 +162,80 @@ export default async function HomePage() {
         {/* ── Dilemma of the Day ── */}
         <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
-        {/* ── Dilemma grid ── */}
-        <DilemmaGrid scenarios={allScenarios} />
+        {/* ── Trending Now (AI-generated, ranked by finalScore) ── */}
+        {trendingNow.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
+                <span className="text-orange-400">🔥</span> Trending Now
+              </h2>
+              <Link href="/trending" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
+                See all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {trendingNow.map((s) => (
+                <DilemmaCard
+                  key={s.id}
+                  scenario={s}
+                  playHref={`/play/${s.id}`}
+                  totalVotes={voteMap.get(s.id)}
+                  badge="trending"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Most Voted ── */}
+        {mostVoted.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
+                <span className="text-yellow-400">⭐</span> Most Voted
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {mostVoted.map((s) => (
+                <DilemmaCard
+                  key={s.id}
+                  scenario={s}
+                  playHref={`/play/${s.id}`}
+                  totalVotes={voteMap.get(s.id)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Newly Generated (most recent AI dilemmas) ── */}
+        {newlyGenerated.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
+                <span className="text-green-400">✨</span> Newly Generated
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {newlyGenerated.map((s) => (
+                <DilemmaCard
+                  key={s.id}
+                  scenario={s}
+                  playHref={`/play/${s.id}`}
+                  badge="new"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── Browse All ── */}
+        <section>
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
+            📂 Browse All
+          </h2>
+          <DilemmaGrid scenarios={allScenarios} />
+        </section>
 
         {/* AdSense */}
         <div className="mt-12">

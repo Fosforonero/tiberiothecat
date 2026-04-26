@@ -11,7 +11,6 @@ export async function incrementVote(scenarioId: string, option: 'a' | 'b'): Prom
 
 /**
  * Atomically replace a previous vote: decrement the old option, increment the new one.
- * Used when a logged-in user changes their vote within the 24h window.
  */
 export async function replaceVote(
   scenarioId: string,
@@ -20,7 +19,6 @@ export async function replaceVote(
 ): Promise<void> {
   if (oldOption === newOption) return
   const key = `votes:${scenarioId}`
-  // Pipeline both ops in one round-trip
   await Promise.all([
     redis.hincrby(key, oldOption, -1),
     redis.hincrby(key, newOption, 1),
@@ -30,8 +28,23 @@ export async function replaceVote(
 export async function getVotes(scenarioId: string): Promise<{ a: number; b: number }> {
   const result = await redis.hgetall(`votes:${scenarioId}`)
   return {
-    // Guard against negative values caused by decrement races
     a: Math.max(0, Number(result?.a ?? 0)),
     b: Math.max(0, Number(result?.b ?? 0)),
   }
+}
+
+/**
+ * Batch-fetch vote totals for multiple dilemmas in parallel.
+ * Returns a map: dilemmaId → total votes.
+ */
+export async function getVotesBatch(
+  ids: string[],
+): Promise<Map<string, number>> {
+  if (ids.length === 0) return new Map()
+  const results = await Promise.all(ids.map(id => getVotes(id)))
+  const map = new Map<string, number>()
+  ids.forEach((id, i) => {
+    map.set(id, results[i].a + results[i].b)
+  })
+  return map
 }

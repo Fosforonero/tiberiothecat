@@ -23,6 +23,8 @@ const SLOT_RESULTS = process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? 'TODO'
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [feedbackGiven, setFeedbackGiven] = useState<'fire' | 'down' | null>(null)
+  const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
   const [discordCopied, setDiscordCopied] = useState(false)
   const [challengeCopied, setChallengeCopied] = useState(false)
@@ -30,7 +32,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [storyShared, setStoryShared] = useState(false)
   const [igCaptionCopied, setIgCaptionCopied] = useState(false)
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    setMounted(true)
+    // Restore feedback from cookie
+    const cookie = document.cookie.split('; ').find(c => c.startsWith(`sv_fb_${scenario.id}=`))
+    if (cookie) {
+      const val = cookie.split('=')[1] as 'fire' | 'down'
+      if (val === 'fire' || val === 'down') setFeedbackGiven(val)
+    }
+  }, [scenario.id])
 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
   const challengeUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
@@ -76,6 +86,21 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     navigator.clipboard.writeText(challengeUrl)
     setChallengeCopied(true)
     setTimeout(() => setChallengeCopied(false), 2000)
+  }
+
+  const sendFeedback = async (type: 'fire' | 'down') => {
+    if (feedbackGiven || feedbackLoading) return
+    setFeedbackLoading(true)
+    try {
+      await fetch(`/api/dilemmas/${scenario.id}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type }),
+      })
+      setFeedbackGiven(type)
+    } finally {
+      setFeedbackLoading(false)
+    }
   }
 
   const copyIgCaption = () => {
@@ -230,6 +255,44 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             🌍 <span className="text-white font-semibold">{majorityPct}%</span> of the world chose:{' '}
             <em className="not-italic text-white">{majorityLabel}</em>
           </span>
+        )}
+      </div>
+
+      {/* ── Dilemma quality feedback ── */}
+      <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 text-center">
+        <p className="text-sm font-semibold text-[var(--text)] mb-3">
+          Was this dilemma interesting?
+        </p>
+        <div className="flex items-center justify-center gap-3">
+          <button
+            onClick={() => sendFeedback('fire')}
+            disabled={!!feedbackGiven || feedbackLoading}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all border
+              ${feedbackGiven === 'fire'
+                ? 'bg-orange-500/20 border-orange-500/50 text-orange-300'
+                : feedbackGiven
+                ? 'opacity-30 border-[var(--border)] text-[var(--muted)] cursor-not-allowed'
+                : 'border-orange-500/30 bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 hover:border-orange-500/50'
+              }`}
+          >
+            🔥 {feedbackGiven === 'fire' ? 'Voted!' : 'Interesting'}
+          </button>
+          <button
+            onClick={() => sendFeedback('down')}
+            disabled={!!feedbackGiven || feedbackLoading}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all border
+              ${feedbackGiven === 'down'
+                ? 'bg-[var(--border)] border-white/20 text-[var(--muted)]'
+                : feedbackGiven
+                ? 'opacity-30 border-[var(--border)] text-[var(--muted)] cursor-not-allowed'
+                : 'border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:bg-[var(--border)] hover:text-white'
+              }`}
+          >
+            👎 {feedbackGiven === 'down' ? 'Noted' : 'Not for me'}
+          </button>
+        </div>
+        {feedbackGiven && (
+          <p className="mt-3 text-xs text-[var(--muted)]">Thanks for the feedback!</p>
         )}
       </div>
 

@@ -7,15 +7,17 @@ const BASE = 'https://splitvote.io'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  // Fetch AI-generated dilemmas from Redis (cron job generates these daily)
-  let dynamicScenarios: Array<{ id: string; generatedAt: string; locale: string }> = []
+  // Fetch only APPROVED AI-generated dilemmas (drafts are never indexed)
+  let dynamicScenarios: Array<{ id: string; lastModified: Date; locale: string }> = []
   try {
     const dynamic = await getDynamicScenarios()
-    dynamicScenarios = dynamic.map((s) => ({
-      id:          s.id,
-      generatedAt: s.generatedAt,
-      locale:      s.locale,
-    }))
+    dynamicScenarios = dynamic
+      .filter((s) => s.status === 'approved' || s.status === undefined)
+      .map((s) => ({
+        id:           s.id,
+        lastModified: s.approvedAt ? new Date(s.approvedAt) : new Date(s.generatedAt),
+        locale:       s.locale,
+      }))
   } catch {
     // Redis unavailable — sitemap falls back to static only
   }
@@ -36,9 +38,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ])
 
-  // AI-generated scenario pages — locale-aware URLs, real generatedAt timestamp
-  const dynamicRoutes = dynamicScenarios.flatMap(({ id, generatedAt, locale }) => {
-    const lastMod = generatedAt ? new Date(generatedAt) : now
+  // AI-generated scenario pages — locale-aware URLs, approvedAt timestamp
+  const dynamicRoutes = dynamicScenarios.flatMap(({ id, lastModified, locale }) => {
+    const lastMod = lastModified ?? now
     const isIT = locale === 'it'
     const playUrl    = isIT ? `${BASE}/it/play/${id}`    : `${BASE}/play/${id}`
     const resultsUrl = isIT ? `${BASE}/it/results/${id}` : `${BASE}/results/${id}`
@@ -58,13 +60,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]
   })
 
-  // Category pages
-  const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').map((c) => ({
-    url: `${BASE}/category/${c.value}`,
-    lastModified: now,
-    changeFrequency: 'daily' as const,
-    priority: 0.85,
-  }))
+  // Category pages (EN + IT)
+  const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').flatMap((c) => [
+    {
+      url: `${BASE}/category/${c.value}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/it/category/${c.value}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.80,
+    },
+  ])
 
   return [
     // Core pages
@@ -100,7 +110,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${BASE}/it/personality`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.65,
+    },
+    {
+      url: `${BASE}/it/faq`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+    {
+      url: `${BASE}/it/privacy`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${BASE}/it/terms`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
+    },
+    {
       url: `${BASE}/login`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+    // Static pages
+    {
+      url: `${BASE}/faq`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.5,
