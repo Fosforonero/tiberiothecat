@@ -22,6 +22,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
+  const [discordCopied, setDiscordCopied] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
@@ -32,6 +33,8 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const twitterText = `"${scenario.question}" — The world is split ${pctA}% vs ${pctB}%. What would YOU choose? 🌍`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${twitterText}\n${shareUrl}`)}`
+  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(twitterText)}`
+  const discordText = `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
   const majorityPct = pctA > pctB ? pctA : pctB
@@ -47,6 +50,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     navigator.clipboard.writeText(tiktokCaption)
     setCaptionCopied(true)
     setTimeout(() => setCaptionCopied(false), 2000)
+  }
+
+  const copyDiscord = () => {
+    navigator.clipboard.writeText(discordText)
+    setDiscordCopied(true)
+    setTimeout(() => setDiscordCopied(false), 2000)
   }
 
   return (
@@ -170,7 +179,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             </button>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 mb-2">
             {/* X / Twitter */}
             <a
               href={twitterUrl}
@@ -198,6 +207,29 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             >
               {copied ? '✅' : '🔗'}
             </button>
+          </div>
+
+          <div className="flex gap-2">
+            {/* Discord — copies formatted text */}
+            <button
+              onClick={copyDiscord}
+              className="flex-1 flex items-center justify-center gap-2 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 border border-[#5865F2]/30 text-[#7289da] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              <svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor">
+                <path d="M60.1 4.9A58.5 58.5 0 0 0 45.5.4a.22.22 0 0 0-.23.11 40.8 40.8 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0 37.4 37.4 0 0 0-1.83-3.7.23.23 0 0 0-.23-.11A58.3 58.3 0 0 0 10.9 4.9a.21.21 0 0 0-.1.08C1.58 18.73-.96 32.16.3 45.4a.24.24 0 0 0 .09.17 58.8 58.8 0 0 0 17.7 8.95.23.23 0 0 0 .25-.08 42 42 0 0 0 3.61-5.88.22.22 0 0 0-.12-.31 38.7 38.7 0 0 1-5.53-2.64.23.23 0 0 1-.02-.37c.37-.28.74-.57 1.1-.86a.22.22 0 0 1 .23-.03c11.6 5.3 24.16 5.3 35.63 0a.22.22 0 0 1 .23.03c.36.29.73.58 1.1.86a.23.23 0 0 1-.02.38 36.4 36.4 0 0 1-5.54 2.63.23.23 0 0 0-.12.32 47.1 47.1 0 0 0 3.6 5.87.22.22 0 0 0 .25.09 58.6 58.6 0 0 0 17.72-8.95.23.23 0 0 0 .09-.16c1.49-15.43-2.5-28.75-10.56-40.6a.18.18 0 0 0-.09-.1zM23.73 37.3c-3.49 0-6.37-3.21-6.37-7.15 0-3.93 2.82-7.15 6.37-7.15 3.57 0 6.42 3.25 6.37 7.15 0 3.94-2.82 7.15-6.37 7.15zm23.54 0c-3.49 0-6.37-3.21-6.37-7.15 0-3.93 2.82-7.15 6.37-7.15 3.57 0 6.42 3.25 6.37 7.15 0 3.94-2.8 7.15-6.37 7.15z"/>
+              </svg>
+              {discordCopied ? '✅ Copied!' : 'Copy for Discord'}
+            </button>
+
+            {/* Telegram */}
+            <a
+              href={telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 border border-[#0088cc]/30 text-[#0088cc] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              ✈️ Telegram
+            </a>
           </div>
         </div>
       </div>
