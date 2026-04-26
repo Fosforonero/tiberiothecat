@@ -9,6 +9,10 @@ export const dynamic = 'force-dynamic'
 // ─── Admin allowlist ────────────────────────────────────────────
 const ADMIN_EMAILS = ['mat.pizzi@gmail.com']
 
+interface AdminProps {
+  searchParams: { preview?: string }
+}
+
 // ─── Helper: last N days with zero-fill ─────────────────────────
 function buildDayBuckets(n: number): Record<string, number> {
   const map: Record<string, number> = {}
@@ -20,7 +24,7 @@ function buildDayBuckets(n: number): Record<string, number> {
   return map
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: AdminProps) {
   // ── Auth check ──────────────────────────────────────────────
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -28,6 +32,8 @@ export default async function AdminPage() {
   if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) {
     redirect('/')
   }
+
+  const preview = searchParams.preview // 'user' | 'business' | undefined
 
   // ── Admin data (bypasses RLS) ───────────────────────────────
   const admin = createAdminClient()
@@ -132,10 +138,39 @@ export default async function AdminPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
 
-      {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-1">⚙️ Admin Dashboard</h1>
-        <p className="text-[var(--muted)] text-sm">SplitVote — internal statistics</p>
+      {/* ── Super-admin header ── */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+          <div>
+            <h1 className="text-3xl font-black text-white mb-1">⚙️ Admin Dashboard</h1>
+            <p className="text-[var(--muted)] text-sm">SplitVote — internal statistics · {user.email}</p>
+          </div>
+          {/* Quick preview links */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-[var(--muted)] font-bold uppercase tracking-widest mr-1">Preview as:</span>
+            <a href="/dashboard" target="_blank"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+              👤 User view ↗
+            </a>
+            <a href="/profile" target="_blank"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-colors">
+              🎭 Profile ↗
+            </a>
+            <a href={`/u/${user.id}`} target="_blank"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 transition-colors">
+              🏆 Public profile ↗
+            </a>
+          </div>
+        </div>
+
+        {/* DB migrations needed banner */}
+        <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 px-4 py-3 text-xs text-orange-400">
+          <span className="font-bold">⚠️ DB migrations needed for new features:</span>{' '}
+          Run in Supabase SQL editor:{' '}
+          <code className="bg-orange-500/10 px-1.5 py-0.5 rounded font-mono">
+            ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name_changes INT DEFAULT 0, ADD COLUMN IF NOT EXISTS avatar_emoji TEXT DEFAULT &apos;🌍&apos;;
+          </code>
+        </div>
       </div>
 
       {/* ── KPI row ── */}
