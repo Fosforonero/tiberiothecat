@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
     if (yr >= 1920 && yr <= 2015) updatePayload.birth_year = yr
   }
 
-  if (gender !== undefined && ['male', 'female', 'nonbinary', 'prefer_not'].includes(gender)) {
+  // DB constraint uses 'non_binary' — match exactly
+  if (gender !== undefined && ['male', 'female', 'non_binary', 'prefer_not'].includes(gender)) {
     updatePayload.gender = gender
   }
 

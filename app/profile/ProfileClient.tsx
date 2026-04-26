@@ -97,6 +97,10 @@ export default function ProfileClient({
 
       if (res.ok) {
         setMessage({ type: 'success', text: '✅ Profile updated!' })
+        // Keep local state in sync with what was saved (no stale values after refresh)
+        if (data.nameChangesUsed !== undefined) {
+          // displayName is already in state — no reset needed
+        }
       } else if (res.status === 402) {
         // Name change requires payment — redirect to Stripe
         await startStripeCheckout()
@@ -245,7 +249,7 @@ export default function ProfileClient({
               <option value="">Prefer not to say</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
-              <option value="nonbinary">Non-binary</option>
+              <option value="non_binary">Non-binary</option>
               <option value="prefer_not">Prefer not to say</option>
             </select>
           </div>

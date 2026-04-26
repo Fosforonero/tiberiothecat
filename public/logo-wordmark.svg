@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" fill="none">
+  <!-- Icon background square -->
+  <rect x="0" y="10" width="100" height="100" rx="22" fill="#070718"/>
+  <!-- White upper S segment -->
+  <path d="M50 20C68 20 81 30 81 44C81 44 74 36 50 36C34 36 22 44 22 53L14 53C14 32 30 20 50 20Z" fill="white"/>
+  <!-- Blue lower S segment -->
+  <path d="M50 69C32 69 19 61 19 61L26 61C30 66 39 69 50 69C66 69 78 61 78 53L86 53C86 71 70 80 50 80C32 80 17 70 14 58L14 53L22 53C22 63 34 69 50 69Z" fill="#4060FF"/>
+
+  <!-- "Split" text — white, heavy -->
+  <text x="116" y="82"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="62" font-weight="900" fill="white" letter-spacing="-1">Split</text>
+
+  <!-- "Vote" text — blue, heavy -->
+  <text x="286" y="82"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="62" font-weight="900" fill="#4060FF" letter-spacing="-1">Vote</text>
+</svg>

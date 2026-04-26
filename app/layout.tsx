@@ -67,8 +67,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/logo-icon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/logo-icon-192.png', type: 'image/png', sizes: '192x192' },
     ],
-    apple: '/logo-icon.svg',
+    apple: '/apple-icon.png',
+    shortcut: '/logo-icon-32.png',
   },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
@@ -143,13 +146,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="border-b border-[var(--border)] px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
           style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
 
-          {/* Logo */}
-          <a href="/" className="flex-shrink-0 flex items-center gap-2 group" aria-label="SplitVote home">
+          {/* Logo — icon on mobile, wordmark on desktop */}
+          <a href="/" className="flex-shrink-0 flex items-center gap-2.5 group" aria-label="SplitVote home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-icon.svg" alt="" width={32} height={32} className="w-8 h-8" />
-            <span className="text-xl font-black tracking-tight">
+            <img
+              src="/logo-icon.svg"
+              alt="SplitVote"
+              width={34} height={34}
+              className="w-[34px] h-[34px] flex-shrink-0"
+              style={{ borderRadius: '8px' }}
+            />
+            {/* Desktop: full wordmark text */}
+            <span className="hidden sm:block text-xl font-black tracking-tight leading-none">
               <span className="text-white">Split</span>
-              <span className="text-blue-400">Vote</span>
+              <span style={{ color: '#4060FF' }}>Vote</span>
             </span>
           </a>
 

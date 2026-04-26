@@ -110,8 +110,12 @@ export async function GET(request: NextRequest) {
   <!-- Emoji -->
   <text x="60" y="105" font-family="system-ui, sans-serif" font-size="56">${emoji}</text>
 
-  <!-- SplitVote wordmark -->
-  <text x="1140" y="56" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="900" fill="#334155" text-anchor="end" letter-spacing="3">SPLITVOTE.IO</text>
+  <!-- SplitVote logo icon (top-right) -->
+  <rect x="1090" y="18" width="40" height="40" rx="9" fill="#070718"/>
+  <path d="M1110 22C1123 22 1130 27 1130 33C1130 33 1125 28 1110 28C1099 28 1092 33 1092 38L1090 38C1090 29 1098 22 1110 22Z" fill="white"/>
+  <path d="M1110 48C1098 48 1090 44 1090 44L1094 44C1096 47 1102 48 1110 48C1121 48 1128 43 1128 38L1130 38C1130 46 1122 54 1110 54C1099 54 1091 48 1090 44L1090 38L1092 38C1092 44 1099 48 1110 48Z" fill="#4060FF"/>
+  <!-- SplitVote wordmark text -->
+  <text x="1086" y="75" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="900" fill="#475569" text-anchor="end" letter-spacing="1">splitvote.io</text>
 
   <!-- Question line 1 -->
   <text x="60" y="175" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="44" font-weight="800" fill="#f1f5f9">${q1}</text>
