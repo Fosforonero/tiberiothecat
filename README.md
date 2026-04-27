@@ -145,9 +145,15 @@ Generated dilemmas are saved to Redis as **drafts**. They only become public aft
 
 ### Vote flow
 1. Cookie dedup (fast path — blocks same browser)
-2. IP rate limit (20 votes/hour via Redis)
+2. Rate limiting — three tiers via Redis keys with TTL:
+   - Global IP: 60 votes/hour per IP (NAT-friendly, coarse anti-bot)
+   - Scenario+IP: 5 votes per dilemma per IP per 10 min (single-scenario hammering)
+   - User-level: 120 votes/hour per logged-in user (after auth)
 3. Supabase check for logged-in users (authoritative dedup across devices, 24h change window)
-4. Redis increment / replace (atomic, via `incrementVote` / `replaceVote` in `lib/redis.ts`)
+4. Redis increment / replace (`incrementVote` / `replaceVote` in `lib/redis.ts`)
+   - `replaceVote` uses a Lua eval — truly atomic, clamps old field to ≥ 0 before decrement
+5. Server-side vote funnel events for logged-in users (written directly to `user_events` via admin client):
+   `vote_success`, `vote_change`, `vote_duplicate`, `vote_rate_limited`
 
 ### Dynamic dilemma flow
 1. Cron fetches trend signals (Google Trends, Reddit, RSS/news; social APIs are feature-flagged for later)
@@ -268,7 +274,7 @@ content-output/
 |---|---|---|
 | `id` | uuid | PK |
 | `user_id` | uuid | FK → `auth.users`, cascade delete |
-| `event_type` | text | Allowlisted via `/api/events/track`: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download`. Server-inserted via admin client: `referral_visit` |
+| `event_type` | text | Allowlisted via `/api/events/track`: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download`. Server-inserted via admin client: `referral_visit`, `vote_success`, `vote_change`, `vote_duplicate`, `vote_rate_limited` |
 | `scenario_id` | text | Optional |
 | `metadata` | jsonb | Additional context |
 | `created_at` | timestamptz | Indexed with `(user_id, event_type, created_at)` |

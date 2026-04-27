@@ -10,7 +10,9 @@ export async function incrementVote(scenarioId: string, option: 'a' | 'b'): Prom
 }
 
 /**
- * Atomically replace a previous vote: decrement the old option, increment the new one.
+ * Atomically swap a vote using a Lua script: one round-trip, no partial failure.
+ * Reads old field value before decrementing — skips decrement if already 0
+ * to prevent negative counts even under concurrent writes.
  */
 export async function replaceVote(
   scenarioId: string,
@@ -19,10 +21,13 @@ export async function replaceVote(
 ): Promise<void> {
   if (oldOption === newOption) return
   const key = `votes:${scenarioId}`
-  await Promise.all([
-    redis.hincrby(key, oldOption, -1),
-    redis.hincrby(key, newOption, 1),
-  ])
+  const lua = [
+    'local v = tonumber(redis.call("HGET", KEYS[1], ARGV[1])) or 0',
+    'if v > 0 then redis.call("HINCRBY", KEYS[1], ARGV[1], -1) end',
+    'redis.call("HINCRBY", KEYS[1], ARGV[2], 1)',
+    'return 1',
+  ].join('\n')
+  await redis.eval(lua, [key], [oldOption, newOption])
 }
 
 export async function getVotes(scenarioId: string): Promise<{ a: number; b: number }> {

@@ -16,6 +16,11 @@ const ALLOWED_EVENT_TYPES = new Set([
   'copy_result_link',
   'story_card_share',
   'story_card_download',
+  // Vote funnel events — inserted server-side by /api/vote, listed here for schema consistency
+  'vote_success',
+  'vote_change',
+  'vote_duplicate',
+  'vote_rate_limited',
 ])
 
 export async function POST(req: NextRequest) {

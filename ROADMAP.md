@@ -9,7 +9,22 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Hardening Tecnico Pre-Lancio (27 Apr 2026)
+### Sprint Corrente — Vote Integrity Hardening (27 Apr 2026)
+
+**Integrità voto + rate limiting granulare + funnel tracking ✅**
+
+- [x] **replaceVote atomic-safe**: Lua eval su Upstash Redis — operazione atomica in singolo round-trip, clamp automatico a ≥ 0 prima del decremento. Nessuna possibilità di decremento parziale in caso di errore.
+- [x] **Rate limit voto granulare** — 3 livelli via Redis keys con TTL:
+  - Tier 1 global IP: 60/ora (era 20 — alzato per compatibilità NAT); key `ratelimit:{ip}`
+  - Tier 2 scenario+IP: 5 per dilemma per IP per 10 min; key `ratelimit:scenario:{id}:{ip}`
+  - Tier 3 user: 120/ora per utente loggato; key `ratelimit:user:{userId}`
+- [x] **Vote funnel server-side tracking** per utenti loggati: `vote_success`, `vote_change`, `vote_duplicate` (con reason: same_option/locked/race_condition), `vote_rate_limited`. Inseriti via admin client in `user_events`. Non-blocking, non bloccano il voto. Anonimi: nessun insert personale.
+- [x] **ALLOWED_EVENT_TYPES** in `/api/events/track` aggiornato con i 4 nuovi event type per coerenza di schema.
+- [x] Nessuna migration Supabase necessaria — `event_type` è text senza enum constraint.
+
+---
+
+### Sprint Precedente — Hardening Tecnico Pre-Lancio (27 Apr 2026)
 
 **Performance + policy + bug fix ✅**
 

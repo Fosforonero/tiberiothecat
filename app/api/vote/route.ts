@@ -7,9 +7,44 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
-// IP rate limit: max 20 votes per IP per hour across ALL dilemmas
-const IP_RATE_LIMIT = 20
-const IP_WINDOW_SECONDS = 60 * 60 // 1 hour
+// Rate limit tiers (all use Redis keys with TTL, no external library)
+const IP_LIMIT_GLOBAL   = 60   // per IP per hour across all dilemmas — raised from 20 to be NAT-friendly
+const IP_WINDOW         = 3600 // 1 hour
+const IP_LIMIT_SCENARIO = 5    // per IP per dilemma per 10 min — catches single-scenario hammering
+const SCENARIO_WINDOW   = 600  // 10 minutes
+const USER_LIMIT        = 120  // per logged-in user per hour — high enough for normal use
+const USER_WINDOW       = 3600 // 1 hour
+
+type VoteEventType = 'vote_success' | 'vote_change' | 'vote_duplicate' | 'vote_rate_limited'
+
+/**
+ * Insert a vote funnel event for a logged-in user.
+ * Non-blocking — errors are swallowed, never fail the vote response.
+ * No IP or sensitive data stored; only option + reason metadata.
+ */
+async function trackVoteEvent(
+  userId: string,
+  eventType: VoteEventType,
+  scenarioId: string,
+  option: string,
+  reason?: string,
+): Promise<void> {
+  try {
+    const admin = createAdminClient()
+    await admin.from('user_events').insert({
+      user_id:    userId,
+      event_type: eventType,
+      scenario_id: scenarioId,
+      metadata: {
+        option,
+        anonymous: false,
+        ...(reason ? { reason } : {}),
+      },
+    })
+  } catch {
+    // Non-blocking: never fail a vote because of analytics
+  }
+}
 
 function getClientIp(req: NextRequest): string {
   return (
@@ -72,14 +107,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Scenario not found' }, { status: 404 })
     }
 
-    // ── IP-based rate limiting (anti-bot, per hour) ──
-    // Runs before auth to protect even the auth lookup from flood
     const ip = getClientIp(request)
+
+    // ── Tier 1: global IP rate limit — coarse anti-bot, runs before auth ──
     if (ip !== 'unknown') {
-      const rateKey = `ratelimit:${ip}`
-      const count = await redis.incr(rateKey)
-      if (count === 1) await redis.expire(rateKey, IP_WINDOW_SECONDS)
-      if (count > IP_RATE_LIMIT) {
+      const globalKey = `ratelimit:${ip}`
+      const globalCount = await redis.incr(globalKey)
+      if (globalCount === 1) await redis.expire(globalKey, IP_WINDOW)
+      if (globalCount > IP_LIMIT_GLOBAL) {
+        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
+      }
+    }
+
+    // ── Tier 2: per-scenario+IP rate limit — catches single-dilemma hammering ──
+    if (ip !== 'unknown') {
+      const scenarioKey = `ratelimit:scenario:${id}:${ip}`
+      const scenarioCount = await redis.incr(scenarioKey)
+      if (scenarioCount === 1) await redis.expire(scenarioKey, SCENARIO_WINDOW)
+      if (scenarioCount > IP_LIMIT_SCENARIO) {
         return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
       }
     }
@@ -98,6 +143,15 @@ export async function POST(request: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
+        // ── Tier 3: per-user rate limit — runs after auth, before dedup ──
+        const userKey = `ratelimit:user:${user.id}`
+        const userCount = await redis.incr(userKey)
+        if (userCount === 1) await redis.expire(userKey, USER_WINDOW)
+        if (userCount > USER_LIMIT) {
+          void trackVoteEvent(user.id, 'vote_rate_limited', id, option, 'user_limit')
+          return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
+        }
+
         // Check existing vote in Supabase (cross-device dedup)
         const { data: existing } = await supabase
           .from('dilemma_votes')
@@ -112,6 +166,7 @@ export async function POST(request: NextRequest) {
 
           // ── Same option: no-op ──
           if (prevOption === option) {
+            void trackVoteEvent(user.id, 'vote_duplicate', id, option, 'same_option')
             const res = NextResponse.json({ ok: true, alreadyVoted: true })
             setCookieOnResponse(res, cookieName, option)
             return res
@@ -119,6 +174,7 @@ export async function POST(request: NextRequest) {
 
           // ── Different option but outside 24h window: locked ──
           if (!withinWindow) {
+            void trackVoteEvent(user.id, 'vote_duplicate', id, option, 'locked')
             const res = NextResponse.json({ ok: true, alreadyVoted: true, locked: true })
             setCookieOnResponse(res, cookieName, prevOption)
             return res
@@ -133,9 +189,8 @@ export async function POST(request: NextRequest) {
             .eq('user_id', user.id)
             .eq('dilemma_id', id)
 
-          // Track vote change in daily stats (logged-in)
-          // Note: on change we don't increment total_count since user already voted
-          // We only track the option change via Redis swap above
+          void trackVoteEvent(user.id, 'vote_change', id, option)
+
           const res = NextResponse.json({ ok: true, changed: true })
           setCookieOnResponse(res, cookieName, option)
           return res
@@ -153,6 +208,7 @@ export async function POST(request: NextRequest) {
           if (voteError.code === '23505') {
             // Race condition: another concurrent request already inserted this vote.
             // Treat as alreadyVoted — do NOT increment Redis.
+            void trackVoteEvent(user.id, 'vote_duplicate', id, option, 'race_condition')
             const res = NextResponse.json({ ok: true, alreadyVoted: true })
             setCookieOnResponse(res, cookieName, option)
             return res
@@ -163,6 +219,8 @@ export async function POST(request: NextRequest) {
 
         // Supabase insert confirmed → safe to increment Redis vote count
         await incrementVote(id, option)
+
+        void trackVoteEvent(user.id, 'vote_success', id, option)
 
         // Track in daily stats — logged-in user, non-blocking
         void trackDailyVote(id, choice, false)
@@ -184,7 +242,7 @@ export async function POST(request: NextRequest) {
 
     // ────────────────────────────────────────────────────────────────
     // ANONYMOUS PATH (no auth or Supabase unavailable):
-    // Cookie is the only dedup mechanism.
+    // Cookie is the only dedup mechanism. No user_events inserted.
     // ────────────────────────────────────────────────────────────────
     if (request.cookies.get(cookieName)) {
       return NextResponse.json({ ok: true, alreadyVoted: true })
