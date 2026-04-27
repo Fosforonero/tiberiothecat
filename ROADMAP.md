@@ -9,7 +9,58 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Share Mission + User Events Tracking (27 Apr 2026)
+### Sprint Corrente — Social Links + Referral QA (27 Apr 2026)
+
+**Social presence + caption consistency + referral QA ✅**
+
+- [x] `lib/social-links.ts`: costanti centralizzate per Instagram (`@splitvote.io`) e TikTok (`@splitvote8`)
+- [x] `components/Footer.tsx`: link Instagram + TikTok — `target="_blank"`, `aria-label` EN/IT, `rel="noopener noreferrer"`
+- [x] `app/layout.tsx`: Organization JSON-LD `sameAs` aggiornato con Instagram e TikTok
+- [x] `app/results/[id]/ResultsClientPage.tsx`: caption TikTok e Instagram includono handle ufficiali
+  - TikTok EN/IT: aggiunto `@splitvote8` prima degli hashtag
+  - Instagram EN/IT: aggiunto `@splitvote.io` + ristrutturato "Link in bio" line
+- [x] `README.md`: migration v8 → ✅ Applied; v9 aggiunta come ⏳ Pending; tabella missioni aggiornata
+- [x] Referral QA: codice challenge_friend verificato (vedi sotto)
+
+**Referral QA — challenge_friend:**
+- ✅ `profiles.referral_code` backfillato per tutti gli utenti esistenti (migration v9)
+- ✅ Nuovi profili ricevono `referral_code` via DEFAULT PostgreSQL
+- ✅ `/api/referral/visit`: self-referral bloccato (`user?.id === referrerId`)
+- ✅ Dedup server-side: 1 `referral_visit` per (referrer_user_id, scenario_id) per giorno
+- ✅ Dedup client-side: `sessionStorage` barrier su VoteClientPage
+- ✅ `challenge_friend` legge `referral_visit` da `user_events` (non più Coming Soon)
+- ✅ Nessun `user_id` raw negli URL: solo `?ref=<10-hex-chars>`
+- ⚠️ Visitor anonimi possono triggerare referral_visit (trade-off accettato — sessione dedup mitiga abuse casuale)
+- ⚠️ RLS `profiles`: fetch `referral_code` in ResultsClientPage richiede policy `auth.uid() = user_id` (standard Supabase — già presente nelle migration esistenti)
+
+**⚠️ Migration da applicare:**
+```sql
+-- Supabase dashboard → SQL Editor → supabase/migration_v9_referral_codes.sql → Run
+```
+
+---
+
+### Sprint Precedente — challenge_friend Referral Tracking (27 Apr 2026)
+
+**challenge_friend mission — server-verified via referral_code ✅**
+
+- [x] `supabase/migration_v9_referral_codes.sql`: `profiles.referral_code text unique`
+  - `left(replace(gen_random_uuid()::text, '-', ''), 10)` — 10 hex chars, URL-safe, non-indovinabile
+  - Backfill per utenti esistenti, DEFAULT per nuovi, unique index
+- [x] `POST /api/referral/visit`: endpoint senza auth visitatore
+  - Admin client risolve `ref` → `referrer user_id` lato server (RLS bypass, sicuro)
+  - Self-referral bloccato (visitatore autenticato con stesso `user_id`)
+  - Dedup 1/giorno per (referrer, scenario_id)
+  - Nessun IP o identità visitatore salvati
+- [x] `VoteClientPage.tsx`: prop `referralCode`, `useEffect` chiama `/api/referral/visit` (sessionStorage dedup)
+- [x] `ResultsClientPage.tsx`: fetch `referral_code` da profiles, challenge URL include `?ref=<code>`
+- [x] `GET /api/missions`: `challenge_friend` rimosso da `COMING_SOON`, progress = `referralVisitsCount`
+- [x] `POST /api/missions/complete`: verifica server-side `referral_visit` ≥ 1 per `challenge_friend`
+- [x] `app/play/[id]/page.tsx` + `app/it/play/[id]/page.tsx`: `?ref=` passato a VoteClientPage
+
+---
+
+### Sprint Precedente — Share Mission + User Events Tracking (27 Apr 2026)
 
 **share_result mission server-verified + user_events tracking ✅**
 
@@ -54,7 +105,7 @@ Ultimo aggiornamento: 27 Aprile 2026
   - `vote_3`: conta da `dilemma_votes` oggi — server-verified
   - `vote_2_categories`: conta categorie distinte dai voti di oggi (static + dynamic lookup) — server-verified
   - `daily_dilemma`: almeno 1 voto oggi — server-verified
-  - `challenge_friend`: `comingSoon: true, claimable: false` — non tracciabile lato server
+  - `challenge_friend`: `comingSoon: true, claimable: false` — non tracciabile lato server (ora risolto in sprint successivo)
   - `share_result`: `comingSoon: true, claimable: false` — non tracciabile lato server
 - [x] `POST /api/missions/complete`: verifica server-side per `vote_2_categories`
   - Blocca `challenge_friend` e `share_result` (403 — tracking non disponibile)
@@ -476,6 +527,37 @@ Da verificare post-deploy:
 - [x] `/robots.txt`
 - [ ] `/api/admin/cron-dryrun?locale=en`
 - [ ] `/api/admin/cron-dryrun?locale=it`
+
+---
+
+## Prossimo Sprint — Social Content Factory
+
+Obiettivo: pipeline locale per generare caption e contenuti social dai dilemmi approvati. Nessuna auto-pubblicazione, nessuna API social.
+
+**Fase 1 — Generate social captions (JSON/markdown)**
+- [ ] `lib/social-content.ts`: `generateSocialContent(dilemma, locale)` → oggetto con caption TikTok, Instagram, Twitter, Discord
+- [ ] `POST /api/admin/generate-social-content`: genera captions per un dilemma approvato
+  - Input: `dilemmaId`, `locale: 'en' | 'it'`
+  - Output: `{ tiktok, instagram, twitter, discord, hashtags }`
+  - Auth admin required
+  - Mai autopubblicato — solo genera testo
+- [ ] Salva output in `/content-output/<dilemmaId>-<locale>.json` (locale, non committa)
+  - Oppure in Supabase colonna `social_captions_json` su tabella dilemmi (per consultazione admin)
+- [ ] Admin panel: pulsante "Generate captions" per ogni dilemma approvato
+
+**Fase 2 — Remotion vertical video (sprint separato)**
+- [ ] Remotion template 1080x1920 per vertical video (TikTok/Reels)
+  - Dati da dilemma approvato: question, optionA, optionB, emoji, risultati (pctA/pctB)
+  - Output: MP4 in `/content-output/`
+  - No auto-post — upload manuale
+- [ ] `npm run render-social <dilemmaId>` (script locale, non fa parte del build Vercel)
+- [ ] Template EN/IT separati
+
+**Vincoli fissi:**
+- Nessuna API Instagram/TikTok in questo sprint
+- Approvazione manuale obbligatoria prima di qualsiasi post
+- Output locale o Supabase — niente publish automatico
+- Remotion solo in sprint Fase 2, non installare ora
 
 ---
 

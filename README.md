@@ -118,7 +118,8 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v5_vote_daily_stats.sql` | admin vote charts incl. anonymous votes | ✅ Applied |
 | `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | ✅ Applied |
 | `migration_v7_stripe_subscriptions.sql` | Stripe customer/subscription fields | ✅ Applied |
-| `migration_v8_user_events.sql` | User event tracking for share_result mission | ⏳ Pending |
+| `migration_v8_user_events.sql` | User event tracking for share_result mission | ✅ Applied |
+| `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ⏳ Pending |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -217,7 +218,7 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 | `vote_3` | Count from `dilemma_votes` today | ≥ 3 votes |
 | `vote_2_categories` | Distinct categories from today's votes (static + dynamic lookup) | ≥ 2 categories |
 | `daily_dilemma` | At least 1 vote today | ≥ 1 vote |
-| `challenge_friend` | Not verifiable — shown as Coming Soon | disabled |
+| `challenge_friend` | Count `referral_visit` events in `user_events` today (requires migration_v9) | ≥ 1 visit |
 | `share_result` | Count `user_events` today with type in `{share_result, copy_result_link, story_card_share, story_card_download}` | ≥ 1 event |
 
 `components/DailyMissions.tsx` shows the Claim button only when `claimable === true` from the server. Coming-soon missions are non-interactive. All XP is awarded server-side via `award_mission_xp` (DB function with hardcoded XP table — no client-supplied XP).
@@ -230,7 +231,7 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 |---|---|---|
 | `id` | uuid | PK |
 | `user_id` | uuid | FK → `auth.users`, cascade delete |
-| `event_type` | text | Allowlisted: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download` |
+| `event_type` | text | Allowlisted via `/api/events/track`: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download`. Server-inserted via admin client: `referral_visit` |
 | `scenario_id` | text | Optional |
 | `metadata` | jsonb | Additional context |
 | `created_at` | timestamptz | Indexed with `(user_id, event_type, created_at)` |

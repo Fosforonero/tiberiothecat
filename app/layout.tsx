@@ -11,6 +11,7 @@ import NavLinks from '@/components/NavLinks'
 import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
+import { SOCIAL_LINKS } from '@/lib/social-links'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -145,7 +146,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: 'SplitVote',
         url: 'https://splitvote.io',
         logo: 'https://splitvote.io/og-default.png',
-        sameAs: ['https://twitter.com/splitvote'],
+        sameAs: [
+          'https://twitter.com/splitvote',
+          SOCIAL_LINKS.instagram,
+          SOCIAL_LINKS.tiktok,
+        ],
         description: 'Real-time global votes on impossible moral dilemmas.',
       }} />
       </head>
