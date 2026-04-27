@@ -11,7 +11,7 @@ export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Privacy Policy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Last updated: April 25, 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Last updated: April 27, 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 
@@ -32,12 +32,21 @@ export default function PrivacyPage() {
           <p className="mb-2">We collect the minimum data necessary to operate the service:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>
-              <strong className="text-white">Vote data</strong> — when you vote, we store an anonymous
-              aggregated counter (option A or B) in our database. We do not store your IP address or
-              any identifier linked to your vote.
+              <strong className="text-white">Anonymous vote data</strong> — when you vote without an
+              account, we store only an anonymous aggregated counter (option A or B). Your IP address
+              may be processed temporarily for abuse prevention and rate limiting, stored in hashed
+              form in short-lived rate-limit keys (automatically deleted after a maximum of 1 hour).
+              The raw IP address is never stored in our permanent database.
             </li>
             <li>
-              <strong className="text-white">Country of origin</strong> — we detect the approximate
+              <strong className="text-white">Account data</strong> (registered users only) — if you
+              create an account, we store your email address, a pseudonymous display name, and your
+              vote history linked to your user ID. This is used to prevent duplicate votes across
+              devices and to power profile features (XP, streaks, badges, daily missions). Share
+              actions and referral link visits are recorded for mission progress tracking.
+            </li>
+            <li>
+              <strong className="text-white">Country of origin</strong> — we may detect the approximate
               country of your request to show country-level vote breakdowns. This information is not
               stored or logged beyond the aggregated result.
             </li>
@@ -58,7 +67,8 @@ export default function PrivacyPage() {
           <h2 className="text-base font-bold text-white mb-2">3. Legal basis for processing (GDPR)</h2>
           <p>For users in the European Economic Area (EEA) and UK:</p>
           <ul className="list-disc pl-5 space-y-1 mt-2">
-            <li><strong className="text-white">Legitimate interest</strong> — anonymous aggregated vote counting, which does not identify individuals.</li>
+            <li><strong className="text-white">Legitimate interest</strong> — anonymous aggregated vote counting; IP-based rate limiting for abuse prevention (temporary, auto-deleted after max 1 hour).</li>
+            <li><strong className="text-white">Contract performance</strong> — providing account services to registered users (vote history, profile, gamification).</li>
             <li><strong className="text-white">Consent</strong> — analytics and advertising cookies. You can withdraw consent at any time via the cookie banner.</li>
           </ul>
         </div>
@@ -76,7 +86,8 @@ export default function PrivacyPage() {
           <h2 className="text-base font-bold text-white mb-2">5. Third-party services</h2>
           <ul className="list-disc pl-5 space-y-1">
             <li><strong className="text-white">Vercel</strong> — hosting and edge network (USA). <a href="https://vercel.com/legal/privacy-policy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
-            <li><strong className="text-white">Upstash Redis</strong> — vote storage database (EU region). <a href="https://upstash.com/trust/privacy.pdf" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Supabase</strong> — authentication and user database (EU region). <a href="https://supabase.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Upstash Redis</strong> — real-time vote counters and rate limiting (EU region). <a href="https://upstash.com/trust/privacy.pdf" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
             <li><strong className="text-white">Google Analytics 4</strong> — analytics (with consent). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
             <li><strong className="text-white">Google AdSense</strong> — advertising (with consent). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
           </ul>
@@ -86,8 +97,14 @@ export default function PrivacyPage() {
           <h2 className="text-base font-bold text-white mb-2">6. Data retention</h2>
           <p>
             Aggregated vote counts are retained indefinitely as they are anonymous statistical data.
+            IP addresses are hashed before being used as rate-limit keys and are automatically deleted after a maximum of 1 hour.
             Google Analytics data is retained for 14 months (our configured retention period).
-            No personal data is stored on our servers.
+            Account data (email address, display name, vote history) is retained until you delete
+            your account. To request account deletion, contact{' '}
+            <a href="mailto:hello@splitvote.io" className="text-blue-400 hover:underline">
+              hello@splitvote.io
+            </a>{' '}
+            from the address used to register.
           </p>
         </div>
 
@@ -144,7 +161,16 @@ export default function PrivacyPage() {
             We use a consent banner (powered by Google&apos;s CMP) to manage cookies. Cookie categories:
           </p>
           <ul className="list-disc pl-5 space-y-1">
-            <li><strong className="text-white">Strictly necessary</strong> — vote session cookie (localStorage only, not transmitted to servers).</li>
+            <li>
+              <strong className="text-white">Strictly necessary</strong> — functional cookies set by
+              our server: <strong className="text-white">sv_voted_*</strong> (records your vote choice
+              per dilemma to prevent duplicate votes, persists 1 year);{' '}
+              <strong className="text-white">sv_fb_*</strong> (records your feedback per dilemma,
+              1 year); <strong className="text-white">lang-pref</strong> (language preference,
+              12 hours); authentication cookies (session management for logged-in users, managed by
+              Supabase). None of these cookies contain personal data beyond your vote/feedback choices
+              and are never used for tracking or advertising.
+            </li>
             <li><strong className="text-white">Analytics</strong> (consent required) — Google Analytics cookies (set only after your explicit consent).</li>
             <li><strong className="text-white">Advertising</strong> (consent required) — Google AdSense cookies.</li>
           </ul>

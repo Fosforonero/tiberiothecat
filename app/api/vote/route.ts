@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { redis, incrementVote, replaceVote } from '@/lib/redis'
 import { getScenario } from '@/lib/scenarios'
@@ -54,6 +55,14 @@ function getClientIp(req: NextRequest): string {
   )
 }
 
+// Hash the IP before using it in Redis keys so raw IPs are never stored.
+// RATE_LIMIT_SALT is optional — hashing without salt is still better than raw.
+function getRateLimitIdentity(ip: string): string {
+  if (ip === 'unknown') return 'unknown'
+  const salt = process.env.RATE_LIMIT_SALT ?? ''
+  return crypto.createHash('sha256').update(salt + ip).digest('hex').slice(0, 16)
+}
+
 function setCookieOnResponse(
   res: NextResponse,
   cookieName: string,
@@ -108,10 +117,11 @@ export async function POST(request: NextRequest) {
     }
 
     const ip = getClientIp(request)
+    const ipHash = getRateLimitIdentity(ip)
 
     // ── Tier 1: global IP rate limit — coarse anti-bot, runs before auth ──
     if (ip !== 'unknown') {
-      const globalKey = `ratelimit:${ip}`
+      const globalKey = `ratelimit:${ipHash}`
       const globalCount = await redis.incr(globalKey)
       if (globalCount === 1) await redis.expire(globalKey, IP_WINDOW)
       if (globalCount > IP_LIMIT_GLOBAL) {
@@ -121,7 +131,7 @@ export async function POST(request: NextRequest) {
 
     // ── Tier 2: per-scenario+IP rate limit — catches single-dilemma hammering ──
     if (ip !== 'unknown') {
-      const scenarioKey = `ratelimit:scenario:${id}:${ip}`
+      const scenarioKey = `ratelimit:scenario:${id}:${ipHash}`
       const scenarioCount = await redis.incr(scenarioKey)
       if (scenarioCount === 1) await redis.expire(scenarioKey, SCENARIO_WINDOW)
       if (scenarioCount > IP_LIMIT_SCENARIO) {

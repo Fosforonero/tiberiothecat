@@ -20,7 +20,7 @@ export default function ItPrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Informativa sulla Privacy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 25 aprile 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 27 aprile 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 
@@ -41,12 +41,13 @@ export default function ItPrivacyPage() {
           <p className="mb-2"><strong className="text-white">Votanti anonimi:</strong></p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Un cookie di sessione per dilemma che registra la tua scelta (A o B) per prevenire voti duplicati.</li>
-            <li>Un hash dell&apos;indirizzo IP per la limitazione delle richieste (cancellato dopo 1 ora).</li>
+            <li>L&apos;indirizzo IP del visitatore viene trattato temporaneamente per la prevenzione degli abusi e la limitazione delle richieste, memorizzato in forma hash in chiavi di rate limit a breve durata (cancellato automaticamente dopo un massimo di 1 ora). L&apos;IP raw non viene mai scritto nel database principale.</li>
           </ul>
           <p className="mt-2 mb-2"><strong className="text-white">Utenti registrati (aggiuntivi rispetto ai precedenti):</strong></p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Indirizzo email e nome visualizzato (opzionale).</li>
-            <li>Cronologia dei voti collegata al tuo account.</li>
+            <li>Cronologia dei voti collegata al tuo account per prevenire voti duplicati su più dispositivi e alimentare le funzionalità di profilo (XP, streak, badge).</li>
+            <li>Attività di condivisione e referral (condivisioni dei risultati, visite ai link di sfida) per il progresso nelle missioni giornaliere.</li>
             <li>Dati demografici opzionali: anno di nascita, paese, genere.</li>
           </ul>
         </div>
@@ -78,9 +79,14 @@ export default function ItPrivacyPage() {
           <p>
             Utilizziamo Google Consent Mode v2. Per impostazione predefinita, tutti i cookie analitici e
             pubblicitari sono negati fino a quando non clicchi su &ldquo;Accetta&rdquo; nel banner cookie.
-            I cookie funzionali (per ricordare i voti già espressi) sono sempre attivi perché necessari
-            al funzionamento del servizio.
+            I cookie funzionali sono sempre attivi perché necessari al funzionamento del servizio:
           </p>
+          <ul className="list-disc pl-5 space-y-1 mt-2">
+            <li><strong className="text-white">sv_voted_*</strong> — registra la tua scelta per ogni dilemma per prevenire voti duplicati (1 anno).</li>
+            <li><strong className="text-white">sv_fb_*</strong> — registra il tuo feedback per ogni dilemma (1 anno).</li>
+            <li><strong className="text-white">lang-pref</strong> — preferenza lingua (12 ore).</li>
+            <li><strong className="text-white">Cookie di autenticazione Supabase</strong> — gestione della sessione per gli utenti registrati.</li>
+          </ul>
         </div>
 
         <div>
@@ -95,7 +101,7 @@ export default function ItPrivacyPage() {
         <div>
           <h2 className="text-base font-bold text-white mb-2">7. Conservazione dei dati</h2>
           <p>
-            Gli hash IP per la limitazione delle richieste vengono eliminati dopo 1 ora. I dati dell&apos;account
+            Gli indirizzi IP vengono hashati prima di essere usati come chiavi di rate limit e vengono eliminati automaticamente dopo un massimo di 1 ora. I dati dell&apos;account
             vengono conservati fino alla cancellazione dell&apos;account. I conteggi aggregati dei voti sono
             conservati indefinitamente perché non sono collegati a nessun individuo.
           </p>

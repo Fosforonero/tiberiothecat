@@ -54,6 +54,11 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 KV_REST_API_URL=https://xxxx.upstash.io
 KV_REST_API_TOKEN=Axxx...
 
+# Rate limiting (optional but recommended)
+# Salt for IP hashing in Redis rate-limit keys. Any random string.
+# If missing, IPs are still hashed (SHA-256) — just without salt. Set in Vercel for production.
+RATE_LIMIT_SALT=random-strong-secret
+
 # Anthropic (daily dilemma cron)
 ANTHROPIC_API_KEY=sk-ant-...
 CRON_SECRET=random-strong-secret
