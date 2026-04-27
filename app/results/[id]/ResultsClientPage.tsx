@@ -60,14 +60,14 @@ const EN_COPY = {
   copyDiscordDone:   '✅ Copied!',
   telegram:          '✈️ Telegram',
   storyTitle:        '📱 Share as Story',
-  storyDesc:         'Ready for Instagram Stories & TikTok. Share or download the 9:16 card, then upload manually.',
+  storyDesc:         'Download a 9:16 card for Instagram Stories or TikTok.',
   storyShare:        'Share Story',
   storySharing:      'Loading…',
   storyShared:       'Shared!',
   storyDownload:     'Download Card',
   storyTiktok:       'TikTok Caption',
   storyIg:           'IG Caption',
-  storyNote:         'Upload to Instagram Stories or TikTok manually — auto-post not available via web.',
+  storyNote:         'Auto-posting is not available from the web. Upload the PNG manually.',
   nextDilemma:       'Next dilemma →',
   allDilemmas:       'All dilemmas',
   anonCTAHeadline:   'Want to save your votes?',
@@ -113,14 +113,14 @@ const IT_COPY = {
   copyDiscordDone:   '✅ Copiato!',
   telegram:          '✈️ Telegram',
   storyTitle:        '📱 Condividi come Storia',
-  storyDesc:         'Pronto per Instagram Stories e TikTok. Condividi o scarica la card 9:16, poi caricala manualmente.',
+  storyDesc:         'Scarica una card 9:16 per Instagram Stories o TikTok.',
   storyShare:        'Condividi Storia',
   storySharing:      'Caricamento…',
   storyShared:       'Condiviso!',
   storyDownload:     'Scarica Card',
   storyTiktok:       'Caption TikTok',
   storyIg:           'Caption IG',
-  storyNote:         'Carica su Instagram Stories o TikTok manualmente — il post automatico non è disponibile via web.',
+  storyNote:         'La pubblicazione automatica non è disponibile dal web. Carica il PNG manualmente.',
   nextDilemma:       'Prossimo dilemma →',
   allDilemmas:       'Tutti i dilemmi',
   anonCTAHeadline:   'Vuoi salvare i tuoi voti?',
@@ -174,7 +174,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
   const challengeUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
-  const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}`
+  const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}&locale=${locale}`
 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
   const majorityPct = pctA > pctB ? pctA : pctB
@@ -274,36 +274,40 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     }
   }
 
-  // Share vertical story card via Web Share API
+  // Share vertical story card via Web Share API (PNG only — SVG is rejected by Instagram/TikTok)
   const shareStory = async () => {
     if (!mounted) return
     track('story_card_clicked', { scenario_id: scenario.id, locale })
     setStorySharing(true)
+    const filename = `splitvote-story-${scenario.id}.png`
     try {
       const res = await fetch(storyCardUrl)
       const blob = await res.blob()
-      const file = new File([blob], `splitvote-story-${scenario.id}.svg`, { type: 'image/svg+xml' })
+      const file = new File([blob], filename, { type: 'image/png' })
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
           files: [file],
           title: `SplitVote — ${scenario.question.slice(0, 60)}`,
-          text: `${pctA}% vs ${pctB}% — What would you choose? 👇`,
+          text: `${pctA}% vs ${pctB}% — ${locale === 'it' ? 'Cosa faresti?' : 'What would you choose?'} 👇`,
         })
         setStoryShared(true)
       } else if (navigator.share) {
+        // File sharing not supported — share URL instead
         await navigator.share({ title: 'SplitVote', url: shareUrl, text: `${pctA}% vs ${pctB}%` })
         setStoryShared(true)
       } else {
+        // No Web Share API — trigger download
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
-        link.download = `splitvote-story-${scenario.id}.svg`
+        link.download = filename
         link.click()
       }
     } catch {
+      // Share cancelled or failed — fallback to direct download
       const link = document.createElement('a')
       link.href = storyCardUrl
-      link.download = `splitvote-story-${scenario.id}.svg`
+      link.download = filename
       link.click()
     } finally {
       setStorySharing(false)
@@ -645,7 +649,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           {/* Direct download */}
           <a
             href={storyCardUrl}
-            download={`splitvote-story-${scenario.id}.svg`}
+            download={`splitvote-story-${scenario.id}.png`}
             onClick={() => track('story_card_clicked', { scenario_id: scenario.id, locale, action: 'download' })}
             className="flex flex-col items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--muted)] hover:text-white font-bold text-xs px-3 py-3 rounded-xl transition-all"
           >
