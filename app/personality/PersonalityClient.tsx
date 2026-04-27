@@ -104,16 +104,16 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
   const loginHref = '/login'
 
   useEffect(() => {
-    fetch('/api/personality')
+    fetch(locale === 'it' ? '/api/personality?locale=it' : '/api/personality')
       .then(r => r.json())
       .then(setData)
       .catch(() => setData(null))
       .finally(() => setLoading(false))
-  }, [])
+  }, [locale])
 
   const handleShare = async () => {
-    const text = data?.archetype?.shareText ?? 'Check out my SplitVote personality at splitvote.io!'
-    const url = 'https://splitvote.io/personality'
+    const text = data?.archetype?.shareText ?? (locale === 'it' ? 'Scopri la tua personalità SplitVote su splitvote.io!' : 'Check out my SplitVote personality at splitvote.io!')
+    const url = locale === 'it' ? 'https://splitvote.io/it/personality' : 'https://splitvote.io/personality'
     if (navigator.share) {
       await navigator.share({ text, url })
     } else {

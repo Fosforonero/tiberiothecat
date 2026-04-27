@@ -9,7 +9,22 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Expert Insight & AdBlock UX (27 Apr 2026)
+### Sprint Corrente — i18n Personality & App Navigation (27 Apr 2026)
+
+- [x] `lib/personality.ts`: archetype + axis IT translations (`nameIt`, `signIt`, `taglineIt`, `descriptionIt`, `traitsIt`, `shareTextIt`)
+- [x] `lib/personality.ts`: `getCommunityLabel(locale)` e `getAxisLabel(locale)` locale-aware
+- [x] `app/api/personality/route.ts`: `?locale=en|it` — restituisce archetype/axes/communityLabel/messages localizzati
+- [x] `PersonalityClient.tsx`: fetch `/api/personality?locale=it` da `/it/personality`, share URL locale-aware
+- [x] `NavLinks.tsx`: `<a>` → `<Link>` (next/link) per prefetch app-like
+- [x] `MobileMenu.tsx`: link nav `<a>` → `<Link>`
+- [x] `app/layout.tsx`: logo link `<a>` → `<Link>`
+- [x] `app/dashboard/page.tsx`: tutti i link interni `<a>` → `<Link>`
+- [x] `app/profile/ProfileClient.tsx`: "← Dashboard" `<a>` → `<Link>`
+- [ ] Bottom nav mobile: valutata, rimandata a sprint UX dedicato (vedi Growth Backlog)
+
+---
+
+### Sprint Precedente — Expert Insight & AdBlock UX (27 Apr 2026)
 
 - [x] `AdBlockBanner`: copy onesto — "I'll whitelist manually" / "Lo aggiungo manualmente" (non implica bypass automatico)
 - [x] `AdBlockBanner`: microcopy istruzione manuale EN/IT aggiunto sotto i bottoni CTA
@@ -159,6 +174,7 @@ Non fare insieme a feature/product sprint.
 - [ ] Idempotenza webhook Stripe: storico `session_id` già processati in DB per evitare doppio increment `name_changes`
 - [ ] **Expert Insight AI**: generare insight da AI (OpenRouter, modello economico) solo per draft approvati — cache nel record dilemma, admin review obbligatoria, mai live on user request, guardrail per categorie health/legal
 - [ ] **Expert Insight store**: colonna `expert_insight_en` / `expert_insight_it` su tabella dilemmas per insight curati manualmente o approvati da admin
+- [ ] **Bottom nav mobile**: Home / Trending / Play / Profilo — solo mobile, locale-aware, safe-area, non copre contenuto
 
 ---
 

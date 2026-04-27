@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
+import Link from 'next/link'
 import { Analytics } from '@vercel/analytics/next'
 import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
@@ -141,7 +142,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
 
           {/* Logo — icon on mobile, wordmark on desktop */}
-          <a href="/" className="flex-shrink-0 flex items-center group" aria-label="SplitVote home">
+          <Link href="/" className="flex-shrink-0 flex items-center group" aria-label="SplitVote home">
             {/* Wordmark PNG — visible on all screen sizes */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -150,7 +151,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               height={28}
               className="h-[28px] w-auto flex-shrink-0"
             />
-          </a>
+          </Link>
 
           {/* Desktop category links — locale-aware */}
           <NavLinks />

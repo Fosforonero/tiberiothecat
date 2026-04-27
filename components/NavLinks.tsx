@@ -1,6 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { TrendingUp, Scale, Cpu, Users, Heart, Building2, Compass } from 'lucide-react'
 
 const EN_LINKS = [
@@ -31,14 +32,14 @@ export default function NavLinks() {
   return (
     <div className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
       {links.map(({ href, label, icon: Icon, color }) => (
-        <a
+        <Link
           key={href}
           href={href}
           className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-all px-3 py-1.5 rounded-lg border border-transparent ${color}`}
         >
           <Icon size={12} />
           {label}
-        </a>
+        </Link>
       ))}
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { CreditCard, Loader2, Check, Star, ExternalLink } from 'lucide-react'
 
 const AVATARS = ['🌍', '🔥', '⚡', '🧠', '🎭', '👾', '🦁', '🐺', '🦊', '🐉', '🌙', '☀️', '🎯', '🏆', '💎', '🌊', '🎪', '🚀', '🎲', '🧩']
@@ -207,9 +208,9 @@ export default function ProfileClient({
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 sm:py-12 space-y-6 sm:space-y-8">
       <div>
-        <a href="/dashboard" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
+        <Link href="/dashboard" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
           ← Dashboard
-        </a>
+        </Link>
         <h1 className="text-2xl sm:text-3xl font-black text-white mt-4 mb-1">Profile Settings</h1>
         <p className="text-[var(--muted)] text-sm">Manage your identity, achievements, and preferences.</p>
       </div>

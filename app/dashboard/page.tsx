@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import { getScenario } from '@/lib/scenarios'
@@ -204,12 +205,12 @@ export default async function DashboardPage() {
               <p className="text-[var(--muted)] text-xs mt-0.5">All features unlocked.</p>
             </div>
           </div>
-          <a
+          <Link
             href="/profile#membership"
             className="text-xs font-bold px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 transition-colors flex-shrink-0"
           >
             Manage →
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
@@ -217,12 +218,12 @@ export default async function DashboardPage() {
             <p className="font-bold text-blue-400 text-sm">Free Plan</p>
             <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade for unlimited features.</p>
           </div>
-          <a
+          <Link
             href="/profile#membership"
             className="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors flex-shrink-0"
           >
             Upgrade ✦
-          </a>
+          </Link>
         </div>
       )}
 
@@ -253,14 +254,14 @@ export default async function DashboardPage() {
           <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-10 text-center">
             <p className="text-4xl mb-3">🤔</p>
             <p className="text-[var(--muted)] text-sm">You haven&apos;t voted yet. Go explore some dilemmas!</p>
-            <a href="/" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
+            <Link href="/" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
               Start voting →
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="space-y-3">
             {dilemmaDetails.map(v => (
-              <a
+              <Link
                 key={v.dilemma_id}
                 href={`/results/${v.dilemma_id}`}
                 className="block rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-4 hover:border-blue-500/30 transition-colors group"
@@ -293,7 +294,7 @@ export default async function DashboardPage() {
                     See results →
                   </span>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         )}
@@ -305,9 +306,9 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-black text-white">Your Submitted Polls</h2>
             {ents.canSubmitPoll && (
-              <a href="/submit-poll" className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
+              <Link href="/submit-poll" className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
                 + Submit new
-              </a>
+              </Link>
             )}
           </div>
           <div className="space-y-3">

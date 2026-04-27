@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap, Building2, HelpCircle, Compass, UserPlus } from 'lucide-react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 const EN_LINKS = [
@@ -103,7 +104,7 @@ export default function MobileMenu() {
       >
         <div style={{ padding: '8px' }}>
           {NAV_LINKS.map(({ href, label, icon: Icon, color }) => (
-            <a
+            <Link
               key={href}
               href={href}
               onClick={() => setOpen(false)}
@@ -124,14 +125,14 @@ export default function MobileMenu() {
               <span style={{ fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}>
                 {label}
               </span>
-            </a>
+            </Link>
           ))}
 
           {/* Auth CTA — only shown to confirmed logged-out users */}
           {isLoggedIn === false && (
             <>
               <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '6px 12px' }} />
-              <a
+              <Link
                 href={isIT ? '/login?locale=it' : '/login'}
                 onClick={() => setOpen(false)}
                 role="menuitem"
@@ -159,7 +160,7 @@ export default function MobileMenu() {
                     {isIT ? 'Salva voti, badge, companion' : 'Save votes, earn badges'}
                   </span>
                 </div>
-              </a>
+              </Link>
             </>
           )}
         </div>
