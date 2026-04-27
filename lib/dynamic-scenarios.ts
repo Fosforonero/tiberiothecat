@@ -42,6 +42,10 @@ export interface DynamicScenario extends Scenario {
   qualityGateScore?:  number
   qualityGateReasons?: string[]
   generatedBy?:       'cron' | 'admin' | 'seed_batch'
+  // AI-generated expert insight fields — draft only, shown after admin approval.
+  // Override the static category-level fallback in lib/expert-insights.ts.
+  expertInsightEn?:   import('./expert-insights').DynamicExpertInsight
+  expertInsightIt?:   import('./expert-insights').DynamicExpertInsight
 }
 
 // ── Approved (public) scenarios ───────────────────────────────

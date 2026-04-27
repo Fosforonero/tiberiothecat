@@ -3,13 +3,41 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 27 Aprile 2026 (sprint AI hardening)
+Ultimo aggiornamento: 27 Aprile 2026 (sprint Expert Insight v2)
 
 ---
 
 ## Stato Attuale
 
-### Sprint Corrente — AI Content Hardening + Audit (27 Apr 2026)
+### Sprint Completato — Expert Insight v2 (27 Apr 2026)
+
+**Expert Insight post-voto: struttura, personalizzazione, AI-ready ✅**
+
+- [x] `lib/expert-insights.ts`: interfaccia estesa con `whyPeopleSplit`, `whatYourAnswerMaySuggest {a, b}`, `ExpertPerspective`, `DynamicExpertInsight`
+  - 8 categorie completamente riscritte (EN + IT): body più breve e mobile-first, nuovo campo `whyPeopleSplit`, prospettive per scelta A/B
+  - Linguaggio cauto obbligatorio: "may suggest", "could indicate" — mai affermazioni definitive sulla psicologia dell'utente
+  - Nessun consiglio medico, legale o psicologico professionale — sempre disclaimer esplicito
+- [x] `lib/dynamic-scenarios.ts`: campi opzionali `expertInsightEn`, `expertInsightIt` in `DynamicScenario`
+  - Draft-only: i campi sono generati dal cron ma visibili solo dopo approvazione admin
+  - Override parziale del fallback statico (solo i campi non-null sovrascrivono)
+- [x] `app/results/[id]/ResultsClientPage.tsx`: UI Expert Insight ristrutturata
+  - Tre sezioni: insight principale → "Why people split" → "What your choice may suggest"
+  - "What your choice may suggest" visibile SOLO se l'utente ha votato, con testo specifico per scelta A o B
+  - EN_COPY e IT_COPY: nuove chiavi `insightWhySplit`, `insightYourChoice`
+  - Merge dinamico: se `expertInsightEn/It` presente nel scenario, override del fallback statico
+- [x] `app/api/cron/generate-dilemmas/route.ts`: prompt aggiornato
+  - Claude genera `insightBody`, `insightWhySplit`, `insightPerspectiveA/B` come campi opzionali
+  - Mapping nei candidate → `expertInsightEn` o `expertInsightIt` a seconda del locale
+  - Admin review obbligatoria — mai pubblicati senza approvazione
+
+**Guardrail professionali:**
+- Mai: "sei X tipo di persona", diagnosi, prognosi, consiglio clinico
+- Sempre: "may suggest", "could indicate", "might reflect" + disclaimer
+- AI insights: draft-only → review obbligatoria → approvazione admin → pubblico
+
+---
+
+### Sprint Completato — AI Content Hardening + Audit (27 Apr 2026)
 
 **Quality gates autopublish + content opportunities + launch audit ✅**
 

@@ -85,6 +85,11 @@ interface GeneratedDilemmaRaw {
   seoTitle: string
   seoDescription: string
   keywords: string[]
+  // Expert insight fields — optional, draft-only, admin review required before shown publicly
+  insightBody?: string
+  insightWhySplit?: string
+  insightPerspectiveA?: string
+  insightPerspectiveB?: string
 }
 
 async function generateDilemmas(
@@ -119,9 +124,13 @@ Rules:
 - seoTitle: compelling headline for Google (50-60 chars)
 - seoDescription: 1-2 sentence description for Google snippet (120-160 chars)
 - keywords: 5-8 SEO keywords as JSON array
+- insightBody: 1-2 sentences on the core philosophical or psychological tension (educational, NOT professional advice)
+- insightWhySplit: 1 sentence explaining why reasonable people end up on opposite sides
+- insightPerspectiveA: starts "Choosing this option may suggest…" — cautious, non-diagnostic framing for option A (use "may", "might", "could suggest" — never definitive claims about users' psychology)
+- insightPerspectiveB: starts "Choosing this option may suggest…" — same style for option B
 
 Respond with ONLY a JSON array — no explanation, no markdown:
-[{"id":"…","question":"…","optionA":"…","optionB":"…","emoji":"…","category":"…","trend":"…","seoTitle":"…","seoDescription":"…","keywords":["…"]}]`
+[{"id":"…","question":"…","optionA":"…","optionB":"…","emoji":"…","category":"…","trend":"…","seoTitle":"…","seoDescription":"…","keywords":["…"],"insightBody":"…","insightWhySplit":"…","insightPerspectiveA":"…","insightPerspectiveB":"…"}]`
 
   const message = await client.messages.create({
     model: 'claude-opus-4-6',
@@ -196,6 +205,15 @@ export async function GET(request: NextRequest) {
       const skippedInvalid: string[] = []
 
       for (const raw of rawDilemmas) {
+        const expertInsightField = locale === 'it' ? 'expertInsightIt' : 'expertInsightEn'
+        const expertInsightValue = raw.insightBody ? {
+          body: raw.insightBody,
+          ...(raw.insightWhySplit && { whyPeopleSplit: raw.insightWhySplit }),
+          ...(raw.insightPerspectiveA && raw.insightPerspectiveB && {
+            whatYourAnswerMaySuggest: { a: raw.insightPerspectiveA, b: raw.insightPerspectiveB },
+          }),
+        } : undefined
+
         const candidate: Partial<DynamicScenario> = {
           ...raw,
           locale,
@@ -204,6 +222,7 @@ export async function GET(request: NextRequest) {
           trendSource: (raw._signal?.source as DynamicScenario['trendSource']) ?? 'mixed',
           trendUrl: raw._signal?.url,
           keywords: Array.isArray(raw.keywords) ? raw.keywords.slice(0, 8) : [],
+          ...(expertInsightValue && { [expertInsightField]: expertInsightValue }),
         }
 
         if (!isValidDilemma(candidate)) {

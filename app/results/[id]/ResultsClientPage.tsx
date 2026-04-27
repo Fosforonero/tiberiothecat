@@ -6,6 +6,8 @@ import Link from 'next/link'
 import AdSlot from '@/components/AdSlot'
 import { createClient } from '@/lib/supabase/client'
 import { getExpertInsight } from '@/lib/expert-insights'
+import type { DynamicExpertInsight } from '@/lib/expert-insights'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { track } from '@/lib/gtag'
 import { SOCIAL_LINKS } from '@/lib/social-links'
 
@@ -71,12 +73,15 @@ const EN_COPY = {
   storyNote:         'Auto-posting is not available from the web. Upload the PNG manually.',
   nextDilemma:       'Next dilemma →',
   allDilemmas:       'All dilemmas',
-  anonCTAHeadline:   'Want to save your votes?',
+  aggregateNote:     'Results based on anonymous votes from users worldwide.',
+  anonCTAHeadline:   'Want to track your choices over time?',
   anonCTABody:       'Create a free account to track your answers, earn badges, and grow your companion.',
   anonCTAButton:     'Join free — it takes 10 seconds',
   webShareCTA:       '📤 Share result',
   webShareSub:       'Send via messages, stories, or copy link',
   webShareCopied:    '✅ Link copied!',
+  insightWhySplit:   'Why people split',
+  insightYourChoice: 'What your choice may suggest',
 }
 
 const IT_COPY = {
@@ -124,12 +129,15 @@ const IT_COPY = {
   storyNote:         'La pubblicazione automatica non è disponibile dal web. Carica il PNG manualmente.',
   nextDilemma:       'Prossimo dilemma →',
   allDilemmas:       'Tutti i dilemmi',
-  anonCTAHeadline:   'Vuoi salvare i tuoi voti?',
+  aggregateNote:     'Risultati basati su voti anonimi di utenti da tutto il mondo.',
+  anonCTAHeadline:   'Vuoi tracciare le tue scelte nel tempo?',
   anonCTABody:       'Crea un account gratis per tenere traccia delle risposte, guadagnare badge e far crescere il tuo companion.',
   anonCTAButton:     'Crea profilo gratis — ci vogliono 10 secondi',
   webShareCTA:       '📤 Condividi risultato',
   webShareSub:       'Invia via messaggi, storie o copia il link',
   webShareCopied:    '✅ Link copiato!',
+  insightWhySplit:   'Perché le persone si dividono',
+  insightYourChoice: 'Cosa potrebbe suggerire la tua scelta',
 }
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
@@ -149,7 +157,18 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
   const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
   const locale = sharePrefix === '/it' ? 'it' : 'en'
-  const expertInsight = getExpertInsight(scenario.category, locale)
+  const baseInsight = getExpertInsight(scenario.category, locale)
+  const dynamicOverride: DynamicExpertInsight | undefined = locale === 'it'
+    ? (scenario as Partial<DynamicScenario>).expertInsightIt
+    : (scenario as Partial<DynamicScenario>).expertInsightEn
+  const expertInsight = dynamicOverride
+    ? {
+        ...baseInsight,
+        ...(dynamicOverride.body && { body: dynamicOverride.body }),
+        ...(dynamicOverride.whyPeopleSplit && { whyPeopleSplit: dynamicOverride.whyPeopleSplit }),
+        ...(dynamicOverride.whatYourAnswerMaySuggest && { whatYourAnswerMaySuggest: dynamicOverride.whatYourAnswerMaySuggest }),
+      }
+    : baseInsight
 
   useEffect(() => {
     setMounted(true)
@@ -446,7 +465,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       </div>
 
       {/* Winner label */}
-      <div className="text-center mb-8 text-[var(--muted)] text-sm">
+      <div className="text-center mb-3 text-[var(--muted)] text-sm">
         {pctA === pctB ? (
           <span>{copy.tie}</span>
         ) : (
@@ -456,6 +475,11 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           </span>
         )}
       </div>
+
+      {/* Aggregate attribution */}
+      <p className="text-center text-xs text-[var(--muted)] mb-8 opacity-60">
+        {copy.aggregateNote}
+      </p>
 
       {/* ── Primary Web Share CTA ── */}
       <div className="mb-8">
@@ -479,9 +503,33 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             {expertInsight.expertType}
           </span>
         </div>
-        <p className="text-sm text-[var(--text)] leading-relaxed mb-3">
+
+        <p className="text-sm text-[var(--text)] leading-relaxed mb-4">
           {expertInsight.body}
         </p>
+
+        <div className="mb-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400/60 mb-1.5">
+            {copy.insightWhySplit}
+          </p>
+          <p className="text-sm text-[var(--muted)] leading-relaxed">
+            {expertInsight.whyPeopleSplit}
+          </p>
+        </div>
+
+        {voted && (
+          <div className="mb-4 rounded-xl border border-cyan-500/15 bg-cyan-500/[0.06] px-4 py-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400/60 mb-1.5">
+              {copy.insightYourChoice}
+            </p>
+            <p className="text-sm text-[var(--text)] leading-relaxed">
+              {voted === 'a'
+                ? expertInsight.whatYourAnswerMaySuggest.a
+                : expertInsight.whatYourAnswerMaySuggest.b}
+            </p>
+          </div>
+        )}
+
         <p className="text-[11px] text-[var(--muted)] italic">
           {expertInsight.disclaimer}
         </p>

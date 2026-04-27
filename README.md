@@ -303,6 +303,28 @@ Events are written from `ResultsClientPage.tsx` after successful share actions (
 
 `app/admin/SeedBatchPanel.tsx` (admin-only client component) provides a UI button in `/admin` that calls the endpoint using the browser session. Shows summary + results table. No curl/cookie copying needed.
 
+### Expert Insight (v2)
+
+`lib/expert-insights.ts` provides static, category-level educational perspectives shown after voting on results pages.
+
+**Interface:**
+- `body` — core philosophical/psychological tension (2-3 sentences)
+- `whyPeopleSplit` — why reasonable people disagree (1 sentence)
+- `whatYourAnswerMaySuggest` — `{ a, b }` — personalized framing based on the user's vote. Shown only when the user has voted. Always uses cautious language ("may suggest", "could indicate") — never diagnostic.
+- `disclaimer` — always shown: "Educational perspective, not professional advice."
+
+**Safety guardrails:**
+- No medical, legal, or psychological professional advice — ever.
+- Language: always "may", "might", "could suggest" — never "you are X" or definitive claims.
+- AI-generated insights (`insightBody`, `insightWhySplit`, `insightPerspectiveA/B` from cron) are draft-only. They are stored in `DynamicScenario.expertInsightEn/It` and shown only after admin approval.
+- Static category-level insights are the fallback and are human-authored.
+
+**Dynamic override flow:**
+1. Cron generates `insightBody/WhySplit/PerspectiveA/B` alongside each dilemma.
+2. Stored as `expertInsightEn` or `expertInsightIt` in the draft Redis key.
+3. Admin reviews — if approved, the dilemma (with insights) moves to `dynamic:scenarios`.
+4. `ResultsClientPage` merges the dynamic insight over the static fallback (only overrides non-empty fields).
+
 ### Dilemma feedback
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.
 
