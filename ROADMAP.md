@@ -9,7 +9,18 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Onboarding & Auth UX (27 Apr 2026)
+### Sprint Corrente — Expert Insight & AdBlock UX (27 Apr 2026)
+
+- [x] `AdBlockBanner`: copy onesto — "I'll whitelist manually" / "Lo aggiungo manualmente" (non implica bypass automatico)
+- [x] `AdBlockBanner`: microcopy istruzione manuale EN/IT aggiunto sotto i bottoni CTA
+- [x] `lib/expert-insights.ts`: helper statico `getExpertInsight(category, locale)` — 8 categorie, EN/IT
+- [x] `ResultsClientPage`: box "Expert Insight" / "Parere esperto" post-risultati con tipo esperto, testo e disclaimer
+- [x] Expert Insight: nessuna AI live — template statici per sicurezza, qualità e costi zero
+- [ ] AI-generated insights (backlog — richiede admin review obbligatoria, vedere sezione Growth Backlog)
+
+---
+
+### Sprint Precedente — Onboarding & Auth UX (27 Apr 2026)
 
 - [x] `AuthButton`: "Sign In" → "Join free →" — copy più invitante per utenti non tecnici
 - [x] `MobileMenu`: CTA auth per utenti anonimi con Supabase check + locale IT/EN
@@ -146,6 +157,8 @@ Non fare insieme a feature/product sprint.
 - [ ] Moral profile compatibility tra amici
 - [ ] Zodiac/ascendant overlay opzionale sul moral profile
 - [ ] Idempotenza webhook Stripe: storico `session_id` già processati in DB per evitare doppio increment `name_changes`
+- [ ] **Expert Insight AI**: generare insight da AI (OpenRouter, modello economico) solo per draft approvati — cache nel record dilemma, admin review obbligatoria, mai live on user request, guardrail per categorie health/legal
+- [ ] **Expert Insight store**: colonna `expert_insight_en` / `expert_insight_it` su tabella dilemmas per insight curati manualmente o approvati da admin
 
 ---
 

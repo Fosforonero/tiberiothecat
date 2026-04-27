@@ -5,6 +5,7 @@ import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
 import AdSlot from '@/components/AdSlot'
 import { createClient } from '@/lib/supabase/client'
+import { getExpertInsight } from '@/lib/expert-insights'
 
 interface Props {
   scenario: Scenario
@@ -135,6 +136,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [isAnon, setIsAnon] = useState(false)
 
   const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
+  const expertInsight = getExpertInsight(scenario.category, sharePrefix === '/it' ? 'it' : 'en')
 
   useEffect(() => {
     setMounted(true)
@@ -365,6 +367,25 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             <em className="not-italic text-white">{majorityLabel}</em>
           </span>
         )}
+      </div>
+
+      {/* ── Expert Insight ── */}
+      <div className="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <span aria-hidden className="text-base leading-none">💡</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">
+            {expertInsight.title}
+          </span>
+          <span className="ml-auto text-[11px] font-semibold text-cyan-500/70 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/20 whitespace-nowrap">
+            {expertInsight.expertType}
+          </span>
+        </div>
+        <p className="text-sm text-[var(--text)] leading-relaxed mb-3">
+          {expertInsight.body}
+        </p>
+        <p className="text-[11px] text-[var(--muted)] italic">
+          {expertInsight.disclaimer}
+        </p>
       </div>
 
       {/* ── Dilemma quality feedback ── */}

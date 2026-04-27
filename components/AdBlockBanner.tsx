@@ -172,7 +172,7 @@ export default function AdBlockBanner() {
               onClick={handleWhitelist}
               className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
             >
-              {isIT ? 'Aggiungi in whitelist ↗' : "I'll whitelist ↗"}
+              {isIT ? 'Lo aggiungo manualmente' : "I'll whitelist manually"}
             </button>
             <button
               onClick={dismiss}
@@ -181,6 +181,11 @@ export default function AdBlockBanner() {
               {isIT ? 'Continua' : 'Continue'}
             </button>
           </div>
+          <p className="text-[10px] text-white/30 mt-2 leading-relaxed">
+            {isIT
+              ? 'Apri il tuo ad blocker e consenti gli annunci su splitvote.io.'
+              : 'Open your ad blocker and allow ads on splitvote.io.'}
+          </p>
         </div>
 
         {/* Close */}
