@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
-import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap, Building2, HelpCircle, Compass } from 'lucide-react'
+import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap, Building2, HelpCircle, Compass, UserPlus } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const EN_LINKS = [
   { href: '/trending',               label: 'Trending',      icon: TrendingUp, color: 'text-purple-400' },
@@ -31,11 +32,18 @@ const IT_LINKS = [
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   const pathname = usePathname()
   const isIT = pathname.startsWith('/it')
   const NAV_LINKS = isIT ? IT_LINKS : EN_LINKS
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+    const supabase = createClient()
+    supabase.auth.getUser()
+      .then(({ data: { user } }) => setIsLoggedIn(!!user))
+      .catch(() => setIsLoggedIn(false))
+  }, [])
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -118,6 +126,42 @@ export default function MobileMenu() {
               </span>
             </a>
           ))}
+
+          {/* Auth CTA — only shown to confirmed logged-out users */}
+          {isLoggedIn === false && (
+            <>
+              <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '6px 12px' }} />
+              <a
+                href={isIT ? '/login?locale=it' : '/login'}
+                onClick={() => setOpen(false)}
+                role="menuitem"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '11px 12px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  background: 'rgba(59,130,246,0.12)',
+                  border: '1px solid rgba(59,130,246,0.25)',
+                  marginTop: '4px',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(59,130,246,0.2)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(59,130,246,0.12)')}
+              >
+                <UserPlus size={15} className="text-blue-400 flex-shrink-0" />
+                <div>
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: 'rgba(147,197,253,1)', display: 'block', lineHeight: 1.2 }}>
+                    {isIT ? 'Crea profilo gratis' : 'Join free →'}
+                  </span>
+                  <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.2 }}>
+                    {isIT ? 'Salva voti, badge, companion' : 'Save votes, earn badges'}
+                  </span>
+                </div>
+              </a>
+            </>
+          )}
         </div>
       </div>
     </>,

@@ -9,7 +9,18 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Entitlements & Rename Flow (27 Apr 2026)
+### Sprint Corrente — Onboarding & Auth UX (27 Apr 2026)
+
+- [x] `AuthButton`: "Sign In" → "Join free →" — copy più invitante per utenti non tecnici
+- [x] `MobileMenu`: CTA auth per utenti anonimi con Supabase check + locale IT/EN
+- [x] `app/login/page.tsx`: headline chiaro, 3 benefit bullets, bottoni 48px+, locale-aware IT via `?locale=it`
+- [x] `ResultsClientPage`: soft CTA post-voto per anonimi (EN/IT), rilevamento via Supabase client
+- [x] Branding: `app/favicon.ico` (4 icone, 113KB) ha precedenza su `public/favicon.ico` — verificato
+- [ ] `/it/login` wrapper locale: non implementato (semplice redirect `?locale=it` già sufficiente)
+
+---
+
+### Sprint Precedente — Entitlements & Rename Flow (27 Apr 2026)
 
 - [x] `lib/entitlements.ts` — logica centralizzata admin/premium/free
 - [x] `GET /api/me/entitlements` — bridge server-side per client component

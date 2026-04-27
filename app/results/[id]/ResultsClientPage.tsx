@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
 import AdSlot from '@/components/AdSlot'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   scenario: Scenario
@@ -66,6 +67,9 @@ const EN_COPY = {
   storyNote:         'Upload to Instagram Stories or TikTok manually — auto-post not available via web.',
   nextDilemma:       'Next dilemma →',
   allDilemmas:       'All dilemmas',
+  anonCTAHeadline:   'Want to save your votes?',
+  anonCTABody:       'Create a free account to track your answers, earn badges, and grow your companion.',
+  anonCTAButton:     'Join free — it takes 10 seconds',
 }
 
 const IT_COPY = {
@@ -112,6 +116,9 @@ const IT_COPY = {
   storyNote:         'Carica su Instagram Stories o TikTok manualmente — il post automatico non è disponibile via web.',
   nextDilemma:       'Prossimo dilemma →',
   allDilemmas:       'Tutti i dilemmi',
+  anonCTAHeadline:   'Vuoi salvare i tuoi voti?',
+  anonCTABody:       'Crea un account gratis per tenere traccia delle risposte, guadagnare badge e far crescere il tuo companion.',
+  anonCTAButton:     'Crea profilo gratis — ci vogliono 10 secondi',
 }
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
@@ -125,6 +132,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [storySharing, setStorySharing] = useState(false)
   const [storyShared, setStoryShared] = useState(false)
   const [igCaptionCopied, setIgCaptionCopied] = useState(false)
+  const [isAnon, setIsAnon] = useState(false)
 
   const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
 
@@ -136,6 +144,10 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       const val = cookie.split('=')[1] as 'fire' | 'down'
       if (val === 'fire' || val === 'down') setFeedbackGiven(val)
     }
+    // Detect anonymous user for soft CTA (only show to truly logged-out visitors)
+    createClient().auth.getUser()
+      .then(({ data: { user } }) => setIsAnon(!user))
+      .catch(() => {/* non-blocking */})
   }, [scenario.id])
 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
@@ -578,6 +590,22 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
       {/* ── AdSense — shown after results, before CTA ── */}
       <AdSlot slot={SLOT_RESULTS} className="rounded-2xl mb-8" />
+
+      {/* ── Soft sign-up CTA for anonymous users ── */}
+      {isAnon && (
+        <div className="rounded-2xl border border-blue-500/25 bg-blue-500/5 p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-white text-sm mb-1">{copy.anonCTAHeadline}</p>
+            <p className="text-xs text-[var(--muted)] leading-relaxed">{copy.anonCTABody}</p>
+          </div>
+          <a
+            href={sharePrefix === '/it' ? '/login?locale=it' : '/login'}
+            className="flex-shrink-0 w-full sm:w-auto text-center text-sm font-bold px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors neon-glow-blue min-h-[48px] flex items-center justify-center"
+          >
+            {copy.anonCTAButton}
+          </a>
+        </div>
+      )}
 
       {/* ── Next dilemma CTA ── */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">

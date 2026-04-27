@@ -25,9 +25,10 @@ export default async function AuthButton() {
     return (
       <a
         href="/login"
-        className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all btn-neon-blue"
+        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all btn-neon-blue"
+        aria-label="Join SplitVote free or sign in"
       >
-        Sign In
+        Join free →
       </a>
     )
   }
