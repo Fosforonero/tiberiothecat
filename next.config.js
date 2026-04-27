@@ -2,6 +2,17 @@
 const nextConfig = {
   experimental: {},
 
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.splitvote.io' }],
+        destination: 'https://splitvote.io/:path*',
+        permanent: true,
+      },
+    ]
+  },
+
   async headers() {
     return [
       {

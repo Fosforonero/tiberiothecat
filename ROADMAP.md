@@ -16,7 +16,7 @@ Ultimo aggiornamento: 27 Aprile 2026
 - [x] `lib/openrouter.ts`: server-side OpenRouter HTTP helper
   - `isOpenRouterConfigured()` — fail-closed check per build safety
   - `generateWithOpenRouter({ system, prompt, model? })` — AbortController timeout, safe error enum, no API key in logs
-  - Model priority: `input.model` → `OPENROUTER_MODEL_DRAFT` env → `meta-llama/llama-3.1-8b-instruct` fallback
+  - Requires both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL_DRAFT` — no hardcoded fallback (fail-closed)
 - [x] `lib/content-generation-prompts.ts`: prompt builders
   - `buildDilemmaPrompt(input)` → `{ system, prompt }` — safety rules, inventory context, similar content warnings, strict JSON output spec
   - `buildBlogArticlePrompt(input)` → `{ system, prompt }` — 400–700 word article, disclaimer verbatim, 2–4 dilemma references
