@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
       seoTitle:       s.seoTitle ?? null,
       seoDescription: s.seoDescription ?? null,
       keywords:       s.keywords ?? [],
+      noveltyScore:   s.scores?.noveltyScore,
     }))
 
     return NextResponse.json({

@@ -5,10 +5,60 @@ import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter
 import { buildContentInventory } from '@/lib/content-inventory'
 import { scoreNovelty } from '@/lib/content-dedup'
 import { buildDilemmaPrompt, buildBlogArticlePrompt, type GenerationType, type GenerationLocale } from '@/lib/content-generation-prompts'
-import { validateGeneratedOutput } from '@/lib/content-generation-validate'
+import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
+import { saveDraftScenarios, type DynamicScenario } from '@/lib/dynamic-scenarios'
+import type { Category } from '@/lib/scenarios'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+const NOVELTY_THRESHOLD = 55
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  morality:      '⚖️',
+  survival:      '🌊',
+  loyalty:       '🤝',
+  justice:       '⚖️',
+  freedom:       '🕊️',
+  technology:    '🤖',
+  society:       '🏙️',
+  relationships: '❤️',
+}
+
+function dilemmaToScenario(
+  candidate: ValidatedDilemma,
+  topic: string,
+): DynamicScenario {
+  const suffix = Date.now().toString(36).slice(-5)
+  const id = `ai-${candidate.locale}-${slugify(candidate.question).slice(0, 24).replace(/-+$/, '')}-${suffix}`
+
+  const viralScore    = 55
+  const seoScore      = 65
+  const noveltyScore  = candidate.noveltyScore
+  const feedbackScore = 50
+  const finalScore    = Math.round(
+    viralScore * 0.35 + seoScore * 0.25 + noveltyScore * 0.25 + feedbackScore * 0.15,
+  )
+
+  return {
+    id,
+    question:       candidate.question,
+    optionA:        candidate.optionA,
+    optionB:        candidate.optionB,
+    category:       candidate.category as Category,
+    emoji:          CATEGORY_EMOJI[candidate.category] ?? '🤔',
+    locale:         candidate.locale,
+    trend:          topic,
+    trendSource:    'openrouter',
+    trendUrl:       process.env.OPENROUTER_MODEL_DRAFT ?? 'openrouter',
+    generatedAt:    new Date().toISOString(),
+    status:         'draft',
+    seoTitle:       candidate.seoTitle,
+    seoDescription: candidate.seoDescription,
+    keywords:       candidate.keywords,
+    scores: { viralScore, seoScore, noveltyScore, feedbackScore, finalScore },
+  }
+}
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -32,7 +82,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
   }
 
-  const { type, locale, topic } = body as Record<string, unknown>
+  const { type, locale, topic, mode, allowLowNovelty } = body as Record<string, unknown>
 
   if (type !== 'dilemma' && type !== 'blog_article') {
     return NextResponse.json({ error: 'invalid_type' }, { status: 400 })
@@ -44,22 +94,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_topic' }, { status: 400 })
   }
 
-  const cleanTopic = topic.trim()
+  const cleanMode = mode === 'save' ? 'save' : 'preview'
 
+  // Blog articles: save not supported — they require manual editing into lib/blog.ts
+  if (cleanMode === 'save' && type === 'blog_article') {
+    return NextResponse.json({ error: 'blog_article_save_not_supported' }, { status: 400 })
+  }
+
+  const cleanTopic = topic.trim()
   const inventory = await buildContentInventory()
 
-  // Pre-check novelty on the raw topic before spending tokens
   const preCheck = scoreNovelty(
     { type: type as GenerationType, locale: locale as GenerationLocale, title: cleanTopic },
     inventory,
   )
 
   const inventorySummary = {
-    totalDilemmas: inventory.filter(i => i.type === 'dilemma').length,
+    totalDilemmas:    inventory.filter(i => i.type === 'dilemma').length,
     totalBlogArticles: inventory.filter(i => i.type === 'blog_article').length,
-    categories: [...new Set(inventory.map(i => i.category).filter(Boolean))] as string[],
-    recentKeywords: inventory.flatMap(i => i.keywords).slice(0, 30),
-    similarTitles: preCheck.similarItems.map(s => s.title),
+    categories:       [...new Set(inventory.map(i => i.category).filter(Boolean))] as string[],
+    recentKeywords:   inventory.flatMap(i => i.keywords).slice(0, 30),
+    similarTitles:    preCheck.similarItems.map(s => s.title),
   }
 
   const similarContentWarnings = preCheck.similarItems
@@ -67,9 +122,9 @@ export async function POST(request: NextRequest) {
     .map(s => `"${s.title}" (${s.similarity}% similar)`)
 
   const promptInput = {
-    type: type as GenerationType,
-    locale: locale as GenerationLocale,
-    topic: cleanTopic,
+    type:    type as GenerationType,
+    locale:  locale as GenerationLocale,
+    topic:   cleanTopic,
     inventory: inventorySummary,
     similarContentWarnings,
   }
@@ -93,9 +148,40 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  const candidate = validation.candidate
+
+  // Preview mode — return without saving
+  if (cleanMode === 'preview') {
+    return NextResponse.json({ ok: true, mode: 'preview', candidate })
+  }
+
+  // Save mode — only dilemmas reach here
+  const dilemmaCandidate = candidate as ValidatedDilemma
+
+  // Dedup guard: block if noveltyScore below threshold, unless admin explicitly overrides
+  if (dilemmaCandidate.noveltyScore < NOVELTY_THRESHOLD && allowLowNovelty !== true) {
+    return NextResponse.json({
+      ok: false,
+      error: 'low_novelty',
+      noveltyScore: dilemmaCandidate.noveltyScore,
+      threshold: NOVELTY_THRESHOLD,
+      candidate,
+    }, { status: 409 })
+  }
+
+  const scenario = dilemmaToScenario(dilemmaCandidate, cleanTopic)
+
+  try {
+    await saveDraftScenarios([scenario])
+  } catch {
+    return NextResponse.json({ error: 'draft_save_failed' }, { status: 500 })
+  }
+
   return NextResponse.json({
     ok: true,
-    dryRun: true,
-    candidate: validation.candidate,
+    mode: 'save',
+    savedId: scenario.id,
+    noveltyScore: dilemmaCandidate.noveltyScore,
+    candidate,
   })
 }

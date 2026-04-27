@@ -19,6 +19,7 @@ interface DilemmaRow {
   category: string
   seoTitle: string | null
   keywords: string[]
+  noveltyScore?: number
 }
 
 interface ApiResponse {
@@ -83,9 +84,26 @@ function DilemmaCard({
 
         <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">{s.category}</span>
 
+        {s.noveltyScore !== undefined && (
+          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+            s.noveltyScore >= 70 ? 'text-green-300 border-green-500/30 bg-green-500/10'
+            : s.noveltyScore >= 55 ? 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10'
+            : 'text-red-300 border-red-500/30 bg-red-500/10'
+          }`}>
+            N:{s.noveltyScore}
+          </span>
+        )}
+
         {s.trendSource && (
-          <span className="text-[10px] text-[var(--muted)] border border-white/10 rounded-full px-1.5 py-0.5">
-            {s.trendSource === 'google_trends' ? '🔍 Google' : s.trendSource === 'reddit' ? '🤖 Reddit' : '🌐 Mixed'}
+          <span className={`text-[10px] border rounded-full px-1.5 py-0.5 ${
+            s.trendSource === 'openrouter'
+              ? 'text-purple-300 border-purple-500/40 bg-purple-500/10'
+              : 'text-[var(--muted)] border-white/10'
+          }`}>
+            {s.trendSource === 'google_trends' ? '🔍 Google'
+              : s.trendSource === 'reddit' ? '🟠 Reddit'
+              : s.trendSource === 'openrouter' ? '🤖 AI'
+              : '🌐 Mixed'}
           </span>
         )}
 

@@ -9,46 +9,46 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — OpenRouter Dry-Run Generation (27 Apr 2026)
+### Sprint Corrente — Admin Charts QA + OpenRouter Draft Queue (27 Apr 2026)
 
-**Admin-only AI draft preview ✅**
+**Admin charts QA + OpenRouter save-to-draft-queue ✅**
 
-- [x] `lib/openrouter.ts`: server-side OpenRouter HTTP helper
-  - `isOpenRouterConfigured()` — fail-closed check per build safety
-  - `generateWithOpenRouter({ system, prompt, model? })` — AbortController timeout, safe error enum, no API key in logs
-  - Requires both `OPENROUTER_API_KEY` and `OPENROUTER_MODEL_DRAFT` — no hardcoded fallback (fail-closed)
-- [x] `lib/content-generation-prompts.ts`: prompt builders
-  - `buildDilemmaPrompt(input)` → `{ system, prompt }` — safety rules, inventory context, similar content warnings, strict JSON output spec
-  - `buildBlogArticlePrompt(input)` → `{ system, prompt }` — 400–700 word article, disclaimer verbatim, 2–4 dilemma references
-- [x] `lib/content-generation-validate.ts`: JSON parsing + validation + novelty scoring
-  - `extractJson(text)` — strips markdown fences, finds `{...}` block
-  - `str/strArr` helpers — field presence + length guards
-  - `slugify(text)` — accented chars → ASCII, URL-safe kebab-case
-  - `validateGeneratedOutput(rawText, type, locale, inventory)` — validates all fields, calls `scoreNovelty()`, attaches `noveltyScore + similarItems + warnings`
-- [x] `POST /api/admin/generate-draft`: admin-only dry-run endpoint
-  - Auth → OpenRouter config check → input validation → inventory build → novelty pre-check → prompt build → OpenRouter call → validate → return candidate
-  - Returns `{ ok: true, dryRun: true, candidate }` — **never saves anything**
-  - Error codes: 401, 503, 400, 422, 502
-- [x] `app/admin/GenerateDraftPanel.tsx`: client UI component
-  - Form: type (dilemma/blog_article), locale (en/it), topic textarea
-  - noveltyScore badge (green/yellow/red), warning chips, similar content list, full JSON preview
-  - `🔒 dry-run — not saved` label always visible — no save/approve button
-- [x] `app/admin/page.tsx`: `GenerateDraftPanel` added after CronDebug section
-- [x] typecheck ✅ · build (0 errors) ✅ · `git diff --check` ✅
+- [x] `app/admin/AdminCharts.tsx`: empty state + 7d/14d tab toggle
+  - `isEmpty` guard — mostra "Not enough data yet" invece di barre vuote
+  - Tab 7d/14d con filtro client-side sull'array passato come prop
+  - Nessun dato fake generato
+- [x] `lib/dynamic-scenarios.ts`: aggiunto `'openrouter'` a `TrendSource`
+- [x] `POST /api/admin/generate-draft`: aggiunto `mode: 'preview' | 'save'`
+  - `preview` (default): comportamento precedente, non salva
+  - `save`: valida, controlla noveltyScore ≥ 55 (threshold), salva in `dynamic:drafts`
+  - Dedup guard: blocca save se `noveltyScore < 55` → risponde `409 low_novelty`
+  - Override esplicito: `allowLowNovelty: true` nel body bypassa il blocco
+  - Blog article save bloccato (→ 400 `blog_article_save_not_supported`) — richiede editing manuale
+  - Metadata AI nel DynamicScenario: `trendSource: 'openrouter'`, `trendUrl: model_name`, `scores.noveltyScore`
+- [x] `app/admin/GenerateDraftPanel.tsx`: Preview + Save as draft buttons
+  - Bottone Preview (sempre disponibile) + Save as draft (solo dilemmi)
+  - Dopo save: banner "Saved to draft queue — ID: ai-..."
+  - Low novelty: banner warning con bottone "Save anyway (override dedup guard)"
+  - `aria-live`, `role="alert/status"`, `aria-busy` per accessibilità
+- [x] `app/admin/CronDebug.tsx`: badge AI + noveltyScore per draft OpenRouter
+  - `trendSource === 'openrouter'` → badge 🤖 AI (viola)
+  - `noveltyScore` mostrato se presente (verde/giallo/rosso)
+- [x] `app/api/admin/dilemmas/route.ts`: espone `noveltyScore` nel response
 
 **Regole fondamentali (da rispettare in ogni sprint futuro):**
 - Tutti i contenuti generati → `status: draft`, mai autopublicati
 - Admin approval obbligatoria prima che un draft entri in route pubbliche o sitemap
-- `OPENROUTER_API_KEY` server-side only, mai al client
+- `OPENROUTER_API_KEY` + `OPENROUTER_MODEL_DRAFT` entrambi richiesti — fail-closed
 - Nessun secret o prompt nei log
+- Novelty threshold: 55/100 — dedup guard blocca save sotto soglia salvo override esplicito
+- Blog articles: preview-only in questa fase — editing manuale richiesto in `lib/blog.ts`
 - Quest pubblicate solo con ≥3 dilemmi approvati
 
-**Prossimo sprint: Draft queue + admin approve/reject**
-- Salvataggio bozze approvate in Redis (`dynamic:drafts` → `dynamic:approved`)
-- UI approvazione/rifiuto nel pannello admin
-- Blog article: pubblicazione con slug dedicate `/blog/[slug]`
+**Prossimo sprint: Blog article draft queue + scheduled generation**
+- Blog article draft queue separata (non Redis dilemmas) — es. Supabase table o Redis key dedicata
+- Cron settimanale OpenRouter per mantenere inventory fresca
 - Mini quest: aggrega ≥3 dilemmi per tema → pubblica come quest
-- Scheduled generation: cron settimanale per mantenere inventory fresca
+- Approved dilemmas → sitemap immediata senza redeploy
 
 ---
 

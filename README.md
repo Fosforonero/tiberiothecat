@@ -82,13 +82,24 @@ NEXT_PUBLIC_ADSENSE_SLOT_PLAY=1234567890
 
 > `OPENROUTER_API_KEY` and `OPENROUTER_MODEL_DRAFT` are both required — no hardcoded fallback model. If either is missing, `isOpenRouterConfigured()` returns false and the endpoint returns 503 at runtime; build still passes. Generated content is always `status: draft` — admin approval required before anything becomes public.
 >
-> **Dry-run curl example:**
+> **Curl examples (admin session cookie required):**
 > ```bash
+> # Preview only (no save)
 > curl -X POST https://splitvote.io/api/admin/generate-draft \
->   -H "Cookie: <admin session cookie>" \
->   -H "Content-Type: application/json" \
->   -d '{"type":"dilemma","locale":"en","topic":"AI replacing doctors"}'
+>   -H "Cookie: <session>" -H "Content-Type: application/json" \
+>   -d '{"type":"dilemma","locale":"en","topic":"AI replacing doctors","mode":"preview"}'
+>
+> # Save to draft queue (noveltyScore ≥ 55 required)
+> curl -X POST https://splitvote.io/api/admin/generate-draft \
+>   -H "Cookie: <session>" -H "Content-Type: application/json" \
+>   -d '{"type":"dilemma","locale":"it","topic":"sorveglianza AI","mode":"save"}'
+>
+> # Override dedup guard (noveltyScore < 55)
+> curl -X POST https://splitvote.io/api/admin/generate-draft \
+>   -H "Cookie: <session>" -H "Content-Type: application/json" \
+>   -d '{"type":"dilemma","locale":"en","topic":"trolley","mode":"save","allowLowNovelty":true}'
 > ```
+> Blog articles: `mode: "save"` restituisce `400 blog_article_save_not_supported` — richiedono editing manuale in `lib/blog.ts`.
 
 > `RESEND_API_KEY` is never committed. If missing, `sendEmail()` returns `{ ok: false, error: 'email_not_configured' }` silently — build and app still work.
 

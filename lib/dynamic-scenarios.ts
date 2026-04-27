@@ -15,7 +15,7 @@ const MAX_DYNAMIC = 60
 const MAX_DRAFTS  = 30
 
 export type DilemmaStatus = 'draft' | 'approved' | 'rejected'
-export type TrendSource   = 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed'
+export type TrendSource   = 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed' | 'openrouter'
 
 export interface DilemmaScores {
   viralScore:    number  // 0-100
