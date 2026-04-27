@@ -388,3 +388,22 @@ export function getScenariosByCategory(category: Category | 'all'): Scenario[] {
   if (category === 'all') return scenarios
   return scenarios.filter((s) => s.category === category)
 }
+
+interface ScoredItem { id: string; scores?: { finalScore?: number } }
+
+/**
+ * Pick the next scenario ID, preferring dynamic approved scenarios over static ones.
+ * From the dynamic pool, picks randomly from the top-half by finalScore for quality.
+ * Falls back to static random if no dynamic pool provided or all excluded.
+ */
+export function getNextScenarioId(excludeId: string, dynamicPool?: ScoredItem[]): string {
+  if (dynamicPool?.length) {
+    const filtered = dynamicPool.filter((s) => s.id !== excludeId)
+    if (filtered.length) {
+      const sorted = [...filtered].sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
+      const topHalf = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)))
+      return topHalf[Math.floor(Math.random() * topHalf.length)].id
+    }
+  }
+  return getRandomScenario(excludeId).id
+}

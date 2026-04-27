@@ -6,6 +6,7 @@ import Link from 'next/link'
 import AdSlot from '@/components/AdSlot'
 import { createClient } from '@/lib/supabase/client'
 import { getExpertInsight } from '@/lib/expert-insights'
+import { track } from '@/lib/gtag'
 
 interface Props {
   scenario: Scenario
@@ -54,6 +55,7 @@ const EN_COPY = {
   shareX:            '𝕏 Share on X',
   whatsapp:          '💬 WhatsApp',
   copyLink:          '🔗',
+  copyLinkDone:      '✅',
   copyDiscord:       'Copy for Discord',
   copyDiscordDone:   '✅ Copied!',
   telegram:          '✈️ Telegram',
@@ -71,6 +73,9 @@ const EN_COPY = {
   anonCTAHeadline:   'Want to save your votes?',
   anonCTABody:       'Create a free account to track your answers, earn badges, and grow your companion.',
   anonCTAButton:     'Join free — it takes 10 seconds',
+  webShareCTA:       '📤 Share result',
+  webShareSub:       'Send via messages, stories, or copy link',
+  webShareCopied:    '✅ Link copied!',
 }
 
 const IT_COPY = {
@@ -103,6 +108,7 @@ const IT_COPY = {
   shareX:            '𝕏 Condividi su X',
   whatsapp:          '💬 WhatsApp',
   copyLink:          '🔗',
+  copyLinkDone:      '✅',
   copyDiscord:       'Copia per Discord',
   copyDiscordDone:   '✅ Copiato!',
   telegram:          '✈️ Telegram',
@@ -120,11 +126,15 @@ const IT_COPY = {
   anonCTAHeadline:   'Vuoi salvare i tuoi voti?',
   anonCTABody:       'Crea un account gratis per tenere traccia delle risposte, guadagnare badge e far crescere il tuo companion.',
   anonCTAButton:     'Crea profilo gratis — ci vogliono 10 secondi',
+  webShareCTA:       '📤 Condividi risultato',
+  webShareSub:       'Invia via messaggi, storie o copia il link',
+  webShareCopied:    '✅ Link copiato!',
 }
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [webShareCopied, setWebShareCopied] = useState(false)
   const [feedbackGiven, setFeedbackGiven] = useState<'fire' | 'down' | null>(null)
   const [feedbackLoading, setFeedbackLoading] = useState(false)
   const [captionCopied, setCaptionCopied] = useState(false)
@@ -136,7 +146,8 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [isAnon, setIsAnon] = useState(false)
 
   const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
-  const expertInsight = getExpertInsight(scenario.category, sharePrefix === '/it' ? 'it' : 'en')
+  const locale = sharePrefix === '/it' ? 'it' : 'en'
+  const expertInsight = getExpertInsight(scenario.category, locale)
 
   useEffect(() => {
     setMounted(true)
@@ -146,25 +157,24 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       const val = cookie.split('=')[1] as 'fire' | 'down'
       if (val === 'fire' || val === 'down') setFeedbackGiven(val)
     }
-    // Detect anonymous user for soft CTA (only show to truly logged-out visitors)
+    // Detect anonymous user for soft CTA
     createClient().auth.getUser()
       .then(({ data: { user } }) => setIsAnon(!user))
       .catch(() => {/* non-blocking */})
+    // Track result view
+    track('result_viewed', {
+      scenario_id: scenario.id,
+      category: scenario.category,
+      locale,
+      voted: voted ?? 'none',
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario.id])
 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
   const challengeUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
   const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}`
-
-  // Social share texts intentionally kept in English for viral reach
-  const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
-  const instagramCaption = `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇 Link in bio → splitvote.io\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
-  const twitterText = `"${scenario.question}" — The world is split ${pctA}% vs ${pctB}%. What would YOU choose? 🌍`
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${twitterText}\n${shareUrl}`)}`
-  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(twitterText)}`
-  const discordText = `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
   const majorityPct = pctA > pctB ? pctA : pctB
@@ -175,27 +185,51 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const isMinority = pctVoted !== null && pctVoted < 50
   const isTie = pctA === pctB
 
+  // Punchy share text using winner/chosen option
+  const pctChosen = pctVoted ?? majorityPct
+  const labelChosen = voted
+    ? (voted === 'a' ? scenario.optionA : scenario.optionB)
+    : majorityLabel
+  const webShareText = sharePrefix === '/it'
+    ? `Il ${pctChosen}% ha scelto "${labelChosen}". Tu cosa faresti?\n"${scenario.question}"`
+    : `${pctChosen}% chose "${labelChosen}". What would you do?\n"${scenario.question}"`
+
+  // Platform share texts
+  const twitterText = sharePrefix === '/it'
+    ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa faresti? 🌍`
+    : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`
+  const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+  const instagramCaption = `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇 Link in bio → splitvote.io\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
+  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`
+  const discordText = `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl)
     setCopied(true)
+    track('copy_link_clicked', { scenario_id: scenario.id, locale })
     setTimeout(() => setCopied(false), 2000)
   }
 
   const copyCaption = () => {
     navigator.clipboard.writeText(tiktokCaption)
     setCaptionCopied(true)
+    track('share_clicked', { target: 'tiktok_caption', scenario_id: scenario.id, locale })
     setTimeout(() => setCaptionCopied(false), 2000)
   }
 
   const copyDiscord = () => {
     navigator.clipboard.writeText(discordText)
     setDiscordCopied(true)
+    track('share_clicked', { target: 'discord', scenario_id: scenario.id, locale })
     setTimeout(() => setDiscordCopied(false), 2000)
   }
 
   const copyChallenge = () => {
     navigator.clipboard.writeText(challengeUrl)
     setChallengeCopied(true)
+    track('share_clicked', { target: 'challenge', scenario_id: scenario.id, locale })
     setTimeout(() => setChallengeCopied(false), 2000)
   }
 
@@ -217,12 +251,27 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const copyIgCaption = () => {
     navigator.clipboard.writeText(instagramCaption)
     setIgCaptionCopied(true)
+    track('share_clicked', { target: 'instagram_caption', scenario_id: scenario.id, locale })
     setTimeout(() => setIgCaptionCopied(false), 2000)
   }
 
-  // Share vertical story card via Web Share API (with SVG file if supported)
+  const handleWebShare = async () => {
+    track('share_clicked', { target: 'web_share', scenario_id: scenario.id, locale })
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: scenario.question, text: webShareText, url: shareUrl })
+      } catch { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(`${webShareText}\n${shareUrl}`)
+      setWebShareCopied(true)
+      setTimeout(() => setWebShareCopied(false), 2000)
+    }
+  }
+
+  // Share vertical story card via Web Share API
   const shareStory = async () => {
     if (!mounted) return
+    track('story_card_clicked', { scenario_id: scenario.id, locale })
     setStorySharing(true)
     try {
       const res = await fetch(storyCardUrl)
@@ -237,18 +286,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         })
         setStoryShared(true)
       } else if (navigator.share) {
-        // Fallback: share URL only
         await navigator.share({ title: 'SplitVote', url: shareUrl, text: `${pctA}% vs ${pctB}%` })
         setStoryShared(true)
       } else {
-        // Final fallback: download
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
         link.download = `splitvote-story-${scenario.id}.svg`
         link.click()
       }
     } catch {
-      // User cancelled or share failed — download as fallback
       const link = document.createElement('a')
       link.href = storyCardUrl
       link.download = `splitvote-story-${scenario.id}.svg`
@@ -260,9 +306,9 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
-      <a href={sharePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
+      <Link href={sharePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
         {copy.back}
-      </a>
+      </Link>
 
       {/* Question recap */}
       <div className="text-center mb-10">
@@ -358,7 +404,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       </div>
 
       {/* Winner label */}
-      <div className="text-center mb-10 text-[var(--muted)] text-sm">
+      <div className="text-center mb-8 text-[var(--muted)] text-sm">
         {pctA === pctB ? (
           <span>{copy.tie}</span>
         ) : (
@@ -367,6 +413,17 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             <em className="not-italic text-white">{majorityLabel}</em>
           </span>
         )}
+      </div>
+
+      {/* ── Primary Web Share CTA ── */}
+      <div className="mb-8">
+        <button
+          onClick={handleWebShare}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-base px-6 py-4 transition-all"
+        >
+          {webShareCopied ? copy.webShareCopied : copy.webShareCTA}
+        </button>
+        <p className="text-[11px] text-[var(--muted)] text-center mt-2">{copy.webShareSub}</p>
       </div>
 
       {/* ── Expert Insight ── */}
@@ -470,6 +527,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               target="_blank"
               rel="noopener noreferrer"
               download={`splitvote-${scenario.id}.svg`}
+              onClick={() => track('share_clicked', { target: 'instagram_save', scenario_id: scenario.id, locale })}
               className="flex flex-col items-center gap-1.5 bg-gradient-to-br from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 border border-purple-500/30 text-purple-300 font-bold text-sm px-4 py-3.5 rounded-xl transition-all text-center"
             >
               <span className="text-xl">📸</span>
@@ -492,6 +550,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               href={twitterUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('share_clicked', { target: 'twitter', scenario_id: scenario.id, locale })}
               className="flex-1 flex items-center justify-center gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border border-[#1DA1F2]/30 text-[#1DA1F2] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {copy.shareX}
@@ -502,6 +561,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('share_clicked', { target: 'whatsapp', scenario_id: scenario.id, locale })}
               className="flex-1 flex items-center justify-center gap-2 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30 text-green-400 font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {copy.whatsapp}
@@ -513,12 +573,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               aria-label={copied ? 'Link copied' : 'Copy link'}
               className="flex items-center justify-center bg-[var(--surface)] hover:bg-[var(--border)] border border-[var(--border)] text-[var(--muted)] hover:text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
-              {copied ? '✅' : copy.copyLink}
+              {copied ? copy.copyLinkDone : copy.copyLink}
             </button>
           </div>
 
           <div className="flex gap-2">
-            {/* Discord — copies formatted text */}
+            {/* Discord */}
             <button
               onClick={copyDiscord}
               className="flex-1 flex items-center justify-center gap-2 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 border border-[#5865F2]/30 text-[#7289da] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
@@ -534,6 +594,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               href={telegramUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('share_clicked', { target: 'telegram', scenario_id: scenario.id, locale })}
               className="flex-1 flex items-center justify-center gap-2 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 border border-[#0088cc]/30 text-[#0088cc] font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {copy.telegram}
@@ -579,6 +640,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           <a
             href={storyCardUrl}
             download={`splitvote-story-${scenario.id}.svg`}
+            onClick={() => track('story_card_clicked', { scenario_id: scenario.id, locale, action: 'download' })}
             className="flex flex-col items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--muted)] hover:text-white font-bold text-xs px-3 py-3 rounded-xl transition-all"
           >
             <span className="text-lg">⬇️</span>
@@ -632,6 +694,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link
           href={`${sharePrefix}/play/${nextId}`}
+          onClick={() => track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'results_bottom' })}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
         >
           {copy.nextDilemma}

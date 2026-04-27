@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getScenario, getRandomScenario, scenarios } from '@/lib/scenarios'
-import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getScenario, getNextScenarioId, scenarios } from '@/lib/scenarios'
+import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
@@ -62,7 +62,9 @@ export default async function ResultsPage({ params, searchParams }: Props) {
     ? searchParams.voted
     : null
 
-  const nextScenario = getRandomScenario(params.id)
+  let dynamicScenarios: DynamicScenario[] = []
+  try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
+  const nextId = getNextScenarioId(params.id, dynamicScenarios)
 
   return (
     <ResultsClientPage
@@ -72,7 +74,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
       pctB={pctB}
       total={total}
       voted={voted}
-      nextId={nextScenario.id}
+      nextId={nextId}
     />
   )
 }

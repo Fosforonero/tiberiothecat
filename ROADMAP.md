@@ -9,7 +9,32 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — PWA Foundation (27 Apr 2026)
+### Sprint Corrente — Core Loop Retention (27 Apr 2026)
+
+- [x] `lib/gtag.ts`: helper `track(event, params)` — thin wrapper su `window.gtag`
+- [x] `lib/scenarios.ts`: `getNextScenarioId(excludeId, dynamicPool?)` — preferisce dynamic approved (top-half per finalScore), fallback statico
+- [x] `results/[id]/page.tsx` + `it/results/[id]/page.tsx`: next dilemma usa pool dinamico (preferenza locale IT)
+- [x] `play/[id]/page.tsx` + `it/play/[id]/page.tsx`: nextId calcolato e passato a VoteClientPage
+- [x] `VoteClientPage.tsx`: prop `nextId`, "Next dilemma" linka a dilemma reale (non home), spinner loading, `track('vote_submitted')`
+- [x] `ResultsClientPage.tsx`:
+  - Pulsante primario Web Share API `📤 Share result` — testo punchier: `"{pct}% chose {option}. What would you do?"`
+  - Fallback clipboard copy se `navigator.share` non disponibile
+  - Share text più forte per WhatsApp/Telegram: usa opzione vincente/scelta
+  - `track('result_viewed')` su mount
+  - `track('next_dilemma_clicked')` sul CTA finale
+  - `track('share_clicked', { target })` per tutti i pulsanti share
+  - `track('copy_link_clicked')` su copia link
+  - `track('story_card_clicked')` su share/download story
+  - `<a>` back link → `<Link>` (prefetch)
+- [x] `globals.css`: `animate-vote-tap` keyframe solo sotto `prefers-reduced-motion: no-preference`
+
+Backlog da questo sprint:
+- [ ] AdSense frequency: 1 slot ogni 3-4 voti con frequency cap — esperimento futuro, non ora
+- [ ] Geo Insight privacy-safe: country da profilo volontario, aggregato anonimo, "Italy vs World" solo con campione minimo, niente IP-to-location
+
+---
+
+### Sprint Precedente — PWA Foundation (27 Apr 2026)
 
 Obiettivo: fondazione tecnica comune per web + Android Play Store (TWA) + iOS App Store (Capacitor).
 La PWA non è la destinazione finale — è il layer condiviso da cui TWA e Capacitor partono.
@@ -208,6 +233,8 @@ Non fare insieme a feature/product sprint.
 - [ ] **Expert Insight AI**: generare insight da AI (OpenRouter, modello economico) solo per draft approvati — cache nel record dilemma, admin review obbligatoria, mai live on user request, guardrail per categorie health/legal
 - [ ] **Expert Insight store**: colonna `expert_insight_en` / `expert_insight_it` su tabella dilemmas per insight curati manualmente o approvati da admin
 - [ ] **Bottom nav mobile**: Home / Trending / Play / Profilo — solo mobile, locale-aware, safe-area, non copre contenuto
+- [ ] **AdSense frequency experiment**: mostrare 1 ad ogni 3-4 voti con frequency cap — non bloccare CTA, non interstitial, A/B test
+- [ ] **Geo Insight privacy-safe**: "Italy vs World" — country da profilo volontario, aggregato anonimo, soglia minima campione, niente IP-to-location senza base legale
 - [ ] **Android TWA (Play Store)**: `/.well-known/assetlinks.json` + APK firmato + Google Play listing — Bubblewrap CLI, SHA-256 signing key, deep link `/play/[id]`
 - [ ] **iOS Capacitor (App Store)**: Capacitor bridge, Universal Links per Supabase OAuth, haptics + native share + local notifications + splash — prerequisito: crescita organica misurabile per ridurre rischio Apple review
 

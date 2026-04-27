@@ -185,6 +185,16 @@ nav, main, footer {
 }
 .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
+/* ── Vote button tap feedback ────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vote-tap {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.018); }
+    100% { transform: scale(0.99); }
+  }
+  .animate-vote-tap { animation: vote-tap 0.22s ease-out forwards; }
+}
+
 /* ── Mobile nav slide-down ────────────────────────────── */
 @keyframes slide-down {
   from { opacity: 0; transform: translateY(-8px); }

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getScenario, scenarios } from '@/lib/scenarios'
+import { getScenario, getNextScenarioId, scenarios } from '@/lib/scenarios'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
@@ -97,15 +97,17 @@ export default async function PlayPage({ params, searchParams }: Props) {
 
   const isChallenge = searchParams.challenge === '1'
 
-  // Collect all scenarios for internal linking (related dilemmas)
+  // Collect all scenarios for internal linking (related dilemmas) + next dilemma
+  let dynamicScenarios: Awaited<ReturnType<typeof getDynamicScenarios>> = []
   let allScenarios: Scenario[] = [...scenarios]
   try {
-    const dynamic = await getDynamicScenarios()
+    dynamicScenarios = await getDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
-    allScenarios = [...scenarios, ...dynamic.filter((d) => !staticIds.has(d.id))]
+    allScenarios = [...scenarios, ...dynamicScenarios.filter((d) => !staticIds.has(d.id))]
   } catch {
     // Non-blocking
   }
+  const nextId = getNextScenarioId(params.id, dynamicScenarios)
 
   // JSON-LD: BreadcrumbList
   const breadcrumbSchema = {
@@ -164,6 +166,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
         existingVote={existingVote}
         totalVotes={totalVotes}
         isChallenge={isChallenge}
+        nextId={nextId}
       />
       <RelatedDilemmas current={scenario} all={allScenarios} />
     </>

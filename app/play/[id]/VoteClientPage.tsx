@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { Scenario } from '@/lib/scenarios'
 import Script from 'next/script'
+import { track } from '@/lib/gtag'
 
 interface ExistingVote {
   choice: 'A' | 'B'
@@ -16,6 +18,7 @@ interface Props {
   totalVotes?: number
   isChallenge?: boolean
   localePrefix?: '' | '/it'
+  nextId?: string
 }
 
 function getCookie(name: string): string | null {
@@ -33,53 +36,71 @@ function formatTimeRemaining(canChangeUntil: string): string {
   return `${m}m`
 }
 
+function Spinner() {
+  return (
+    <svg className="animate-spin h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  )
+}
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
 const EN_COPY = {
-  back:         '← All dilemmas',
+  back:           '← All dilemmas',
   challengeTitle: '🔥 Someone challenged you!',
   challengeText:  "A friend wants to know which side you're on. Choose wisely.",
-  joinVoted:    (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
-  alreadyVoted: '✅ You already voted',
-  canChange:    (t: string) => `🕐 Can change for ${t}`,
-  voteLocked:   '🔒 Vote locked',
-  yourChoice:   'YOUR CHOICE',
-  or:           'OR',
-  yourVote:     '← your vote',
-  seeResults:   'See results →',
-  nextDilemma:  'Next dilemma',
-  counting:     'Counting your vote…',
-  disclaimer:   'Anonymous. No account needed. Results update in real time.',
+  joinVoted:      (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
+  alreadyVoted:   '✅ You already voted',
+  canChange:      (t: string) => `🕐 Can change for ${t}`,
+  voteLocked:     '🔒 Vote locked',
+  yourChoice:     'YOUR CHOICE',
+  or:             'OR',
+  yourVote:       '← your vote',
+  seeResults:     'See results →',
+  nextDilemma:    'Next dilemma →',
+  counting:       'Counting your vote…',
+  disclaimer:     'Anonymous. No account needed. Results update in real time.',
 }
 
 const IT_COPY = {
-  back:         '← Tutti i dilemmi',
+  back:           '← Tutti i dilemmi',
   challengeTitle: '🔥 Ti hanno sfidato!',
   challengeText:  'Un amico vuole sapere da che parte stai. Scegli con cura.',
-  joinVoted:    (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
-  alreadyVoted: '✅ Hai già votato',
-  canChange:    (t: string) => `🕐 Puoi cambiare per altri ${t}`,
-  voteLocked:   '🔒 Voto bloccato',
-  yourChoice:   'LA TUA SCELTA',
-  or:           'OPPURE',
-  yourVote:     '← il tuo voto',
-  seeResults:   'Vedi risultati →',
-  nextDilemma:  'Prossimo dilemma',
-  counting:     'Conteggio del tuo voto…',
-  disclaimer:   'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
+  joinVoted:      (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
+  alreadyVoted:   '✅ Hai già votato',
+  canChange:      (t: string) => `🕐 Puoi cambiare per altri ${t}`,
+  voteLocked:     '🔒 Voto bloccato',
+  yourChoice:     'LA TUA SCELTA',
+  or:             'OPPURE',
+  yourVote:       '← il tuo voto',
+  seeResults:     'Vedi risultati →',
+  nextDilemma:    'Prossimo dilemma →',
+  counting:       'Conteggio del tuo voto…',
+  disclaimer:     'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
 }
 
-export default function VoteClientPage({ scenario, existingVote, totalVotes = 0, isChallenge = false, localePrefix = '' }: Props) {
+export default function VoteClientPage({
+  scenario,
+  existingVote,
+  totalVotes = 0,
+  isChallenge = false,
+  localePrefix = '',
+  nextId,
+}: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
   const router = useRouter()
 
   const copy = localePrefix === '/it' ? IT_COPY : EN_COPY
+  const locale = localePrefix === '/it' ? 'it' : 'en'
+  const nextHref = nextId ? `${localePrefix}/play/${nextId}` : localePrefix || '/'
 
   // Cookie-based redirect for non-logged users
   useEffect(() => {
-    if (existingVote) return // Supabase vote takes precedence
+    if (existingVote) return
     const previousVote = getCookie(`sv_voted_${scenario.id}`)
     if (previousVote === 'a' || previousVote === 'b') {
       router.replace(`${localePrefix}/results/${scenario.id}?voted=${previousVote}`)
@@ -105,6 +126,12 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: scenario.id, option }),
+      })
+      track('vote_submitted', {
+        scenario_id: scenario.id,
+        category: scenario.category,
+        choice: option,
+        locale,
       })
       router.push(`${localePrefix}/results/${scenario.id}?voted=${option}`)
     } catch {
@@ -150,9 +177,9 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
 
       <div className="max-w-2xl mx-auto px-4 py-16">
         {/* Back */}
-        <a href={localePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
+        <Link href={localePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
           {copy.back}
-        </a>
+        </Link>
 
         {/* ── Challenge banner ── */}
         {isChallenge && !existingVote && (
@@ -235,20 +262,21 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
               </div>
             </div>
 
-            {/* CTA to results */}
+            {/* CTA to results / next */}
             <div className="flex gap-3 mt-6">
-              <a
+              <Link
                 href={`${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`}
                 className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm text-center transition-colors"
               >
                 {copy.seeResults}
-              </a>
-              <a
-                href={localePrefix || '/'}
+              </Link>
+              <Link
+                href={nextHref}
+                onClick={() => track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
                 className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
               >
                 {copy.nextDilemma}
-              </a>
+              </Link>
             </div>
           </div>
         ) : (
@@ -265,12 +293,13 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
               <button
                 onClick={() => vote('a')}
                 disabled={!!selected || loading}
-                className={`w-full rounded-2xl border-2 p-6 text-left transition-all duration-200 font-semibold text-lg
+                className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
                   ${selected === 'a'
-                    ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99]'
+                    ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
                     : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
                   }
                   ${selected && selected !== 'a' ? 'opacity-30' : ''}
+                  transition-all duration-200
                 `}
               >
                 <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">Option A</span>
@@ -286,12 +315,13 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
               <button
                 onClick={() => vote('b')}
                 disabled={!!selected || loading}
-                className={`w-full rounded-2xl border-2 p-6 text-left transition-all duration-200 font-semibold text-lg
+                className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
                   ${selected === 'b'
-                    ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99]'
+                    ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
                     : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
                   }
                   ${selected && selected !== 'b' ? 'opacity-30' : ''}
+                  transition-all duration-200
                 `}
               >
                 <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Option B</span>
@@ -300,9 +330,10 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
             </div>
 
             {loading && (
-              <p className="text-center text-[var(--muted)] text-sm mt-8 animate-pulse">
-                {copy.counting}
-              </p>
+              <div className="flex items-center justify-center gap-2 text-[var(--muted)] text-sm mt-8">
+                <Spinner />
+                <span>{copy.counting}</span>
+              </div>
             )}
 
             <p className="text-center text-xs text-[var(--muted)] mt-10 opacity-60">

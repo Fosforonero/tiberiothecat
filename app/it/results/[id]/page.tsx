@@ -3,10 +3,10 @@
  * Share URLs automatically use /it/play prefix.
  */
 import { notFound } from 'next/navigation'
-import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getRandomScenario } from '@/lib/scenarios'
-import { getItalianScenario, translateScenarioToItalian } from '@/lib/scenarios-it'
+import { getNextScenarioId } from '@/lib/scenarios'
+import { getItalianScenario } from '@/lib/scenarios-it'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from '@/app/results/[id]/ResultsClientPage'
 import type { Metadata } from 'next'
@@ -68,7 +68,11 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
     ? searchParams.voted
     : null
 
-  const nextScenario = translateScenarioToItalian(getRandomScenario(params.id))
+  let dynamicScenarios: DynamicScenario[] = []
+  try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
+  // Prefer IT-locale dynamic scenarios; fall back to any dynamic, then static
+  const itPool = dynamicScenarios.filter((s) => s.locale === 'it')
+  const nextId = getNextScenarioId(params.id, itPool.length ? itPool : dynamicScenarios)
 
   return (
     <ResultsClientPage
@@ -78,7 +82,7 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
       pctB={pctB}
       total={total}
       voted={voted}
-      nextId={nextScenario.id}
+      nextId={nextId}
       sharePrefix="/it"
     />
   )

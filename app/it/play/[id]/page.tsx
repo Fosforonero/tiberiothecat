@@ -3,8 +3,9 @@
  * Voting is global (same Redis key regardless of locale).
  */
 import { notFound } from 'next/navigation'
-import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { getNextScenarioId } from '@/lib/scenarios'
 import { getItalianScenario } from '@/lib/scenarios-it'
 import { createClient } from '@/lib/supabase/server'
 import { getVotes } from '@/lib/redis'
@@ -71,6 +72,12 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
     const votes = await getVotes(params.id)
     totalVotes = votes.a + votes.b
   } catch { /* non-blocking */ }
+
+  // Compute next dilemma preferring IT-locale dynamics
+  let dynamicScenarios: DynamicScenario[] = []
+  try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
+  const itPool = dynamicScenarios.filter((s) => s.locale === 'it')
+  const nextId = getNextScenarioId(params.id, itPool.length ? itPool : dynamicScenarios)
 
   // Check if logged-in user already voted
   let existingVote: { choice: 'A' | 'B'; canChangeUntil: string } | null = null
@@ -139,6 +146,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
         totalVotes={totalVotes}
         isChallenge={isChallenge}
         localePrefix="/it"
+        nextId={nextId}
       />
     </>
   )
