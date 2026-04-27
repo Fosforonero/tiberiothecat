@@ -25,10 +25,39 @@ function maybeRedirectToItalian(request: NextRequest): NextResponse | null {
   return null
 }
 
+// Routes that require Supabase auth check in middleware.
+// Public routes (/, /play/*, /results/*, /blog/*, etc.) skip getUser() entirely.
+const AUTH_RELEVANT_PREFIXES = [
+  '/dashboard',
+  '/profile',
+  '/admin',
+  '/submit-poll',
+  '/api/admin',
+  '/api/missions',
+  '/api/events',
+  '/api/email',
+  '/api/stripe/portal',
+  '/api/stripe/subscription',
+  '/api/me',
+]
+
+function isAuthRelevantPath(pathname: string): boolean {
+  return AUTH_RELEVANT_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/') || pathname.startsWith(prefix + '?')
+  )
+}
+
 export async function middleware(request: NextRequest) {
   // i18n-lite: auto-redirect Italian browsers to /it
   const itRedirect = maybeRedirectToItalian(request)
   if (itRedirect) return itRedirect
+
+  const { pathname } = request.nextUrl
+
+  // Skip Supabase for all public routes — saves one auth round-trip per request
+  if (!isAuthRelevantPath(pathname)) {
+    return NextResponse.next()
+  }
 
   let supabaseResponse = NextResponse.next({ request })
 
@@ -51,17 +80,16 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session — required for Server Components to read auth state
+  // Refresh session + protect premium routes
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect premium routes
   const premiumRoutes = ['/dashboard', '/submit-poll']
-  const isPremiumRoute = premiumRoutes.some(r => request.nextUrl.pathname.startsWith(r))
+  const isPremiumRoute = premiumRoutes.some((r) => pathname.startsWith(r))
 
   if (isPremiumRoute && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
-    url.searchParams.set('redirect', request.nextUrl.pathname)
+    url.searchParams.set('redirect', pathname)
     return NextResponse.redirect(url)
   }
 
@@ -70,6 +98,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|json|webmanifest)$).*)',
   ],
 }

@@ -9,7 +9,19 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Social Content Factory Phase 1 (27 Apr 2026)
+### Sprint Corrente — Hardening Tecnico Pre-Lancio (27 Apr 2026)
+
+**Performance + policy + bug fix ✅**
+
+- [x] **Middleware public route optimization**: `isAuthRelevantPath()` helper — Supabase `auth.getUser()` chiamato solo su `/dashboard`, `/profile`, `/admin`, `/submit-poll`, `/api/admin/*`, `/api/missions/*`, `/api/events/*`, `/api/email/*`, `/api/stripe/portal|subscription`, `/api/me/*`. Tutte le route pubbliche (`/play/*`, `/results/*`, `/blog/*`, etc.) restituiscono `NextResponse.next()` senza roundtrip Supabase.
+- [x] **AdSense official script**: rimosso proxy `/api/_g/ads` dal layout — AdSense ora carica da `pagead2.googlesyndication.com` (script ufficiale). `/api/_g/ads` resta ma non usato. Policy-safe per AdSense review.
+- [x] **Fix IT "Opzione A/B"**: `optionA`/`optionB` aggiunti a EN_COPY/IT_COPY in `VoteClientPage.tsx` — IT mostra "Opzione A" / "Opzione B" invece di "Option A" / "Option B".
+- [x] **Fix OG download extension**: "Save for Instagram" punta a `storyCardUrl` (PNG 9:16) invece che a `ogImageUrl` (SVG) — download attribute aggiornato a `.png`.
+- [x] **migration_v9 aggiornata**: README aggiornato → ✅ Applied.
+
+---
+
+### Sprint Precedente — Social Content Factory Phase 1 (27 Apr 2026)
 
 **Pipeline locale caption social da dilemmi approvati ✅**
 

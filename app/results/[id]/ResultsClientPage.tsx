@@ -563,12 +563,10 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-4">
-            {/* Instagram / Save image */}
+            {/* Instagram / Save image — points to PNG story card (OG image is SVG, not accepted by Instagram) */}
             <a
-              href={ogImageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              download={`splitvote-${scenario.id}.svg`}
+              href={storyCardUrl}
+              download={`splitvote-${scenario.id}.png`}
               onClick={() => track('share_clicked', { target: 'instagram_save', scenario_id: scenario.id, locale })}
               className="flex flex-col items-center gap-1.5 bg-gradient-to-br from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 border border-purple-500/30 text-purple-300 font-bold text-sm px-4 py-3.5 rounded-xl transition-all text-center"
             >

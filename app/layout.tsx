@@ -130,7 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
         <Script
           async
-          src="/api/_g/ads?client=ca-pub-5232020244793649"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232020244793649"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />

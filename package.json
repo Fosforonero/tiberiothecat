@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:social-content": "node scripts/generate-social-content.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.51.0",

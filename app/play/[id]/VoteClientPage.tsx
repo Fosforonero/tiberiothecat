@@ -64,6 +64,8 @@ const EN_COPY = {
   counting:       'Counting your vote…',
   voteError:      'Something went wrong. Please try again.',
   disclaimer:     'Anonymous. No account needed. Results update in real time.',
+  optionA:        'Option A',
+  optionB:        'Option B',
 }
 
 const IT_COPY = {
@@ -82,6 +84,8 @@ const IT_COPY = {
   counting:       'Conteggio del tuo voto…',
   voteError:      'Qualcosa è andato storto. Riprova.',
   disclaimer:     'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
+  optionA:        'Opzione A',
+  optionB:        'Opzione B',
 }
 
 export default function VoteClientPage({
@@ -265,7 +269,7 @@ export default function VoteClientPage({
                   : 'border-red-500/20 bg-red-500/5 text-[var(--muted)] opacity-40'
                 }`}
               >
-                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">Option A</span>
+                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
                 {scenario.optionA}
                 {existingVote.choice === 'A' && <span className="ml-2 text-red-400">{copy.yourVote}</span>}
               </div>
@@ -282,7 +286,7 @@ export default function VoteClientPage({
                   : 'border-blue-500/20 bg-blue-500/5 text-[var(--muted)] opacity-40'
                 }`}
               >
-                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Option B</span>
+                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
                 {scenario.optionB}
                 {existingVote.choice === 'B' && <span className="ml-2 text-blue-400">{copy.yourVote}</span>}
               </div>
@@ -328,7 +332,7 @@ export default function VoteClientPage({
                   transition-all duration-200
                 `}
               >
-                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">Option A</span>
+                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
                 {scenario.optionA}
               </button>
 
@@ -350,7 +354,7 @@ export default function VoteClientPage({
                   transition-all duration-200
                 `}
               >
-                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Option B</span>
+                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
                 {scenario.optionB}
               </button>
             </div>

@@ -18,7 +18,7 @@ Live at **[splitvote.io](https://splitvote.io)**
 | AI dilemmas | Anthropic Claude (daily Vercel cron → admin draft queue) |
 | Payments | Stripe (one-time name change, premium sub) |
 | Analytics | GA4 via first-party proxy |
-| Ads | Google AdSense via first-party proxy |
+| Ads | Google AdSense (official script — `pagead2.googlesyndication.com`) |
 | Deploy | Vercel (auto-deploy on push to main) |
 
 ---
@@ -119,7 +119,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | ✅ Applied |
 | `migration_v7_stripe_subscriptions.sql` | Stripe customer/subscription fields | ✅ Applied |
 | `migration_v8_user_events.sql` | User event tracking for share_result mission | ✅ Applied |
-| `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ⏳ Pending |
+| `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ✅ Applied |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -287,7 +287,9 @@ Events are written from `ResultsClientPage.tsx` after successful share actions (
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.
 
 ### First-party proxies
-`app/api/_g/` proxies GA4 and AdSense to bypass ad blockers. This is a deliberate product choice — see Google's first-party proxy docs. Do not remove without updating analytics/ads setup.
+`app/api/_g/` proxies GA4 (analytics) to bypass ad blockers. This is a deliberate product choice — see Google's first-party proxy docs.
+
+AdSense loads directly from `pagead2.googlesyndication.com` (official script). The `/api/_g/ads` proxy route is kept but not used — policy-safe for AdSense review. Do not proxy adsbygoogle.js again without re-evaluating AdSense programme policies.
 
 ### Stripe webhook
 Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBHOOK_SECRET`.
