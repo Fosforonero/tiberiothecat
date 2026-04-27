@@ -9,7 +9,43 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Mission Validation + Admin Seed Batch UI (27 Apr 2026)
+### Sprint Corrente — Share Mission + User Events Tracking (27 Apr 2026)
+
+**share_result mission server-verified + user_events tracking ✅**
+
+- [x] `supabase/migration_v8_user_events.sql`: nuova tabella `user_events`
+  - RLS: solo utenti autenticati possono inserire/leggere i propri eventi
+  - Nessun accesso anonimo — XP missions richiedono auth
+  - Index su `(user_id, event_type, created_at)` per query missioni
+  - ⚠️ **NON ancora applicata** — applicare manualmente in Supabase dashboard
+- [x] `POST /api/events/track`: nuovo endpoint server-side
+  - Allowlist: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download`
+  - Auth richiesta — 401 per anonimi (silenzioso nel client)
+  - Dedup 60s: skip se stesso (user, type, scenario) inserito nell'ultimo minuto
+- [x] `ResultsClientPage.tsx`: tracking server-side collegato a tutti gli share actions
+  - Web Share API success → `share_result`
+  - Clipboard fallback → `copy_result_link`
+  - Story card share (file/URL) → `story_card_share`
+  - Story card download (tutti i path) → `story_card_download`
+  - Tracking solo su successo (mai su cancel/abort)
+  - Anonimi: server restituisce 401 silenzioso, UX invariata
+- [x] `GET /api/missions`: `share_result` rimosso da COMING_SOON
+  - progress = count eventi share oggi (qualsiasi tipo tra i 4)
+  - claimable = true se progress ≥ 1
+- [x] `POST /api/missions/complete`: verifica `share_result` via `user_events`
+  - Blocca se nessun evento share oggi → 403 con reason
+  - Graceful failure se migration non ancora applicata (403 con istruzione)
+- [x] `challenge_friend`: resta Coming Soon — nessun referral tracking
+- [x] `SeedBatchPanel.tsx`: aggiunto banner "Generated drafts are not public until approved."
+
+**⚠️ Migration da applicare:**
+```sql
+-- Supabase dashboard → SQL Editor → New query → incolla migration_v8_user_events.sql → Run
+```
+
+---
+
+### Sprint Precedente — Mission Validation + Admin Seed Batch UI (27 Apr 2026)
 
 **Mission server-validation + admin seed batch UI ✅**
 

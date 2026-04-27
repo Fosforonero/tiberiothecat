@@ -169,9 +169,10 @@ export default function SeedBatchPanel() {
             </table>
           </div>
 
-          <p className="text-white/30 text-xs">
-            Approve drafts in Dynamic Dilemmas ↓ — nothing is published automatically.
-          </p>
+          <div className="flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2">
+            <span className="text-yellow-400 text-xs font-bold">⚠ Generated drafts are not public until approved.</span>
+            <span className="text-yellow-300/60 text-xs">Review and approve each draft manually in Dynamic Dilemmas ↓</span>
+          </div>
         </div>
       )}
     </section>

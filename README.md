@@ -118,6 +118,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v5_vote_daily_stats.sql` | admin vote charts incl. anonymous votes | ✅ Applied |
 | `migration_v6_feedback.sql` | dilemma quality feedback (🔥 / 👎) | ✅ Applied |
 | `migration_v7_stripe_subscriptions.sql` | Stripe customer/subscription fields | ✅ Applied |
+| `migration_v8_user_events.sql` | User event tracking for share_result mission | ⏳ Pending |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -217,9 +218,26 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 | `vote_2_categories` | Distinct categories from today's votes (static + dynamic lookup) | ≥ 2 categories |
 | `daily_dilemma` | At least 1 vote today | ≥ 1 vote |
 | `challenge_friend` | Not verifiable — shown as Coming Soon | disabled |
-| `share_result` | Not verifiable — shown as Coming Soon | disabled |
+| `share_result` | Count `user_events` today with type in `{share_result, copy_result_link, story_card_share, story_card_download}` | ≥ 1 event |
 
 `components/DailyMissions.tsx` shows the Claim button only when `claimable === true` from the server. Coming-soon missions are non-interactive. All XP is awarded server-side via `award_mission_xp` (DB function with hardcoded XP table — no client-supplied XP).
+
+### User Events
+
+`supabase/migration_v8_user_events.sql` creates `public.user_events` for server-side mission verification.
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid | PK |
+| `user_id` | uuid | FK → `auth.users`, cascade delete |
+| `event_type` | text | Allowlisted: `share_result`, `copy_result_link`, `story_card_share`, `story_card_download` |
+| `scenario_id` | text | Optional |
+| `metadata` | jsonb | Additional context |
+| `created_at` | timestamptz | Indexed with `(user_id, event_type, created_at)` |
+
+`POST /api/events/track` — authenticated only, allowlisted types, 60s dedup per (user, type, scenario).
+
+Events are written from `ResultsClientPage.tsx` after successful share actions (only on success, not on cancel).
 
 ### Admin Seed Batch
 

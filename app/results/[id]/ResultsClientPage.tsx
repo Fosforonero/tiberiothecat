@@ -211,10 +211,21 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     ? `${scenario.emoji} **"${scenario.question}"**\nIl mondo è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`
     : `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
 
+  // Fire-and-forget server-side event tracking for mission verification.
+  // Silently ignored if user is not authenticated (server returns 401).
+  const trackServerEvent = (eventType: string) => {
+    fetch('/api/events/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventType, scenarioId: scenario.id }),
+    }).catch(() => { /* non-blocking */ })
+  }
+
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl)
     setCopied(true)
     track('copy_link_clicked', { scenario_id: scenario.id, locale })
+    trackServerEvent('copy_result_link')
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -266,10 +277,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: scenario.question, text: webShareText, url: shareUrl })
-      } catch { /* user cancelled */ }
+        trackServerEvent('share_result')
+      } catch { /* user cancelled — do not track */ }
     } else {
       await navigator.clipboard.writeText(`${webShareText}\n${shareUrl}`)
       setWebShareCopied(true)
+      trackServerEvent('copy_result_link')
       setTimeout(() => setWebShareCopied(false), 2000)
     }
   }
@@ -292,16 +305,19 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           text: `${pctA}% vs ${pctB}% — ${locale === 'it' ? 'Cosa faresti?' : 'What would you choose?'} 👇`,
         })
         setStoryShared(true)
+        trackServerEvent('story_card_share')
       } else if (navigator.share) {
         // File sharing not supported — share URL instead
         await navigator.share({ title: 'SplitVote', url: shareUrl, text: `${pctA}% vs ${pctB}%` })
         setStoryShared(true)
+        trackServerEvent('story_card_share')
       } else {
         // No Web Share API — trigger download
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
         link.download = filename
         link.click()
+        trackServerEvent('story_card_download')
       }
     } catch {
       // Share cancelled or failed — fallback to direct download
@@ -309,6 +325,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       link.href = storyCardUrl
       link.download = filename
       link.click()
+      trackServerEvent('story_card_download')
     } finally {
       setStorySharing(false)
     }
@@ -650,7 +667,10 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           <a
             href={storyCardUrl}
             download={`splitvote-story-${scenario.id}.png`}
-            onClick={() => track('story_card_clicked', { scenario_id: scenario.id, locale, action: 'download' })}
+            onClick={() => {
+              track('story_card_clicked', { scenario_id: scenario.id, locale, action: 'download' })
+              trackServerEvent('story_card_download')
+            }}
             className="flex flex-col items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--muted)] hover:text-white font-bold text-xs px-3 py-3 rounded-xl transition-all"
           >
             <span className="text-lg">⬇️</span>

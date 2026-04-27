@@ -85,8 +85,26 @@ async function verifyMission(
       return { eligible: true }
     }
 
+    case 'share_result': {
+      const todayStart3 = new Date()
+      todayStart3.setHours(0, 0, 0, 0)
+      try {
+        const { count } = await supabase
+          .from('user_events')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .in('event_type', ['share_result', 'copy_result_link', 'story_card_share', 'story_card_download'])
+          .gte('created_at', todayStart3.toISOString())
+        if ((count ?? 0) < 1) {
+          return { eligible: false, reason: 'Share a result first — no share events recorded today' }
+        }
+        return { eligible: true }
+      } catch {
+        return { eligible: false, reason: 'Share tracking unavailable — apply migration_v8_user_events.sql first' }
+      }
+    }
+
     case 'challenge_friend':
-    case 'share_result':
       return { eligible: false, reason: 'Server-side tracking not available for this mission yet' }
 
     default:
