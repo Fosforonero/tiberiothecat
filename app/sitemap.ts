@@ -152,6 +152,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
+    // SEO landing pages
+    {
+      url: `${BASE}/would-you-rather-questions`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/moral-dilemmas`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/it/domande-would-you-rather`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.80,
+    },
+    {
+      url: `${BASE}/it/dilemmi-morali`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.80,
+    },
     // Static pages
     {
       url: `${BASE}/faq`,
