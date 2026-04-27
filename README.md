@@ -68,10 +68,11 @@ STRIPE_PRICE_ID_PREMIUM=price_...    # premium subscription
 RESEND_API_KEY=re_...                  # from resend.com dashboard
 EMAIL_FROM=SplitVote <hello@splitvote.io>  # optional — this is the default
 
-# OpenRouter (future content engine — server-side only, NEVER expose to client)
-OPENROUTER_API_KEY=sk-or-...              # from openrouter.ai — NOT yet wired in code
-OPENROUTER_MODEL_DRAFT=anthropic/claude-3-haiku  # cheap model for draft generation
-OPENROUTER_MODEL_CLASSIFIER=anthropic/claude-3-haiku  # cheap model for scoring/classification
+# OpenRouter (content engine — server-side only, NEVER expose to client)
+OPENROUTER_API_KEY=sk-or-...              # from openrouter.ai — used by POST /api/admin/generate-draft
+OPENROUTER_MODEL_DRAFT=deepseek/deepseek-chat-v3.1          # required — no hardcoded fallback
+OPENROUTER_MODEL_CLASSIFIER=google/gemini-flash-1.5-8b      # for future scoring/classification
+OPENROUTER_MODEL_REVIEW=anthropic/claude-3.5-haiku          # for future content review
 
 # Public
 NEXT_PUBLIC_BASE_URL=https://splitvote.io
@@ -79,7 +80,15 @@ NEXT_PUBLIC_ADSENSE_SLOT_RESULTS=1234567890
 NEXT_PUBLIC_ADSENSE_SLOT_PLAY=1234567890
 ```
 
-> `OPENROUTER_API_KEY` is not yet used in any route. When integrated, it will be server-side only. Generated content is always `status: draft` — admin approval required before anything becomes public.
+> `OPENROUTER_API_KEY` and `OPENROUTER_MODEL_DRAFT` are both required — no hardcoded fallback model. If either is missing, `isOpenRouterConfigured()` returns false and the endpoint returns 503 at runtime; build still passes. Generated content is always `status: draft` — admin approval required before anything becomes public.
+>
+> **Dry-run curl example:**
+> ```bash
+> curl -X POST https://splitvote.io/api/admin/generate-draft \
+>   -H "Cookie: <admin session cookie>" \
+>   -H "Content-Type: application/json" \
+>   -d '{"type":"dilemma","locale":"en","topic":"AI replacing doctors"}'
+> ```
 
 > `RESEND_API_KEY` is never committed. If missing, `sendEmail()` returns `{ ok: false, error: 'email_not_configured' }` silently — build and app still work.
 

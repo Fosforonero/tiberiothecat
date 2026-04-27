@@ -9,20 +9,31 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Content Engine Base (27 Apr 2026)
+### Sprint Corrente — OpenRouter Dry-Run Generation (27 Apr 2026)
 
-**Inventory + Dedup + Draft Schema ✅**
+**Admin-only AI draft preview ✅**
 
-- [x] `lib/content-inventory.ts`: `buildContentInventory()` — unified async inventory of all content (static EN/IT dilemmas, dynamic approved/draft, blog EN/IT). Fields: `id`, `type`, `locale`, `title`, `slug`, `category`, `keywords`, `status`, `source`, `searchableText`
-- [x] `lib/content-dedup.ts`: Jaccard-based dedup without embeddings
-  - `findSimilarContent(candidate, inventory)` → ranked similar items with similarity score and reason
-  - `scoreNovelty(candidate, inventory)` → `{ noveltyScore, similarItems, warnings }`
-  - Handles: title similarity, full-text similarity, keyword overlap, id duplicate, near-duplicate warning, category saturation
-- [x] `lib/content-draft.ts`: TypeScript types for future AI-generated drafts
-  - `ContentDraft` (base), `DilemmaDraft`, `BlogArticleDraft`, `QuestDraft`
-  - Quest rules documented: ≥3 approved dilemmas, admin approval before public route, no sitemap for unapproved
-- [x] `GET /api/admin/content-inventory`: admin-only endpoint — counts by type/locale/status, flags low-novelty drafts (no data mutation, no secret exposure)
-- [x] README: Content Engine section, OpenRouter env vars documented (not yet wired)
+- [x] `lib/openrouter.ts`: server-side OpenRouter HTTP helper
+  - `isOpenRouterConfigured()` — fail-closed check per build safety
+  - `generateWithOpenRouter({ system, prompt, model? })` — AbortController timeout, safe error enum, no API key in logs
+  - Model priority: `input.model` → `OPENROUTER_MODEL_DRAFT` env → `meta-llama/llama-3.1-8b-instruct` fallback
+- [x] `lib/content-generation-prompts.ts`: prompt builders
+  - `buildDilemmaPrompt(input)` → `{ system, prompt }` — safety rules, inventory context, similar content warnings, strict JSON output spec
+  - `buildBlogArticlePrompt(input)` → `{ system, prompt }` — 400–700 word article, disclaimer verbatim, 2–4 dilemma references
+- [x] `lib/content-generation-validate.ts`: JSON parsing + validation + novelty scoring
+  - `extractJson(text)` — strips markdown fences, finds `{...}` block
+  - `str/strArr` helpers — field presence + length guards
+  - `slugify(text)` — accented chars → ASCII, URL-safe kebab-case
+  - `validateGeneratedOutput(rawText, type, locale, inventory)` — validates all fields, calls `scoreNovelty()`, attaches `noveltyScore + similarItems + warnings`
+- [x] `POST /api/admin/generate-draft`: admin-only dry-run endpoint
+  - Auth → OpenRouter config check → input validation → inventory build → novelty pre-check → prompt build → OpenRouter call → validate → return candidate
+  - Returns `{ ok: true, dryRun: true, candidate }` — **never saves anything**
+  - Error codes: 401, 503, 400, 422, 502
+- [x] `app/admin/GenerateDraftPanel.tsx`: client UI component
+  - Form: type (dilemma/blog_article), locale (en/it), topic textarea
+  - noveltyScore badge (green/yellow/red), warning chips, similar content list, full JSON preview
+  - `🔒 dry-run — not saved` label always visible — no save/approve button
+- [x] `app/admin/page.tsx`: `GenerateDraftPanel` added after CronDebug section
 - [x] typecheck ✅ · build (0 errors) ✅ · `git diff --check` ✅
 
 **Regole fondamentali (da rispettare in ogni sprint futuro):**
@@ -32,12 +43,12 @@ Ultimo aggiornamento: 27 Aprile 2026
 - Nessun secret o prompt nei log
 - Quest pubblicate solo con ≥3 dilemmi approvati
 
-**Prossimo sprint: OpenRouter dry-run generation**
-- Aggiungere `OPENROUTER_API_KEY` a Vercel
-- Endpoint admin `POST /api/admin/generate-draft` — chiama OpenRouter, salva solo in `dynamic:drafts`
-- Admin review in `/admin` (già implementato per dilemmi)
-- Blog article draft generation: outline → admin approva → full content generation
-- Non autopubblicare mai — ogni draft richiede approvazione manuale
+**Prossimo sprint: Draft queue + admin approve/reject**
+- Salvataggio bozze approvate in Redis (`dynamic:drafts` → `dynamic:approved`)
+- UI approvazione/rifiuto nel pannello admin
+- Blog article: pubblicazione con slug dedicate `/blog/[slug]`
+- Mini quest: aggrega ≥3 dilemmi per tema → pubblica come quest
+- Scheduled generation: cron settimanale per mantenere inventory fresca
 
 ---
 

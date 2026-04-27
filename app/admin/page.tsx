@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
+import GenerateDraftPanel from './GenerateDraftPanel'
 import { isAdminEmail } from '@/lib/admin-auth'
 
 export const metadata = { title: 'Admin | SplitVote' }
@@ -426,6 +427,11 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           </div>
         </div>
       )}
+
+      {/* ── Generate Draft Panel ── */}
+      <div className="mt-8">
+        <GenerateDraftPanel />
+      </div>
 
       {/* ── Cron Debug: Dynamic Dilemmas ── */}
       <div id="dynamic-dilemmas" className="mt-8">
