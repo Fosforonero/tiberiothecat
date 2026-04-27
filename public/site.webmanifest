@@ -1,23 +1,50 @@
 {
-  "name": "SplitVote",
+  "name": "SplitVote — What Would the World Choose?",
   "short_name": "SplitVote",
-  "description": "Vote on the world's toughest dilemmas",
+  "description": "Real-time global votes on impossible moral dilemmas. No right answers — just honest ones.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#070718",
   "theme_color": "#070718",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["entertainment", "social", "games"],
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Trending Dilemmas",
+      "short_name": "Trending",
+      "description": "See the most voted dilemmas right now",
+      "url": "/trending",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Moral Profile",
+      "short_name": "Profile",
+      "description": "Discover your moral archetype",
+      "url": "/personality",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ]
 }

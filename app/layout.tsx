@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import Link from 'next/link'
@@ -66,6 +66,7 @@ export const metadata: Metadata = {
       'x-default': 'https://splitvote.io',
     },
   },
+  manifest: '/site.webmanifest',
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -73,13 +74,25 @@ export const metadata: Metadata = {
       { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
       { url: '/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
     ],
-    apple: [{ url: '/apple-touch-icon.png' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
     shortcut: '/favicon.ico',
   },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
     'google-site-verification': '',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black',
+    'apple-mobile-web-app-title': 'SplitVote',
+    'mobile-web-app-capable': 'yes',
   },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#070718',
+  viewportFit: 'cover',
 }
 
 
@@ -120,6 +133,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        <Script id="sw-register" strategy="afterInteractive">{`
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(function(){});
+          }
+        `}</Script>
       {/* Organization + site-level JSON-LD */}
       <JsonLd data={{
         '@context': 'https://schema.org',

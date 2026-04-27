@@ -9,7 +9,22 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — i18n Personality & App Navigation (27 Apr 2026)
+### Sprint Corrente — PWA MVP (27 Apr 2026)
+
+- [x] `public/site.webmanifest`: icon purpose separati (`any` + `maskable`), scope, lang, categories, shortcuts (Trending + Profile)
+- [x] `app/layout.tsx`: `Viewport` export con `themeColor: '#070718'`, `viewportFit: 'cover'`
+- [x] `app/layout.tsx`: `manifest: '/site.webmanifest'` in metadata, Apple PWA meta tags (`apple-mobile-web-app-capable`, `status-bar-style`, `title`)
+- [x] `public/sw.js`: service worker minimal, network-first, offline fallback su `/offline`, skip `/api/`
+- [x] `app/offline/page.tsx`: pagina offline branded con reload CTA
+- [x] SW registration script in `<head>` via `next/script afterInteractive`
+
+Strategia mobile (NON implementare bundle senza conferma):
+- Android TWA: richiede `/.well-known/assetlinks.json` con SHA-256 APK key → sprint dedicato
+- iOS Capacitor: WKWebView wrapper, rischio Apple review "web shell" → valutare post-crescita
+
+---
+
+### Sprint Precedente — i18n Personality & App Navigation (27 Apr 2026)
 
 - [x] `lib/personality.ts`: archetype + axis IT translations (`nameIt`, `signIt`, `taglineIt`, `descriptionIt`, `traitsIt`, `shareTextIt`)
 - [x] `lib/personality.ts`: `getCommunityLabel(locale)` e `getAxisLabel(locale)` locale-aware
@@ -175,6 +190,8 @@ Non fare insieme a feature/product sprint.
 - [ ] **Expert Insight AI**: generare insight da AI (OpenRouter, modello economico) solo per draft approvati — cache nel record dilemma, admin review obbligatoria, mai live on user request, guardrail per categorie health/legal
 - [ ] **Expert Insight store**: colonna `expert_insight_en` / `expert_insight_it` su tabella dilemmas per insight curati manualmente o approvati da admin
 - [ ] **Bottom nav mobile**: Home / Trending / Play / Profilo — solo mobile, locale-aware, safe-area, non copre contenuto
+- [ ] **Android TWA**: `/.well-known/assetlinks.json`, APK firmato, Google Play listing — richiede SHA-256 della signing key
+- [ ] **iOS Capacitor**: WKWebView wrapper, Universal Links per Supabase OAuth callback, Apple review risk assessment
 
 ---
 
