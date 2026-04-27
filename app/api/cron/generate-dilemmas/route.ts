@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import {
   saveDraftScenarios,
+  saveDynamicScenarios,
   getDynamicScenarios,
   getDraftScenarios,
   isSimilarToExisting,
@@ -26,6 +27,7 @@ import {
 } from '@/lib/trend-signals'
 import type { TrendSignal } from '@/lib/trend-signals'
 import type { Category } from '@/lib/scenarios'
+import { runQualityGates } from '@/lib/content-quality-gates'
 
 export const runtime = 'nodejs'
 
@@ -160,6 +162,11 @@ export async function GET(request: NextRequest) {
   const localeParam = request.nextUrl.searchParams.get('locale') as 'en' | 'it' | null
   const dryRun      = request.nextUrl.searchParams.get('dry') === '1'
 
+  // Autopublish config — fail closed: only active when explicitly set to 'true'
+  const shouldAutopublish = process.env.AUTO_PUBLISH_DILEMMAS === 'true'
+  const maxPerRun = Math.max(1, parseInt(process.env.AUTO_PUBLISH_DILEMMAS_MAX_PER_RUN ?? '1', 10))
+  let autoPublishedThisRun = 0
+
   try {
     const results: Record<string, unknown> = {}
     const localesToRun: Array<'en' | 'it'> = localeParam ? [localeParam] : ['en', 'it']
@@ -246,26 +253,64 @@ export async function GET(request: NextRequest) {
         continue
       }
 
+      // Split deduped into autopublish vs draft based on quality gates
+      const toAutoPublish: DynamicScenario[] = []
+      const toDraft: DynamicScenario[] = []
+
+      for (const scenario of deduped) {
+        if (shouldAutopublish && autoPublishedThisRun < maxPerRun) {
+          const gates = runQualityGates({
+            locale:          scenario.locale,
+            question:        scenario.question,
+            optionA:         scenario.optionA,
+            optionB:         scenario.optionB,
+            category:        scenario.category,
+            seoTitle:        scenario.seoTitle,
+            seoDescription:  scenario.seoDescription,
+            keywords:        scenario.keywords,
+            scores:          scenario.scores,
+          })
+          if (gates.passed) {
+            toAutoPublish.push({
+              ...scenario,
+              status:              'approved',
+              approvedAt:          new Date().toISOString(),
+              autoPublished:       true,
+              qualityGateScore:    gates.score,
+              qualityGateReasons:  gates.reasons,
+              generatedBy:         'cron',
+            })
+            autoPublishedThisRun++
+            continue
+          }
+        }
+        toDraft.push({ ...scenario, generatedBy: 'cron' })
+      }
+
       if (!dryRun) {
-        await saveDraftScenarios(deduped)
+        if (toAutoPublish.length > 0) await saveDynamicScenarios(toAutoPublish)
+        if (toDraft.length > 0) await saveDraftScenarios(toDraft)
       }
 
       results[locale] = {
         ok: true,
-        generated: deduped.length,
-        skippedDuplicates: dupIds.length,
-        skippedInvalid: skippedInvalid.length,
+        generated:          deduped.length,
+        autoPublished:      toAutoPublish.length,
+        savedToDraft:       toDraft.length,
+        skippedDuplicates:  dupIds.length,
+        skippedInvalid:     skippedInvalid.length,
         dryRun,
         signals: signals.slice(0, 5).map(s => ({ title: s.title, source: s.source, score: s.score })),
         dilemmas: deduped.map(d => ({
-          id:           d.id,
-          question:     d.question,
-          trend:        d.trend,
-          trendSource:  d.trendSource,
-          seoTitle:     d.seoTitle,
-          keywords:     d.keywords,
-          status:       d.status,
-          scores:       d.scores,
+          id:             d.id,
+          question:       d.question,
+          trend:          d.trend,
+          trendSource:    d.trendSource,
+          seoTitle:       d.seoTitle,
+          keywords:       d.keywords,
+          status:         toAutoPublish.find(a => a.id === d.id) ? 'auto_published' : d.status,
+          scores:         d.scores,
+          autoPublished:  toAutoPublish.some(a => a.id === d.id),
         })),
       }
     }

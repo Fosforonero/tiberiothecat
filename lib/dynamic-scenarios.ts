@@ -26,17 +26,22 @@ export interface DilemmaScores {
 }
 
 export interface DynamicScenario extends Scenario {
-  generatedAt:      string          // ISO timestamp
-  approvedAt?:      string          // ISO timestamp, set on approval
-  trend:            string
-  locale:           string
-  status?:          DilemmaStatus
-  trendSource?:     TrendSource
-  trendUrl?:        string          // optional source URL
-  seoTitle?:        string
-  seoDescription?:  string
-  keywords?:        string[]
-  scores?:          DilemmaScores
+  generatedAt:        string          // ISO timestamp
+  approvedAt?:        string          // ISO timestamp, set on approval
+  trend:              string
+  locale:             string
+  status?:            DilemmaStatus
+  trendSource?:       TrendSource
+  trendUrl?:          string          // optional source URL
+  seoTitle?:          string
+  seoDescription?:    string
+  keywords?:          string[]
+  scores?:            DilemmaScores
+  // Autopublish audit metadata — set when AUTO_PUBLISH_DILEMMAS=true
+  autoPublished?:     boolean
+  qualityGateScore?:  number
+  qualityGateReasons?: string[]
+  generatedBy?:       'cron' | 'admin' | 'seed_batch'
 }
 
 // ── Approved (public) scenarios ───────────────────────────────

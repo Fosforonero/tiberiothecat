@@ -20,6 +20,9 @@ interface DilemmaRow {
   seoTitle: string | null
   keywords: string[]
   noveltyScore?: number
+  autoPublished?: boolean
+  qualityGateScore?: number
+  generatedBy?: string
 }
 
 interface ApiResponse {
@@ -76,6 +79,10 @@ function DilemmaCard({
           <span className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
             DRAFT
           </span>
+        ) : s.autoPublished ? (
+          <span className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border bg-cyan-500/20 text-cyan-400 border-cyan-500/30" title="Auto-published by cron quality gates">
+            ⚡ AUTO
+          </span>
         ) : (
           <span className="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border bg-green-500/20 text-green-400 border-green-500/30">
             LIVE
@@ -89,8 +96,17 @@ function DilemmaCard({
             s.noveltyScore >= 70 ? 'text-green-300 border-green-500/30 bg-green-500/10'
             : s.noveltyScore >= 55 ? 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10'
             : 'text-red-300 border-red-500/30 bg-red-500/10'
-          }`}>
+          }`} title={`Novelty score: ${s.noveltyScore}/100`}>
             N:{s.noveltyScore}
+          </span>
+        )}
+
+        {s.qualityGateScore !== undefined && (
+          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+            s.qualityGateScore >= 75 ? 'text-cyan-300 border-cyan-500/30 bg-cyan-500/10'
+            : 'text-orange-300 border-orange-500/30 bg-orange-500/10'
+          }`} title={`Quality gate score: ${s.qualityGateScore}/100`}>
+            QG:{s.qualityGateScore}
           </span>
         )}
 
@@ -229,10 +245,11 @@ export default function CronDebug() {
     )
   }
 
-  const drafts   = data.results.filter(s => s.status === 'draft')
-  const approved = data.results.filter(s => s.status !== 'draft')
-  const enCount  = approved.filter(s => s.locale === 'en').length
-  const itCount  = approved.filter(s => s.locale === 'it').length
+  const drafts        = data.results.filter(s => s.status === 'draft')
+  const approved      = data.results.filter(s => s.status !== 'draft')
+  const enCount       = approved.filter(s => s.locale === 'en').length
+  const itCount       = approved.filter(s => s.locale === 'it').length
+  const autoPublished = approved.filter(s => s.autoPublished).length
 
   return (
     <div className="space-y-6">
@@ -249,6 +266,11 @@ export default function CronDebug() {
         <span className="bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-3 py-1 font-bold">
           {itCount} IT live
         </span>
+        {autoPublished > 0 && (
+          <span className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-full px-3 py-1 font-bold" title="Auto-published by quality gates">
+            ⚡ {autoPublished} auto
+          </span>
+        )}
         <span className="text-[var(--muted)]">/ {approved.length} totali approvati (max 60)</span>
         <button
           onClick={fetchData}

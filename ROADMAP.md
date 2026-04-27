@@ -3,13 +3,102 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 27 Aprile 2026
+Ultimo aggiornamento: 27 Aprile 2026 (sprint AI hardening)
 
 ---
 
 ## Stato Attuale
 
-### Sprint Corrente — Vote Integrity Hardening (27 Apr 2026)
+### Sprint Corrente — AI Content Hardening + Audit (27 Apr 2026)
+
+**Quality gates autopublish + content opportunities + launch audit ✅**
+
+- [x] `lib/content-quality-gates.ts`: funzione centralizzata `runQualityGates(input)` — 12 hard gates + 3 warnings
+  - Locale valido en/it
+  - Question length 20-300 chars
+  - OptionA/B length 5-200 chars, max 4:1 ratio
+  - SEO title (10-120) e description (20-320) presenti
+  - Category valida (8 categorie)
+  - Blocklist contenuti pericolosi (espanso da cron BLOCKED_PATTERNS)
+  - Language match: IT richiede ≥2 segnali italiani nel testo
+  - noveltyScore ≥ 75 per autopublish (stricter di 55 draft threshold)
+  - finalScore ≥ 75 per autopublish
+  - similarItems count ≤ 2
+  - Output: `{ passed, score, reasons[], warnings[] }`
+- [x] `lib/dynamic-scenarios.ts`: campi opzionali `autoPublished`, `qualityGateScore`, `qualityGateReasons`, `generatedBy` in `DynamicScenario`
+- [x] `app/api/cron/generate-dilemmas/route.ts`: autopublish condizionale
+  - `AUTO_PUBLISH_DILEMMAS=true` richiesto esplicitamente — fail closed per default
+  - `AUTO_PUBLISH_DILEMMAS_MAX_PER_RUN` (default 1) — max dilemmi auto-approvati per run
+  - Quality gates passati → `saveDynamicScenarios()` direttamente (approvato)
+  - Quality gates falliti → `saveDraftScenarios()` come prima
+  - Metadata salvati: `autoPublished: true`, `qualityGateScore`, `generatedBy: 'cron'`
+  - Risultati: `autoPublished` + `savedToDraft` nel response JSON
+- [x] `app/api/admin/content-opportunities/route.ts`: GET admin-only read-only
+  - Ranked dilemmi più votati (Redis vote counts)
+  - Blog topic suggestions per ciascun dilemma (template-based, zero cost AI)
+  - Category gaps: categorie senza articolo blog in EN/IT
+  - Autopublish status live
+- [x] `app/admin/CronDebug.tsx`: badge ⚡ AUTO (cyan) per dilemmi auto-pubblicati; badge QG:{score} per qualityGateScore
+- [x] `README.md`: env vars `AUTO_PUBLISH_DILEMMAS`, `AUTO_PUBLISH_DILEMMAS_MAX_PER_RUN`, `BLOG_WEEKLY_DRAFTS`
+- [x] `LAUNCH_AUDIT.md`: audit completo stato progetto
+
+**Regole autopublish (da rispettare in tutti gli sprint futuri):**
+- `AUTO_PUBLISH_DILEMMAS=false` per default — MAI abilitare senza review quality gates
+- Quality gate threshold autopublish: noveltyScore ≥ 75, finalScore ≥ 75 (vs draft threshold 55)
+- Blog: NON autopubblicato — richiede storage migration (vedi sotto)
+- Admin vede sempre badge ⚡ AUTO sui dilemmi auto-pubblicati
+
+---
+
+### Blog Weekly Generation — Piano Tecnico (da implementare in sprint dedicato)
+
+**Problema**: il blog è attualmente hardcodato in `lib/blog.ts`. Un cron non può modificare file TypeScript in produzione senza commit/deploy.
+
+**Soluzione consigliata**: Redis `blog:drafts` + `blog:published` (pattern identico ai dilemmi)
+
+**Piano dettagliato**:
+
+1. **Storage**: due Redis keys
+   - `blog:drafts` (max 10) — bozze generate dal cron
+   - `blog:published` (max 30) — articoli approvati per pubblicazione
+   - Struttura: array di `BlogDraft` objects con tutti i campi di `BlogPost` + `status: 'draft' | 'published'`
+
+2. **Endpoint generazione**: `POST /api/admin/generate-blog-draft`
+   - Admin-only, OpenRouter (modello capace come claude-3.5-haiku)
+   - Input: locale, topic (da content-opportunities endpoint)
+   - Output: `BlogDraft` salvata in `blog:drafts`
+   - NON usa `lib/blog.ts` — salva in Redis
+   - Blocco: `BLOG_WEEKLY_DRAFTS=false` (default) → 503
+
+3. **Cron settimanale**: `POST /api/cron/generate-blog-draft` (schedule: `0 9 * * 1`)
+   - Chiama `GET /api/admin/content-opportunities` internamente
+   - Prende il top topic per locale (EN + IT) non ancora coperto
+   - Genera e salva in `blog:drafts`
+   - MAI autopubblica (differente da dilemmi — richiede revisione editoriale manuale)
+
+4. **Route pubbliche**: aggiornare `app/blog/[slug]/page.tsx` e `app/it/blog/[slug]/page.tsx` per leggere anche da `blog:published` Redis (in aggiunta a `lib/blog.ts` come fallback statico)
+
+5. **Admin UI**: aggiungere tab "Blog Drafts" in `/admin` con approve/edit/reject
+
+6. **Sitemap**: aggiornare `app/sitemap.ts` per includere articoli da `blog:published`
+
+7. **Env var richiesto**: `BLOG_WEEKLY_DRAFTS=true` — fail closed per default
+
+**Prerequisiti**:
+- [ ] Progettare schema `BlogDraft` TypeScript (estende `BlogPost` da `lib/blog.ts`)
+- [ ] Aggiornare `lib/blog.ts` per esporre funzioni di lettura/scrittura da Redis
+- [ ] Prompt per blog article generation più lungo e strutturato (section-by-section)
+- [ ] Admin review obbligatoria — no autopublish per blog, mai
+- [ ] Quality check manuale: ogni articolo deve avere disclaimer, no AI hallucinations, link ai dilemmi reali
+
+**NON implementare prima di**:
+- Avere ≥ 20 dilemmi approvati (content base per linking)
+- Aver testato content-opportunities endpoint in produzione
+- Aver abilitato e testato `AUTO_PUBLISH_DILEMMAS` per almeno 7 giorni
+
+---
+
+### Sprint Precedente — Vote Integrity Hardening (27 Apr 2026)
 
 **Integrità voto + rate limiting granulare + funnel tracking ✅**
 

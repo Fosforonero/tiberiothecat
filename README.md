@@ -79,6 +79,15 @@ OPENROUTER_MODEL_DRAFT=deepseek/deepseek-chat-v3.1          # required — no ha
 OPENROUTER_MODEL_CLASSIFIER=google/gemini-flash-1.5-8b      # for future scoring/classification
 OPENROUTER_MODEL_REVIEW=anthropic/claude-3.5-haiku          # for future content review
 
+# AI Autopublish (optional — fail closed by default)
+# Set to 'true' ONLY after reviewing quality gate thresholds in lib/content-quality-gates.ts.
+# Default off: generated dilemmas always land in dynamic:drafts for manual admin review.
+AUTO_PUBLISH_DILEMMAS=false
+# Max dilemmas auto-published per cron run (default 1, used only if AUTO_PUBLISH_DILEMMAS=true)
+AUTO_PUBLISH_DILEMMAS_MAX_PER_RUN=1
+# Weekly blog drafts — reserved, not yet active (blog requires storage migration first)
+BLOG_WEEKLY_DRAFTS=false
+
 # Public
 NEXT_PUBLIC_BASE_URL=https://splitvote.io
 NEXT_PUBLIC_ADSENSE_SLOT_RESULTS=1234567890
