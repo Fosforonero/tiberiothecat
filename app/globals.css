@@ -197,3 +197,39 @@ nav, main, footer {
   ::-webkit-scrollbar { display: none; }
   html { scrollbar-width: none; }
 }
+
+/* ── Keyboard focus ring ─────────────────────────────── */
+/* Visible only when navigating by keyboard (not on mouse click) */
+:focus-visible {
+  outline: 2px solid rgba(77, 159, 255, 0.75);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Screen-reader only utility ──────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Reduced motion ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .bg-orbs::before,
+  .bg-orbs::after,
+  .bg-orb-mid,
+  .bg-orb-cyan,
+  .pulse-glow,
+  .mobile-menu-enter {
+    animation: none;
+  }
+  .card-neon {
+    transition: none;
+  }
+}

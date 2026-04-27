@@ -8,11 +8,10 @@ import {
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
+import { isAdminEmail } from '@/lib/admin-auth'
 
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
-
-const ADMIN_EMAILS = ['mat.pizzi@gmail.com']
 
 interface AdminProps {
   searchParams: { preview?: string }
@@ -32,7 +31,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) {
+  if (!user || !isAdminEmail(user.email)) {
     redirect('/')
   }
 

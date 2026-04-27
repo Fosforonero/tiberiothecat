@@ -12,14 +12,14 @@ import { createClient } from '@/lib/supabase/server'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const ADMIN_EMAILS = ['mat.pizzi@gmail.com']
+import { isAdminEmail } from '@/lib/admin-auth'
 
 export async function GET(request: NextRequest) {
   // 1. Verify admin session
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user || !ADMIN_EMAILS.includes(user.email ?? '')) {
+  if (!user || !isAdminEmail(user.email)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

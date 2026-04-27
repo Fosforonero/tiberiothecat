@@ -71,8 +71,9 @@ export default async function AuthButton() {
           type="submit"
           className="flex items-center justify-center w-8 h-8 rounded-lg text-[var(--muted)] hover:text-white hover:bg-white/5 transition-all"
           title="Sign Out"
+          aria-label="Sign out"
         >
-          <LogOut size={13} />
+          <LogOut size={13} aria-hidden="true" />
         </button>
       </form>
     </div>
