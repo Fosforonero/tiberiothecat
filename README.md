@@ -64,11 +64,17 @@ STRIPE_WEBHOOK_SECRET=whsec_...     # from stripe listen or Stripe dashboard
 STRIPE_PRICE_ID_NAME_CHANGE=price_... # €0.99 one-time
 STRIPE_PRICE_ID_PREMIUM=price_...    # premium subscription
 
+# Resend (transactional email — set in Vercel only, NEVER commit)
+RESEND_API_KEY=re_...                  # from resend.com dashboard
+EMAIL_FROM=SplitVote <hello@splitvote.io>  # optional — this is the default
+
 # Public
 NEXT_PUBLIC_BASE_URL=https://splitvote.io
 NEXT_PUBLIC_ADSENSE_SLOT_RESULTS=1234567890
 NEXT_PUBLIC_ADSENSE_SLOT_PLAY=1234567890
 ```
+
+> `RESEND_API_KEY` is never committed. If missing, `sendEmail()` returns `{ ok: false, error: 'email_not_configured' }` silently — build and app still work.
 
 ---
 

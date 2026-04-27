@@ -9,7 +9,45 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Blog SEO Statico EN/IT (27 Apr 2026)
+### Sprint Corrente — Email Setup (Resend) (27 Apr 2026)
+
+**`lib/email.ts` — safe Resend wrapper ✅**
+
+- [x] `resend` ^6.12.2 installato
+- [x] `lib/email.ts`: `sendEmail()` — `RESEND_API_KEY` da `process.env`, mai hardcoded
+- [x] `EMAIL_FROM` da `process.env`, fallback pubblico `SplitVote <hello@splitvote.io>`
+- [x] Fail silenzioso se `RESEND_API_KEY` mancante — `{ ok: false, error: 'email_not_configured' }`
+- [x] Nessun secret nei log — solo `error.name` (enum safe), mai chiave API, mai email destinatario
+- [x] `.env*.local` già gitignored
+- [x] typecheck ✅ · build (138 pagine, 0 errori) ✅ · `git diff --check` ✅
+
+**Env vars richieste in Vercel:**
+```
+RESEND_API_KEY=re_...           # da resend.com dashboard — NEVER commit
+EMAIL_FROM=SplitVote <hello@splitvote.io>   # opzionale, è il default
+```
+
+**DNS Resend da configurare su Cloudflare (per inviare da hello@splitvote.io):**
+1. Vai su resend.com → Domains → Add domain → `splitvote.io`
+2. Resend mostrerà 3 record DNS da aggiungere in Cloudflare:
+   - `MX` record (per Resend routing in uscita)
+   - `TXT` SPF record: `v=spf1 include:amazonses.com ~all` (o simile, Resend usa SES)
+   - `TXT` DKIM record: `resend._domainkey.splitvote.io` → valore CNAME fornito da Resend
+3. Aggiungi i record in Cloudflare → DNS → Add Record
+4. Attendi propagazione (tipicamente < 5 min con Cloudflare)
+5. Clicca "Verify" in Resend dashboard
+6. Testa con `resend.emails.send()` da dashboard Resend
+
+⚠️ Nota: Cloudflare Email Routing (inbound) e Resend (outbound) coesistono — non si sovrascrivono. SPF va aggiornato per includere entrambi:
+`v=spf1 include:_spf.mx.cloudflare.net include:amazonses.com ~all`
+
+**Stato feature email:**
+- `sendEmail()` pronta ma non ancora usata in nessuna route utente
+- Non attivare email transazionali utente finché `RESEND_API_KEY` non è verificato in Vercel
+
+---
+
+### Sprint Precedente — Blog SEO Statico EN/IT (27 Apr 2026)
 
 **Blog implementato e live ✅**
 
