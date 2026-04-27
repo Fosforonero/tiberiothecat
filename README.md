@@ -207,6 +207,26 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 - `OPENROUTER_API_KEY` is server-side only — never exposed to the client
 - No secrets or prompts in logs
 
+### Daily Missions (server-validated)
+
+`lib/missions.ts` defines 5 daily missions. `GET /api/missions` returns per-mission state (`progress`, `required`, `completed`, `claimable`, `comingSoon`). `POST /api/missions/complete` verifies eligibility server-side before awarding XP — the client cannot fake completion.
+
+| Mission ID | Verification | Required |
+|---|---|---|
+| `vote_3` | Count from `dilemma_votes` today | ≥ 3 votes |
+| `vote_2_categories` | Distinct categories from today's votes (static + dynamic lookup) | ≥ 2 categories |
+| `daily_dilemma` | At least 1 vote today | ≥ 1 vote |
+| `challenge_friend` | Not verifiable — shown as Coming Soon | disabled |
+| `share_result` | Not verifiable — shown as Coming Soon | disabled |
+
+`components/DailyMissions.tsx` shows the Claim button only when `claimable === true` from the server. Coming-soon missions are non-interactive. All XP is awarded server-side via `award_mission_xp` (DB function with hardcoded XP table — no client-supplied XP).
+
+### Admin Seed Batch
+
+`POST /api/admin/seed-draft-batch` generates 20 curated dilemma drafts (10 EN + 10 IT) sequentially via OpenRouter. Admin-only. Requires `OPENROUTER_API_KEY` + `OPENROUTER_MODEL_DRAFT`. Novelty guard: skips drafts below threshold 55. All results land in `dynamic:drafts` — admin approval required before publication.
+
+`app/admin/SeedBatchPanel.tsx` (admin-only client component) provides a UI button in `/admin` that calls the endpoint using the browser session. Shows summary + results table. No curl/cookie copying needed.
+
 ### Dilemma feedback
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.
 

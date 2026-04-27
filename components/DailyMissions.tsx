@@ -1,36 +1,34 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MISSIONS, getLevelInfo, type MissionId } from '@/lib/missions'
+import { getLevelInfo, type MissionId, type MissionState } from '@/lib/missions'
 
 interface Props {
   userId: string
   xp: number
   streakDays: number
-  votesToday?: number
 }
 
-export default function DailyMissions({ userId, xp, streakDays, votesToday = 0 }: Props) {
-  const [completed, setCompleted] = useState<Set<MissionId>>(new Set())
+export default function DailyMissions({ userId, xp, streakDays }: Props) {
+  const [missions, setMissions] = useState<MissionState[] | null>(null)
   const [loading, setLoading] = useState(true)
-  const [completing, setCompleting] = useState<MissionId | null>(null)
+  const [claiming, setClaiming] = useState<MissionId | null>(null)
+  const [claimError, setClaimError] = useState<string | null>(null)
 
   const levelInfo = getLevelInfo(xp)
 
   useEffect(() => {
-    // Fetch today's completed missions from the API
     fetch('/api/missions')
       .then(r => r.json())
-      .then(data => {
-        if (data.completed) setCompleted(new Set(data.completed))
-      })
+      .then(data => { if (data.missions) setMissions(data.missions) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [userId])
 
-  async function completeMission(id: MissionId) {
-    if (completed.has(id) || completing) return
-    setCompleting(id)
+  async function claimMission(id: MissionId) {
+    if (claiming) return
+    setClaiming(id)
+    setClaimError(null)
     try {
       const res = await fetch('/api/missions/complete', {
         method: 'POST',
@@ -38,14 +36,27 @@ export default function DailyMissions({ userId, xp, streakDays, votesToday = 0 }
         body: JSON.stringify({ missionId: id }),
       })
       if (res.ok) {
-        setCompleted(prev => new Set([...prev, id]))
+        setMissions(prev =>
+          prev?.map(m =>
+            m.id === id
+              ? { ...m, completed: true, claimable: false, progress: m.required }
+              : m,
+          ) ?? null,
+        )
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setClaimError(data.reason ?? data.error ?? 'Claim failed')
       }
-    } catch { /* non-blocking */ }
-    finally { setCompleting(null) }
+    } catch {
+      setClaimError('Network error')
+    } finally {
+      setClaiming(null)
+    }
   }
 
-  const totalXpAvailable = MISSIONS.reduce((s, m) => s + (completed.has(m.id) ? 0 : m.xp), 0)
-  const completedCount = completed.size
+  const completedCount   = (missions ?? []).filter(m => m.completed).length
+  const missionCount     = (missions ?? []).length
+  const totalXpAvailable = (missions ?? []).reduce((s, m) => s + (!m.completed ? m.xp : 0), 0)
 
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
@@ -55,7 +66,7 @@ export default function DailyMissions({ userId, xp, streakDays, votesToday = 0 }
           Today&apos;s Missions
         </h2>
         <span className="text-xs text-[var(--muted)]">
-          {completedCount}/{MISSIONS.length} done
+          {completedCount}/{missionCount} done
         </span>
       </div>
 
@@ -86,63 +97,107 @@ export default function DailyMissions({ userId, xp, streakDays, votesToday = 0 }
         </div>
       )}
 
+      {/* Claim error */}
+      {claimError && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="text-red-400 text-xs bg-red-900/20 rounded p-2 border border-red-500/20 mb-3"
+        >
+          {claimError}
+        </div>
+      )}
+
       {/* Missions list */}
       {loading ? (
         <div className="space-y-2">
-          {MISSIONS.map(m => (
-            <div key={m.id} className="h-12 rounded-xl bg-white/3 animate-pulse" />
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-12 rounded-xl bg-white/3 animate-pulse" />
           ))}
         </div>
       ) : (
         <div className="space-y-2">
-          {MISSIONS.map(m => {
-            const done = completed.has(m.id)
-            const isCompleting = completing === m.id
-
-            // Auto-detect mission progress for vote-based missions
-            const autoProgress = (() => {
-              if (m.id === 'vote_3') return `${Math.min(votesToday, 3)}/3 votes`
-              return null
-            })()
+          {(missions ?? []).map(m => {
+            const isClaiming = claiming === m.id
 
             return (
-              <button
+              <div
                 key={m.id}
-                onClick={() => !done && completeMission(m.id)}
-                disabled={done || isCompleting}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all ${
-                  done
-                    ? 'border-green-500/30 bg-green-500/10 opacity-75 cursor-default'
-                    : 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5 cursor-pointer'
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all ${
+                  m.completed
+                    ? 'border-green-500/30 bg-green-500/10 opacity-75'
+                    : m.comingSoon
+                      ? 'border-white/5 bg-white/3 opacity-50'
+                      : m.claimable
+                        ? 'border-blue-500/40 bg-blue-500/5'
+                        : 'border-[var(--border)] bg-[#0a0a1a]/40'
                 }`}
               >
-                <span className="text-xl flex-shrink-0">{done ? '✅' : m.icon}</span>
+                <span className="text-xl flex-shrink-0">
+                  {m.completed ? '✅' : m.comingSoon ? '🔒' : m.icon}
+                </span>
+
                 <div className="flex-1 min-w-0">
-                  <p className={`text-xs font-bold ${done ? 'text-green-400 line-through' : 'text-white'}`}>
+                  <p
+                    className={`text-xs font-bold ${
+                      m.completed
+                        ? 'text-green-400 line-through'
+                        : m.comingSoon
+                          ? 'text-white/40'
+                          : 'text-white'
+                    }`}
+                  >
                     {m.title}
                   </p>
-                  {!done && autoProgress && (
-                    <p className="text-[10px] text-[var(--muted)]">{autoProgress}</p>
-                  )}
+                  {m.comingSoon ? (
+                    <p className="text-[10px] text-white/25">Coming soon</p>
+                  ) : !m.completed ? (
+                    <p className="text-[10px] text-[var(--muted)]">
+                      {m.progress}/{m.required}
+                    </p>
+                  ) : null}
                 </div>
-                <span className={`text-xs font-bold flex-shrink-0 ${done ? 'text-green-400' : 'text-yellow-400'}`}>
-                  {isCompleting ? '…' : `+${m.xp} XP`}
-                </span>
-              </button>
+
+                {/* Right side: XP indicator or Claim button */}
+                {m.completed ? (
+                  <span className="text-xs font-bold flex-shrink-0 text-green-400">
+                    +{m.xp} XP ✓
+                  </span>
+                ) : m.comingSoon ? (
+                  <span className="text-xs flex-shrink-0 text-white/20">+{m.xp} XP</span>
+                ) : m.claimable ? (
+                  <button
+                    onClick={() => claimMission(m.id)}
+                    disabled={isClaiming || claiming !== null}
+                    aria-busy={isClaiming}
+                    className="flex-shrink-0 text-xs font-bold px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white transition-colors"
+                  >
+                    {isClaiming ? '…' : `+${m.xp} XP`}
+                  </button>
+                ) : (
+                  <span className="text-xs font-bold flex-shrink-0 text-yellow-400/50">
+                    {m.progress}/{m.required}
+                  </span>
+                )}
+              </div>
             )
           })}
         </div>
       )}
 
-      {totalXpAvailable > 0 && !loading && (
-        <p className="text-xs text-[var(--muted)] text-center mt-3">
-          Complete all missions to earn <span className="text-yellow-400 font-bold">+{totalXpAvailable} XP</span>
-        </p>
-      )}
-      {totalXpAvailable === 0 && !loading && (
-        <p className="text-xs text-green-400 text-center mt-3 font-bold">
-          🎉 All missions complete for today!
-        </p>
+      {!loading && missions !== null && (
+        totalXpAvailable > 0
+          ? (
+            <p className="text-xs text-[var(--muted)] text-center mt-3">
+              Complete missions to earn{' '}
+              <span className="text-yellow-400 font-bold">+{totalXpAvailable} XP</span>
+            </p>
+          )
+          : (
+            <p className="text-xs text-green-400 text-center mt-3 font-bold">
+              🎉 All missions complete for today!
+            </p>
+          )
       )}
     </div>
   )

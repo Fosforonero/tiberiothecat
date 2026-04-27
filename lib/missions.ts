@@ -52,6 +52,15 @@ export const MISSIONS: Mission[] = [
   },
 ]
 
+// ── Server-computed mission state (returned by GET /api/missions) ─
+export interface MissionState extends Mission {
+  progress: number
+  required: number
+  completed: boolean
+  claimable: boolean
+  comingSoon: boolean
+}
+
 // ── XP Levels ────────────────────────────────────────────────────
 export interface Level {
   level: number

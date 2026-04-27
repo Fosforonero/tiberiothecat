@@ -9,7 +9,44 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Admin Charts QA + OpenRouter Draft Queue (27 Apr 2026)
+### Sprint Corrente — Mission Validation + Admin Seed Batch UI (27 Apr 2026)
+
+**Mission server-validation + admin seed batch UI ✅**
+
+- [x] `lib/missions.ts`: aggiunto `MissionState` interface (progress, required, completed, claimable, comingSoon)
+- [x] `GET /api/missions`: riscritta per restituire stato completo per-missione
+  - `vote_3`: conta da `dilemma_votes` oggi — server-verified
+  - `vote_2_categories`: conta categorie distinte dai voti di oggi (static + dynamic lookup) — server-verified
+  - `daily_dilemma`: almeno 1 voto oggi — server-verified
+  - `challenge_friend`: `comingSoon: true, claimable: false` — non tracciabile lato server
+  - `share_result`: `comingSoon: true, claimable: false` — non tracciabile lato server
+- [x] `POST /api/missions/complete`: verifica server-side per `vote_2_categories`
+  - Blocca `challenge_friend` e `share_result` (403 — tracking non disponibile)
+  - Client non può falsificare nessuna missione verificabile
+- [x] `components/DailyMissions.tsx`: UI riscritta
+  - Bottone "Claim +XP" solo quando `claimable: true` dal server
+  - Progress visibile: `1/3`, `0/2`, ecc.
+  - Missioni coming-soon: icona 🔒, non cliccabili, badge "Coming soon"
+  - Missioni completate: verde, non cliccabili
+  - Errori con `aria-live`, niente crash
+- [x] `app/admin/SeedBatchPanel.tsx`: nuovo componente client admin
+  - Bottone "Generate 10 EN + 10 IT draft batch" che chiama `POST /api/admin/seed-draft-batch`
+  - Usa sessione browser — no curl/cookie manuali
+  - Loading state con warning "2-4 min"
+  - Summary: total/saved/skipped_novelty/errors
+  - Tabella risultati: locale, category, noveltyScore, similar, keyword, question, ID
+- [x] `/admin` aggiornato con `SeedBatchPanel`
+- [x] `app/dashboard/page.tsx`: rimosso prop `votesToday` (ora calcolato server-side in API)
+
+**Regole missioni (da rispettare in ogni sprint futuro):**
+- MAI fidarsi del client per completamento missioni
+- `claimable: true` solo se il server verifica i requisiti
+- Missioni non tracciabili → `comingSoon: true` — non mostrare come completabili
+- XP awarding via DB function `award_mission_xp` con XP hardcoded — no injection
+
+---
+
+### Sprint Precedente — Admin Charts QA + OpenRouter Draft Queue (27 Apr 2026)
 
 **Admin charts QA + OpenRouter save-to-draft-queue ✅**
 

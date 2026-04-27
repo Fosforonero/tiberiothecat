@@ -181,10 +181,6 @@ export default async function DashboardPage() {
         userId={user.id}
         xp={xp}
         streakDays={streakDays}
-        votesToday={dilemmaVotes.filter(v => {
-          const today = new Date().toISOString().split('T')[0]
-          return v.voted_at?.startsWith(today)
-        }).length}
       />
 
       {/* ── Access status ── */}

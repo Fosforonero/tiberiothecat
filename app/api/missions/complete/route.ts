@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { MISSIONS, type MissionId } from '@/lib/missions'
+import { scenarios } from '@/lib/scenarios'
+import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,13 +63,31 @@ async function verifyMission(
       return { eligible: true }
     }
 
-    case 'vote_2_categories':
+    case 'vote_2_categories': {
+      const todayStart2 = new Date()
+      todayStart2.setHours(0, 0, 0, 0)
+      const { data: voteData } = await supabase
+        .from('dilemma_votes')
+        .select('dilemma_id')
+        .eq('user_id', userId)
+        .gte('voted_at', todayStart2.toISOString())
+      const votedIds = (voteData ?? []).map((r: { dilemma_id: string }) => r.dilemma_id)
+      const catMap = new Map<string, string>()
+      for (const s of scenarios) catMap.set(s.id, s.category)
+      try {
+        const dynamic = await getDynamicScenarios()
+        for (const s of dynamic) catMap.set(s.id, s.category)
+      } catch { /* non-blocking */ }
+      const cats = new Set(votedIds.map(id => catMap.get(id)).filter(Boolean))
+      if (cats.size < 2) {
+        return { eligible: false, reason: `Only ${cats.size}/2 categories voted today` }
+      }
+      return { eligible: true }
+    }
+
     case 'challenge_friend':
     case 'share_result':
-      // Honor-system missions: trust the client trigger but enforce
-      // daily idempotency via the mission_completions unique constraint.
-      // XP is low enough that abuse impact is minimal.
-      return { eligible: true }
+      return { eligible: false, reason: 'Server-side tracking not available for this mission yet' }
 
     default:
       return { eligible: false, reason: 'Unknown mission' }

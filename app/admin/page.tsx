@@ -10,6 +10,7 @@ import {
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
 import GenerateDraftPanel from './GenerateDraftPanel'
+import SeedBatchPanel from './SeedBatchPanel'
 import { isAdminEmail } from '@/lib/admin-auth'
 
 export const metadata = { title: 'Admin | SplitVote' }
@@ -451,6 +452,11 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       {/* ── Generate Draft Panel ── */}
       <div className="mt-8">
         <GenerateDraftPanel />
+      </div>
+
+      {/* ── Seed Draft Batch ── */}
+      <div className="mt-6">
+        <SeedBatchPanel />
       </div>
 
       {/* ── Cron Debug: Dynamic Dilemmas ── */}
