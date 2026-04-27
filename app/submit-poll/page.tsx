@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import type { UserEntitlements } from '@/lib/entitlements'
 
 const CATEGORIES = [
   { value: 'morality',       label: '⚖️ Morality'       },
@@ -17,7 +18,7 @@ export default function SubmitPollPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [isPremium, setIsPremium] = useState<boolean | null>(null)
+  const [canSubmit, setCanSubmit] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -33,12 +34,13 @@ export default function SubmitPollPage() {
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) { router.push('/login?redirect=/submit-poll'); return }
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('is_premium')
-        .eq('id', user.id)
-        .single()
-      setIsPremium(profile?.is_premium ?? false)
+      try {
+        const res = await fetch('/api/me/entitlements')
+        const ents: UserEntitlements = await res.json()
+        setCanSubmit(ents.canSubmitPoll)
+      } catch {
+        setCanSubmit(false)
+      }
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -72,7 +74,7 @@ export default function SubmitPollPage() {
     setForm(f => ({ ...f, [field]: value }))
   }
 
-  if (isPremium === null) {
+  if (canSubmit === null) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center text-[var(--muted)]">
         Loading…
@@ -80,7 +82,7 @@ export default function SubmitPollPage() {
     )
   }
 
-  if (!isPremium) {
+  if (!canSubmit) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
         <p className="text-5xl mb-4">⭐</p>

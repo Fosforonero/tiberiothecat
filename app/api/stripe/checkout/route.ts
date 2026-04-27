@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +22,11 @@ export async function POST(req: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // Admin never pays for rename — this endpoint should never be reached by admin
+  if (isAdminEmail(user.email)) {
+    return NextResponse.json({ error: 'Admin rename does not require payment' }, { status: 400 })
   }
 
   const { newName } = await req.json()

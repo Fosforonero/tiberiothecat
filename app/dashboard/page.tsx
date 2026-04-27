@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getUserEntitlements } from '@/lib/entitlements'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import BadgeSection from './BadgeSection'
@@ -106,6 +107,8 @@ export default async function DashboardPage() {
   const userBadges = ((badgesRes.data ?? []) as unknown as UserBadge[])
     .filter(b => b.badges != null)
 
+  const ents = getUserEntitlements({ email: user.email, is_premium: profile?.is_premium ?? false })
+
   const votesCount = profile?.votes_count ?? 0
   const xp = profile?.xp ?? 0
   const streakDays = profile?.streak_days ?? 0
@@ -183,8 +186,16 @@ export default async function DashboardPage() {
         }).length}
       />
 
-      {/* ── Premium status ── */}
-      {profile?.is_premium ? (
+      {/* ── Access status ── */}
+      {ents.isAdmin ? (
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-5 mb-8 flex items-center gap-3">
+          <span className="text-2xl">🛡️</span>
+          <div>
+            <p className="font-bold text-red-400 text-sm">Admin Access</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">Internal full access — all features, no ads, unlimited renames.</p>
+          </div>
+        </div>
+      ) : profile?.is_premium ? (
         <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5 mb-8 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="text-2xl">⭐</span>
@@ -293,7 +304,7 @@ export default async function DashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-black text-white">Your Submitted Polls</h2>
-            {profile?.is_premium && (
+            {ents.canSubmitPoll && (
               <a href="/submit-poll" className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
                 + Submit new
               </a>

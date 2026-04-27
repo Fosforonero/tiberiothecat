@@ -27,6 +27,8 @@ interface Props {
   initialAvatar: string | null
   nameChanges: number
   isPremium: boolean
+  isAdmin: boolean
+  effectivePremium: boolean
   badges: { emoji: string; name: string; rarity: string }[]
   votesCount: number
   joinedAt: string
@@ -48,6 +50,8 @@ export default function ProfileClient({
   initialAvatar,
   nameChanges,
   isPremium,
+  isAdmin,
+  effectivePremium,
   badges,
   votesCount,
   joinedAt,
@@ -64,8 +68,15 @@ export default function ProfileClient({
   const [message, setMessage]                 = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [shareCopied, setShareCopied]         = useState(false)
 
-  // name_changes = 0 → first change free; >= 1 → paid
   const firstFreeAvailable = nameChanges === 0
+
+  function renameLabel(): { text: string; color: string } {
+    if (isAdmin) return { text: '✅ Unlimited (Admin)', color: 'text-red-400' }
+    if (effectivePremium) return { text: '✅ Unlimited (Premium)', color: 'text-yellow-400' }
+    if (firstFreeAvailable) return { text: '✅ First change free', color: 'text-green-400' }
+    return { text: '€0.99', color: 'text-orange-400' }
+  }
+  const rename = renameLabel()
   const profileUrl = `https://splitvote.io/u/${userId}`
 
   // Check for success/cancel redirect from Stripe
@@ -205,12 +216,25 @@ export default function ProfileClient({
 
       {/* ── Membership ── */}
       <div id="membership" className="rounded-2xl border bg-[var(--surface)] p-5 sm:p-6"
-        style={{ borderColor: isPremium ? 'rgba(234,179,8,0.35)' : 'var(--border)', background: isPremium ? 'rgba(234,179,8,0.04)' : undefined }}>
+        style={{
+          borderColor: isAdmin ? 'rgba(248,113,113,0.35)' : isPremium ? 'rgba(234,179,8,0.35)' : 'var(--border)',
+          background: isAdmin ? 'rgba(248,113,113,0.04)' : isPremium ? 'rgba(234,179,8,0.04)' : undefined,
+        }}>
         <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
           ⭐ Membership
         </h2>
 
-        {isPremium ? (
+        {isAdmin ? (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+              <span className="text-lg">🛡️</span>
+            </div>
+            <div>
+              <p className="font-bold text-red-400 text-sm">Admin Access</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">Internal full access — all features unlocked, no ads, unlimited renames.</p>
+            </div>
+          </div>
+        ) : isPremium ? (
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center">
@@ -300,8 +324,8 @@ export default function ProfileClient({
         <div className="mb-5">
           <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
             Display Name
-            <span className={`ml-2 normal-case font-normal ${firstFreeAvailable ? 'text-green-400' : 'text-orange-400'}`}>
-              — {firstFreeAvailable ? '✅ First change free' : '€0.99'}
+            <span className={`ml-2 normal-case font-normal ${rename.color}`}>
+              — {rename.text}
             </span>
           </label>
           <input
@@ -312,7 +336,7 @@ export default function ProfileClient({
             maxLength={32}
             className="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-xl px-4 py-3 text-white placeholder-[var(--muted)] focus:outline-none focus:border-blue-500/60 text-sm"
           />
-          {!firstFreeAvailable && (
+          {!effectivePremium && !firstFreeAvailable && (
             <p className="text-xs text-orange-400/80 mt-1.5 flex items-center gap-1.5">
               <CreditCard size={11} />
               You&apos;ve used your free rename — next one costs €0.99 via Stripe.

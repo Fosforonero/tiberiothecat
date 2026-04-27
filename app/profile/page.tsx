@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getUserEntitlements } from '@/lib/entitlements'
 import ProfileClient from './ProfileClient'
 
 export const metadata = { title: 'Profile Settings | SplitVote' }
@@ -29,6 +30,11 @@ export default async function ProfilePage() {
     .map(b => b.badges)
     .filter((b): b is { name: string; emoji: string; rarity: string } => b != null)
 
+  const ents = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+  })
+
   return (
     <ProfileClient
       userId={user.id}
@@ -39,6 +45,8 @@ export default async function ProfilePage() {
       initialAvatar={profile?.avatar_emoji ?? null}
       nameChanges={profile?.name_changes ?? 0}
       isPremium={profile?.is_premium ?? false}
+      isAdmin={ents.isAdmin}
+      effectivePremium={ents.effectivePremium}
       badges={badges}
       votesCount={profile?.votes_count ?? 0}
       joinedAt={profile?.created_at ?? new Date().toISOString()}

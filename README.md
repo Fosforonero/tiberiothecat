@@ -144,7 +144,43 @@ Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBH
 Test locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
 Required production events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`.
 
+### Entitlements system
+
+`lib/entitlements.ts` is the canonical source of truth for what a user can do. Never check `is_premium` directly in app code — always go through entitlements.
+
+| Field | Admin (ADMIN_EMAILS) | Premium (billing) | Free |
+|---|---|---|---|
+| `effectivePremium` | ✅ | ✅ | ❌ |
+| `noAds` | ✅ | ✅ | ❌ |
+| `unlimitedNameChanges` | ✅ | ✅ | ❌ (1 free) |
+| `canSubmitPoll` | ✅ | ✅ | ❌ |
+| `canAccessAdmin` | ✅ | ❌ | ❌ |
+| `isAdmin` | ✅ | ❌ | ❌ |
+
+**Key distinctions:**
+- `profiles.is_premium` = billing/Stripe state only. Managed by webhook. Never set manually for admin.
+- `ADMIN_EMAILS` = source of admin identity. Server-side env var, never exposed to client.
+- `effectivePremium` = admin OR billing premium. Use this for feature gates.
+- Client components use `GET /api/me/entitlements` to receive server-computed entitlements without leaking `ADMIN_EMAILS`.
+
+### Display name / rename rules
+
+- Every user gets **one free rename** (`name_changes === 0` → allowed, set to 1).
+- Premium (billing) users get **unlimited renames** (tracked, no payment required).
+- Admin users get **unlimited renames** without touching `name_changes`.
+- Free users after first rename → 402 → Stripe checkout → webhook applies rename + increments `name_changes`.
+- Admin is never redirected to Stripe for rename (`/api/stripe/checkout` returns 400 for admin).
+- Reserved names: `admin`, `splitvote`, `moderator` (case-insensitive, substring match).
+
+### No-ads rules
+
+- Free / anon users: ads shown if slot is configured.
+- Premium (billing) OR admin: `noAds = true` → `AdSlot` renders nothing, no AdSense push.
+- `AdSlot` fetches `/api/me/entitlements` once on mount. Renders `null` while loading (no layout shift) and if `noAds = true`.
+
 ### Known issues / TODOs
+- Stripe webhook idempotency: if `checkout.session.completed` fires twice for the same session, `name_changes` would be incremented twice. Low probability (Stripe retry dedup), but not fully mitigated. Backlog: store processed `session_id` in DB to skip duplicates.
+- Cosmetic store / companion unlocks: logic exists for `equipped_frame` and `equipped_badge` in DB, but no unlock/store UI is implemented. Admin sees all existing badges from the `user_badges` table; no special unlock logic is needed until the store ships. See ROADMAP.
 - Stripe premium subscription/customer portal is implemented. Production requires the Stripe env vars and webhook events to remain configured in Vercel/Stripe.
 - Full framework upgrade (`next@16`, `react@19`, Node 24 LTS) is intentionally deferred to a dedicated sprint.
 - Social trend sources (X/Instagram/TikTok) are scaffolded as feature flags only. Use official APIs/provider contracts; do not add scraping.

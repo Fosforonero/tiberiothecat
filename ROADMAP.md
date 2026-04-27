@@ -3,11 +3,24 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 26 Aprile 2026
+Ultimo aggiornamento: 27 Aprile 2026
 
 ---
 
 ## Stato Attuale
+
+### Sprint Corrente — Entitlements & Rename Flow (27 Apr 2026)
+
+- [x] `lib/entitlements.ts` — logica centralizzata admin/premium/free
+- [x] `GET /api/me/entitlements` — bridge server-side per client component
+- [x] `AdSlot`: no ads per admin e premium (via entitlements API)
+- [x] `api/profile/update`: admin bypass rename + premium unlimited rename
+- [x] `api/stripe/checkout`: blocco admin da Stripe rename
+- [x] `ProfileClient`: card "Admin Access", label rename coerente, no upgrade CTA per admin
+- [x] `DashboardPage`: card "Admin Access" per admin, `canSubmitPoll` via ents
+- [x] `submit-poll`: usa `/api/me/entitlements` invece di `is_premium` diretto
+
+---
 
 ### Live / Implementato
 - [x] Next.js App Router + TypeScript + Tailwind + Vercel
@@ -118,9 +131,10 @@ Non fare insieme a feature/product sprint.
 - [ ] API read-only per ricercatori
 - [ ] Video share cards animate
 - [ ] Referral system
-- [ ] Companion store / cosmetic unlocks
+- [ ] Companion store / cosmetic unlocks — `equipped_frame`, `equipped_badge` già in DB; serve UI store + unlock logic
 - [ ] Moral profile compatibility tra amici
 - [ ] Zodiac/ascendant overlay opzionale sul moral profile
+- [ ] Idempotenza webhook Stripe: storico `session_id` già processati in DB per evitare doppio increment `name_changes`
 
 ---
 
