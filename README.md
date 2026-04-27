@@ -68,11 +68,18 @@ STRIPE_PRICE_ID_PREMIUM=price_...    # premium subscription
 RESEND_API_KEY=re_...                  # from resend.com dashboard
 EMAIL_FROM=SplitVote <hello@splitvote.io>  # optional — this is the default
 
+# OpenRouter (future content engine — server-side only, NEVER expose to client)
+OPENROUTER_API_KEY=sk-or-...              # from openrouter.ai — NOT yet wired in code
+OPENROUTER_MODEL_DRAFT=anthropic/claude-3-haiku  # cheap model for draft generation
+OPENROUTER_MODEL_CLASSIFIER=anthropic/claude-3-haiku  # cheap model for scoring/classification
+
 # Public
 NEXT_PUBLIC_BASE_URL=https://splitvote.io
 NEXT_PUBLIC_ADSENSE_SLOT_RESULTS=1234567890
 NEXT_PUBLIC_ADSENSE_SLOT_PLAY=1234567890
 ```
+
+> `OPENROUTER_API_KEY` is not yet used in any route. When integrated, it will be server-side only. Generated content is always `status: draft` — admin approval required before anything becomes public.
 
 > `RESEND_API_KEY` is never committed. If missing, `sendEmail()` returns `{ ok: false, error: 'email_not_configured' }` silently — build and app still work.
 
@@ -161,6 +168,24 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 - No AI-generated content published without human review
 
 **Adding new posts:** Add a `BlogPost` object to `EN_POSTS` or `IT_POSTS` in `lib/blog.ts`. The sitemap updates automatically.
+
+### Content Engine (base layer)
+
+`lib/content-inventory.ts` builds a unified, normalised list of every piece of content (static dilemmas EN/IT, dynamic approved/draft dilemmas, blog articles EN/IT). Used by dedup logic and the admin inventory endpoint.
+
+`lib/content-dedup.ts` provides lightweight Jaccard-based dedup without embeddings:
+- `findSimilarContent(candidate, inventory)` — returns ranked similar items with similarity scores and reasons
+- `scoreNovelty(candidate, inventory)` — returns `{ noveltyScore, similarItems, warnings }`
+
+`lib/content-draft.ts` defines shared TypeScript types for future AI-generated content: `ContentDraft`, `DilemmaDraft`, `BlogArticleDraft`, `QuestDraft`.
+
+**Admin endpoint:** `GET /api/admin/content-inventory` (admin auth required) — returns inventory counts by type/locale/status and flags drafts with low novelty scores.
+
+**Generation rules (enforced before OpenRouter integration):**
+- All generated content is `status: draft` — never autopublished
+- Admin approval required before any draft enters public routes or sitemap
+- `OPENROUTER_API_KEY` is server-side only — never exposed to the client
+- No secrets or prompts in logs
 
 ### Dilemma feedback
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.

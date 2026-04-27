@@ -9,7 +9,39 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Email Test + Mobile Menu Polish (27 Apr 2026)
+### Sprint Corrente — Content Engine Base (27 Apr 2026)
+
+**Inventory + Dedup + Draft Schema ✅**
+
+- [x] `lib/content-inventory.ts`: `buildContentInventory()` — unified async inventory of all content (static EN/IT dilemmas, dynamic approved/draft, blog EN/IT). Fields: `id`, `type`, `locale`, `title`, `slug`, `category`, `keywords`, `status`, `source`, `searchableText`
+- [x] `lib/content-dedup.ts`: Jaccard-based dedup without embeddings
+  - `findSimilarContent(candidate, inventory)` → ranked similar items with similarity score and reason
+  - `scoreNovelty(candidate, inventory)` → `{ noveltyScore, similarItems, warnings }`
+  - Handles: title similarity, full-text similarity, keyword overlap, id duplicate, near-duplicate warning, category saturation
+- [x] `lib/content-draft.ts`: TypeScript types for future AI-generated drafts
+  - `ContentDraft` (base), `DilemmaDraft`, `BlogArticleDraft`, `QuestDraft`
+  - Quest rules documented: ≥3 approved dilemmas, admin approval before public route, no sitemap for unapproved
+- [x] `GET /api/admin/content-inventory`: admin-only endpoint — counts by type/locale/status, flags low-novelty drafts (no data mutation, no secret exposure)
+- [x] README: Content Engine section, OpenRouter env vars documented (not yet wired)
+- [x] typecheck ✅ · build (0 errors) ✅ · `git diff --check` ✅
+
+**Regole fondamentali (da rispettare in ogni sprint futuro):**
+- Tutti i contenuti generati → `status: draft`, mai autopublicati
+- Admin approval obbligatoria prima che un draft entri in route pubbliche o sitemap
+- `OPENROUTER_API_KEY` server-side only, mai al client
+- Nessun secret o prompt nei log
+- Quest pubblicate solo con ≥3 dilemmi approvati
+
+**Prossimo sprint: OpenRouter dry-run generation**
+- Aggiungere `OPENROUTER_API_KEY` a Vercel
+- Endpoint admin `POST /api/admin/generate-draft` — chiama OpenRouter, salva solo in `dynamic:drafts`
+- Admin review in `/admin` (già implementato per dilemmi)
+- Blog article draft generation: outline → admin approva → full content generation
+- Non autopubblicare mai — ogni draft richiede approvazione manuale
+
+---
+
+### Sprint Precedente — Email Test + Mobile Menu Polish (27 Apr 2026)
 
 **Email test endpoint + mobile menu groups ✅**
 
