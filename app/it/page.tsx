@@ -20,13 +20,14 @@ function getDailyScenario(all: Scenario[]): Scenario {
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Dilemmi Morali — Vota e Confrontati con il Mondo | SplitVote',
+  title: 'Dilemmi Morali — Vota e Confrontati con il Mondo',
   description:
     'Rispondi a dilemmi etici impossibili e scopri come vota il resto del mondo in tempo reale. Cosa faresti tu? Trolley problem, dilemmi di sopravvivenza, giustizia e molto altro.',
   alternates: {
     canonical: `${BASE_URL}/it`,
     languages: {
       'it-IT': `${BASE_URL}/it`,
+      'en': BASE_URL,
       'x-default': BASE_URL,
     },
   },

@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     canonical: 'https://splitvote.io',
     languages: {
       'en': 'https://splitvote.io',
-      'it': 'https://splitvote.io/it',
+      'it-IT': 'https://splitvote.io/it',
       'x-default': 'https://splitvote.io',
     },
   },

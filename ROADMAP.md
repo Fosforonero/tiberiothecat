@@ -9,7 +9,35 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Social Links + Referral QA (27 Apr 2026)
+### Sprint Corrente — Social Content Factory Phase 1 (27 Apr 2026)
+
+**Pipeline locale caption social da dilemmi approvati ✅**
+
+- [x] `lib/social-content.ts`: tipi TypeScript `SocialContentItem`, `SocialContentBatch`, `SocialPlatform`, `SocialLocale`
+- [x] `scripts/generate-social-content.mjs`: script ESM puro Node (senza tsx/ts-node)
+  - `loadEnvFile()`: parser manuale `.env.local`, graceful fallback se mancante
+  - `STATIC_SCENARIOS` + `IT_TRANSLATIONS`: tutti i 41 dilemmi statici EN/IT inline nel script
+  - `HOOKS`: 3 hook per categoria per locale (EN/IT) — selezionati deterministicamente via `hashSeed`
+  - `HASHTAGS`: array TikTok e funzione Instagram per locale e categoria
+  - `buildTikTokCaption()` / `buildInstagramCaption()`: template puri, zero costo AI
+  - `getDynamicApproved()`: import dinamico `@upstash/redis`, filtra `status === 'approved'`
+  - `pickN()`: dedup per batch, re-use se pool < N
+  - Output: `content-output/YYYY-MM-DD/social-content.{json,md}`
+- [x] `package.json`: aggiunto `"generate:social-content": "node scripts/generate-social-content.mjs"`
+- [x] `.gitignore`: aggiunto `/content-output/`
+- [x] Verificato in locale: 20 item (5 TikTok EN + 5 Instagram EN + 5 TikTok IT + 5 Instagram IT), dynamic approved prioritizzato ✅
+
+**Utilizzo:**
+```bash
+nvm use && npm run generate:social-content
+# Output in content-output/YYYY-MM-DD/social-content.{json,md}
+```
+
+**⚠️ content-output/ è gitignored — mai committare output generato.**
+
+---
+
+### Sprint Precedente — Social Links + Referral QA (27 Apr 2026)
 
 **Social presence + caption consistency + referral QA ✅**
 
@@ -241,6 +269,18 @@ EMAIL_FROM=SplitVote <hello@splitvote.io>   # opzionale, è il default
 **Stato feature email:**
 - `sendEmail()` pronta ma non ancora usata in nessuna route utente
 - Non attivare email transazionali utente finché `RESEND_API_KEY` non è verificato in Vercel
+
+---
+
+### Sprint Precedente — SEO Technical Fix (27 Apr 2026)
+
+**Fix tecnici SEO ad alto impatto ✅**
+
+- [x] **Title deduplication**: rimosso suffisso `| SplitVote` da `app/it/page.tsx`, `app/play/[id]/page.tsx`, `app/it/play/[id]/page.tsx`, `app/results/[id]/page.tsx`, `app/it/results/[id]/page.tsx` — il template nel layout lo aggiunge automaticamente
+- [x] **hreflang EN/IT su play + results**: aggiunto blocco `alternates.languages` con `en`, `it-IT`, `x-default` a tutte le route play e results (EN e IT)
+- [x] **hreflang homepage normalizzato**: `app/layout.tsx` da `'it'` → `'it-IT'`; `app/it/page.tsx` aggiunto `'en': BASE_URL` per reciprocità
+- [x] **SEO Landing Pages EN/IT**: `/would-you-rather-questions`, `/moral-dilemmas`, `/it/domande-would-you-rather`, `/it/dilemmi-morali` — 20 items ciascuna, schema.org `ItemList`, hreflang reciproci, sitemap aggiornata
+- [x] **JSON-LD su results pages EN/IT**: `BreadcrumbList` + `Dataset` con voti reali (votes.a, votes.b, pctA, pctB) su `/results/[id]` e `/it/results/[id]`
 
 ---
 
@@ -530,34 +570,30 @@ Da verificare post-deploy:
 
 ---
 
-## Prossimo Sprint — Social Content Factory
+## Prossimo Sprint — Social Content Factory Phase 2 (Remotion Video)
 
-Obiettivo: pipeline locale per generare caption e contenuti social dai dilemmi approvati. Nessuna auto-pubblicazione, nessuna API social.
+Obiettivo: generare vertical video 1080×1920 MP4 dai dilemmi approvati per TikTok/Reels. **Non installare Remotion prima di iniziare questo sprint.**
 
-**Fase 1 — Generate social captions (JSON/markdown)**
-- [ ] `lib/social-content.ts`: `generateSocialContent(dilemma, locale)` → oggetto con caption TikTok, Instagram, Twitter, Discord
-- [ ] `POST /api/admin/generate-social-content`: genera captions per un dilemma approvato
-  - Input: `dilemmaId`, `locale: 'en' | 'it'`
-  - Output: `{ tiktok, instagram, twitter, discord, hashtags }`
-  - Auth admin required
-  - Mai autopubblicato — solo genera testo
-- [ ] Salva output in `/content-output/<dilemmaId>-<locale>.json` (locale, non committa)
-  - Oppure in Supabase colonna `social_captions_json` su tabella dilemmi (per consultazione admin)
-- [ ] Admin panel: pulsante "Generate captions" per ogni dilemma approvato
-
-**Fase 2 — Remotion vertical video (sprint separato)**
-- [ ] Remotion template 1080x1920 per vertical video (TikTok/Reels)
-  - Dati da dilemma approvato: question, optionA, optionB, emoji, risultati (pctA/pctB)
-  - Output: MP4 in `/content-output/`
-  - No auto-post — upload manuale
-- [ ] `npm run render-social <dilemmaId>` (script locale, non fa parte del build Vercel)
+**Fase 2 — Remotion vertical video**
+- [ ] Installare Remotion solo quando questo sprint inizia
+- [ ] Template Remotion 1080×1920 per TikTok/Reels
+  - Dati: question, optionA, optionB, emoji, pctA/pctB, categoria
+  - Animazioni: reveal risultati, brand colors, neon aesthetic
+  - Output: MP4 in `content-output/YYYY-MM-DD/`
+  - No auto-post — upload manuale sempre
+- [ ] `npm run render-social <dilemmaId>` (script locale, non parte del build Vercel)
 - [ ] Template EN/IT separati
+- [ ] Integrazione con `generate:social-content` per batch pipeline
 
-**Vincoli fissi:**
-- Nessuna API Instagram/TikTok in questo sprint
+**Fase 3 — AI captions (sprint futuro)**
+- [ ] OpenRouter caption generation (modello economico, zero costo AI)
+- [ ] Output sempre `status: draft` — admin review obbligatoria
+- [ ] Nessuna auto-pubblicazione mai
+
+**Vincoli fissi (da rispettare in tutti gli sprint futuri):**
+- Nessuna API Instagram/TikTok diretta
 - Approvazione manuale obbligatoria prima di qualsiasi post
 - Output locale o Supabase — niente publish automatico
-- Remotion solo in sprint Fase 2, non installare ora
 
 ---
 

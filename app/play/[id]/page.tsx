@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Use AI-generated SEO fields when available (dynamic scenarios only)
   const ds = staticScenario ? null : scenario as DynamicScenario
-  const title = ds?.seoTitle ?? `${scenario.question.slice(0, 55)}… | SplitVote`
+  const title = ds?.seoTitle ?? `${scenario.question.slice(0, 55)}…`
   const description = ds?.seoDescription
     ?? `Global vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how the world splits on this moral dilemma.`
   const keywords = ds?.keywords?.length ? ds.keywords.join(', ') : undefined
@@ -39,6 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ...(keywords ? { keywords } : {}),
     alternates: {
       canonical: `${BASE_URL}/play/${params.id}`,
+      languages: {
+        'en': `${BASE_URL}/play/${params.id}`,
+        'it-IT': `${BASE_URL}/it/play/${params.id}`,
+        'x-default': `${BASE_URL}/play/${params.id}`,
+      },
     },
     openGraph: {
       title: ds?.seoTitle ?? scenario.question,

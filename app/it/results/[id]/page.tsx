@@ -9,6 +9,7 @@ import { getNextScenarioId } from '@/lib/scenarios'
 import { getItalianScenario } from '@/lib/scenarios-it'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from '@/app/results/[id]/ResultsClientPage'
+import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://splitvote.io'
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = dynamicScenario?.seoTitle
     ? `Risultati: ${dynamicScenario.seoTitle}`
-    : `Risultati: ${scenario.question.slice(0, 50)}… | SplitVote`
+    : `Risultati: ${scenario.question.slice(0, 50)}…`
   const description = dynamicScenario?.seoDescription
     ?? `Scopri come ha votato il mondo su questo dilemma morale. "${scenario.optionA}" contro "${scenario.optionB}".`
   const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
@@ -38,6 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ...(keywords ? { keywords } : {}),
     alternates: {
       canonical: `${BASE_URL}/it/results/${params.id}`,
+      languages: {
+        'it-IT': `${BASE_URL}/it/results/${params.id}`,
+        'en': `${BASE_URL}/results/${params.id}`,
+        'x-default': `${BASE_URL}/results/${params.id}`,
+      },
     },
     openGraph: {
       title,
@@ -74,16 +80,48 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
   const itPool = dynamicScenarios.filter((s) => s.locale === 'it')
   const nextId = getNextScenarioId(params.id, itPool.length ? itPool : dynamicScenarios)
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'SplitVote', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Dilemmi Morali', item: `${BASE_URL}/it` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `Risultati: ${scenario.question.slice(0, 60)}`,
+        item: `${BASE_URL}/it/results/${params.id}`,
+      },
+    ],
+  }
+
+  const datasetSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: `Risultati: ${scenario.question}`,
+    description: `Distribuzione dei voti globali sul dilemma morale: "${scenario.optionA}" contro "${scenario.optionB}".`,
+    url: `${BASE_URL}/it/results/${params.id}`,
+    dateModified: new Date().toISOString().split('T')[0],
+    hasPart: [
+      { '@type': 'DataDownload', name: scenario.optionA, description: `${votes.a} voti (${pctA}%)` },
+      { '@type': 'DataDownload', name: scenario.optionB, description: `${votes.b} voti (${pctB}%)` },
+    ],
+  }
+
   return (
-    <ResultsClientPage
-      scenario={scenario}
-      votes={votes}
-      pctA={pctA}
-      pctB={pctB}
-      total={total}
-      voted={voted}
-      nextId={nextId}
-      sharePrefix="/it"
-    />
+    <>
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={datasetSchema} />
+      <ResultsClientPage
+        scenario={scenario}
+        votes={votes}
+        pctA={pctA}
+        pctB={pctB}
+        total={total}
+        voted={voted}
+        nextId={nextId}
+        sharePrefix="/it"
+      />
+    </>
   )
 }

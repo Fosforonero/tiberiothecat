@@ -167,7 +167,16 @@ Italian SEO is implemented with a lightweight `/it` route family:
 - `/it/faq`, `/it/privacy`, `/it/terms`, `/it/personality`
 - `/it/blog`, `/it/blog/[slug]`
 
-Sitemap is locale-aware, includes Italian static dilemma URLs, blog articles, and excludes draft dilemmas.
+Sitemap is locale-aware, includes Italian static dilemma URLs, blog articles, SEO landing pages, and excludes draft dilemmas.
+
+**SEO technical standards:**
+- All page-level titles omit `| SplitVote` — the `template` in `app/layout.tsx` appends it automatically
+- `alternates.languages` with `en`, `it-IT`, `x-default` is present on all play, results, and landing pages for reciprocal hreflang
+- `app/results/[id]` and `app/it/results/[id]` include `BreadcrumbList` + `Dataset` JSON-LD with real vote counts
+
+**SEO landing pages (static, SSG):**
+- `/would-you-rather-questions` ↔ `/it/domande-would-you-rather`
+- `/moral-dilemmas` ↔ `/it/dilemmi-morali`
 
 ### Blog (static, no CMS)
 
@@ -190,6 +199,34 @@ Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`,
 - No AI-generated content published without human review
 
 **Adding new posts:** Add a `BlogPost` object to `EN_POSTS` or `IT_POSTS` in `lib/blog.ts`. The sitemap updates automatically.
+
+### Social Content Factory
+
+`scripts/generate-social-content.mjs` produces ready-to-review social captions from approved dilemmas.
+
+```bash
+nvm use && npm run generate:social-content
+```
+
+Output (local only, never committed — see `.gitignore`):
+```
+content-output/
+└── YYYY-MM-DD/
+    ├── social-content.json   ← structured batch (SocialContentBatch type)
+    └── social-content.md     ← human-readable review file with checklists
+```
+
+**Batch composition:** 20 items — 5 TikTok EN, 5 Instagram EN, 5 TikTok IT, 5 Instagram IT.
+
+**Sources:** Dynamic approved (Redis) first, then static `lib/scenarios.ts` scenarios with IT translations. Never drafts.
+
+**Cost:** zero — pure template-based captions, no AI API calls.
+
+**No auto-publish.** Every item has a `[ ] Approved` checkbox in the markdown file. Upload manually after review.
+
+**Roadmap:**
+- Phase 2 (future sprint): Remotion 1080×1920 vertical video generator — `npm run render-social <id>`. Do NOT install Remotion until that sprint starts.
+- Phase 3 (future sprint): AI-assisted captions via OpenRouter — draft-only, admin review required, same no-autopublish policy.
 
 ### Content Engine (base layer)
 

@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : getItalianScenario(params.id)
   if (!scenario) return {}
 
-  const title = dynamicScenario?.seoTitle ?? `${scenario.question.slice(0, 55)}… | SplitVote`
+  const title = dynamicScenario?.seoTitle ?? `${scenario.question.slice(0, 55)}…`
   const description = dynamicScenario?.seoDescription
     ?? `Vota: "${scenario.optionA}" contro "${scenario.optionB}" — Scopri come si divide il mondo.`
   const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
@@ -38,6 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ...(keywords ? { keywords } : {}),
     alternates: {
       canonical: `${BASE_URL}/it/play/${params.id}`,
+      languages: {
+        'it-IT': `${BASE_URL}/it/play/${params.id}`,
+        'en': `${BASE_URL}/play/${params.id}`,
+        'x-default': `${BASE_URL}/play/${params.id}`,
+      },
     },
     openGraph: {
       title: dynamicScenario?.seoTitle ?? scenario.question,
