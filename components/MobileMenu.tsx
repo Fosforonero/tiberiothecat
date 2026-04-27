@@ -15,6 +15,8 @@ export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [dvhSupported, setDvhSupported] = useState(false)
+  const [isShortViewport, setIsShortViewport] = useState(false)
   const pathname = usePathname()
   const isIT = pathname.startsWith('/it')
   const close = () => setOpen(false)
@@ -25,6 +27,19 @@ export default function MobileMenu() {
     supabase.auth.getUser()
       .then(({ data: { user } }) => setIsLoggedIn(!!user))
       .catch(() => setIsLoggedIn(false))
+
+    // dvh support check — 100dvh = actual visible area on mobile, 100vh = large viewport (broken on Safari)
+    setDvhSupported(
+      typeof CSS !== 'undefined' &&
+      typeof CSS.supports === 'function' &&
+      CSS.supports('height', '1dvh'),
+    )
+
+    // Compact mode for short-screen devices (iPhone SE ≤ 667px, etc.)
+    const checkViewport = () => setIsShortViewport(window.innerHeight <= 700)
+    checkViewport()
+    window.addEventListener('resize', checkViewport, { passive: true })
+    return () => window.removeEventListener('resize', checkViewport)
   }, [])
 
   // Lock body scroll when menu is open
@@ -50,18 +65,30 @@ export default function MobileMenu() {
     window.location.href = isIT ? '/it' : '/'
   }
 
+  // max-height: use 100dvh (actual visible viewport) when supported, fall back to 100vh.
+  // Header is 56px; 20px breathing room below → subtract 76px total.
+  const menuMaxHeight = dvhSupported ? 'calc(100dvh - 76px)' : 'calc(100vh - 76px)'
+
+  // Compact mode: reduce density on short screens (iPhone SE ≤ 667px, etc.) while
+  // keeping touch targets ≥ 40px (acceptable threshold when vertical space is scarce).
   const ITEM: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '10px 12px', borderRadius: '12px',
-    textDecoration: 'none', minHeight: '44px',
+    padding: isShortViewport ? '6px 12px' : '10px 12px',
+    borderRadius: '12px',
+    textDecoration: 'none',
+    minHeight: isShortViewport ? '40px' : '44px',
     background: 'transparent', transition: 'background 0.15s',
   }
   const LABEL: React.CSSProperties = { fontSize: '14px', fontWeight: 600, color: 'rgba(255,255,255,0.6)' }
   const SECTION: React.CSSProperties = {
-    padding: '8px 12px 2px', fontSize: '10px', fontWeight: 700,
+    padding: isShortViewport ? '4px 12px 1px' : '8px 12px 2px',
+    fontSize: '10px', fontWeight: 700,
     letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)',
   }
-  const DIVIDER: React.CSSProperties = { height: '1px', background: 'rgba(255,255,255,0.06)', margin: '4px 0' }
+  const DIVIDER: React.CSSProperties = {
+    height: '1px', background: 'rgba(255,255,255,0.06)',
+    margin: isShortViewport ? '2px 0' : '4px 0',
+  }
 
   // The backdrop + dropdown rendered via portal to escape navbar's backdrop-filter stacking context.
   const overlay = open && mounted && createPortal(
@@ -86,13 +113,16 @@ export default function MobileMenu() {
         aria-label={isIT ? 'Menu di navigazione' : 'Navigation menu'}
         style={{
           position: 'fixed', top: '56px', right: '12px',
-          width: '248px', maxHeight: 'calc(100vh - 76px)', overflowY: 'auto',
+          width: '248px',
+          maxHeight: menuMaxHeight,
+          overflowY: 'auto',
+          overscrollBehavior: 'contain',
           zIndex: 1001, backgroundColor: '#0f0f2a',
           border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px',
           boxShadow: '0 12px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(77,159,255,0.15)',
         }}
       >
-        <div style={{ padding: '8px' }}>
+        <div style={{ padding: isShortViewport ? '4px' : '8px' }}>
 
           {/* ── Group 1: Main ── */}
           <div style={SECTION}>{isIT ? 'Navigazione' : 'Main'}</div>
