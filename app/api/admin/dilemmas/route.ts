@@ -55,10 +55,13 @@ export async function GET(request: NextRequest) {
       optionB:        s.optionB,
       emoji:          s.emoji,
       category:       s.category,
-      seoTitle:       s.seoTitle ?? null,
-      seoDescription: s.seoDescription ?? null,
-      keywords:       s.keywords ?? [],
-      noveltyScore:   s.scores?.noveltyScore,
+      seoTitle:          s.seoTitle ?? null,
+      seoDescription:    s.seoDescription ?? null,
+      keywords:          s.keywords ?? [],
+      noveltyScore:      s.scores?.noveltyScore,
+      autoPublished:     s.autoPublished ?? false,
+      qualityGateScore:  s.qualityGateScore,
+      generatedBy:       s.generatedBy ?? null,
     }))
 
     return NextResponse.json({
