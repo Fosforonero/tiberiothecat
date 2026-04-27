@@ -178,6 +178,23 @@ Required production events: `checkout.session.completed`, `customer.subscription
 - Premium (billing) OR admin: `noAds = true` → `AdSlot` renders nothing, no AdSense push.
 - `AdSlot` fetches `/api/me/entitlements` once on mount. Renders `null` while loading (no layout shift) and if `noAds = true`.
 
+### Public Emails
+
+All `@splitvote.io` addresses route via Cloudflare Email Routing → Gmail. No personal email is in source.
+
+| Address | Used for |
+|---|---|
+| `hello@splitvote.io` | General contact, FAQ, account deletion requests |
+| `support@splitvote.io` | Account/billing support — in Footer |
+| `privacy@splitvote.io` | GDPR/privacy requests — in Privacy Policy |
+| `legal@splitvote.io` | Legal/ToS notices — in Terms of Service |
+| `business@splitvote.io` | B2B/partnerships — in FAQ + Business page |
+| `research@splitvote.io` | Academic/research API access — in FAQ |
+
+> **DNS note:** `splitvote.io` currently redirects to `www.splitvote.io` via Cloudflare.
+> All canonical URLs in code use `https://splitvote.io` (no www). Configure a Cloudflare
+> Redirect Rule to redirect `www` → non-www (301) to avoid duplicate content.
+
 ### Known issues / TODOs
 - Stripe webhook idempotency: if `checkout.session.completed` fires twice for the same session, `name_changes` would be incremented twice. Low probability (Stripe retry dedup), but not fully mitigated. Backlog: store processed `session_id` in DB to skip duplicates.
 - Cosmetic store / companion unlocks: logic exists for `equipped_frame` and `equipped_badge` in DB, but no unlock/store UI is implemented. Admin sees all existing badges from the `user_badges` table; no special unlock logic is needed until the store ships. See ROADMAP.

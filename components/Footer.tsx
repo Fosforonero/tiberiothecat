@@ -20,6 +20,10 @@ export default function Footer() {
         <a href={isIT ? '/it/terms' : '/terms'} className="hover:text-white transition-colors">
           {isIT ? 'Termini' : 'Terms of Service'}
         </a>
+        <span>·</span>
+        <a href="mailto:support@splitvote.io" className="hover:text-white transition-colors">
+          {isIT ? 'Supporto' : 'Support'}
+        </a>
       </p>
     </footer>
   )

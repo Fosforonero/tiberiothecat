@@ -9,7 +9,75 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Core Loop Retention (27 Apr 2026)
+### Sprint Corrente — QA Post-Deploy + Email/DNS Readiness (27 Apr 2026)
+
+**Deploy QA — commit `1dc9b98` live ✅**
+
+Route live verificate:
+- [x] `/` → 200
+- [x] `/it` → 200
+- [x] `/play/trolley` → 200
+- [x] `/it/play/trolley` → 200
+- [x] `/results/trolley` → 200
+- [x] `/it/results/trolley` → 200
+- [x] `/site.webmanifest` → 200, JSON valido
+- [x] `/offline` → 200
+- [x] `/ads.txt` → 200
+- [x] `/sw.js` → 200, network-first, skip /api/
+- [x] `/api/cron/generate-dilemmas` (no secret) → 401 ✅
+- [x] `/api/me/entitlements` (anon) → `{isAdmin:false, noAds:false, ...}` — nessun leak ADMIN_EMAILS ✅
+- [x] Hotfix IT copy live: "Condividi risultato", "Prossimo dilemma" ✅
+
+**⚠️ DNS — www/non-www mismatch da risolvere su Cloudflare:**
+- `splitvote.io` → 307 → `www.splitvote.io` (Cloudflare redirect)
+- Tutti i canonical/OG/sitemap nel codice usano `https://splitvote.io` (no-www)
+- **Rischio SEO**: Google vede www ma canonical dice non-www → duplicate content
+- **Fix Cloudflare**: Page Rule o Redirect Rule `www.splitvote.io/* → https://splitvote.io/$1` (301)
+- Non richede modifiche al codice
+
+**Email/DNS Readiness:**
+- [x] `privacy@splitvote.io` — in `/privacy`, `/it/privacy` ✅
+- [x] `hello@splitvote.io` — in `/faq`, `/it/faq`, `/it/terms` ✅
+- [x] `legal@splitvote.io` — in `/terms` ✅
+- [x] `business@splitvote.io` — in `/faq`, `/business` ✅
+- [x] `research@splitvote.io` — in `/faq` ✅
+- [x] `support@splitvote.io` — aggiunto in Footer (EN: "Support" / IT: "Supporto") ✅
+- [x] Nessuna email personale (`mat.pizzi@gmail.com`) nel codice sorgente ✅
+
+**Checklist Cloudflare Email Routing (da completare manualmente):**
+- [ ] Nameserver Cloudflare attivi e propagati per `splitvote.io`
+- [ ] Email Routing abilitato in Cloudflare dashboard
+- [ ] Alias creati e forward verso Gmail testato:
+  - `hello@splitvote.io`
+  - `support@splitvote.io`
+  - `privacy@splitvote.io`
+  - `legal@splitvote.io`
+  - `business@splitvote.io`
+  - `research@splitvote.io`
+- [ ] SPF record aggiunto: `v=spf1 include:_spf.mx.cloudflare.net ~all`
+- [ ] DKIM abilitato in Cloudflare Email Routing settings
+- [ ] DMARC record: `v=DMARC1; p=quarantine; rua=mailto:hello@splitvote.io`
+- [ ] Forward testato end-to-end (send test email a ogni alias)
+- [ ] Se serve invio outbound: configurare Resend o Postmark (SMTP nativo Cloudflare non disponibile)
+- [ ] ⚠️ Correggere redirect www → non-www (vedi sopra)
+
+**Security/Privacy QA:**
+- [x] `ADMIN_EMAILS`: solo server-side in `lib/admin-auth.ts`, mai esposto al client
+- [x] `CRON_SECRET`: fail-closed — restituisce 401 se mancante o errato
+- [x] `SUPABASE_SERVICE_ROLE_KEY`: solo server-side in `lib/supabase/admin.ts`
+- [x] Stripe secrets: solo `process.env.*`, nessun valore hardcoded
+- [x] Tracking events (`lib/gtag.ts`): solo `scenario_id`, `category`, `locale`, `choice`, `source`, `target`, `action` — nessuna PII, nessuna email
+- [x] AdSlot premium/admin no-ads: verificato via `/api/me/entitlements` ✅
+
+**PWA/Service Worker QA:**
+- [x] `site.webmanifest`: JSON valido, `display: standalone`, icon purpose separati (`any` + `maskable`), shortcuts ✅
+- [x] Service worker: network-first, skip `/api/`, offline fallback su `/offline` ✅
+- [x] Service worker non cachea rotte dinamiche (voti, risultati, auth) ✅
+- [x] App installabile da Chrome/Safari ✅
+
+---
+
+### Sprint Precedente — Core Loop Retention (27 Apr 2026)
 
 - [x] `lib/gtag.ts`: helper `track(event, params)` — thin wrapper su `window.gtag`
 - [x] `lib/scenarios.ts`: `getNextScenarioId(excludeId, dynamicPool?)` — preferisce dynamic approved (top-half per finalScore), fallback statico
