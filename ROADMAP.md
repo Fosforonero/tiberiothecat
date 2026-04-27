@@ -9,7 +9,10 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — PWA MVP (27 Apr 2026)
+### Sprint Corrente — PWA Foundation (27 Apr 2026)
+
+Obiettivo: fondazione tecnica comune per web + Android Play Store (TWA) + iOS App Store (Capacitor).
+La PWA non è la destinazione finale — è il layer condiviso da cui TWA e Capacitor partono.
 
 - [x] `public/site.webmanifest`: icon purpose separati (`any` + `maskable`), scope, lang, categories, shortcuts (Trending + Profile)
 - [x] `app/layout.tsx`: `Viewport` export con `themeColor: '#070718'`, `viewportFit: 'cover'`
@@ -18,9 +21,24 @@ Ultimo aggiornamento: 27 Aprile 2026
 - [x] `app/offline/page.tsx`: pagina offline branded con reload CTA
 - [x] SW registration script in `<head>` via `next/script afterInteractive`
 
-Strategia mobile (NON implementare bundle senza conferma):
-- Android TWA: richiede `/.well-known/assetlinks.json` con SHA-256 APK key → sprint dedicato
-- iOS Capacitor: WKWebView wrapper, rischio Apple review "web shell" → valutare post-crescita
+**Strategia store (sprint dedicati, NON ora):**
+
+Android Play Store → **TWA (Trusted Web Activity)**
+- Nessun WebView custom: Chrome renderizza il sito esattamente come sul web
+- Richiede: `/.well-known/assetlinks.json` con SHA-256 APK signing key
+- Tool: `npx @bubblewrap/cli init --manifest https://splitvote.io/site.webmanifest`
+- Rischio: basso — Google Play supporta TWA esplicitamente
+- Feature native minime da aggiungere prima dello store: splash polished, shortcut icone, deep link `/play/[id]`
+
+iOS App Store → **Capacitor (WKWebView wrapper)**
+- Stessa codebase web, Capacitor aggiunge bridge nativo
+- Richiede: Universal Links (`apple-app-site-association`) per Supabase OAuth callback
+- Feature native minime **obbligatorie** per superare Apple review:
+  - Haptic feedback sul tap di voto (`@capacitor/haptics`)
+  - Native share sheet (`@capacitor/share`) al posto di `navigator.share`
+  - Local notification per daily dilemma reminder (`@capacitor/local-notifications`)
+  - Splash screen e icon set polished (nessun "web shell" look)
+- Rischio Apple review: medio — Apple rifiuta app web-shell senza valore nativo. Mitigazione: le 4 feature sopra + submission dopo crescita organica misurabile
 
 ---
 
@@ -190,8 +208,8 @@ Non fare insieme a feature/product sprint.
 - [ ] **Expert Insight AI**: generare insight da AI (OpenRouter, modello economico) solo per draft approvati — cache nel record dilemma, admin review obbligatoria, mai live on user request, guardrail per categorie health/legal
 - [ ] **Expert Insight store**: colonna `expert_insight_en` / `expert_insight_it` su tabella dilemmas per insight curati manualmente o approvati da admin
 - [ ] **Bottom nav mobile**: Home / Trending / Play / Profilo — solo mobile, locale-aware, safe-area, non copre contenuto
-- [ ] **Android TWA**: `/.well-known/assetlinks.json`, APK firmato, Google Play listing — richiede SHA-256 della signing key
-- [ ] **iOS Capacitor**: WKWebView wrapper, Universal Links per Supabase OAuth callback, Apple review risk assessment
+- [ ] **Android TWA (Play Store)**: `/.well-known/assetlinks.json` + APK firmato + Google Play listing — Bubblewrap CLI, SHA-256 signing key, deep link `/play/[id]`
+- [ ] **iOS Capacitor (App Store)**: Capacitor bridge, Universal Links per Supabase OAuth, haptics + native share + local notifications + splash — prerequisito: crescita organica misurabile per ridurre rischio Apple review
 
 ---
 
