@@ -9,7 +9,50 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — QA Post-Deploy + Email/DNS Readiness (27 Apr 2026)
+### Sprint Corrente — Blog SEO Statico EN/IT (27 Apr 2026)
+
+**Blog implementato e live ✅**
+
+Route create:
+- [x] `/blog` — index articoli EN
+- [x] `/blog/what-is-a-moral-dilemma`
+- [x] `/blog/trolley-problem-explained`
+- [x] `/blog/why-people-love-impossible-choices`
+- [x] `/it/blog` — index articoli IT
+- [x] `/it/blog/cos-e-un-dilemma-morale`
+- [x] `/it/blog/problema-del-carrello-spiegato`
+- [x] `/it/blog/perche-ci-piacciono-le-scelte-impossibili`
+
+Architettura:
+- [x] `lib/blog.ts`: sorgente dati tipizzata con `BlogPost`, `SectionType`, helper `getPost`, `getPostsByLocale`, `getAlternateUrl`, `postUrl`
+- [x] `components/BlogArticle.tsx`: renderer condiviso per articoli EN/IT — header, sezioni, dilemmi correlati, CTA, disclaimer
+- [x] Tutti i blog route generati come SSG (●) — nessun JS aggiuntivo nel bundle
+- [x] `app/sitemap.ts`: aggiunti blog index EN/IT + 6 articoli con `changeFrequency: monthly`
+- [x] `components/Footer.tsx`: link Blog EN/IT (prima di FAQ)
+
+SEO:
+- [x] Metadata `title`, `description` separati per ogni pagina
+- [x] Canonical corretto per ogni route
+- [x] `alternates/hreflang` EN↔IT per ogni coppia di articoli
+- [x] OpenGraph con `type: article` e `publishedTime` per i post
+- [x] Disclaimer leggero su ogni articolo: "Educational content, not professional advice." / "Contenuto educativo, non consulenza professionale."
+
+Contenuto seed:
+- [x] 3 articoli EN: moral dilemma, trolley problem, why people love impossible choices
+- [x] 3 articoli IT: scritti naturale (non tradotti), stessa struttura
+- [x] Ogni articolo collega a dilemmi giocabili reali (trolley, cure-secret, memory-erase, organ-harvest)
+- [x] Nessun consiglio medico/legale/psicologico personalizzato
+
+**Backlog blog (non in questo sprint):**
+- [ ] Editorial calendar: 1-2 articoli/mese, temi da Search Console performance
+- [ ] AI-assisted draft + revisione manuale obbligatoria
+- [ ] Ricerca per titolo/tag nel blog index
+- [ ] Breadcrumb schema.org JSON-LD per articoli
+- [ ] Automatic internal linking via tag condivisi con dilemmi dinamici
+
+---
+
+### Sprint Precedente — QA Post-Deploy + Email/DNS Readiness (27 Apr 2026)
 
 **Deploy QA — commit `1dc9b98` live ✅**
 

@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { allPosts } from '@/lib/blog'
 
 const BASE = 'https://splitvote.io'
 
@@ -171,6 +172,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
+    // Blog index pages
+    {
+      url: `${BASE}/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
+    },
+    {
+      url: `${BASE}/it/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.70,
+    },
+    // Blog articles
+    ...allPosts.map((post) => ({
+      url: post.locale === 'it'
+        ? `${BASE}/it/blog/${post.slug}`
+        : `${BASE}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly' as const,
+      priority: post.locale === 'it' ? 0.65 : 0.70,
+    })),
     // Category hubs
     ...categoryRoutes,
     // Static dilemmas

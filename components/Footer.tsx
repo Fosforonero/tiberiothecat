@@ -11,6 +11,10 @@ export default function Footer() {
       <div className="neon-divider mb-8 mx-auto max-w-2xl" />
       <p className="mb-2">© 2026 SplitVote.io — {isIT ? 'Nessuna risposta giusta. Solo una onesta.' : 'No right answers. Just honest ones.'}</p>
       <p className="flex items-center justify-center gap-4 flex-wrap">
+        <a href={isIT ? '/it/blog' : '/blog'} className="hover:text-white transition-colors">
+          Blog
+        </a>
+        <span>·</span>
         <a href={isIT ? '/it/faq' : '/faq'} className="hover:text-white transition-colors">FAQ</a>
         <span>·</span>
         <a href={isIT ? '/it/privacy' : '/privacy'} className="hover:text-white transition-colors">

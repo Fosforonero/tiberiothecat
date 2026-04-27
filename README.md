@@ -130,8 +130,31 @@ Italian SEO is implemented with a lightweight `/it` route family:
 - `/it/results/[id]`
 - `/it/category/[category]`
 - `/it/faq`, `/it/privacy`, `/it/terms`, `/it/personality`
+- `/it/blog`, `/it/blog/[slug]`
 
-Sitemap is locale-aware, includes Italian static dilemma URLs, and excludes draft dilemmas.
+Sitemap is locale-aware, includes Italian static dilemma URLs, blog articles, and excludes draft dilemmas.
+
+### Blog (static, no CMS)
+
+`lib/blog.ts` is the single source of truth for blog content. All posts are TypeScript objects — no database, no MDX.
+
+| Route | Description |
+|---|---|
+| `/blog` | EN article index |
+| `/blog/[slug]` | EN article (SSG, `generateStaticParams`) |
+| `/it/blog` | IT article index |
+| `/it/blog/[slug]` | IT article (SSG) |
+
+Each post has: `slug`, `locale`, `title/seoTitle`, `description/seoDescription`, `date`, `readingTime`, `tags`, `relatedDilemmaIds`, `alternateSlug` (for hreflang pairs), `content[]` (typed sections).
+
+**Content rules:**
+- Short, useful articles linked to playable dilemmas — no generic filler
+- EN and IT written independently (not machine-translated)
+- Every article has a disclaimer: "Educational content, not professional advice."
+- No medical, legal, or psychological advice
+- No AI-generated content published without human review
+
+**Adding new posts:** Add a `BlogPost` object to `EN_POSTS` or `IT_POSTS` in `lib/blog.ts`. The sitemap updates automatically.
 
 ### Dilemma feedback
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.
