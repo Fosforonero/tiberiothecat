@@ -3,11 +3,38 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 27 Aprile 2026 (sprint Expert Insight v2)
+Ultimo aggiornamento: 27 Aprile 2026 (sprint Admin Pro Dashboard + Content Tools)
 
 ---
 
 ## Stato Attuale
+
+### Sprint Completato — Admin Pro Dashboard + Content Tools (27 Apr 2026)
+
+**Home trending reale + Admin dashboard professionale con tab ✅**
+
+- [x] `lib/trending.ts`: `getTrendingScenarioIds24h(candidateIds, limit=6)`
+  - Fonte primaria: `vote_daily_stats` (oggi + ieri, aggregato per `dilemma_id`)
+  - Fallback: Redis `getVotesBatch` all-time votes
+  - Last resort: primi N candidateIds
+- [x] `app/page.tsx`: trending EN usa dati reali 24h da vote_daily_stats; sezione rinominata "Latest Questions"
+- [x] `app/it/page.tsx`: trending IT usa dati reali 24h; sezione rinominata "Nuove Domande"
+- [x] `app/admin/GenerateDraftPanel.tsx`: prop `defaultType?: 'dilemma' | 'blog_article'`
+- [x] `app/admin/page.tsx`: dashboard ristrutturata con 6 tab:
+  - **Overview**: KPI cards (Users, Votes, Badges, Polls) + business metrics + anon/logged breakdown
+  - **Voting**: VotesChart + SignupsChart + top voters + recent signups
+  - **Content**: poll status + pending polls + feedback per-dilemma (top🔥 / bottom👎 via `dilemma_feedback_stats` view)
+  - **AI Drafts**: GenerateDraftPanel (dilemma) + SeedBatchPanel + CronDebug con dry-run
+  - **Blog**: GenerateDraftPanel (blog_article) + disclaimer preview-only
+  - **Monetization**: premium count + conversion rate + placeholder Stripe
+- [x] `supabase/migration_v10_content_events.sql`: piano audit content events — `content_events_summary` view + indice scenario_id + documentazione event_type pianificati (DRAFT — non ancora applicato)
+
+**Feedback analytics (STEP 4) — dati reali da `dilemma_feedback_stats` view:**
+- Query admin `dilemma_feedback_stats`: `fire_count`, `down_count`, `total_count`, `fire_pct`
+- Top 5 dilemmi per fire_pct + bottom 5 per fire_pct (solo dilemmi con ≥ 3 feedback)
+- Visibili nel tab Content
+
+---
 
 ### Sprint Completato — Expert Insight v2 (27 Apr 2026)
 

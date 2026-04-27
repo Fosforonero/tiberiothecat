@@ -2,6 +2,7 @@ import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotes, getVotesBatch } from '@/lib/redis'
+import { getTrendingScenarioIds24h } from '@/lib/trending'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
 import AdSlot from '@/components/AdSlot'
@@ -52,9 +53,9 @@ export default async function HomePage() {
   }
 
   // Sections
-  const trendingNow = [...uniqueDynamic]
-    .sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
-    .slice(0, 6)
+  const trendingIds = await getTrendingScenarioIds24h(allScenarios.map(s => s.id), 6)
+  const scenarioById = new Map(allScenarios.map(s => [s.id, s]))
+  const trendingNow = trendingIds.map(id => scenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
 
   const mostVoted = [...allScenarios.slice(0, 30)]
     .filter((s) => (voteMap.get(s.id) ?? 0) > 0)
@@ -159,10 +160,17 @@ export default async function HomePage() {
           </p>
         </div>
 
+        {/* ── Trust strip ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Anonymous voting</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> See what the world chooses</span>
+        </div>
+
         {/* ── Dilemma of the Day ── */}
         <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
-        {/* ── Trending Now (AI-generated, ranked by finalScore) ── */}
+        {/* ── Trending Now (ranked by recent votes: today + yesterday) ── */}
         {trendingNow.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
@@ -208,12 +216,12 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ── Newly Generated (most recent AI dilemmas) ── */}
+        {/* ── Latest Questions (most recent AI dilemmas) ── */}
         {newlyGenerated.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400">✨</span> Newly Generated
+                <span className="text-green-400">✨</span> Latest Questions
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

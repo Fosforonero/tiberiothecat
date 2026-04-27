@@ -49,8 +49,8 @@ function NoveltyBadge({ score }: { score: number }) {
   )
 }
 
-export default function GenerateDraftPanel() {
-  const [type, setType]     = useState<GenType>('dilemma')
+export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaultType?: GenType }) {
+  const [type, setType]     = useState<GenType>(defaultType)
   const [locale, setLocale] = useState<GenLocale>('en')
   const [topic, setTopic]   = useState('')
   const [loading, setLoading]   = useState<PanelMode | null>(null)

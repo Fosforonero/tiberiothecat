@@ -134,6 +134,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v7_stripe_subscriptions.sql` | Stripe customer/subscription fields | ✅ Applied |
 | `migration_v8_user_events.sql` | User event tracking for share_result mission | ✅ Applied |
 | `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ✅ Applied |
+| `migration_v10_content_events.sql` | Content events view + index — DRAFT, review before applying | ⏳ Pending |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 

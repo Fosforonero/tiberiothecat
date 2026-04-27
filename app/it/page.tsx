@@ -3,6 +3,7 @@ import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenariosByLocale } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getVotesBatch } from '@/lib/redis'
+import { getTrendingScenarioIds24h } from '@/lib/trending'
 import DilemmaCard from '@/components/DilemmaCard'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
@@ -155,9 +156,9 @@ export default async function ItPage() {
     voteMap = await getVotesBatch([...ids])
   } catch { /* Non-blocking */ }
 
-  const trendingIT = [...dynamicIT]
-    .sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
-    .slice(0, 6)
+  const trendingITIds = await getTrendingScenarioIds24h(allITPool.map(s => s.id), 6)
+  const itScenarioById = new Map(allITPool.map(s => [s.id, s]))
+  const trendingIT = trendingITIds.map(id => itScenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
 
   const newlyGeneratedIT = [...dynamicIT]
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
@@ -191,6 +192,13 @@ export default async function ItPage() {
           </div>
         </div>
 
+        {/* ── Trust strip ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Nessun account richiesto</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Voto anonimo</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Scopri cosa sceglierebbe il mondo</span>
+        </div>
+
         {/* ── Dilemma del Giorno ── */}
         <DailyDilemma
           scenario={dailyIT}
@@ -218,7 +226,7 @@ export default async function ItPage() {
           </div>
         </section>
 
-        {/* ── Trending IT (AI-generated, ranked by finalScore) ── */}
+        {/* ── Trending IT (ranked by recent votes: today + yesterday) ── */}
         {trendingIT.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
@@ -244,12 +252,12 @@ export default async function ItPage() {
           </section>
         )}
 
-        {/* ── Nuovi Generati ── */}
+        {/* ── Nuove Domande ── */}
         {newlyGeneratedIT.length > 0 && newlyGeneratedIT[0].id !== trendingIT[0]?.id && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400">✨</span> Nuovi Generati
+                <span className="text-green-400">✨</span> Nuove Domande
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
