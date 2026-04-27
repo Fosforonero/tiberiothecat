@@ -5,6 +5,7 @@ import {
   Users, Vote, Trophy, ClipboardList, Flame, UserPlus,
   Clock, CheckCircle, XCircle, Flag, Star, Settings,
   LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
+  ThumbsUp, MessageSquare,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
@@ -66,6 +67,10 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   since14.setUTCDate(since14.getUTCDate() - 13)
   since14.setUTCHours(0, 0, 0, 0)
 
+  const today = now.toISOString().slice(0, 10)
+  const since7  = new Date(now); since7.setUTCDate(since7.getUTCDate() - 6);  since7.setUTCHours(0,0,0,0)
+  const since24 = new Date(now); since24.setUTCDate(since24.getUTCDate() - 1)
+
   const [
     profilesRes,
     dilemmaVotesRes,
@@ -79,6 +84,10 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     badgesRes,
     // Anonymous vs logged-in breakdown from daily stats
     anonBreakdownRes,
+    // New business metrics
+    premiumUsersRes,
+    votes7dRes,
+    feedbackTotalsRes,
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('dilemma_votes').select('*', { count: 'exact', head: true }),
@@ -96,6 +105,15 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     // Total breakdown all-time
     admin.from('vote_daily_stats')
       .select('anonymous_count, logged_in_count, total_count'),
+    // Premium users count
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('is_premium', true),
+    // Last 7 days votes
+    admin.from('vote_daily_stats')
+      .select('total_count')
+      .gte('date', since7.toISOString().slice(0, 10)),
+    // Feedback totals (all-time)
+    admin.from('dilemma_feedback')
+      .select('feedback'),
   ])
 
   const totalUsers        = profilesRes.count ?? 0
@@ -136,6 +154,19 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const totalAnonVotes     = allTimeBreakdown.reduce((s, r) => s + r.anonymous_count, 0)
   const totalLoggedVotes   = allTimeBreakdown.reduce((s, r) => s + r.logged_in_count, 0)
   const anonPct = totalTrackedVotes > 0 ? Math.round((totalAnonVotes / totalTrackedVotes) * 100) : 0
+
+  // Business metrics
+  const premiumCount = premiumUsersRes.count ?? 0
+  const votes7d = (votes7dRes.data ?? []).reduce((s, r) => s + ((r as { total_count: number }).total_count), 0)
+  const votes24h = (voteDailyRes.data ?? [])
+    .filter(r => (r as { date: string }).date === today)
+    .reduce((s, r) => s + ((r as { total_count: number }).total_count), 0)
+
+  type FeedbackRow = { feedback: string }
+  const feedbackRows = (feedbackTotalsRes.data ?? []) as FeedbackRow[]
+  const totalFeedback = feedbackRows.length
+  const fireFeedback  = feedbackRows.filter(r => r.feedback === 'fire').length
+  const fireFeedbackPct = totalFeedback > 0 ? Math.round((fireFeedback / totalFeedback) * 100) : 0
 
   const signupBuckets = buildDayBuckets(14)
   for (const row of signupsByDayRes.data ?? []) {
@@ -215,6 +246,42 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             <p className="text-[var(--muted)] text-xs">{label}</p>
           </div>
         ))}
+      </div>
+
+      {/* ── Business insights ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <div className="rounded-2xl border border-yellow-500/25 bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 p-5 text-center neon-glow-yellow">
+          <div className="flex justify-center mb-3">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+              <Star size={20} className="text-yellow-400" />
+            </div>
+          </div>
+          <p className="text-2xl sm:text-3xl font-black text-yellow-400 mb-1">{premiumCount}</p>
+          <p className="text-[var(--muted)] text-xs">Premium Users</p>
+        </div>
+        <div className="rounded-2xl border border-blue-500/25 bg-gradient-to-br from-blue-500/10 to-blue-500/5 p-5 text-center">
+          <div className="flex justify-center mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Votes 24h</p>
+          </div>
+          <p className="text-2xl sm:text-3xl font-black text-blue-400 mb-0.5">{votes24h.toLocaleString()}</p>
+          <p className="text-[var(--muted)] text-xs">↑ last 24 hours</p>
+        </div>
+        <div className="rounded-2xl border border-purple-500/25 bg-gradient-to-br from-purple-500/10 to-purple-500/5 p-5 text-center">
+          <div className="flex justify-center mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">Votes 7d</p>
+          </div>
+          <p className="text-2xl sm:text-3xl font-black text-purple-400 mb-0.5">{votes7d.toLocaleString()}</p>
+          <p className="text-[var(--muted)] text-xs">↑ last 7 days</p>
+        </div>
+        <div className="rounded-2xl border border-orange-500/25 bg-gradient-to-br from-orange-500/10 to-orange-500/5 p-5 text-center">
+          <div className="flex justify-center mb-3">
+            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+              <ThumbsUp size={20} className="text-orange-400" />
+            </div>
+          </div>
+          <p className="text-2xl sm:text-3xl font-black text-orange-400 mb-1">{fireFeedbackPct}%</p>
+          <p className="text-[var(--muted)] text-xs">🔥 Feedback ({totalFeedback.toLocaleString()} total)</p>
+        </div>
       </div>
 
       {/* ── Anonymous vs Logged-in breakdown ── */}

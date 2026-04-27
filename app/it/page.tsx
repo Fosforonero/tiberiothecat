@@ -211,6 +211,7 @@ export default async function ItPage() {
                 scenario={s}
                 playHref={`/it/play/${s.id}`}
                 totalVotes={voteMap.get(s.id)}
+                locale="it"
               />
             ))}
           </div>
@@ -235,6 +236,7 @@ export default async function ItPage() {
                   playHref={`/it/play/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
                   badge="trending"
+                  locale="it"
                 />
               ))}
             </div>
@@ -256,6 +258,7 @@ export default async function ItPage() {
                   scenario={s}
                   playHref={`/it/play/${s.id}`}
                   badge="new"
+                  locale="it"
                 />
               ))}
             </div>
@@ -323,7 +326,7 @@ export default async function ItPage() {
           <h2 className="text-2xl font-black mb-3">Pronto a scegliere?</h2>
           <p className="text-[var(--muted)] mb-6">Unisciti a migliaia di persone che votano ogni giorno.</p>
           <Link
-            href="/"
+            href="/it"
             className="inline-block rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)]"
           >
             Vedi tutti i dilemmi →

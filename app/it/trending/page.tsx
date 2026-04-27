@@ -112,7 +112,7 @@ export default async function ItTrendingPage() {
       {/* Links */}
       <div className="mt-12 flex justify-center gap-6 text-sm text-[var(--muted)]">
         <Link href="/it" className="hover:text-white transition-colors">
-          ← Tutti i dilemmi IT
+          ← Tutti i dilemmi
         </Link>
         <Link href="/trending" className="hover:text-white transition-colors">
           🌍 Trending EN →

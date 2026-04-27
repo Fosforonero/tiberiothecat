@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { Settings, Star, LayoutDashboard, LogOut } from 'lucide-react'
-
-const ADMIN_EMAILS = ['mat.pizzi@gmail.com']
+import { isAdminEmail } from '@/lib/admin-auth'
 
 export default async function AuthButton() {
   const supabase = await createClient()
@@ -19,7 +18,7 @@ export default async function AuthButton() {
       .single()
     isPremium = profile?.is_premium ?? false
     avatarEmoji = profile?.avatar_emoji ?? '🌍'
-    isAdmin = ADMIN_EMAILS.includes(user.email ?? '')
+    isAdmin = isAdminEmail(user.email)
   }
 
   if (!user) {

@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
-import { TrendingUp, Scale, Cpu, Users, Heart, Building2, Compass } from 'lucide-react'
 import CookieConsent from '@/components/CookieConsent'
 import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
+import NavLinks from '@/components/NavLinks'
 import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
@@ -81,15 +81,6 @@ export const metadata: Metadata = {
   },
 }
 
-const NAV_CATEGORIES = [
-  { href: '/trending',               label: 'Trending',     icon: TrendingUp, color: 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 hover:border-purple-500/20' },
-  { href: '/category/morality',      label: 'Morality',     icon: Scale,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
-  { href: '/category/technology',    label: 'Tech',         icon: Cpu,        color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
-  { href: '/category/society',       label: 'Society',      icon: Users,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
-  { href: '/category/relationships', label: 'Love',         icon: Heart,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
-  { href: '/personality',            label: 'My Profile',   icon: Compass,    color: 'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-500/20' },
-  { href: '/business',               label: 'Business',     icon: Building2,  color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
-]
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -161,19 +152,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
           </a>
 
-          {/* Desktop category links */}
-          <div className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
-            {NAV_CATEGORIES.map(({ href, label, icon: Icon, color }) => (
-              <a
-                key={href}
-                href={href}
-                className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest transition-all px-3 py-1.5 rounded-lg border border-transparent ${color}`}
-              >
-                <Icon size={12} />
-                {label}
-              </a>
-            ))}
-          </div>
+          {/* Desktop category links — locale-aware */}
+          <NavLinks />
 
           {/* Right side: auth + mobile menu */}
           <div className="flex items-center gap-2 flex-shrink-0">

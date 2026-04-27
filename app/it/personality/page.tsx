@@ -24,5 +24,5 @@ export const metadata: Metadata = {
 }
 
 export default function ItPersonalityPage() {
-  return <PersonalityClient />
+  return <PersonalityClient locale="it" />
 }

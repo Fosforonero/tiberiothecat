@@ -37,6 +37,10 @@ interface PersonalityResponse {
   message?: string
 }
 
+interface Props {
+  locale?: 'en' | 'it'
+}
+
 const SIGN_COLORS: Record<string, string> = {
   guardian:   'from-blue-600/20 to-blue-500/5 border-blue-500/30',
   rebel:      'from-red-600/20 to-red-500/5 border-red-500/30',
@@ -46,10 +50,58 @@ const SIGN_COLORS: Record<string, string> = {
   empath:     'from-green-600/20 to-green-500/5 border-green-500/30',
 }
 
-export default function PersonalityClient() {
+const EN_COPY = {
+  loading:          'Calculating your moral profile…',
+  unlockTitle:      'Unlock Your Moral Profile',
+  unlockDesc:       'Sign in and vote on at least 3 dilemmas to discover your SplitVote personality archetype.',
+  signIn:           'Sign in to discover',
+  almostTitle:      'Almost there…',
+  votes:            (analyzed: number) => `${analyzed} / 3 votes`,
+  voteLink:         'Vote on a dilemma',
+  header:           'SplitVote Personality — For fun only',
+  profileTitle:     'Your Moral Profile',
+  basedOn:          (n: number) => `Based on ${n} of your SplitVote choices`,
+  sign:             (s: string) => `SplitVote Sign: ${s}`,
+  lowConfidence:    '⚠️ Low confidence — vote on more dilemmas for a better reading',
+  share:            'Share my archetype',
+  copied:           'Copied!',
+  communityVerdict: 'Community verdict: ',
+  axesTitle:        '🧠 Your Moral Axes',
+  refine:           'Vote more to refine your profile',
+  disclaimer:       'For entertainment only — not scientifically validated.',
+  resultsUpdate:    'Results update as you vote.',
+}
+
+const IT_COPY = {
+  loading:          'Calcolando il tuo profilo morale…',
+  unlockTitle:      'Sblocca il Tuo Profilo Morale',
+  unlockDesc:       'Accedi e vota almeno 3 dilemmi per scoprire il tuo archetipo di personalità SplitVote.',
+  signIn:           'Accedi per scoprire',
+  almostTitle:      'Quasi là…',
+  votes:            (analyzed: number) => `${analyzed} / 3 voti`,
+  voteLink:         'Vota un dilemma',
+  header:           'SplitVote Personalità — Solo per divertimento',
+  profileTitle:     'Il Tuo Profilo Morale',
+  basedOn:          (n: number) => `Basato su ${n} delle tue scelte su SplitVote`,
+  sign:             (s: string) => `Segno SplitVote: ${s}`,
+  lowConfidence:    '⚠️ Bassa attendibilità — vota altri dilemmi per un risultato più preciso',
+  share:            'Condividi il mio archetipo',
+  copied:           'Copiato!',
+  communityVerdict: 'Verdetto della community: ',
+  axesTitle:        '🧠 I Tuoi Assi Morali',
+  refine:           'Vota altri dilemmi per affinare il tuo profilo',
+  disclaimer:       'Solo a scopo di intrattenimento — non validato scientificamente.',
+  resultsUpdate:    'I risultati si aggiornano man mano che voti.',
+}
+
+export default function PersonalityClient({ locale = 'en' }: Props) {
   const [data, setData] = useState<PersonalityResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+
+  const copy = locale === 'it' ? IT_COPY : EN_COPY
+  const homeHref = locale === 'it' ? '/it' : '/'
+  const loginHref = '/login'
 
   useEffect(() => {
     fetch('/api/personality')
@@ -75,7 +127,7 @@ export default function PersonalityClient() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <div className="w-12 h-12 rounded-full border-2 border-purple-500/50 border-t-purple-400 animate-spin mx-auto mb-4" />
-        <p className="text-[var(--muted)]">Calculating your moral profile…</p>
+        <p className="text-[var(--muted)]">{copy.loading}</p>
       </div>
     )
   }
@@ -87,11 +139,11 @@ export default function PersonalityClient() {
         <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center mx-auto mb-6">
           <Lock size={28} className="text-purple-400" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">Unlock Your Moral Profile</h1>
-        <p className="text-[var(--muted)] mb-8">Sign in and vote on at least 3 dilemmas to discover your SplitVote personality archetype.</p>
-        <Link href="/login"
+        <h1 className="text-2xl font-black text-white mb-3">{copy.unlockTitle}</h1>
+        <p className="text-[var(--muted)] mb-8">{copy.unlockDesc}</p>
+        <Link href={loginHref}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 text-white font-bold hover:bg-purple-400 transition-colors">
-          Sign in to discover <ChevronRight size={16} />
+          {copy.signIn} <ChevronRight size={16} />
         </Link>
       </div>
     )
@@ -99,7 +151,6 @@ export default function PersonalityClient() {
 
   // Not enough votes
   if (!data.ready) {
-    const needed = data.votesNeeded ?? 3
     const analyzed = data.votesAnalyzed ?? 0
     const progress = Math.min(100, Math.round((analyzed / 3) * 100))
     return (
@@ -107,7 +158,7 @@ export default function PersonalityClient() {
         <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center mx-auto mb-6">
           <Compass size={28} className="text-purple-400" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">Almost there…</h1>
+        <h1 className="text-2xl font-black text-white mb-3">{copy.almostTitle}</h1>
         <p className="text-[var(--muted)] mb-6">{data.message}</p>
 
         {/* Progress bar */}
@@ -115,11 +166,11 @@ export default function PersonalityClient() {
           <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
             style={{ width: `${progress}%` }} />
         </div>
-        <p className="text-xs text-[var(--muted)] mb-8">{analyzed} / 3 votes</p>
+        <p className="text-xs text-[var(--muted)] mb-8">{copy.votes(analyzed)}</p>
 
-        <Link href="/"
+        <Link href={homeHref}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 text-white font-bold hover:bg-purple-400 transition-colors">
-          Vote on a dilemma <ChevronRight size={16} />
+          {copy.voteLink} <ChevronRight size={16} />
         </Link>
       </div>
     )
@@ -137,10 +188,10 @@ export default function PersonalityClient() {
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--muted)] bg-white/5 px-3 py-1.5 rounded-full border border-white/10 mb-4">
           <Sparkles size={11} className="text-yellow-400" />
-          SplitVote Personality — For fun only
+          {copy.header}
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">Your Moral Profile</h1>
-        <p className="text-[var(--muted)] text-sm">Based on {votesAnalyzed} of your SplitVote choices</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">{copy.profileTitle}</h1>
+        <p className="text-[var(--muted)] text-sm">{copy.basedOn(votesAnalyzed ?? 0)}</p>
       </div>
 
       {/* ── Archetype card ── */}
@@ -153,14 +204,14 @@ export default function PersonalityClient() {
         <div className="text-6xl mb-4">{archetype.signEmoji}</div>
 
         <div className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-2">
-          SplitVote Sign: {archetype.sign}
+          {copy.sign(archetype.sign)}
         </div>
 
         <h2 className={`text-3xl sm:text-4xl font-black mb-2 ${archetype.color}`}>
           {archetype.name}
         </h2>
 
-        <p className="text-white/60 text-sm font-semibold italic mb-4">"{archetype.tagline}"</p>
+        <p className="text-white/60 text-sm font-semibold italic mb-4">&ldquo;{archetype.tagline}&rdquo;</p>
 
         <p className="text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-md mx-auto">
           {archetype.description}
@@ -178,14 +229,14 @@ export default function PersonalityClient() {
 
         {/* Confidence badge */}
         {confidence === 'low' && (
-          <p className="text-xs text-yellow-400/70 mb-4">⚠️ Low confidence — vote on more dilemmas for a better reading</p>
+          <p className="text-xs text-yellow-400/70 mb-4">{copy.lowConfidence}</p>
         )}
 
         {/* Share button */}
         <button onClick={handleShare}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-colors">
           <Share2 size={14} />
-          {copied ? 'Copied!' : 'Share my archetype'}
+          {copied ? copy.copied : copy.share}
         </button>
       </div>
 
@@ -193,7 +244,7 @@ export default function PersonalityClient() {
       {communityLabel && (
         <div className="rounded-xl border border-white/10 bg-white/5 p-4 mb-8 text-center">
           <p className="text-sm text-[var(--muted)]">
-            <span className="text-white font-bold">Community verdict: </span>{communityLabel}
+            <span className="text-white font-bold">{copy.communityVerdict}</span>{communityLabel}
           </p>
         </div>
       )}
@@ -201,7 +252,7 @@ export default function PersonalityClient() {
       {/* ── Moral axes breakdown ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 mb-8">
         <h3 className="text-sm font-black uppercase tracking-widest text-[var(--muted)] mb-6">
-          🧠 Your Moral Axes
+          {copy.axesTitle}
         </h3>
         <div className="space-y-5">
           {axes.map(axis => {
@@ -209,7 +260,6 @@ export default function PersonalityClient() {
             const barPct = Math.round(((axis.score + 5) / 10) * 100)
             const isLeft = axis.score < -1.5
             const isRight = axis.score > 1.5
-            const isBalanced = !isLeft && !isRight
 
             return (
               <div key={axis.id}>
@@ -250,13 +300,13 @@ export default function PersonalityClient() {
 
       {/* ── CTA ── */}
       <div className="text-center space-y-3">
-        <Link href="/"
+        <Link href={homeHref}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 font-bold hover:bg-purple-500/30 transition-colors">
-          Vote more to refine your profile <RefreshCw size={14} />
+          {copy.refine} <RefreshCw size={14} />
         </Link>
         <p className="text-xs text-[var(--muted)]">
-          For entertainment only — not scientifically validated.{' '}
-          <span className="text-white/40">Results update as you vote.</span>
+          {copy.disclaimer}{' '}
+          <span className="text-white/40">{copy.resultsUpdate}</span>
         </p>
       </div>
 

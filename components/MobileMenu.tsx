@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap, Building2, HelpCircle, Compass } from 'lucide-react'
 
-const NAV_LINKS = [
+const EN_LINKS = [
   { href: '/trending',               label: 'Trending',      icon: TrendingUp, color: 'text-purple-400' },
   { href: '/category/morality',      label: 'Morality',      icon: Scale,      color: 'text-red-400'    },
   { href: '/category/technology',    label: 'Technology',    icon: Cpu,        color: 'text-blue-400'   },
@@ -16,10 +17,23 @@ const NAV_LINKS = [
   { href: '/faq',                    label: 'FAQ',           icon: HelpCircle, color: 'text-[var(--muted)]' },
 ]
 
+const IT_LINKS = [
+  { href: '/it/trending',               label: 'Tendenze',      icon: TrendingUp, color: 'text-purple-400' },
+  { href: '/it/category/morality',      label: 'Moralità',      icon: Scale,      color: 'text-red-400'    },
+  { href: '/it/category/technology',    label: 'Tecnologia',    icon: Cpu,        color: 'text-blue-400'   },
+  { href: '/it/category/society',       label: 'Società',       icon: Users,      color: 'text-green-400'  },
+  { href: '/it/category/relationships', label: 'Relazioni',     icon: Heart,      color: 'text-pink-400'   },
+  { href: '/it/personality',            label: 'Profilo',       icon: Compass,    color: 'text-cyan-400'   },
+  { href: '/it/category/survival',      label: 'Sopravvivenza', icon: Zap,        color: 'text-orange-400' },
+  { href: '/it/faq',                    label: 'FAQ',           icon: HelpCircle, color: 'text-[var(--muted)]' },
+]
+
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
-  // Track whether we're mounted (SSR-safe for createPortal)
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
+  const isIT = pathname.startsWith('/it')
+  const NAV_LINKS = isIT ? IT_LINKS : EN_LINKS
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -42,14 +56,13 @@ export default function MobileMenu() {
   // The backdrop + dropdown are rendered via a portal directly into <body>.
   // This ensures they escape the navbar's stacking context, which is created
   // by backdrop-filter: blur() — a CSS property that forms a new containing
-  // block for position:fixed children. Without the portal, the dropdown
-  // is clipped/offset relative to the nav instead of the viewport.
+  // block for position:fixed children.
   const overlay = open && mounted && createPortal(
     <>
       {/* Backdrop */}
       <button
         type="button"
-        aria-label="Close menu"
+        aria-label={isIT ? 'Chiudi menu' : 'Close menu'}
         onClick={() => setOpen(false)}
         style={{
           position: 'fixed',
@@ -69,7 +82,7 @@ export default function MobileMenu() {
         role="menu"
         style={{
           position: 'fixed',
-          top: '56px',   // height of navbar (py-3 ~12px + icon 32px + border = ~56px)
+          top: '56px',
           right: '12px',
           width: '240px',
           zIndex: 1001,
@@ -117,7 +130,7 @@ export default function MobileMenu() {
       <div className="md:hidden">
         <button
           onClick={() => setOpen(o => !o)}
-          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-label={open ? (isIT ? 'Chiudi menu' : 'Close menu') : (isIT ? 'Apri menu' : 'Open menu')}
           aria-expanded={open}
           aria-controls="mobile-menu-dropdown"
           className="flex items-center justify-center w-9 h-9 rounded-xl border border-[var(--border)] hover:border-[var(--border-hi)] hover:bg-white/5 transition-all text-[var(--muted)] hover:text-white"

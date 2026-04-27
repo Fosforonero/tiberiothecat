@@ -9,9 +9,18 @@ interface Props {
   playHref: string
   totalVotes?: number
   badge?: DilemmaCardBadge
+  locale?: 'en' | 'it'
 }
 
-export default function DilemmaCard({ scenario, playHref, totalVotes, badge }: Props) {
+const BADGE_COPY = {
+  en: { trending: 'trending', new: '🆕 new' },
+  it: { trending: 'tendenza', new: '🆕 nuovo' },
+}
+
+export default function DilemmaCard({ scenario, playHref, totalVotes, badge, locale = 'en' }: Props) {
+  const badgeCopy = locale === 'it' ? BADGE_COPY.it : BADGE_COPY.en
+  const votesLabel = locale === 'it' ? 'voti' : 'votes'
+
   return (
     <Link href={playHref} className="card-neon group block rounded-2xl p-5 sm:p-6">
       <div className="flex items-start gap-3 sm:gap-4">
@@ -24,7 +33,7 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge }: P
             {badge === 'trending' && (
               <span className="flex items-center gap-1 text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5 font-bold">
                 <Flame size={9} />
-                trending
+                {badgeCopy.trending}
               </span>
             )}
             {badge === 'ai' && (
@@ -35,7 +44,7 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge }: P
             )}
             {badge === 'new' && (
               <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
-                🆕 new
+                {badgeCopy.new}
               </span>
             )}
           </div>
@@ -53,7 +62,7 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge }: P
           {totalVotes !== undefined && totalVotes > 0 && (
             <div className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
               <Globe size={10} />
-              <span>{totalVotes.toLocaleString()} votes</span>
+              <span>{totalVotes.toLocaleString(locale === 'it' ? 'it-IT' : 'en-US')} {votesLabel}</span>
             </div>
           )}
         </div>

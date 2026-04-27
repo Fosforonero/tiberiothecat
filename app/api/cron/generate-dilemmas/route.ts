@@ -150,7 +150,10 @@ export async function GET(request: NextRequest) {
   const bearerSecret = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
   const secret       = request.headers.get('x-cron-secret') ?? bearerSecret
   const expectedSecret = process.env.CRON_SECRET
-  if (expectedSecret && secret !== expectedSecret) {
+  if (!expectedSecret) {
+    return NextResponse.json({ error: 'Cron not configured' }, { status: 401 })
+  }
+  if (secret !== expectedSecret) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 const CONSENT_KEY = 'sv_cookie_consent' // 'granted' | 'denied'
 
@@ -22,6 +23,8 @@ function updateConsentMode(granted: boolean) {
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false)
+  const pathname = usePathname()
+  const isIT = pathname.startsWith('/it')
 
   useEffect(() => {
     const stored = localStorage.getItem(CONSENT_KEY)
@@ -48,25 +51,39 @@ export default function CookieConsent() {
 
   if (!visible) return null
 
+  const privacyHref = isIT ? '/it/privacy' : '/privacy'
+
   return (
     <div
       role="dialog"
-      aria-label="Cookie consent"
+      aria-label={isIT ? 'Consenso cookie' : 'Cookie consent'}
       aria-live="polite"
       className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6"
     >
       <div className="max-w-3xl mx-auto rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/95 backdrop-blur-md shadow-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-[var(--text)] leading-relaxed">
-            We use cookies to count votes and improve your experience.{' '}
-            <a
-              href="/privacy"
-              className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
-            >
-              Privacy Policy
-            </a>
-          </p>
+          {isIT ? (
+            <p className="text-sm text-[var(--text)] leading-relaxed">
+              Utilizziamo cookie per contare i voti e migliorare la tua esperienza.{' '}
+              <a
+                href={privacyHref}
+                className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+              >
+                Informativa Privacy
+              </a>
+            </p>
+          ) : (
+            <p className="text-sm text-[var(--text)] leading-relaxed">
+              We use cookies to count votes and improve your experience.{' '}
+              <a
+                href={privacyHref}
+                className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </p>
+          )}
         </div>
 
         {/* Buttons */}
@@ -75,13 +92,13 @@ export default function CookieConsent() {
             onClick={decline}
             className="flex-1 sm:flex-none text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-white hover:border-white/20 transition-colors"
           >
-            Decline
+            {isIT ? 'Rifiuta' : 'Decline'}
           </button>
           <button
             onClick={accept}
             className="flex-1 sm:flex-none text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors"
           >
-            Accept
+            {isIT ? 'Accetta' : 'Accept'}
           </button>
         </div>
       </div>

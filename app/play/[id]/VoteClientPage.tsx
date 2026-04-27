@@ -35,11 +35,47 @@ function formatTimeRemaining(canChangeUntil: string): string {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
+const EN_COPY = {
+  back:         '← All dilemmas',
+  challengeTitle: '🔥 Someone challenged you!',
+  challengeText:  "A friend wants to know which side you're on. Choose wisely.",
+  joinVoted:    (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
+  alreadyVoted: '✅ You already voted',
+  canChange:    (t: string) => `🕐 Can change for ${t}`,
+  voteLocked:   '🔒 Vote locked',
+  yourChoice:   'YOUR CHOICE',
+  or:           'OR',
+  yourVote:     '← your vote',
+  seeResults:   'See results →',
+  nextDilemma:  'Next dilemma',
+  counting:     'Counting your vote…',
+  disclaimer:   'Anonymous. No account needed. Results update in real time.',
+}
+
+const IT_COPY = {
+  back:         '← Tutti i dilemmi',
+  challengeTitle: '🔥 Ti hanno sfidato!',
+  challengeText:  'Un amico vuole sapere da che parte stai. Scegli con cura.',
+  joinVoted:    (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
+  alreadyVoted: '✅ Hai già votato',
+  canChange:    (t: string) => `🕐 Puoi cambiare per altri ${t}`,
+  voteLocked:   '🔒 Voto bloccato',
+  yourChoice:   'LA TUA SCELTA',
+  or:           'OPPURE',
+  yourVote:     '← il tuo voto',
+  seeResults:   'Vedi risultati →',
+  nextDilemma:  'Prossimo dilemma',
+  counting:     'Conteggio del tuo voto…',
+  disclaimer:   'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
+}
+
 export default function VoteClientPage({ scenario, existingVote, totalVotes = 0, isChallenge = false, localePrefix = '' }: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
   const router = useRouter()
+
+  const copy = localePrefix === '/it' ? IT_COPY : EN_COPY
 
   // Cookie-based redirect for non-logged users
   useEffect(() => {
@@ -115,14 +151,14 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
       <div className="max-w-2xl mx-auto px-4 py-16">
         {/* Back */}
         <a href={localePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
-          {localePrefix === '/it' ? '← Tutti i dilemmi' : '← All dilemmas'}
+          {copy.back}
         </a>
 
         {/* ── Challenge banner ── */}
         {isChallenge && !existingVote && (
           <div className="mb-6 rounded-2xl border border-orange-500/30 bg-orange-500/10 px-5 py-4 text-center">
-            <p className="text-orange-400 font-black text-lg mb-0.5">🔥 Someone challenged you!</p>
-            <p className="text-[var(--muted)] text-sm">A friend wants to know which side you're on. Choose wisely.</p>
+            <p className="text-orange-400 font-black text-lg mb-0.5">{copy.challengeTitle}</p>
+            <p className="text-[var(--muted)] text-sm">{copy.challengeText}</p>
           </div>
         )}
 
@@ -139,9 +175,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
           {/* Live vote counter */}
           {totalVotes > 0 && (
             <p className="text-sm text-[var(--muted)] mt-4">
-              🌍 Join{' '}
-              <span className="text-white font-semibold">{totalVotes.toLocaleString('en-US')}</span>{' '}
-              people who already voted
+              {copy.joinVoted(totalVotes)}
             </p>
           )}
         </div>
@@ -151,15 +185,15 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
           <div className="space-y-4">
             {/* Voted banner */}
             <div className="rounded-2xl border border-blue-500/40 bg-blue-500/10 px-6 py-4 text-center">
-              <p className="text-blue-300 font-semibold text-sm mb-1">✅ You already voted</p>
-              <p className="text-white font-bold text-lg">"{votedOptionText}"</p>
+              <p className="text-blue-300 font-semibold text-sm mb-1">{copy.alreadyVoted}</p>
+              <p className="text-white font-bold text-lg">&ldquo;{votedOptionText}&rdquo;</p>
               {canStillChange && timeRemaining ? (
                 <p className="text-[var(--muted)] text-xs mt-2">
-                  🕐 Can change for {timeRemaining}
+                  {copy.canChange(timeRemaining)}
                 </p>
               ) : (
                 <p className="text-[var(--muted)] text-xs mt-2">
-                  🔒 Vote locked
+                  {copy.voteLocked}
                 </p>
               )}
             </div>
@@ -167,7 +201,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
             {/* Options — grayed out, chosen one highlighted */}
             <div className="vs divider flex items-center gap-4 mt-2">
               <div className="flex-1 h-px bg-[var(--border)]" />
-              <span className="text-xs font-black text-[var(--muted)] tracking-widest">YOUR CHOICE</span>
+              <span className="text-xs font-black text-[var(--muted)] tracking-widest">{copy.yourChoice}</span>
               <div className="flex-1 h-px bg-[var(--border)]" />
             </div>
 
@@ -180,12 +214,12 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
               >
                 <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">Option A</span>
                 {scenario.optionA}
-                {existingVote.choice === 'A' && <span className="ml-2 text-red-400">← your vote</span>}
+                {existingVote.choice === 'A' && <span className="ml-2 text-red-400">{copy.yourVote}</span>}
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="flex-1 h-px bg-[var(--border)]" />
-                <span className="text-2xl font-black text-[var(--muted)]">OR</span>
+                <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
                 <div className="flex-1 h-px bg-[var(--border)]" />
               </div>
 
@@ -197,7 +231,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
               >
                 <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">Option B</span>
                 {scenario.optionB}
-                {existingVote.choice === 'B' && <span className="ml-2 text-blue-400">← your vote</span>}
+                {existingVote.choice === 'B' && <span className="ml-2 text-blue-400">{copy.yourVote}</span>}
               </div>
             </div>
 
@@ -207,13 +241,13 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
                 href={`${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`}
                 className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm text-center transition-colors"
               >
-                See results →
+                {copy.seeResults}
               </a>
               <a
                 href={localePrefix || '/'}
                 className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
               >
-                Next dilemma
+                {copy.nextDilemma}
               </a>
             </div>
           </div>
@@ -222,7 +256,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
             {/* vs divider */}
             <div className="flex items-center gap-4 mb-2">
               <div className="flex-1 h-px bg-[var(--border)]" />
-              <span className="text-xs font-black text-[var(--muted)] tracking-widest">YOUR CHOICE</span>
+              <span className="text-xs font-black text-[var(--muted)] tracking-widest">{copy.yourChoice}</span>
               <div className="flex-1 h-px bg-[var(--border)]" />
             </div>
 
@@ -245,7 +279,7 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
 
               <div className="flex items-center gap-4">
                 <div className="flex-1 h-px bg-[var(--border)]" />
-                <span className="text-2xl font-black text-[var(--muted)]">OR</span>
+                <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
                 <div className="flex-1 h-px bg-[var(--border)]" />
               </div>
 
@@ -267,12 +301,12 @@ export default function VoteClientPage({ scenario, existingVote, totalVotes = 0,
 
             {loading && (
               <p className="text-center text-[var(--muted)] text-sm mt-8 animate-pulse">
-                Counting your vote…
+                {copy.counting}
               </p>
             )}
 
             <p className="text-center text-xs text-[var(--muted)] mt-10 opacity-60">
-              Anonymous. No account needed. Results update in real time.
+              {copy.disclaimer}
             </p>
           </>
         )}
