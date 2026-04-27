@@ -33,8 +33,28 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user || !isAdminEmail(user.email)) {
-    redirect('/')
+  if (!user) {
+    redirect('/login?redirect=/admin')
+  }
+
+  if (!isAdminEmail(user.email)) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-8">
+          <h1 className="text-2xl font-black text-yellow-400 mb-3">Admin access not configured</h1>
+          <p className="text-white/80 text-sm mb-4">
+            You are signed in as <span className="font-mono text-white">{user.email}</span>, but this email is not enabled in the server-side admin allowlist.
+          </p>
+          <div className="rounded-xl bg-[#0a0a1f] border border-white/10 p-4 font-mono text-xs text-white/60 space-y-1">
+            <p className="text-white/40 mb-2">Required Vercel env var:</p>
+            <p>ADMIN_EMAILS=&lt;your-admin-email&gt;</p>
+          </div>
+          <p className="text-white/40 text-xs mt-4">
+            After updating Vercel environment variables, redeploy the latest production build.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   const preview = searchParams.preview

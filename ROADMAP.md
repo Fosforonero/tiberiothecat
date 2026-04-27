@@ -196,7 +196,7 @@ Route live verificate:
 - [x] `business@splitvote.io` — in `/faq`, `/business` ✅
 - [x] `research@splitvote.io` — in `/faq` ✅
 - [x] `support@splitvote.io` — aggiunto in Footer (EN: "Support" / IT: "Supporto") ✅
-- [x] Nessuna email personale (`mat.pizzi@gmail.com`) nel codice sorgente ✅
+- [x] Nessuna email personale hardcoded nel codice sorgente ✅
 
 **Checklist Cloudflare Email Routing (da completare manualmente):**
 - [ ] Nameserver Cloudflare attivi e propagati per `splitvote.io`

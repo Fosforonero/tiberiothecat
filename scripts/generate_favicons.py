@@ -40,6 +40,18 @@ if not SRC.exists():
 img = Image.open(SRC).convert("RGBA")
 print(f"✅ Loaded {SRC.name} ({img.width}×{img.height})")
 
+
+def fit_square(source: Image.Image, size: int, padding_ratio: float = 0.08) -> Image.Image:
+    """Resize without distortion, center on transparent square canvas."""
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    target = max(1, int(size * (1 - padding_ratio * 2)))
+    fitted = source.copy()
+    fitted.thumbnail((target, target), Image.LANCZOS)
+    x = (size - fitted.width) // 2
+    y = (size - fitted.height) // 2
+    canvas.alpha_composite(fitted, (x, y))
+    return canvas
+
 SIZES = {
     "favicon-16x16.png":        (16, 16),
     "favicon-32x32.png":        (32, 32),
@@ -49,39 +61,68 @@ SIZES = {
 }
 
 for filename, size in SIZES.items():
-    resized = img.resize(size, Image.LANCZOS)
+    resized = fit_square(img, size[0])
     out_path = OUT / filename
     resized.save(out_path, "PNG", optimize=True)
     print(f"  ✅ {filename} ({size[0]}×{size[1]})")
 
 # Multi-size ICO: 16, 32, 48
 ico_path = OUT / "favicon.ico"
-ico_imgs = [img.resize((s, s), Image.LANCZOS).convert("RGBA") for s in [16, 32, 48]]
-ico_imgs[0].save(ico_path, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)],
-                 append_images=ico_imgs[1:])
-print(f"  ✅ favicon.ico (16, 32, 48)")
+fit_square(img, 256).save(
+    ico_path,
+    format="ICO",
+    sizes=[(16, 16), (32, 32), (48, 48), (256, 256)],
+)
+print(f"  ✅ favicon.ico (16, 32, 48, 256)")
 
 # site.webmanifest
 manifest = {
     "name": "SplitVote",
     "short_name": "SplitVote",
-    "description": "Vote on the world's toughest dilemmas",
+    "description": "Real-time global votes on impossible moral dilemmas. No right answers — just honest ones.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
+    "orientation": "any",
     "background_color": "#070718",
     "theme_color": "#070718",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["entertainment", "social", "games"],
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Trending Dilemmas",
+            "short_name": "Trending",
+            "description": "See the most voted dilemmas right now",
+            "url": "/trending",
+            "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "My Moral Profile",
+            "short_name": "Profile",
+            "description": "Discover your moral archetype",
+            "url": "/personality",
+            "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
         }
     ]
 }
