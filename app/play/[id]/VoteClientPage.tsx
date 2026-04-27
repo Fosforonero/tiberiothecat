@@ -19,6 +19,7 @@ interface Props {
   isChallenge?: boolean
   localePrefix?: '' | '/it'
   nextId?: string
+  referralCode?: string
 }
 
 function getCookie(name: string): string | null {
@@ -90,6 +91,7 @@ export default function VoteClientPage({
   isChallenge = false,
   localePrefix = '',
   nextId,
+  referralCode,
 }: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
@@ -119,6 +121,19 @@ export default function VoteClientPage({
     }, 60_000)
     return () => clearInterval(interval)
   }, [existingVote])
+
+  // Record referral visit for the challenge_friend mission (once per session per link)
+  useEffect(() => {
+    if (!referralCode) return
+    const key = `sv_ref_${referralCode}_${scenario.id}`
+    if (sessionStorage.getItem(key)) return
+    sessionStorage.setItem(key, '1')
+    fetch('/api/referral/visit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: referralCode, scenarioId: scenario.id }),
+    }).catch(() => { /* non-blocking */ })
+  }, [referralCode, scenario.id])
 
   async function vote(option: 'a' | 'b') {
     if (loading || selected) return

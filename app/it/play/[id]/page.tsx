@@ -17,7 +17,7 @@ const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
-  searchParams: { challenge?: string }
+  searchParams: { challenge?: string; ref?: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -98,6 +98,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
   } catch { /* non-blocking */ }
 
   const isChallenge = searchParams.challenge === '1'
+  const referralCode = typeof searchParams.ref === 'string' ? searchParams.ref : undefined
 
   // JSON-LD breadcrumb in Italian
   const breadcrumbSchema = {
@@ -145,6 +146,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
         existingVote={existingVote}
         totalVotes={totalVotes}
         isChallenge={isChallenge}
+        referralCode={referralCode}
         localePrefix="/it"
         nextId={nextId}
       />

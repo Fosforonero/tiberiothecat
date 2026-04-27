@@ -14,7 +14,7 @@ const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
-  searchParams: { challenge?: string }
+  searchParams: { challenge?: string; ref?: string }
 }
 
 export async function generateStaticParams() {
@@ -96,6 +96,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
   }
 
   const isChallenge = searchParams.challenge === '1'
+  const referralCode = typeof searchParams.ref === 'string' ? searchParams.ref : undefined
 
   // Collect all scenarios for internal linking (related dilemmas) + next dilemma
   let dynamicScenarios: Awaited<ReturnType<typeof getDynamicScenarios>> = []
@@ -166,6 +167,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
         existingVote={existingVote}
         totalVotes={totalVotes}
         isChallenge={isChallenge}
+        referralCode={referralCode}
         nextId={nextId}
       />
       <RelatedDilemmas current={scenario} all={allScenarios} />

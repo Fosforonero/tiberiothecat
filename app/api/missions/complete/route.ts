@@ -104,8 +104,24 @@ async function verifyMission(
       }
     }
 
-    case 'challenge_friend':
-      return { eligible: false, reason: 'Server-side tracking not available for this mission yet' }
+    case 'challenge_friend': {
+      const todayStart4 = new Date()
+      todayStart4.setHours(0, 0, 0, 0)
+      try {
+        const { count } = await supabase
+          .from('user_events')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .eq('event_type', 'referral_visit')
+          .gte('created_at', todayStart4.toISOString())
+        if ((count ?? 0) < 1) {
+          return { eligible: false, reason: 'No referral visits today — share your challenge link first' }
+        }
+        return { eligible: true }
+      } catch {
+        return { eligible: false, reason: 'Referral tracking unavailable — apply migration_v9_referral_codes.sql first' }
+      }
+    }
 
     default:
       return { eligible: false, reason: 'Unknown mission' }

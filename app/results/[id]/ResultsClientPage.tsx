@@ -144,6 +144,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [storyShared, setStoryShared] = useState(false)
   const [igCaptionCopied, setIgCaptionCopied] = useState(false)
   const [isAnon, setIsAnon] = useState(false)
+  const [referralCode, setReferralCode] = useState<string | null>(null)
 
   const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
   const locale = sharePrefix === '/it' ? 'it' : 'en'
@@ -157,9 +158,20 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       const val = cookie.split('=')[1] as 'fire' | 'down'
       if (val === 'fire' || val === 'down') setFeedbackGiven(val)
     }
-    // Detect anonymous user for soft CTA
-    createClient().auth.getUser()
-      .then(({ data: { user } }) => setIsAnon(!user))
+    // Detect anonymous user + fetch referral code for challenge links
+    const supabase = createClient()
+    supabase.auth.getUser()
+      .then(async ({ data: { user } }) => {
+        setIsAnon(!user)
+        if (user) {
+          const { data } = await supabase
+            .from('profiles')
+            .select('referral_code')
+            .eq('user_id', user.id)
+            .single()
+          if (data?.referral_code) setReferralCode(data.referral_code)
+        }
+      })
       .catch(() => {/* non-blocking */})
     // Track result view
     track('result_viewed', {
@@ -172,7 +184,9 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   }, [scenario.id])
 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
-  const challengeUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
+  const challengeUrl = referralCode
+    ? `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1&ref=${referralCode}`
+    : `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
   const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}&locale=${locale}`
 
