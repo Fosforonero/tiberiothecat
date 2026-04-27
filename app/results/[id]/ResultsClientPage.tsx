@@ -198,12 +198,18 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const twitterText = sharePrefix === '/it'
     ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa faresti? 🌍`
     : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`
-  const tiktokCaption = `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
-  const instagramCaption = `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇 Link in bio → splitvote.io\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
+  const tiktokCaption = sharePrefix === '/it'
+    ? `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
+    : `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+  const instagramCaption = sharePrefix === '/it'
+    ? `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.${voted ? `\n\nHo votato: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nTu cosa sceglieresti? 👇 Link in bio → splitvote.io\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
+    : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇 Link in bio → splitvote.io\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`
-  const discordText = `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
+  const discordText = sharePrefix === '/it'
+    ? `${scenario.emoji} **"${scenario.question}"**\nIl mondo è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`
+    : `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl)

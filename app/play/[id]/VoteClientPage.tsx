@@ -61,6 +61,7 @@ const EN_COPY = {
   seeResults:     'See results →',
   nextDilemma:    'Next dilemma →',
   counting:       'Counting your vote…',
+  voteError:      'Something went wrong. Please try again.',
   disclaimer:     'Anonymous. No account needed. Results update in real time.',
 }
 
@@ -78,6 +79,7 @@ const IT_COPY = {
   seeResults:     'Vedi risultati →',
   nextDilemma:    'Prossimo dilemma →',
   counting:       'Conteggio del tuo voto…',
+  voteError:      'Qualcosa è andato storto. Riprova.',
   disclaimer:     'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
 }
 
@@ -91,6 +93,7 @@ export default function VoteClientPage({
 }: Props) {
   const [selected, setSelected] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
+  const [voteError, setVoteError] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
   const router = useRouter()
 
@@ -121,12 +124,19 @@ export default function VoteClientPage({
     if (loading || selected) return
     setSelected(option)
     setLoading(true)
+    setVoteError(false)
     try {
-      await fetch('/api/vote', {
+      const res = await fetch('/api/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: scenario.id, option }),
       })
+      if (!res.ok) {
+        setLoading(false)
+        setSelected(null)
+        setVoteError(true)
+        return
+      }
       track('vote_submitted', {
         scenario_id: scenario.id,
         category: scenario.category,
@@ -137,6 +147,7 @@ export default function VoteClientPage({
     } catch {
       setLoading(false)
       setSelected(null)
+      setVoteError(true)
     }
   }
 
@@ -334,6 +345,12 @@ export default function VoteClientPage({
                 <Spinner />
                 <span>{copy.counting}</span>
               </div>
+            )}
+
+            {voteError && (
+              <p className="text-center text-red-400 text-sm mt-8">
+                {copy.voteError}
+              </p>
             )}
 
             <p className="text-center text-xs text-[var(--muted)] mt-10 opacity-60">
