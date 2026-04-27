@@ -9,7 +9,37 @@ Ultimo aggiornamento: 27 Aprile 2026
 
 ## Stato Attuale
 
-### Sprint Corrente — Email Setup (Resend) (27 Apr 2026)
+### Sprint Corrente — Email Test + Mobile Menu Polish (27 Apr 2026)
+
+**Email test endpoint + mobile menu groups ✅**
+
+- [x] `POST /api/email/test`: admin test endpoint protetto da `x-email-test-key`
+  - Fail-closed se `EMAIL_TEST_KEY` mancante → 503
+  - Unauthorized se header errato → 401
+  - Destinatari limitati a `hello@splitvote.io` e `support@splitvote.io` — no open relay
+  - Usa `sendEmail()` da `lib/email.ts`, nessun secret nei log
+- [x] `MobileMenu.tsx`: menu mobile ristrutturato in 4 gruppi logici
+  - Gruppo 1 — Main: Home, Trending, Blog (EN/IT)
+  - Gruppo 2 — Categories: Morality/Moralità, Technology/Tecnologia, Society/Società, Relationships/Relazioni, Survival/Sopravvivenza
+  - Gruppo 3 — Account: My Profile + Dashboard + Sign out (se loggato) / Join free (se anonimo)
+  - Gruppo 4 — Help: FAQ, Support (mailto:support@splitvote.io)
+  - "Il mio profilo" / "My Profile" rimosso dalle categorie → spostato in Account
+  - Sign out button con Supabase client signOut
+  - Touch targets min 44px, max-height scroll, locale-aware IT/EN, `next/link` per link interni
+  - Account group appare solo dopo risoluzione auth state (no flicker)
+- [x] typecheck ✅ · build (0 errori) ✅ · `git diff --check` ✅
+
+**Istruzioni test email:**
+```
+curl -X POST https://splitvote.io/api/email/test \
+  -H "x-email-test-key: $EMAIL_TEST_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"to":"hello@splitvote.io"}'
+```
+
+---
+
+### Sprint Precedente — Email Setup (Resend) (27 Apr 2026)
 
 **`lib/email.ts` — safe Resend wrapper ✅**
 
