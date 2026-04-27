@@ -20,7 +20,7 @@ Ultimo aggiornamento: 26 Aprile 2026
 - [x] Story cards 9:16 per Instagram/TikTok manual share
 - [x] Admin dashboard con metriche reali da `vote_daily_stats`
 - [x] Google Search Console verificata + sitemap inviata
-- [x] Logo/favicon PNG ufficiali integrati
+- [x] Logo/favicon PNG ufficiali integrati (rigenerati con AR corretta + og-default.png aggiunto)
 - [x] AdBlock banner soft, non bloccante
 - [x] i18n lite EN/IT con route SEO italiane
 - [x] Cron EN/IT per generazione dilemmi da trend
@@ -64,13 +64,13 @@ Ultimo aggiornamento: 26 Aprile 2026
 - [x] SERP base EN/IT: route, metadata, canonical, sitemap
 
 Da verificare post-deploy:
-- [ ] `/`
-- [ ] `/it`
-- [ ] `/trending`
-- [ ] `/it/trending`
+- [x] `/`
+- [x] `/it`
+- [x] `/trending`
+- [x] `/it/trending`
 - [ ] `/admin`
-- [ ] `/sitemap.xml`
-- [ ] `/robots.txt`
+- [x] `/sitemap.xml`
+- [x] `/robots.txt`
 - [ ] `/api/admin/cron-dryrun?locale=en`
 - [ ] `/api/admin/cron-dryrun?locale=it`
 
