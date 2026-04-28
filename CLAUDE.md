@@ -12,6 +12,8 @@ SplitVote is a real-time moral dilemma voting platform:
 
 Current phase: soft launch -> pre-scaling.
 
+Known blocker (external, requires manual action): Stripe live `STRIPE_PRICE_ID_PREMIUM` is a one-time price; code uses `mode: 'subscription'` — Premium checkout blocked in production until Matteo creates a recurring price in Stripe dashboard and updates the Vercel env var. Remediation documented in `LAUNCH_AUDIT.md`.
+
 ## Stack
 
 - Next.js 14 App Router + TypeScript
@@ -67,7 +69,7 @@ For sprint-specific work, also read the files named in the user prompt.
 - Share cards/captions must not reveal the user's selected vote unless explicitly designed and legally reviewed.
 - Admin-only endpoints must stay server-authorized.
 - Service-role keys must never reach client code.
-- Do not cache per-user play/results pages unless proven safe.
+- Do not cache play pages (`force-dynamic` required — `existingVote` is per-user server-side). Results pages: `revalidate = 60` active and proven safe (`?voted=` searchParams bypass ISR; no per-user content in cached path).
 - Legal/cookie docs must match real data flows.
 
 ## Standard Commands
@@ -95,14 +97,15 @@ npm run generate:social-content
 
 ## Workflow
 
-1. Read the requested docs and relevant files.
+1. **Audit (read-only)** — read the requested docs and all relevant files; do not edit anything.
 2. Inspect `git status --short` before editing.
 3. Identify unrelated local changes and leave them alone.
-4. Make the smallest safe change that satisfies the sprint.
-5. Update docs only when product scope, legal/compliance behavior, launch readiness, or operational instructions changed.
-6. Run verification commands appropriate to the change.
-7. Commit and push only when the prompt asks for it.
-8. Final report: commit hash if any, files changed, verification, and residual risks.
+4. **Plan** — for non-trivial changes, present a synthetic plan and **wait for explicit GO** before implementing. Skip for single-line or clearly scoped fixes.
+5. **Implement** — make the smallest safe change that satisfies the sprint.
+6. Update docs only when product scope, legal/compliance behavior, launch readiness, or operational instructions changed.
+7. **Verify** — run `npm run typecheck`, `npm run build`, `git diff --check`. Report any failures before proceeding.
+8. **Commit and push only when the prompt explicitly asks for it.**
+9. Final report: commit hash if any, files changed, verification outcome, and residual risks.
 
 ## Definition Of Done
 
@@ -140,5 +143,6 @@ Use `.claude/agents/` when a sprint benefits from a focused review:
 - `release-readiness-reviewer.md`
 - `product-growth-reviewer.md`
 - `mobile-app-readiness-reviewer.md` — use before any PWA, manifest, or app store sprint
+- `blog-seo-editor.md` — use for new articles, existing article updates, SEO cluster audits, EN/IT content planning, internal linking blog → play/results/trending/category/landing pages
 
 These agents must read the live docs above instead of relying on stale project history.

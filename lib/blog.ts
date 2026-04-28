@@ -646,6 +646,134 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'ethical-dilemmas-everyday-life',
+    locale: 'en',
+    title: 'Ethical Dilemmas in Everyday Life: 12 Real Situations',
+    seoTitle: 'Ethical Dilemmas in Everyday Life — 12 Real Situations',
+    description:
+      'Most ethical dilemmas don\'t happen in philosophy papers. They happen at work, in friendships, in families — where two values you actually hold are in direct conflict.',
+    seoDescription:
+      'Ethical dilemmas don\'t only happen in philosophy. Here are 12 everyday situations where two values conflict — and how people around the world vote on them.',
+    date: '2026-04-28',
+    readingTime: 4,
+    tags: ['ethics', 'ethical dilemmas', 'everyday life', 'moral choices'],
+    relatedDilemmaIds: ['truth-friend', 'whistleblower', 'report-friend', 'sibling-secret', 'confess-crime', 'love-or-career'],
+    alternateSlug: 'dilemma-etico-vita-quotidiana',
+    content: [
+      {
+        type: 'p',
+        text: 'Most ethical dilemmas don\'t appear in philosophy papers. They appear in ordinary situations: a colleague asks you to cover for them, a friend shares something in confidence that someone else needs to know, your boss asks you to present results in a way that obscures the truth.',
+      },
+      {
+        type: 'p',
+        text: 'These are real ethical dilemmas. Not trolley problems — no one is tied to railroad tracks — but situations where two values you genuinely hold are pulling in opposite directions.',
+      },
+      {
+        type: 'h2',
+        text: 'What makes something an ethical dilemma',
+      },
+      {
+        type: 'p',
+        text: 'A choice becomes an ethical dilemma when both options are defensible, and picking one means compromising something you also care about. It is not about good versus evil. It is about honesty versus loyalty, fairness versus compassion, or protecting someone versus telling the truth.',
+      },
+      {
+        type: 'h2',
+        text: 'At Work',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your manager asks you to present data in a way that technically isn\'t false — but is clearly designed to mislead the audience. Do you push back?',
+          'A colleague is underperforming and affecting the team, but they are going through something serious personally. Do you raise it with management?',
+          'You discover an error on a project that others made before you joined. Fixing it will cause delays and embarrass people you respect. Do you flag it?',
+          'A trusted colleague has been claiming credit for work that isn\'t theirs. They are also a friend. Do you say something?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Would you report your colleague? Vote →',
+        href: '/play/whistleblower',
+      },
+      {
+        type: 'h2',
+        text: 'In Friendships and Relationships',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your closest friend asks your honest opinion about a major decision — leaving a relationship, changing careers, moving cities. You think they\'re making a mistake. What do you say?',
+          'You find out that your friend\'s partner is being unfaithful. Your friend has no idea. They never asked for your opinion. Do you tell them?',
+          'A close friend confides they have done something illegal — not serious, but not trivial. You are the only person who knows. Do you stay quiet?',
+          'Someone in your friend group is saying very different things about a mutual friend behind their back. Do you say something, or is it not your place?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Complete honesty or protecting the friendship? Vote →',
+        href: '/play/truth-friend',
+      },
+      {
+        type: 'h2',
+        text: 'With Family',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your sibling asks you to keep something serious from your parents. You believe your parents should know. Who does your loyalty belong to?',
+          'A family member asks you to vouch for them in a situation where you have real doubts. Saying yes protects them short-term. Saying no is honest — but carries real consequences.',
+          'You find out a family member has been hiding a serious problem — financial, health-related, or personal. They clearly don\'t want to discuss it. Do you bring it up or respect the silence?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'A sibling\'s secret — vote the scenario →',
+        href: '/play/sibling-secret',
+      },
+      {
+        type: 'h2',
+        text: 'In Society',
+      },
+      {
+        type: 'list',
+        items: [
+          'You witness someone do something harmful — not illegal, but something that genuinely damaged another person. Do you say something publicly, or let it go?',
+          'You have information that could help someone who wronged you. It costs you nothing to share it, but withholding it would cost them something significant. What do you do?',
+          'A policy you believe in is applied in a way that harms people you care about. You support the goal but not the method. Do you speak up, or stay aligned with the cause?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Browse all dilemmas →',
+        href: '/moral-dilemmas',
+      },
+      {
+        type: 'h2',
+        text: 'Why everyday dilemmas are harder than thought experiments',
+      },
+      {
+        type: 'p',
+        text: 'The trolley problem is unsettling because it is extreme. But real dilemmas are harder because they involve people you know, stakes you care about, and consequences that follow you.',
+      },
+      {
+        type: 'p',
+        text: 'On SplitVote, the dilemmas that split people most closely are almost never the abstract philosophical ones. They are the ones that feel familiar — a friend, a workplace situation, a family moment. The vote is close because the conflict is real.',
+      },
+      {
+        type: 'p',
+        text: 'The most honest test of what you value is not a thought experiment. It is an ordinary Tuesday.',
+      },
+      {
+        type: 'cta',
+        label: 'Start voting — no account needed →',
+        href: '/play/truth-friend',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational content, not professional advice.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -1312,6 +1440,134 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale di alcun tipo. I risultati SplitVote sono sondaggi utente, non ricerca scientifica. Tutti gli scenari sono ipotetici.',
+      },
+    ],
+  },
+  {
+    slug: 'dilemma-etico-vita-quotidiana',
+    locale: 'it',
+    title: 'Dilemma Etico Nella Vita Quotidiana: 12 Situazioni in Cui Non Esiste la Risposta Giusta',
+    seoTitle: 'Dilemma Etico Nella Vita Quotidiana — 12 Esempi Reali',
+    description:
+      'I veri dilemmi etici non arrivano con la leva del tram. Arrivano al lavoro, tra amici, in famiglia — dove due valori che tieni entrambi si scontrano davvero.',
+    seoDescription:
+      'I veri dilemmi etici non arrivano con la leva del tram. Arrivano al lavoro, in famiglia, tra amici. 12 situazioni reali e come vota il mondo su SplitVote.',
+    date: '2026-04-28',
+    readingTime: 4,
+    tags: ['dilemma etico', 'vita quotidiana', 'scelte morali', 'amicizia'],
+    relatedDilemmaIds: ['truth-friend', 'whistleblower', 'sibling-secret', 'love-or-career', 'confess-crime', 'old-secret-affair'],
+    alternateSlug: 'ethical-dilemmas-everyday-life',
+    content: [
+      {
+        type: 'p',
+        text: 'Un dilemma etico non è il problema del tram. È martedì mattina. La tua collega ti chiede di coprirla davanti al capo. Il tuo migliore amico ti chiede un\'opinione onesta che non vuole davvero sentire. Tuo fratello ti chiede di non dire nulla ai tuoi genitori.',
+      },
+      {
+        type: 'p',
+        text: 'I dilemmi etici reali non arrivano con la musica di sottofondo e la leva da tirare. Arrivano nelle conversazioni normali, nei messaggi, nelle pause in ufficio — e quasi mai con tutto il tempo necessario per decidere.',
+      },
+      {
+        type: 'h2',
+        text: 'Che cosa rende un vero dilemma etico',
+      },
+      {
+        type: 'p',
+        text: 'Un dilemma etico ha una caratteristica precisa: qualunque cosa scegli, stai rinunciando a qualcosa di importante. Non è una scelta tra giusto e sbagliato — è una scelta tra due valori che tieni entrambi. Lealtà contro onestà. Proteggere contro rispettare. Agire contro lasciar perdere.',
+      },
+      {
+        type: 'h2',
+        text: 'Sul Lavoro',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo capo ti chiede di presentare dei dati in modo che non emergano alcuni problemi. Non è una bugia — ma è pensato per nascondere qualcosa di reale. Lo fai?',
+          'Un collega sbaglia sistematicamente e il team ne risente, ma sta passando un momento difficile. Segnalarlo sembra corretto verso il team. Tacere sembra corretto verso di lui. Cosa fai?',
+          'Scopri un errore di chi ha lavorato al progetto prima di te. Correggerlo crea ritardi e imbarazzo. Tacere non cambia nulla nell\'immediato — ma sai la verità.',
+          'Un tuo collega si è preso il merito per un lavoro che non ha fatto. È anche un amico. Dici qualcosa?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Denunceresti un collega o un amico? Vota →',
+        href: '/it/play/whistleblower',
+      },
+      {
+        type: 'h2',
+        text: 'Nelle Amicizie',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo migliore amico ti chiede cosa pensi della sua relazione. La risposta onesta è che lo stai guardando sbagliare. Cosa gli dici?',
+          'Vieni a sapere che il partner del tuo amico lo tradisce. Lui non te lo ha chiesto. Glielo dici comunque?',
+          'Un tuo caro amico ti confida di aver fatto qualcosa di illegale — non gravissimo, ma non banale. Sei l\'unico a saperlo. Taci o parli?',
+          'Qualcuno nel tuo gruppo dice cose molto diverse su un altro amico appena si gira. Non è una cosa piccola. Intervieni?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Verità totale o proteggere l\'amico? Vota →',
+        href: '/it/play/truth-friend',
+      },
+      {
+        type: 'h2',
+        text: 'In Famiglia',
+      },
+      {
+        type: 'list',
+        items: [
+          'Tuo fratello o tua sorella ti chiede di non dire nulla ai tuoi genitori su qualcosa di serio. Pensi che dovrebbero sapere. A chi appartiene la tua lealtà?',
+          'Un familiare ti chiede di garantire per lui in una situazione dove hai dei dubbi reali. Dire sì lo protegge nel breve termine. Dire no è onesto — ma ha conseguenze.',
+          'Scopri che un familiare nasconde un problema serio — economico, di salute, sentimentale. Non vuole parlarne. Forzi la situazione o rispetti il silenzio?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Il segreto di un fratello — vota lo scenario →',
+        href: '/it/play/sibling-secret',
+      },
+      {
+        type: 'h2',
+        text: 'In Coppia e Nelle Relazioni',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo partner ti chiede di mentire per lui — o per lei — in una situazione in cui la verità sarebbe imbarazzante. Stai dalla sua parte o dici quello che è vero?',
+          'Sai qualcosa del passato della persona che ami che lei non ti ha mai detto — e che cambierebbe qualcosa tra voi. Apri quella conversazione?',
+          'Stai scegliendo tra una carriera che ti cambia la vita e una relazione importante. Non puoi avere entrambe. Cosa lasci andare?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Amore o carriera — come vota il mondo? →',
+        href: '/it/play/love-or-career',
+      },
+      {
+        type: 'h2',
+        text: 'Perché i Dilemmi Etici Reali Sono Più Difficili del Problema del Tram',
+      },
+      {
+        type: 'p',
+        text: 'Il problema del tram disturba perché è estremo. Ma i dilemmi reali sono più difficili perché coinvolgono persone che conosci, con conseguenze che ti seguono.',
+      },
+      {
+        type: 'p',
+        text: 'Su SplitVote, i dilemmi che dividono le persone in modo più netto non sono quasi mai quelli filosofici astratti. Sono quelli familiari — un amico, un collega, una scena di famiglia. Il voto si avvicina perché il conflitto è reale.',
+      },
+      {
+        type: 'p',
+        text: 'La parte più onesta di chi sei non emerge nel pensiero. Emerge quando devi scegliere davvero.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota — nessun account richiesto →',
+        href: '/it/play/truth-friend',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo, non consulenza professionale di alcun tipo.',
       },
     ],
   },
