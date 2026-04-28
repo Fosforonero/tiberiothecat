@@ -56,7 +56,7 @@ Current priority override:
 - Personality v2 system (28 Apr 2026): 18 moral archetypes in `lib/personality.ts` (up from 6); Euclidean distance classifier; share card API supports all 18; full EN/IT copy for each archetype. No new data collected — profile is calculated on-the-fly from existing dilemma_votes. Zodiac overlay remains future/optional.
 - Public profile route exists (`/u/[id]`) with basic public stats/badges.
 - XP, streaks, badges, daily missions exist at foundation level.
-- Streak milestones implemented (28 Apr 2026): badges streak_7 (7d, rare), streak_15 (15d, epic), streak_30 (30d, legendary); awarded server-side in `increment_user_vote_count` DB function; progress bar in dashboard; streak stat in profile. migration_v14 ⏳ Pending Supabase apply.
+- Streak milestones implemented (28 Apr 2026): badges streak_7 (7d, rare), streak_15 (15d, epic), streak_30 (30d, legendary); awarded server-side in `increment_user_vote_count` DB function; progress bar in dashboard; streak stat in profile. migration_v14 ✅ Applied.
 - `badges`, `user_badges`, `equipped_badge`, and `equipped_frame` already exist as DB foundations.
 - OpenRouter is already used server-side for draft generation.
 - AI content is draft-only with admin approval.

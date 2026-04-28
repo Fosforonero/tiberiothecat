@@ -24,7 +24,7 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 - RLS `user_badges`: SELECT public, INSERT solo via DB function (security definer) — nessun client INSERT ✅
 - Integration point corretto: `app/api/vote/route.ts:240` → `supabase.rpc('increment_user_vote_count', ...)` ✅
 
-- [x] `supabase/migration_v14_streak_milestone_badges.sql` — seed `streak_15` (epic) + `streak_30` (legendary); updated `increment_user_vote_count` DB function per awardarli; backfill per utenti esistenti con `streak_days >= threshold`; idempotente. **⏳ Applicare in Supabase dashboard → SQL Editor → Run.**
+- [x] `supabase/migration_v14_streak_milestone_badges.sql` — seed `streak_15` (epic) + `streak_30` (legendary); updated `increment_user_vote_count` DB function per awardarli; backfill per utenti esistenti con `streak_days >= threshold`; idempotente. **✅ Applied — verificata in Supabase (streak_7/15/30 presenti, `increment_user_vote_count` aggiornata, backfill vuoto normale).**
 - [x] `lib/badges.ts` — `STREAK_MILESTONES` const; `getStreakProgress(streakDays)` helper per progress bar UI; `awardStreakMilestoneBadges(userId, streakDays)` per uso admin/manutenzione (primary award path resta DB function)
 - [x] `app/dashboard/page.tsx` — card "🔥 Streak Milestones" con progress bar verso prossimo target + lista dei 3 badge (earned/not earned); degrada gracefully se migration_v14 non applicata
 - [x] `app/profile/page.tsx` — aggiunto `streak_days` al SELECT query
@@ -38,7 +38,7 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 
 **Nessuna modifica a**: DB schema strutturale, Stripe, auth, vote logic, tracking, AdSense, cookie consent, legal pages, voting flow.
 
-**Manual step**: applicare `migration_v14_streak_milestone_badges.sql` in Supabase dashboard → SQL Editor → Run.
+**Migration v14**: ✅ Applied e verificata manualmente in Supabase — nessuno step manuale residuo.
 
 ---
 
