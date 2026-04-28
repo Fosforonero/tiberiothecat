@@ -34,6 +34,7 @@ interface Props {
   votesCount: number
   streakDays: number
   joinedAt: string
+  locale?: string
 }
 
 const RARITY_STYLES: Record<string, string> = {
@@ -58,7 +59,9 @@ export default function ProfileClient({
   votesCount,
   streakDays,
   joinedAt,
+  locale = 'en',
 }: Props) {
+  const IT = locale === 'it'
   const [displayName, setDisplayName] = useState(initialName ?? '')
   const [birthYear, setBirthYear]     = useState(initialBirthYear?.toString() ?? '')
   const [gender, setGender]           = useState(initialGender ?? '')
@@ -213,8 +216,12 @@ export default function ProfileClient({
         <Link href="/dashboard" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
           ← Dashboard
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-black text-white mt-4 mb-1">Profile Settings</h1>
-        <p className="text-[var(--muted)] text-sm">Manage your identity, achievements, and preferences.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-white mt-4 mb-1">
+          {IT ? 'Impostazioni Profilo' : 'Profile Settings'}
+        </h1>
+        <p className="text-[var(--muted)] text-sm">
+          {IT ? 'Gestisci identità, risultati e preferenze.' : 'Manage your identity, achievements, and preferences.'}
+        </p>
       </div>
 
       {/* ── Membership ── */}
@@ -224,7 +231,7 @@ export default function ProfileClient({
           background: isAdmin ? 'rgba(248,113,113,0.04)' : isPremium ? 'rgba(234,179,8,0.04)' : undefined,
         }}>
         <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
-          ⭐ Membership
+          ⭐ {IT ? 'Abbonamento' : 'Membership'}
         </h2>
 
         {isAdmin ? (
@@ -244,8 +251,8 @@ export default function ProfileClient({
                 <Star size={18} className="text-yellow-400" fill="currentColor" />
               </div>
               <div>
-                <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
-                <p className="text-xs text-[var(--muted)] mt-0.5">All features unlocked</p>
+                <p className="font-bold text-yellow-400 text-sm">{IT ? 'Premium Attivo' : 'Premium Active'}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5">{IT ? 'Tutte le funzioni sbloccate' : 'All features unlocked'}</p>
               </div>
             </div>
             <button
@@ -298,7 +305,7 @@ export default function ProfileClient({
 
       {/* ── Avatar + Identity ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-5">🧬 Identity</h2>
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-5">🧬 {IT ? 'Identità' : 'Identity'}</h2>
 
         {/* Avatar picker */}
         <div className="mb-6">
@@ -364,7 +371,7 @@ export default function ProfileClient({
 
       {/* ── Demographics ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">📊 Demographics</h2>
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">📊 {IT ? 'Dati demografici' : 'Demographics'}</h2>
         <p className="text-xs text-[var(--muted)] mb-5">
           Used only in aggregate for global trend analytics. Never shared individually.
         </p>
@@ -412,7 +419,7 @@ export default function ProfileClient({
 
       {/* ── Moral Personality ── */}
       <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-5 sm:p-6">
-        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">🧭 Moral Personality</h2>
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">🧭 {IT ? 'Personalità Morale' : 'Moral Personality'}</h2>
         {votesCount >= 3 ? (
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -444,7 +451,7 @@ export default function ProfileClient({
       {badges.length > 0 && (
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)]">🏆 Trophy Case</h2>
+            <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)]">🏆 {IT ? 'Collezione Trofei' : 'Trophy Case'}</h2>
             <button
               onClick={copyProfile}
               className="text-xs font-bold px-3 py-1.5 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/30 transition-colors"
@@ -470,7 +477,7 @@ export default function ProfileClient({
 
       {/* ── Stats ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-5">📈 Your Impact</h2>
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-5">📈 {IT ? 'Il tuo Impatto' : 'Your Impact'}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-blue-400">{votesCount.toLocaleString()}</p>
@@ -514,15 +521,15 @@ export default function ProfileClient({
         {redirecting ? (
           <>
             <Loader2 size={16} className="animate-spin" />
-            Redirecting to payment…
+            {IT ? 'Reindirizzamento al pagamento…' : 'Redirecting to payment…'}
           </>
         ) : saving ? (
           <>
             <Loader2 size={16} className="animate-spin" />
-            Saving…
+            {IT ? 'Salvataggio…' : 'Saving…'}
           </>
         ) : (
-          'Save Profile'
+          IT ? 'Salva Profilo' : 'Save Profile'
         )}
       </button>
 

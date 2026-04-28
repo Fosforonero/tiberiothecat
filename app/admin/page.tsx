@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import {
@@ -61,6 +62,8 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       </div>
     )
   }
+
+  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' : 'en'
 
   const rawTab = searchParams.tab as AdminTab | undefined
   const activeTab: AdminTab = rawTab && VALID_TABS.includes(rawTab) ? rawTab : 'overview'
@@ -209,7 +212,15 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { label: 'Polls Submitted',      value: polls.length.toLocaleString(),      Icon: ClipboardList, glow: 'neon-glow-cyan',   iconColor: 'text-cyan-400',   bg: 'from-cyan-500/10 to-cyan-500/5',     border: 'border-cyan-500/25'   },
   ]
 
-  const TABS = [
+  const TABS = locale === 'it' ? [
+    { id: 'overview'     as AdminTab, label: 'Panoramica',     Icon: LayoutDashboard },
+    { id: 'voting'       as AdminTab, label: 'Voti',           Icon: Vote            },
+    { id: 'content'      as AdminTab, label: 'Contenuti',      Icon: ClipboardList   },
+    { id: 'content-qa'   as AdminTab, label: 'QA contenuti',   Icon: Search          },
+    { id: 'ai-drafts'    as AdminTab, label: 'Bozze AI',       Icon: Zap             },
+    { id: 'blog'         as AdminTab, label: 'Blog',           Icon: BookOpen        },
+    { id: 'monetization' as AdminTab, label: 'Monetizzazione', Icon: Star            },
+  ] : [
     { id: 'overview'     as AdminTab, label: 'Overview',     Icon: LayoutDashboard },
     { id: 'voting'       as AdminTab, label: 'Voting',        Icon: Vote            },
     { id: 'content'      as AdminTab, label: 'Content',       Icon: ClipboardList   },
@@ -367,14 +378,14 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         <div className="space-y-6">
           {/* Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <VotesChart data={votesChartData} />
-            <SignupsChart data={signupsChartData} />
+            <VotesChart data={votesChartData} locale={locale} />
+            <SignupsChart data={signupsChartData} locale={locale} />
           </div>
 
           {/* Top voters */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
-              <Flame size={13} className="text-orange-400" /> Top voters
+              <Flame size={13} className="text-orange-400" /> {locale === 'it' ? 'Utenti più attivi' : 'Top voters'}
             </h3>
             <div className="space-y-1">
               {topVoters.map((u, i) => (
@@ -399,7 +410,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           {/* Recent signups */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">
-              <UserPlus size={13} className="text-green-400" /> Recent signups
+              <UserPlus size={13} className="text-green-400" /> {locale === 'it' ? 'Nuove iscrizioni' : 'Recent signups'}
             </h3>
             <div className="space-y-1">
               {recentSignups.map((u, i) => (

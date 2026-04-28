@@ -3,13 +3,45 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — homepage performance micro-optimization
+Ultimo aggiornamento: 28 Aprile 2026 — AdminCharts mobile fix + i18n account surfaces
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — AdminCharts Mobile Fix + i18n Account Surfaces (28 Apr 2026)
+
+**Obiettivo**: correggere grafici non visibili su mobile nel tab Voting dell'admin; migliorare copy italiano su dashboard, profilo e admin.
+
+**Bug root cause — grafici vuoti su mobile**: I componenti `VotesChart` e `SignupsChart` usavano `style={{ height: '${pct}%' }}` su un elemento figlio di un flex container senza altezza esplicita. I flex item (`flex-1`) nel parent `flex items-end h-32` non avevano `h-full`, quindi la percentuale non aveva un valore di riferimento e il browser calcolava la barra come 0px su mobile.
+
+**Fix applicati**:
+- [x] `app/admin/AdminCharts.tsx` — refactor struttura colonne: rimossa `items-end` dal wrapper, ogni colonna è `h-full flex flex-col`, area chart interna è `flex-1 flex-col justify-end relative` → le barre ora hanno parent height definita e `height: X%` funziona correttamente. Hover count spostato ad `absolute top-0`. Minima altezza barra: 3% per valori > 0, 0px per zero-count. Aggiunto summary testuale totale sotto ogni chart.
+- [x] `app/admin/AdminCharts.tsx` — aggiunto prop `locale?: string`; titoli chart localizzati (IT: "Voti al giorno", "Iscrizioni al giorno"); empty state e summary IT.
+- [x] `app/admin/page.tsx` — `cookies()` server-side per leggere `lang-pref`; TABS array localizzato (IT: Panoramica/Voti/Contenuti/QA contenuti/Bozze AI/Blog/Monetizzazione); "Top voters" → "Utenti più attivi" e "Recent signups" → "Nuove iscrizioni" in IT; `locale` passato a VotesChart e SignupsChart.
+- [x] `app/dashboard/page.tsx` — `cookies()` per locale; saluto IT (`Ciao`), personalità morale, Premium Attivo/Piano Gratuito/Gestisci/Upgrade, stats grid (Voti/XP/Streak/Badge), Streak Milestones, cronologia voti, domande inviate.
+- [x] `app/profile/page.tsx` — `cookies()` per locale, passato a `ProfileClient`.
+- [x] `app/profile/ProfileClient.tsx` — prop `locale?: string`; sezioni localizzate: titolo pagina, Abbonamento, Premium Attivo, Identità, Dati demografici, Personalità Morale, Collezione Trofei, Il tuo Impatto, Salva Profilo.
+
+**Nessuna modifica a**: vote flow, Supabase queries, API routes, middleware auth, EN behavior (fallback invariato se `lang-pref !== it`).
+
+**Cosa resta in inglese** (fuori scope):
+- Copy interno admin tabs: Content, Content QA, AI Drafts, Blog, Monetization (testo descrittivo delle sezioni)
+- Labels demografici ("Birth Year", "Gender", "Country") — non critico, dati tecnici
+- STATUS_BADGE nel dashboard ("Pending review", "Live", "Rejected", "Flagged") — stabile, breve
+- Companion + Daily Missions (componenti separati, non toccati in questo sprint)
+
+**Verifiche eseguite**: `npm run typecheck` ✅ — `npm run build` ✅ (148 pagine) — `git diff --check` ✅ — `npm run validate:personality` ✅.
+
+**Check manuale richiesto post-deploy**:
+- `/admin?tab=voting` su mobile 375px: barre visibili o empty state chiaro
+- Toggle 7d/14d funziona
+- Dashboard con `lang-pref=it` (cookie): copy italiano principale visibile
+- Dashboard con `lang-pref=en` o cookie assente: tutto in inglese
 
 ---
 

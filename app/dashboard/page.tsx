@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import { getScenario } from '@/lib/scenarios'
@@ -71,6 +72,9 @@ const RARITY_STYLES: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
+  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' : 'en'
+  const IT = locale === 'it'
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -149,7 +153,7 @@ export default async function DashboardPage() {
       <div className="mb-10 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-white mb-1">
-            Hey, {profile?.display_name?.split(' ')[0] ?? 'there'} 👋
+            {IT ? 'Ciao' : 'Hey'}, {profile?.display_name?.split(' ')[0] ?? (IT ? 'amico' : 'there')} 👋
           </h1>
           <p className="text-[var(--muted)] text-sm">{profile?.email ?? user.email}</p>
         </div>
@@ -190,12 +194,16 @@ export default async function DashboardPage() {
           </div>
           <div>
             <p className="font-bold text-purple-400 text-sm">
-              {votesCount >= 3 ? 'Your Moral Personality' : 'Unlock Your Moral Personality'}
+              {votesCount >= 3
+                ? (IT ? 'La tua Personalità Morale' : 'Your Moral Personality')
+                : (IT ? 'Scopri la tua Personalità Morale' : 'Unlock Your Moral Personality')}
             </p>
             <p className="text-[var(--muted)] text-xs mt-0.5">
               {votesCount >= 3
-                ? 'Discover your archetype based on your votes.'
-                : `Vote on ${Math.max(0, 3 - votesCount)} more dilemma${3 - votesCount === 1 ? '' : 's'} to unlock.`}
+                ? (IT ? 'Scopri il tuo archetipo dai tuoi voti.' : 'Discover your archetype based on your votes.')
+                : IT
+                  ? `Vota ancora ${Math.max(0, 3 - votesCount)} dilemm${3 - votesCount === 1 ? 'a' : 'i'} per sbloccare.`
+                  : `Vote on ${Math.max(0, 3 - votesCount)} more dilemma${3 - votesCount === 1 ? '' : 's'} to unlock.`}
             </p>
           </div>
         </div>
@@ -203,7 +211,7 @@ export default async function DashboardPage() {
           href="/personality"
           className="text-xs font-bold px-4 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors flex-shrink-0"
         >
-          {votesCount >= 3 ? 'View →' : `${votesCount} / 3`}
+          {votesCount >= 3 ? (IT ? 'Vedi →' : 'View →') : `${votesCount} / 3`}
         </Link>
       </div>
 
@@ -221,28 +229,32 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3">
             <span className="text-2xl">⭐</span>
             <div>
-              <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
-              <p className="text-[var(--muted)] text-xs mt-0.5">No ads · Unlimited renames · Submit polls</p>
+              <p className="font-bold text-yellow-400 text-sm">{IT ? 'Premium Attivo' : 'Premium Active'}</p>
+              <p className="text-[var(--muted)] text-xs mt-0.5">
+                {IT ? 'Senza pubblicità · Rename illimitati · Invia sondaggi' : 'No ads · Unlimited renames · Submit polls'}
+              </p>
             </div>
           </div>
           <Link
             href="/profile#membership"
             className="text-xs font-bold px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 transition-colors flex-shrink-0"
           >
-            Manage →
+            {IT ? 'Gestisci →' : 'Manage →'}
           </Link>
         </div>
       ) : (
         <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
           <div>
-            <p className="font-bold text-blue-400 text-sm">Free Plan</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">Remove ads and unlock unlimited renames.</p>
+            <p className="font-bold text-blue-400 text-sm">{IT ? 'Piano Gratuito' : 'Free Plan'}</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">
+              {IT ? 'Rimuovi la pubblicità e sblocca i rename illimitati.' : 'Remove ads and unlock unlimited renames.'}
+            </p>
           </div>
           <Link
             href="/profile#membership"
             className="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors flex-shrink-0"
           >
-            Upgrade ✦
+            {IT ? 'Passa a Premium ✦' : 'Upgrade ✦'}
           </Link>
         </div>
       )}
@@ -250,10 +262,10 @@ export default async function DashboardPage() {
       {/* ── Stats ── */}
       <div className="grid grid-cols-4 gap-3 mb-10">
         {[
-          { label: 'Votes cast', value: votesCount },
-          { label: 'XP earned', value: xp },
-          { label: 'Day streak', value: streakDays },
-          { label: 'Badges', value: userBadges.length },
+          { label: IT ? 'Voti' : 'Votes cast', value: votesCount },
+          { label: IT ? 'XP' : 'XP earned', value: xp },
+          { label: IT ? 'Streak' : 'Day streak', value: streakDays },
+          { label: 'Badge', value: userBadges.length },
         ].map(stat => (
           <div key={stat.label} className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-4 text-center">
             <p className="text-2xl font-black text-white">{stat.value}</p>
@@ -269,8 +281,12 @@ export default async function DashboardPage() {
         return (
           <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">🔥 Streak Milestones</h2>
-              <span className="text-xs text-[var(--muted)]">{streakDays} day{streakDays !== 1 ? 's' : ''} current</span>
+              <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
+                {IT ? '🔥 Obiettivi Streak' : '🔥 Streak Milestones'}
+              </h2>
+              <span className="text-xs text-[var(--muted)]">
+                {streakDays} {IT ? `giorn${streakDays !== 1 ? 'i' : 'o'} correnti` : `day${streakDays !== 1 ? 's' : ''} current`}
+              </span>
             </div>
 
             {/* Progress bar toward next milestone */}
@@ -283,12 +299,14 @@ export default async function DashboardPage() {
                   />
                 </div>
                 <p className="text-xs text-[var(--muted)]">
-                  {streakDays} / {nextMilestone.days} days to <span className="text-white">{nextMilestone.label}</span>
+                  {streakDays} / {nextMilestone.days} {IT ? 'giorni per' : 'days to'} <span className="text-white">{nextMilestone.label}</span>
                 </p>
               </div>
             )}
             {allEarned && (
-              <p className="text-xs text-yellow-400 mb-4">🏅 All streak milestones earned — legendary dedication!</p>
+              <p className="text-xs text-yellow-400 mb-4">
+                {IT ? '🏅 Tutti gli obiettivi streak raggiunti — dedizione leggendaria!' : '🏅 All streak milestones earned — legendary dedication!'}
+              </p>
             )}
 
             {/* Milestone list */}
@@ -309,11 +327,13 @@ export default async function DashboardPage() {
                       <p className={`text-xs font-bold leading-tight ${earned ? 'text-white' : 'text-[var(--muted)]'}`}>
                         {m.label}
                       </p>
-                      <p className="text-[10px] text-[var(--muted)] mt-0.5">{m.days} consecutive days</p>
+                      <p className="text-[10px] text-[var(--muted)] mt-0.5">
+                        {m.days} {IT ? 'giorni consecutivi' : 'consecutive days'}
+                      </p>
                     </div>
                     {earned && (
                       <span className="text-[10px] font-bold text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-lg flex-shrink-0">
-                        ✓ Earned
+                        {IT ? '✓ Ottenuto' : '✓ Earned'}
                       </span>
                     )}
                     {!earned && (
@@ -334,13 +354,17 @@ export default async function DashboardPage() {
 
       {/* ── Answer History ── */}
       <div className="mb-10">
-        <h2 className="text-lg font-black text-white mb-4">🗳️ Your Vote History</h2>
+        <h2 className="text-lg font-black text-white mb-4">
+          {IT ? '🗳️ I tuoi Voti' : '🗳️ Your Vote History'}
+        </h2>
         {dilemmaDetails.length === 0 ? (
           <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-10 text-center">
             <p className="text-4xl mb-3">🤔</p>
-            <p className="text-[var(--muted)] text-sm">You haven&apos;t voted yet. Go explore some dilemmas!</p>
+            <p className="text-[var(--muted)] text-sm">
+              {IT ? 'Non hai ancora votato. Esplora i dilemmi!' : "You haven't voted yet. Go explore some dilemmas!"}
+            </p>
             <Link href="/" className="inline-block mt-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
-              Start voting →
+              {IT ? 'Inizia a votare →' : 'Start voting →'}
             </Link>
           </div>
         ) : (
@@ -361,22 +385,22 @@ export default async function DashboardPage() {
                           ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                           : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                       }`}>
-                        You chose {v.choice === 'A' ? v.optionA : v.optionB}
+                        {IT ? 'Hai scelto' : 'You chose'} {v.choice === 'A' ? v.optionA : v.optionB}
                       </span>
                       {v.canChange && (
                         <span className="text-xs text-yellow-400/70 border border-yellow-500/20 px-2 py-0.5 rounded-lg">
-                          ⏱ Can change for {Math.ceil((new Date(v.can_change_until).getTime() - Date.now()) / 3600000)}h
+                          ⏱ {IT ? `Puoi cambiare per ${Math.ceil((new Date(v.can_change_until).getTime() - Date.now()) / 3600000)}h` : `Can change for ${Math.ceil((new Date(v.can_change_until).getTime() - Date.now()) / 3600000)}h`}
                         </span>
                       )}
                       {!v.canChange && (
                         <span className="text-xs text-[var(--muted)] border border-white/10 px-2 py-0.5 rounded-lg">
-                          🔒 Locked
+                          🔒 {IT ? 'Bloccato' : 'Locked'}
                         </span>
                       )}
                     </div>
                   </div>
                   <span className="text-[var(--muted)] text-xs group-hover:text-blue-400 transition-colors">
-                    See results →
+                    {IT ? 'Vedi risultati →' : 'See results →'}
                   </span>
                 </div>
               </Link>
@@ -389,10 +413,12 @@ export default async function DashboardPage() {
       {typedPolls.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-black text-white">Your Submitted Polls</h2>
+            <h2 className="text-lg font-black text-white">
+              {IT ? 'Le tue Domande' : 'Your Submitted Polls'}
+            </h2>
             {ents.canSubmitPoll && (
               <Link href="/submit-poll" className="text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-400 text-white transition-colors">
-                + Submit new
+                {IT ? '+ Invia nuova' : '+ Submit new'}
               </Link>
             )}
           </div>

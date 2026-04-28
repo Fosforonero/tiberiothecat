@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import ProfileClient from './ProfileClient'
@@ -7,6 +8,7 @@ export const metadata = { title: 'Profile Settings | SplitVote' }
 export const dynamic = 'force-dynamic'
 
 export default async function ProfilePage() {
+  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' : 'en'
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -51,6 +53,7 @@ export default async function ProfilePage() {
       votesCount={profile?.votes_count ?? 0}
       streakDays={profile?.streak_days ?? 0}
       joinedAt={profile?.created_at ?? new Date().toISOString()}
+      locale={locale}
     />
   )
 }
