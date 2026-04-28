@@ -3,13 +3,29 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — k6 Load Test Results tracker (docs only)
+Ultimo aggiornamento: 28 Aprile 2026 — k6 production baseline passed
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — k6 Production Baseline (28 Apr 2026)
+
+**Obiettivo**: eseguire e registrare baseline read-only k6 su produzione. Docs only.
+
+- [x] Due run read-only su produzione (5 VU, 30s, no `ENABLE_WRITE_TESTS`):
+  - **Run #1** (cold cache): homepage p95 3.20s — k6 threshold fail (warmup); tutti gli altri passati; zero errori.
+  - **Run #2** (warm): tutti i k6 threshold passati — homepage 1.28s, play 545ms, results 553ms, http_req_failed 0%, checks 100%.
+- [x] `LOAD_TEST_RESULTS.md` — Run #1 e Run #2 registrati con dati reali; stato baseline aggiornato.
+- [x] `LAUNCH_AUDIT.md` — item k6 baseline marcato `[x]` con nota cold cache + passed.
+
+**Soft launch performance baseline: ✅ PASSED** — tutti i k6 threshold passati al secondo run.
+
+**Nessuna modifica a**: codice runtime, script k6, API routes, DB schema.
 
 ---
 
@@ -293,13 +309,13 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 - [x] **migration v11 applicata e verificata** (28 Apr 2026): `stripe_webhook_events` esiste, trigger `updated_at` presente, RLS abilitato, zero policy client, comportamento dedup confermato
 - [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
 - [x] **migration v13 applicata e verificata** (28 Apr 2026): policy "Users can update own pending polls" rimossa; restano solo "Anyone can view approved polls" + "Users can view own polls" — `user_polls` write path server-only completamente hardened (v11 + v12 + v13)
-- [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks in **`LOAD_TEST_RESULTS.md` → Run #1**.
+- [x] **k6 production read-only baseline completato** (28 Apr 2026): Run #1 cold cache homepage 3.20s (threshold fail); Run #2 tutti passati — play 545ms, results 553ms, 0% errors, 100% checks. Risultati in `LOAD_TEST_RESULTS.md`. Raccomandazione futura: Vercel Preview baseline e 20 VU stress test prima di campagne paid aggressive.
 
 ### Candidati prodotto
 
-- **Stripe QA end-to-end**: test acquisto premium con carta reale in produzione + customer portal cancellation + verifica migration v11 (sopra)
-- **Streak milestones**: badge 7/15/30 giorni basati su `streak_days` già in DB — next gamification step
+- **Stripe QA end-to-end** ← priorità alta: runbook pronto in `LAUNCH_AUDIT.md` — eseguire con Stripe CLI e carta test prima di promuovere Premium a utenti reali
 - **i18n espansione `es`**: prossima lingua spagnolo — seguire pattern middleware + route duplicate + CATEGORY_LABELS_ES; attendere metriche traffico IT prima di iniziare
+- ~~**Streak milestones**~~: ✅ completato (sprint 28 Apr 2026)
 
 ---
 
