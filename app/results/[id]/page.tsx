@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export default async function ResultsPage({ params, searchParams }: Props) {
   // Supporta sia gli scenari statici che quelli AI generati dal cron
