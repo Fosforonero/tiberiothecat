@@ -162,10 +162,76 @@
 
 ### Performance & Scalabilità
 - [x] ISR/dynamic audit completato 28 Apr 2026 — play/results restano force-dynamic (per-user state: cookie anon, Supabase votedIds, nextId personalizzato); home/trending/category già ISR 3600; category pages ora hanno `dynamicParams=false` per 404 immediato su slug invalidi
-- [ ] Load test con k6 o Locust: simulare 1000 utenti simultanei su /play/[id] — con force-dynamic ogni request colpisce il server; da fare prima di campagne paid
+- [x] Harness k6 aggiunto 28 Apr 2026 — `tests/load/splitvote-smoke-load.js` con safety guard produzione, scenari read + write opzionale, thresholds conservativi (vedi §Load Test k6 sotto)
+- [ ] Eseguire baseline k6 contro Vercel Preview prima di campagne paid (vedi comandi sotto)
 - [ ] Redis latenza: verificare percentili p99 con Upstash metrics
 - [ ] Image optimization: verificare che og-images siano cached e non ri-generate ogni volta
 - [ ] Bundle analysis: `npm run build` analizzare JS bundle size — target < 200KB first load
+
+### Load Test k6 — Setup e Comandi
+
+#### Installare k6 localmente
+
+```bash
+# macOS
+brew install k6
+
+# Ubuntu / Debian
+sudo gpg -k && sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update && sudo apt-get install k6
+
+# Windows (Chocolatey)
+choco install k6
+```
+
+#### Comandi
+
+```bash
+# Smoke test localhost (dev server deve girare: npm run dev)
+k6 run tests/load/splitvote-smoke-load.js
+# oppure
+npm run load:smoke
+
+# Smoke test con write test opzionale (POST /api/vote anonimo):
+ENABLE_WRITE_TESTS=true k6 run tests/load/splitvote-smoke-load.js
+
+# Contro Vercel Preview deployment:
+BASE_URL=https://my-branch.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js
+
+# Contro produzione (finestra controllata, bassa intensità):
+BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js
+```
+
+**⚠️ Non lanciare test pesanti su produzione senza una finestra controllata.** Il safety guard blocca automaticamente BASE_URL che contiene `splitvote.io` a meno che `ALLOW_PROD_LOAD_TEST=true`. Aumentare `--vus` solo gradualmente e monitorare Vercel dashboard in tempo reale.
+
+#### Metriche da monitorare
+
+| Metrica | Descrizione | Cosa fare se alta |
+|---|---|---|
+| `http_req_failed` | % richieste fallite (5xx, errori rete) | Investigare Vercel logs + Redis/Supabase status |
+| `http_req_duration{name:GET /play} p(95)` | Latenza p95 per la pagina force-dynamic più critica | Se >3s: Redis latency? Supabase cold start? |
+| `http_req_duration{name:GET /results} p(95)` | Latenza p95 results (force-dynamic) | Stesso debug di play |
+| `http_req_duration{name:GET /} p(95)` | Latenza home (ISR — deve essere <200ms dal cache) | Se alta: Vercel edge cache miss? |
+| `checks` | % check passati (status 200) | Se <90%: guardare quali check falliscono |
+| `vote_rate_limited` | % richieste vote che ricevono 429 | Se alta (>50%): rate limit corretto — ridurre rate nel test |
+
+#### Cosa significa "pass" per soft launch
+
+- `http_req_failed` < 1% (zero errori 5xx stabili)
+- `http_req_duration{name:GET /play} p(95)` < 3000ms con 5 VU concurrent
+- `http_req_duration{name:GET /}  p(95)` < 500ms (ISR cached)
+- `checks` > 98%
+- Nessun 500 in Vercel logs durante il test
+- `vote_rate_limited` < 20% nel write test (rate limit attivo ma non dominante a 1 req/s)
+
+#### Prossimo step consigliato
+
+1. Eseguire baseline smoke (`5 VU, 30s`) contro Vercel Preview del branch corrente
+2. Verificare latenze p95 per play/results — questi sono force-dynamic e ogni VU colpisce il server
+3. Se play/results p95 > 2s anche a 5 VU: investigare Redis cold start su Upstash free tier
+4. Se ok, eseguire test più lungo (`20 VU, 2m`) sempre su Preview prima di produzione
+5. Solo dopo: eseguire stesso test su produzione in orario basso traffico
 
 ### Analytics & Business Intelligence
 - [ ] GA4 funnel: vote → results → share → signup (verificare eventi in GA4 dashboard)

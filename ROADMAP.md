@@ -3,13 +3,29 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Claude Code Governance Docs
+Ultimo aggiornamento: 28 Aprile 2026 — k6 Load Test Harness
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — k6 Load Test Harness (28 Apr 2026)
+
+- [x] `tests/load/splitvote-smoke-load.js` — script k6 con safety guard produzione (aborto se `BASE_URL` contiene `splitvote.io` e `ALLOW_PROD_LOAD_TEST` non è `"true"`)
+- [x] Scenari: 5 VU read-only per 30s (home, trending, category/technology, play/trolley, results/trolley); write scenario opzionale (1 req/s, 15s, POST /api/vote anonimo) attivo solo se `ENABLE_WRITE_TESTS=true`
+- [x] Thresholds conservativi: p95 ISR < 1500ms, p95 force-dynamic < 3000ms, `http_req_failed` < 5%, checks > 90%
+- [x] Metrica custom `vote_rate_limited` per tracciare % di 429 sul vote API
+- [x] `package.json` — aggiunto script `load:smoke` → `k6 run tests/load/splitvote-smoke-load.js`
+- [x] `LAUNCH_AUDIT.md` — sezione completa con installazione k6, comandi localhost/preview/prod, metriche da monitorare, definizione "pass" per soft launch, prossimo step consigliato
+- [x] Nessun runtime behavior modificato — zero modifiche a API, Redis, Supabase, Stripe, AdSense, cookie consent
+
+**Nota force-dynamic play/results**: il test misura esattamente il rischio identificato nell'audit: ogni VU che colpisce `/play/[id]` o `/results/[id]` genera un server render completo (Next.js + `cookies()` + `supabase.auth.getUser()` + Redis). A 5 VU concurrent il test è sicuro; aumentare gradualmente su Preview prima di produzione.
+
+**Prossimo step**: eseguire baseline su Vercel Preview (`BASE_URL=https://..vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js`) e poi eseguire stesso test su produzione in orario basso traffico prima di campagne paid.
 
 ---
 

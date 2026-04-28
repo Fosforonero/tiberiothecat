@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "generate:social-content": "node scripts/generate-social-content.mjs"
+    "generate:social-content": "node scripts/generate-social-content.mjs",
+    "load:smoke": "k6 run tests/load/splitvote-smoke-load.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.51.0",
