@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "generate:social-content": "node scripts/generate-social-content.mjs",
     "validate:personality": "node scripts/validate-personality.mjs",
-    "load:smoke": "k6 run tests/load/splitvote-smoke-load.js"
+    "load:smoke": "k6 run tests/load/splitvote-smoke-load.js",
+    "load:spike": "k6 run tests/load/splitvote-spike-load.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.51.0",

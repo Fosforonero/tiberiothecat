@@ -167,8 +167,59 @@ Per ogni run aggiuntivo: aggiungere una riga alla tabella e un blocco Run #N in 
 
 ---
 
+---
+
+## Spike Tests (simulazione burst TikTok/Instagram)
+
+Script: `tests/load/splitvote-spike-load.js` — `npm run load:spike`
+
+Simula traffico social concentrato: 45% `/play`, 25% `/results`, 15% `/`, 10% `/trending`, 5% `/category`.
+Read-only — nessun POST `/api/vote`.
+
+Usa `default` export → supporta `--vus`/`--duration` CLI override senza errori.
+
+### Comandi spike
+
+```bash
+# Default (10 VU × 60s) — localhost o Preview
+npm run load:spike
+
+# Preview — 25 VU × 60s (primo run consigliato)
+BASE_URL=https://<preview-hash>.vercel.app ALLOW_PROD_LOAD_TEST=true \
+  k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js
+
+# Preview — 50 VU × 60s (stress)
+BASE_URL=https://<preview-hash>.vercel.app ALLOW_PROD_LOAD_TEST=true \
+  k6 run --vus 50 --duration 60s tests/load/splitvote-spike-load.js
+
+# Produzione — 25 VU × 60s (solo dopo Preview OK, finestra controllata)
+BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true \
+  k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js
+```
+
+> **⚠️ Produzione**: solo in finestra controllata (basso traffico, orario notturno). Aumentare VU gradualmente. Monitorare Vercel dashboard in tempo reale.
+
+### Soglie spike
+
+| Metrica | Threshold |
+|---|---|
+| `http_req_failed` | < 5% |
+| `checks` | > 95% |
+| Overall p95 | < 3000ms |
+| `GET /play` p95 | < 3000ms |
+| `GET /results` p95 | < 3000ms |
+
+### Tabella risultati spike
+
+| Date | Commit | Environment | VUs | Duration | p95 overall | p95 `/play` | p95 `/results` | `http_req_failed` | `checks` | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| YYYY-MM-DD | `abc1234` | Preview / Prod | N | Xs | ms | ms | ms | % | % | |
+
+---
+
 ## Riferimenti
 
-- Harness: [`tests/load/splitvote-smoke-load.js`](tests/load/splitvote-smoke-load.js)
+- Smoke harness: [`tests/load/splitvote-smoke-load.js`](tests/load/splitvote-smoke-load.js)
+- Spike harness: [`tests/load/splitvote-spike-load.js`](tests/load/splitvote-spike-load.js)
 - Setup k6 (installazione, comandi, metriche): [`LAUNCH_AUDIT.md`](LAUNCH_AUDIT.md) → Load Test k6
 - Stripe QA runbook: [`LAUNCH_AUDIT.md`](LAUNCH_AUDIT.md) → Stripe QA End-to-End

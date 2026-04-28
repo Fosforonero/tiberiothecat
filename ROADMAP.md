@@ -3,13 +3,30 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — k6 production baseline passed
+Ultimo aggiornamento: 28 Aprile 2026 — k6 spike test script
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — k6 Spike Test Script (28 Apr 2026)
+
+**Obiettivo**: aggiungere script k6 dedicato per simulare spike virale TikTok/Instagram. Read-only, weighted routing, `default` export per `--vus`/`--duration` CLI override.
+
+- [x] `tests/load/splitvote-spike-load.js` — safety guard produzione, weighted routing (45% /play, 25% /results, 15% /, 10% /trending, 5% /category), cumulative random picker, `default` export (supporta `k6 run --vus N --duration Xs`), options default 10 VU × 60s, thresholds: `http_req_failed < 5%`, `checks > 95%`, overall p95 < 3s, `/play` p95 < 3s, `/results` p95 < 3s.
+- [x] `package.json` — aggiunto script `"load:spike"`.
+- [x] `LOAD_TEST_RESULTS.md` — sezione "Spike Tests" con comandi Preview (25/50 VU), produzione (25 VU solo dopo Preview OK), soglie, tabella risultati spike.
+- [x] `LAUNCH_AUDIT.md` — subsection spike test con comando Preview e avvertenza produzione.
+
+**`--vus`/`--duration` CLI override**: funziona perché lo script usa `export default function` (non `scenarios` nominati). Il k6 smoke test usava `scenarios: { reads: { exec: 'readTest' } }` che non è compatibile con i flag CLI.
+
+**Nessuna modifica a**: runtime app, API routes, smoke test esistente, DB schema, dipendenze.
+
+**Manual step**: eseguire Preview spike 25 VU × 60s e registrare risultati in `LOAD_TEST_RESULTS.md` → Spike Tests.
 
 ---
 
@@ -309,7 +326,8 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 - [x] **migration v11 applicata e verificata** (28 Apr 2026): `stripe_webhook_events` esiste, trigger `updated_at` presente, RLS abilitato, zero policy client, comportamento dedup confermato
 - [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
 - [x] **migration v13 applicata e verificata** (28 Apr 2026): policy "Users can update own pending polls" rimossa; restano solo "Anyone can view approved polls" + "Users can view own polls" — `user_polls` write path server-only completamente hardened (v11 + v12 + v13)
-- [x] **k6 production read-only baseline completato** (28 Apr 2026): Run #1 cold cache homepage 3.20s (threshold fail); Run #2 tutti passati — play 545ms, results 553ms, 0% errors, 100% checks. Risultati in `LOAD_TEST_RESULTS.md`. Raccomandazione futura: Vercel Preview baseline e 20 VU stress test prima di campagne paid aggressive.
+- [x] **k6 production read-only baseline completato** (28 Apr 2026): Run #1 cold cache homepage 3.20s (threshold fail); Run #2 tutti passati — play 545ms, results 553ms, 0% errors, 100% checks. Risultati in `LOAD_TEST_RESULTS.md`.
+- [ ] **k6 spike test Preview 25 VU**: `BASE_URL=https://<preview>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js` — registrare risultati in `LOAD_TEST_RESULTS.md` → Spike Tests.
 
 ### Candidati prodotto
 

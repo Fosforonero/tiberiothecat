@@ -407,6 +407,19 @@ Dopo il baseline su Preview (se ok):
 
 **Registrare i risultati di ogni run in [`LOAD_TEST_RESULTS.md`](LOAD_TEST_RESULTS.md)** — contiene tabella, soglie, e procedura completa per baseline e follow-up.
 
+#### Spike test — simulazione burst TikTok/Instagram
+
+Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `default` export → `--vus`/`--duration` CLI override funzionano senza errori. Read-only, nessun write test.
+
+Prossimo step consigliato: eseguire Preview spike 25 VU 60s prima di campagne paid:
+
+```bash
+BASE_URL=https://<preview>.vercel.app ALLOW_PROD_LOAD_TEST=true \
+  k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js
+```
+
+**⚠️ Produzione**: solo in finestra controllata (basso traffico, orario notturno) dopo che Preview ha passato. Mai senza `ALLOW_PROD_LOAD_TEST=true`. Risultati in `LOAD_TEST_RESULTS.md` → Spike Tests.
+
 ### Analytics & Business Intelligence
 - [ ] GA4 funnel: vote → results → share → signup (verificare eventi in GA4 dashboard)
 - [ ] Google Search Console: monitorare impressioni/click dopo sitemap submission
