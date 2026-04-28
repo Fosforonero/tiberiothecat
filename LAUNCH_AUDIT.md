@@ -127,10 +127,159 @@
 ## B. Iniziato ma da chiudere ⚠️
 
 ### Stripe QA End-to-End
-- [ ] Test acquisto premium con carta reale in produzione (non solo webhook simulator)
-- [ ] Verificare customer portal funzionante (cancellazione subscription)
+
+**Runbook v1 — 28 Apr 2026.** Da eseguire con Stripe CLI + carta test prima di promuovere Premium a utenti reali.
+
+#### Endpoint Stripe coinvolti
+
+| Endpoint | Trigger | Env richiesti |
+|---|---|---|
+| `POST /api/stripe/subscription` | Upgrade to Premium button | `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID_PREMIUM` |
+| `POST /api/stripe/portal` | Manage subscription button | `STRIPE_SECRET_KEY` |
+| `POST /api/stripe/checkout` | Name change (free user) | `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID_NAME_CHANGE` |
+| `POST /api/stripe/webhook` | Stripe → server events | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
+
+#### Webhook events gestiti
+
+| Event | Effetto su `profiles` |
+|---|---|
+| `checkout.session.completed` (type=subscription) | `is_premium=true`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status='active'` |
+| `checkout.session.completed` (type=name_change) | `display_name`, `name_changes++` |
+| `customer.subscription.updated` | `is_premium` (true se active/trialing), `subscription_status`, `stripe_subscription_id` |
+| `customer.subscription.deleted` | `is_premium=false`, `stripe_subscription_id=null`, `subscription_status='cancelled'` |
+
+#### Prerequisiti
+
+| Requisito | Verifica |
+|---|---|
+| `STRIPE_SECRET_KEY` (test mode: `sk_test_...`) | Vercel env + `.env.local` |
+| `STRIPE_WEBHOOK_SECRET` (`whsec_...` da `stripe listen`) | `.env.local` durante test locale |
+| `STRIPE_PRICE_ID_PREMIUM` (subscription price ID) | Vercel env + Stripe → Products |
+| `STRIPE_PRICE_ID_NAME_CHANGE` (one-time price ID) | Vercel env + Stripe → Products |
+| `NEXT_PUBLIC_BASE_URL=https://splitvote.io` | Vercel env |
+| Stripe CLI installata: `stripe --version` | Locale |
+| migration_v11 applicata (`stripe_webhook_events` presente) | ✅ Confermata 28 Apr 2026 |
+
+#### Setup Stripe CLI (test locale)
+
+```bash
+# Terminal 1 — dev server
+nvm use && npm run dev
+
+# Terminal 2 — forward webhook
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+# Copia il whsec_... stampato → .env.local STRIPE_WEBHOOK_SECRET
+```
+
+#### Utente test
+
+1. Creare account SplitVote normale (non admin).
+2. Verificare Supabase → Table Editor → `profiles` — stato iniziale:
+   - `is_premium = false`
+   - `stripe_customer_id = null`
+   - `stripe_subscription_id = null`
+   - `subscription_status = null`
+
+#### Test 1 — Checkout Premium
+
+- [ ] Navigare a `/profile` o `/dashboard` con utente test loggato
+- [ ] Cliccare "Upgrade to Premium" → redirect a Stripe Checkout
+- [ ] Completare con carta test: `4242 4242 4242 4242` exp: `12/29` CVC: `123`
+- [ ] Verificare redirect a `/profile?premium=activated`
+
+**Verifica Supabase → `profiles` dopo checkout:**
+- [ ] `is_premium = true`
+- [ ] `stripe_customer_id` popolato (`cus_...`)
+- [ ] `stripe_subscription_id` popolato (`sub_...`)
+- [ ] `subscription_status = 'active'`
+
+**Verifica log (Terminal 2 o Vercel logs):**
+- [ ] `✅ Premium activated: user=<truncated_id>`
+- [ ] Supabase → `stripe_webhook_events`: riga con `status = 'processed'`, `processed_at` non null
+
+#### Test 2 — Dashboard Premium Active
+
+- [ ] Navigare `/dashboard` → banner/stato Premium visibile
+- [ ] Navigare `/profile` → label Premium presente, CTA upgrade assente
+
+#### Test 3 — No Ads
+
+- [ ] Navigare una pagina con AdSlot (es. `/results/[id]` con slot configurato)
+- [ ] DevTools → Network: nessuna request a `pagead2.googlesyndication.com`
+- [ ] `GET /api/me/entitlements` risponde `{ noAds: true, effectivePremium: true }`
+
+#### Test 4 — Customer Portal
+
+- [ ] Cliccare "Manage subscription" in `/profile` (chiama `POST /api/stripe/portal`)
+- [ ] Verificare redirect a `https://billing.stripe.com/...`
+- [ ] Navigare nel portal e verificare subscription attiva
+- [ ] Tornare a `/profile` via link "Return to site" → URL `/profile`
+
+#### Test 5 — Cancellation
+
+- [ ] Nel Customer Portal, cancellare la subscription
+- [ ] Attendere webhook `customer.subscription.deleted` in Terminal 2
+- [ ] Verificare log: `✅ Subscription cancelled: customer=cus_...`
+- [ ] Verificare Supabase → `profiles`:
+  - [ ] `is_premium = false`
+  - [ ] `stripe_subscription_id = null`
+  - [ ] `subscription_status = 'cancelled'`
+- [ ] Ricaricare `/dashboard` → banner Premium assente
+- [ ] `GET /api/me/entitlements` → `{ noAds: false }` — AdSlot torna a renderizzare
+
+#### Test 6 — Webhook Idempotency (duplicate event)
+
+```bash
+# Copia l'event ID evt_... dall'output di Terminal 2 (checkout.session.completed)
+stripe events resend evt_1AbCdEfGhIjKlMnOp...
+```
+
+- [ ] Webhook risponde 200 `{ received: true, duplicate: true }` (nessun reprocessing)
+- [ ] Supabase → `stripe_webhook_events`: nessuna nuova riga per lo stesso `stripe_event_id`
+- [ ] `profiles.is_premium` invariato
+- [ ] Nessun `✅ Premium activated` nel log per il secondo evento
+
+#### Test 7 — Failure Modes
+
+| Scenario | Come testare | Risultato atteso |
+|---|---|---|
+| Webhook senza firma | `curl -X POST /api/stripe/webhook` senza `stripe-signature` | 400 `Missing stripe-signature header` |
+| Firma errata | Modificare `STRIPE_WEBHOOK_SECRET` con valore sbagliato e reinviare | 400 `Invalid signature` |
+| Utente già premium → subscribe | Chiamare `POST /api/stripe/subscription` con utente già premium | 409 `Already premium` |
+| Portal senza `stripe_customer_id` | Chiamare `POST /api/stripe/portal` con utente senza checkout | 404 `No billing account found` |
+| `STRIPE_SECRET_KEY` mancante | Rimuovere var e chiamare `/api/stripe/subscription` | 500 `Stripe not configured` |
+| Admin → checkout name change | Admin tenta `POST /api/stripe/checkout` | 400 `Admin rename does not require payment` |
+
+#### Rollback / Manual Recovery
+
+Se il webhook fallisce e `profiles` non viene aggiornato, eseguire in Supabase SQL Editor (admin only):
+
+```sql
+-- Attivare premium manualmente (emergency)
+UPDATE public.profiles
+SET is_premium = true, subscription_status = 'active'
+WHERE stripe_customer_id = 'cus_...';
+
+-- Revocare premium manualmente
+UPDATE public.profiles
+SET is_premium = false, stripe_subscription_id = null, subscription_status = 'cancelled'
+WHERE stripe_customer_id = 'cus_...';
+
+-- Verificare eventi webhook falliti
+SELECT stripe_event_id, event_type, status, error, processed_at, updated_at
+FROM public.stripe_webhook_events
+WHERE status IN ('failed', 'processing')
+ORDER BY created_at DESC LIMIT 10;
+```
+
+Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato `failed` verrà reclamato automaticamente dall'idempotency guard al prossimo retry Stripe.
+
+#### Checklist stato
+
+- [ ] **Test acquisto premium con carta test e Stripe CLI** — ⚠️ Ancora da eseguire
+- [ ] **Verificare customer portal funzionante (cancellazione)** — ⚠️ Ancora da eseguire
 - [x] Idempotenza webhook implementata e verificata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client; comportamento dedup confermato operativo
-- [ ] Stripe price IDs reali configurati in Vercel (STRIPE_PRICE_ID_PREMIUM + STRIPE_PRICE_ID_NAME_CHANGE)
+- [ ] **Stripe price IDs reali configurati in Vercel** (`STRIPE_PRICE_ID_PREMIUM` + `STRIPE_PRICE_ID_NAME_CHANGE`) — ⚠️ Da verificare prima di go-live
 
 ### Blog Dynamic Storage
 - [ ] Progettare BlogDraft schema (vedi ROADMAP — Blog Weekly Generation)

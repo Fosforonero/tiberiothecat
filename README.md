@@ -423,6 +423,8 @@ stripe trigger customer.subscription.updated
 stripe trigger customer.subscription.deleted
 ```
 
+**Full Stripe QA runbook** (prerequisiti env, utente test, checkout, portal, cancellation, idempotency, failure modes, rollback SQL): see `LAUNCH_AUDIT.md` → Stripe QA End-to-End.
+
 ### Entitlements system
 
 `lib/entitlements.ts` is the canonical source of truth for what a user can do. Never check `is_premium` directly in app code — always go through entitlements.

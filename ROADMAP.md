@@ -3,13 +3,25 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Streak Milestones (7/15/30 giorni, badge, UI)
+Ultimo aggiornamento: 28 Aprile 2026 — Stripe QA Runbook (docs only)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Stripe QA Runbook (28 Apr 2026)
+
+**Obiettivo**: preparare runbook operativo Stripe QA end-to-end in `LAUNCH_AUDIT.md`. Nessuna modifica al codice runtime.
+
+- [x] `LAUNCH_AUDIT.md` — sezione "Stripe QA End-to-End" espansa con runbook completo: tabella endpoint + eventi webhook gestiti, prerequisiti env, setup Stripe CLI, test checkout premium (carta `4242...`), verifica `profiles` post-checkout (`is_premium`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`), test dashboard Premium active, test no-ads (`/api/me/entitlements` → `noAds: true`), test customer portal, test cancellation + verifica `profiles` reset, test idempotency duplicate event (`stripe events resend`), test 6 failure modes (firma errata, already-premium, no billing account, admin rename, config mancante), note rollback SQL manuale + query `stripe_webhook_events` falliti, Stripe retry schedule.
+
+**Nessuna modifica a**: codice runtime, API routes, DB schema, Stripe pricing, env vars, cookie consent, legal pages, vote flow.
+
+**Manual step**: eseguire la QA reale con Stripe CLI e carta test prima di promuovere Premium a utenti reali (checklist completa in `LAUNCH_AUDIT.md` → Stripe QA End-to-End).
 
 ---
 
