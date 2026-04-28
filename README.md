@@ -281,6 +281,33 @@ content-output/
 
 `components/DailyMissions.tsx` shows the Claim button only when `claimable === true` from the server. Coming-soon missions are non-interactive. All XP is awarded server-side via `award_mission_xp` (DB function with hardcoded XP table — no client-supplied XP).
 
+### Gamification & Social Identity
+
+SplitVote's long-term loop is: **Engagement → Identity → Status → Monetization**.
+
+Current implemented foundations:
+- Voting remains frictionless: anonymous users can vote without creating an account.
+- Accounts unlock identity/progress features: vote history, XP, streaks, badges, daily missions, companion, profile settings.
+- Public profiles exist at `/u/[id]` with basic public stats and badges.
+- Badges and `user_badges` exist in Supabase; `equipped_badge` and `equipped_frame` fields already exist for future cosmetic/profile display.
+- Daily missions are server-validated; XP awards are server-side only.
+- Premium/admin entitlements are centralized in `lib/entitlements.ts`.
+
+Not implemented yet:
+- Full public profile board/wall ("bacheca") with curated trophies and privacy controls.
+- Quest system beyond current daily missions.
+- Geo quests or geo leaderboards.
+- Unique trophy events.
+- Cosmetic shop, profile skins, paid frames, avatar store, or bundle economy.
+
+Product rules for future gamification:
+- Login must never become mandatory for voting.
+- Account features should add identity, progress, rewards, and sharing value.
+- No pay-to-win: paid items must not affect vote results, rankings, or visibility of opinions.
+- Earned rewards should have stronger perceived value than purchased cosmetics.
+- Geo features must be privacy-first and opt-in; avoid precise location tracking unless there is a clear legal basis and product need.
+- Avoid over-engineering the economy before real traffic validates retention.
+
 ### User Events
 
 `supabase/migration_v8_user_events.sql` creates `public.user_events` for server-side mission verification.

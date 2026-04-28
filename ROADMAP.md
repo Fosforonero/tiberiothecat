@@ -9,6 +9,168 @@ Ultimo aggiornamento: 27 Aprile 2026 (sprint Admin Pro Dashboard + Content Tools
 
 ## Stato Attuale
 
+### Roadmap — Gamification & Social Identity
+
+**Obiettivo prodotto:** evolvere SplitVote da voting game virale a piattaforma di identità sociale basata su scelte, progressi, status e ricompense.
+
+Loop strategico:
+
+`Engagement → Identità → Status → Monetizzazione`
+
+#### Cosa esiste già
+
+- [x] Voto anonimo frictionless: nessun account richiesto per votare
+- [x] Account opzionale con storico voti, XP, streak, badge e missioni daily
+- [x] `profiles.xp`, `profiles.streak_days`, `profiles.streak_last_date` da `migration_v3_engagement.sql`
+- [x] Tabelle `badges` e `user_badges` da `migration_v2_safe.sql`
+- [x] `mission_completions` + funzione DB `award_mission_xp`
+- [x] Daily missions server-validate in `GET /api/missions` e `POST /api/missions/complete`
+- [x] Profilo pubblico base `/u/[id]`
+- [x] `equipped_badge` e `equipped_frame` già presenti su `profiles` come base per cosmetici futuri
+- [x] Entitlements centralizzati in `lib/entitlements.ts`
+
+#### Cosa è solo pianificato
+
+- [ ] Bacheca pubblica utente con layout curato per badge/trofei
+- [ ] Privacy controls granulari sul profilo pubblico
+- [ ] Trofei unici per eventi limitati
+- [ ] Quest globali, settimanali, evento e categoria
+- [ ] Geo quest privacy-safe
+- [ ] Leaderboard aggregate
+- [ ] Share card profilo/badge/trofeo
+- [ ] Cosmetic shop: skin bacheca, cornici profilo, avatar speciali, bundle premium
+
+#### Principi prodotto
+
+- Voto sempre frictionless
+- Login mai obbligatorio per votare
+- Account utile per identità, progressi e ricompense
+- Nessun pay-to-win
+- Monetizzazione: cosmetici, no-ads/premium utility, non manipolazione dei risultati
+- Privacy-first per geo quest
+- I premi conquistati devono valere più dei premi acquistati
+- Evitare over-engineering prima della validazione traffico/retention
+
+#### Fase 1 — Core Gamification
+
+- [ ] Streak milestones 7/15/30 giorni
+- [ ] Badge base:
+  - First Vote
+  - 10 Votes
+  - 100 Votes
+  - 7-Day Streak
+  - 30-Day Streak
+- [ ] Profilo base con badge visibili
+- [ ] Nessuna monetizzazione obbligatoria
+- [ ] QA: reward server-side, nessun award client-trusted
+
+#### Fase 2 — Public Profile / Bacheca
+
+- [ ] Profilo pubblico condivisibile
+- [ ] Bacheca badge/trofei
+- [ ] Statistiche pubbliche opzionali
+- [ ] Privacy controls per mostrare/nascondere elementi
+- [ ] Share card profilo
+- [ ] Default sicuro: mostrare solo informazioni non sensibili e chiaramente pubbliche
+
+#### Fase 3 — Quest System
+
+- [ ] Daily quest evolute
+- [ ] Weekly quest
+- [ ] Event quest
+- [ ] Quest per categoria
+- [ ] Premi: XP, badge, trofei
+- [ ] Server-side verification obbligatoria
+- [ ] Niente reward basati su azioni non verificabili
+
+#### Fase 4 — Geo Quest
+
+- [ ] Quest per nazione
+- [ ] Quest per città
+- [ ] Quest per quartiere solo se privacy-safe
+- [ ] Leaderboard aggregate
+- [ ] Niente tracciamento preciso obbligatorio
+- [ ] Geografia dichiarata volontariamente dall'utente o derivata solo con consenso/approccio privacy-safe
+- [ ] Soglie minime di campione per evitare identificazione indiretta
+
+#### Fase 5 — Unique Trophies
+
+- [ ] Trofei per eventi limitati
+- [ ] Trofei non acquistabili
+- [ ] Trofei per vincitori di quest
+- [ ] Trofei per costanza:
+  - 7 giorni
+  - 15 giorni
+  - 30 giorni
+  - 3 mesi
+  - 1 anno
+  - 10 anni
+- [ ] Regola: i trofei più prestigiosi devono essere earned-only
+
+#### Fase 6 — Cosmetic Monetization
+
+- [ ] Skin bacheca
+- [ ] Cornici profilo
+- [ ] Avatar speciali
+- [ ] Bundle premium
+- [ ] Oggetti acquistabili
+- [ ] Oggetti ottenibili solo tramite quest
+- [ ] Oggetti ottenibili solo tramite anzianità/streak
+- [ ] I cosmetici non alterano risultati di voto, ranking, conteggi o visibilità dell'opinione
+
+#### Modello concettuale futuro (non implementare ora)
+
+| Entity | Scopo | Campi principali ipotetici | Priorità | Dipendenze |
+|---|---|---|---|---|
+| `Badge` | Ricompensa ricorrente/base | id, name, description, icon, rarity, unlock_rule, category | Alta | `badges` esiste già |
+| `Trophy` | Ricompensa unica/status | id, name, description, icon, rarity, event_id, earned_only, limited_until | Media | Quest/event system |
+| `UserBadge` | Badge assegnato a utente | user_id, badge_id, earned_at, equipped | Alta | `user_badges` esiste già |
+| `UserTrophy` | Trofeo assegnato a utente | user_id, trophy_id, earned_at, source_event, display_order | Media | Trophy + quest/event |
+| `Quest` | Obiettivo verificabile | id, type, locale, category, starts_at, ends_at, requirements, rewards | Alta | Mission validation |
+| `QuestProgress` | Stato utente su quest | user_id, quest_id, progress, completed_at, claimed_at | Alta | Quest |
+| `ProfileCosmetic` | Oggetto cosmetico | id, type, name, rarity, source, price, availability, preview_asset | Bassa | Cosmetic economy |
+| `UserCosmetic` | Oggetto posseduto | user_id, cosmetic_id, acquired_at, source, equipped | Bassa | ProfileCosmetic |
+| `PublicProfile` | Config pubblica profilo | user_id, slug, visibility, shown_stats, shown_badges, shown_trophies, board_theme | Media | Privacy controls |
+
+#### Cosmetic Economy
+
+Tipi oggetti:
+
+- `earned-only`: ottenibili solo con attività, streak, quest o eventi
+- `purchasable-only`: acquistabili direttamente, valore estetico
+- `event-limited`: disponibili solo durante eventi specifici
+- `founder/early-user`: ricompense per early adopters
+- `streak/anniversary`: legati ad anzianità o costanza
+- `premium-bundle`: inclusi in abbonamento o pacchetto premium
+
+Regole:
+
+- Non vendere vantaggi sul voto
+- Non vendere risultati
+- Non manipolare classifiche
+- Evitare gambling/loot box nella prima versione
+- Prezzi piccoli, chiari e non predatori
+- Separare chiaramente "earned prestige" da "paid style"
+
+#### Ordine consigliato di implementazione
+
+1. Completare soft launch e validare traffico
+2. Introdurre badge/streak minimi
+3. Creare profilo pubblico semplice
+4. Aggiungere share card badge/profilo
+5. Introdurre quest globali
+6. Solo dopo traffico reale: geo quest
+7. Solo dopo engagement reale: cosmetic shop
+
+#### Cosa NON implementare ora
+
+- Geo quest con geolocalizzazione precisa
+- Leaderboard personali pubbliche senza privacy controls
+- Shop cosmetico prima di avere retention reale
+- Loot box, random rewards acquistabili o meccaniche gambling-like
+- Reward basati su eventi non verificabili server-side
+- Login obbligatorio nel voting flow
+
 ### Sprint Completato — Admin Pro Dashboard + Content Tools (27 Apr 2026)
 
 **Home trending reale + Admin dashboard professionale con tab ✅**
