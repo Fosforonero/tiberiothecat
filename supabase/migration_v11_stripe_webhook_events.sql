@@ -12,13 +12,24 @@
 --   (new event arrives)
 --       → INSERT status='processing'
 --       → (success) UPDATE status='processed', processed_at=now()
---       → (failure) UPDATE status='failed', error=message
+--       → (failure) UPDATE status='failed', error=sanitised_message
 --
 --   On Stripe retry of a 'failed' event:
---       → UPDATE status='processing' (allow reprocessing)
+--       → atomic UPDATE WHERE status='failed' → reclaim if won race
 --
---   On Stripe retry of a 'processed' or 'processing' event:
---       → webhook returns 200 immediately (no double-processing)
+--   On Stripe retry of a 'processed' event:
+--       → webhook returns 200 immediately (idempotent duplicate)
+--
+--   On Stripe retry of a 'processing' event (fresh):
+--       → webhook returns 200 immediately (concurrent delivery protection)
+--
+--   On Stripe retry of a 'processing' event stale >10 min (server crash recovery):
+--       → atomic UPDATE WHERE status='processing' AND updated_at < cutoff
+--       → reclaim if won race; the BEFORE UPDATE trigger refreshes updated_at
+--         so concurrent stale-reclaim attempts naturally serialize
+--
+-- The updated_at column is managed by the BEFORE UPDATE trigger below.
+-- It is used for stale-processing detection in lib/stripe-webhook-events.ts.
 
 CREATE TABLE IF NOT EXISTS public.stripe_webhook_events (
   id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),

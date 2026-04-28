@@ -3,13 +3,27 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Stripe Webhook Idempotency
+Ultimo aggiornamento: 28 Aprile 2026 — Stripe Webhook Idempotency Hardening
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Stripe Webhook Idempotency Hardening (28 Apr 2026)
+
+- [x] `lib/stripe-webhook-events.ts` — refactor hardening:
+  - Reclaim di eventi `failed`: ora atomico con `UPDATE WHERE status='failed' RETURNING stripe_event_id`; due retry concorrenti serializzano su lock Postgres — solo chi ottiene la row vince, l'altro riceve array vuoto e ritorna `in_progress`
+  - Stale processing recovery: se `updated_at` > `STALE_PROCESSING_AFTER_MS` (10 min), tenta `UPDATE WHERE status='processing' AND updated_at < cutoff RETURNING stripe_event_id`; il trigger `updated_at=now()` invalida la condizione per il secondo retry concorrente
+  - Eliminata la race condition select→update non atomica del reclaim `failed`
+  - Seleziona `status, updated_at` insieme in un unico round-trip invece di due
+  - Tipo pubblico `ClaimResult` invariato; `app/api/stripe/webhook/route.ts` invariato
+- [x] `supabase/migration_v11_stripe_webhook_events.sql` — commenti aggiornati per documentare stale recovery e ruolo del trigger `updated_at`
+
+**Nota:** `migration_v11` non è stata applicata — resta ⏳ Pending manuale in Supabase.
 
 ---
 
