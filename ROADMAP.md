@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Admin Content QA editor completato
+Ultimo aggiornamento: 28 Aprile 2026 — Performance Safety Audit + dynamicParams category
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -49,12 +49,40 @@ Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimita
 
 ---
 
+## Sprint completati — Performance Safety Audit (28 Apr 2026)
+
+### Audit table — ogni route classificata
+
+| Route | Stato | Decisione | Motivo |
+|---|---|---|---|
+| `app/page.tsx` | `revalidate=3600` | ✅ Corretto | No per-user state — Redis + trending aggregati |
+| `app/it/page.tsx` | `revalidate=3600` | ✅ Corretto | Idem |
+| `app/trending/page.tsx` | `revalidate=3600` | ✅ Corretto | Solo scenari Redis aggregati, no auth |
+| `app/it/trending/page.tsx` | `revalidate=3600` | ✅ Corretto | Idem |
+| `app/category/[category]/page.tsx` | `revalidate=3600` | ✅ Corretto + `dynamicParams=false` aggiunto | No per-user state; 8 slug noti a build time |
+| `app/it/category/[category]/page.tsx` | `revalidate=3600` | ✅ Corretto + `dynamicParams=false` aggiunto | Idem |
+| `app/play/[id]/page.tsx` | `force-dynamic` | ✅ **Deve restare dynamic** | Legge `cookies()` (sv_voted_* anon) + `supabase.auth.getUser()` (existingVote, canChangeUntil) + `votedIds` per nextId personalizzato |
+| `app/it/play/[id]/page.tsx` | `force-dynamic` | ✅ **Deve restare dynamic** | Idem (path IT) |
+| `app/results/[id]/page.tsx` | `force-dynamic` | ✅ **Deve restare dynamic** | Legge `cookies()` + Supabase votedIds per nextId/nextPathId personalizzato; live vote counts; `dateModified` in JSON-LD |
+| `app/it/results/[id]/page.tsx` | `force-dynamic` | ✅ **Deve restare dynamic** | Idem (path IT) |
+
+### Nota su `generateStaticParams` + `force-dynamic` su play/results
+Il piano di audit citava questa combinazione come "contraddizione". È corretto dal punto di vista meccanico Next.js, ma la soluzione corretta **non è** rimuovere `force-dynamic`. Le pagine play/results rendono stato per-user (voto esistente, cookie anonimi, next dilemma personalizzato) su ogni richiesta. Non è possibile cachiarle senza rompere queste funzionalità. Il `generateStaticParams()` su quelle pagine è dead code che può essere rimosso in un futuro refactor, ma non ha impatto negativo.
+
+### Modifiche applicate
+- `app/category/[category]/page.tsx` — aggiunto `export const dynamicParams = false`
+- `app/it/category/[category]/page.tsx` — aggiunto `export const dynamicParams = false`
+
+Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 immediato dal framework invece di invocare server code e poi `notFound()`.
+
+---
+
 ## Prossimo Sprint Prioritario — da definire
 
 Candidati post-polish:
 - i18n espansione: prossima lingua `es` (spagnolo), poi `pt-BR`, poi `fr` — seguire lo stesso pattern middleware + route duplicate + CATEGORY_LABELS_*
-- Performance: rimuovere `force-dynamic` da `play/[id]` e `results/[id]`, aggiungere `revalidate=60` (vedere audit)
 - Stripe webhook idempotency (tabella `webhook_events` con unique su `stripe_event_id`)
+- Performance follow-up: load test con k6 (vedere LAUNCH_AUDIT.md §C) — unico modo per verificare comportamento reale sotto stress di play/results con force-dynamic
 
 ---
 

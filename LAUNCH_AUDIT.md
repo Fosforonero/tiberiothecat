@@ -161,7 +161,8 @@
 ## C. Da fare 📋
 
 ### Performance & Scalabilità
-- [ ] Load test con k6 o Locust: simulare 1000 utenti simultanei su /play/[id]
+- [x] ISR/dynamic audit completato 28 Apr 2026 — play/results restano force-dynamic (per-user state: cookie anon, Supabase votedIds, nextId personalizzato); home/trending/category già ISR 3600; category pages ora hanno `dynamicParams=false` per 404 immediato su slug invalidi
+- [ ] Load test con k6 o Locust: simulare 1000 utenti simultanei su /play/[id] — con force-dynamic ogni request colpisce il server; da fare prima di campagne paid
 - [ ] Redis latenza: verificare percentili p99 con Upstash metrics
 - [ ] Image optimization: verificare che og-images siano cached e non ri-generate ogni volta
 - [ ] Bundle analysis: `npm run build` analizzare JS bundle size — target < 200KB first load

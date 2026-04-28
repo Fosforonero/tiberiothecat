@@ -53,6 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export const revalidate = 3600
+export const dynamicParams = false
 
 export default async function CategoryPage({ params }: Props) {
   const cat = CATEGORIES.find((c) => c.value === params.category && c.value !== 'all')
