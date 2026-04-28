@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getScenario, getFreshNextScenarioId, scenarios } from '@/lib/scenarios'
+import { getScenario, getFreshNextScenarioId, getFreshNextScenarioIdByCategory, CATEGORIES, scenarios } from '@/lib/scenarios'
+import type { Category } from '@/lib/scenarios'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
@@ -15,7 +16,7 @@ const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
-  searchParams: { challenge?: string; ref?: string }
+  searchParams: { challenge?: string; ref?: string; path?: string; step?: string; target?: string }
 }
 
 export async function generateStaticParams() {
@@ -115,6 +116,15 @@ export default async function PlayPage({ params, searchParams }: Props) {
   const isChallenge = searchParams.challenge === '1'
   const referralCode = typeof searchParams.ref === 'string' ? searchParams.ref : undefined
 
+  // Parse guided path params
+  const rawPath = searchParams.path
+  const pathCat = CATEGORIES.find(c => c.value === rawPath && c.value !== 'all')
+  const pathCategory = pathCat?.value as Category | undefined
+  const pathCategoryLabel = pathCat?.label
+  const pathCategoryEmoji = pathCat?.emoji
+  const pathStep = pathCategory ? Math.max(1, parseInt(searchParams.step ?? '1', 10) || 1) : undefined
+  const pathTarget = pathCategory ? Math.max(1, parseInt(searchParams.target ?? '3', 10) || 3) : undefined
+
   // Collect all scenarios for internal linking (related dilemmas) + next dilemma
   let dynamicScenarios: Awaited<ReturnType<typeof getDynamicScenarios>> = []
   let allScenarios: Scenario[] = [...scenarios]
@@ -126,6 +136,9 @@ export default async function PlayPage({ params, searchParams }: Props) {
     // Non-blocking
   }
   const nextId = getFreshNextScenarioId(params.id, votedIds, dynamicScenarios)
+  const nextPathId = pathCategory !== undefined
+    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, dynamicScenarios)
+    : undefined
 
   // JSON-LD: BreadcrumbList
   const breadcrumbSchema = {
@@ -186,6 +199,12 @@ export default async function PlayPage({ params, searchParams }: Props) {
         isChallenge={isChallenge}
         referralCode={referralCode}
         nextId={nextId}
+        pathCategory={pathCategory}
+        pathStep={pathStep}
+        pathTarget={pathTarget}
+        pathCategoryLabel={pathCategoryLabel}
+        pathCategoryEmoji={pathCategoryEmoji}
+        nextPathId={nextPathId}
       />
       <RelatedDilemmas current={scenario} all={allScenarios} />
     </>

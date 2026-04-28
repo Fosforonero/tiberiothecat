@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getScenario, getFreshNextScenarioId, scenarios } from '@/lib/scenarios'
+import { getScenario, getFreshNextScenarioId, getFreshNextScenarioIdByCategory, CATEGORIES, scenarios } from '@/lib/scenarios'
+import type { Category } from '@/lib/scenarios'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
@@ -13,7 +14,7 @@ const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
-  searchParams: { voted?: string }
+  searchParams: { voted?: string; path?: string; step?: string; target?: string }
 }
 
 export async function generateStaticParams() {
@@ -93,6 +94,18 @@ export default async function ResultsPage({ params, searchParams }: Props) {
 
   const nextId = getFreshNextScenarioId(params.id, votedIds, dynamicScenarios)
 
+  // Guided path — parse params and compute next path question
+  const rawPath = searchParams.path
+  const pathCat = CATEGORIES.find(c => c.value === rawPath && c.value !== 'all')
+  const pathCategory = pathCat?.value as Category | undefined
+  const pathCategoryLabel = pathCat?.label
+  const pathCategoryEmoji = pathCat?.emoji
+  const pathStep = pathCategory ? Math.max(1, parseInt(searchParams.step ?? '1', 10) || 1) : undefined
+  const pathTarget = pathCategory ? Math.max(1, parseInt(searchParams.target ?? '3', 10) || 3) : undefined
+  const nextPathId = pathCategory !== undefined && pathStep !== undefined && pathTarget !== undefined && pathStep < pathTarget
+    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, dynamicScenarios)
+    : undefined
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -138,6 +151,12 @@ export default async function ResultsPage({ params, searchParams }: Props) {
         total={total}
         voted={voted}
         nextId={nextId}
+        pathCategory={pathCategory}
+        pathStep={pathStep}
+        pathTarget={pathTarget}
+        nextPathId={nextPathId}
+        pathCategoryLabel={pathCategoryLabel}
+        pathCategoryEmoji={pathCategoryEmoji}
       />
     </>
   )

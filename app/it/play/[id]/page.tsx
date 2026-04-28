@@ -5,8 +5,9 @@
 import { notFound } from 'next/navigation'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getFreshNextScenarioId } from '@/lib/scenarios'
-import { getItalianScenario } from '@/lib/scenarios-it'
+import { getFreshNextScenarioId, getFreshNextScenarioIdByCategory, CATEGORIES } from '@/lib/scenarios'
+import type { Category } from '@/lib/scenarios'
+import { getItalianScenario, CATEGORY_LABELS_IT } from '@/lib/scenarios-it'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
@@ -18,7 +19,7 @@ const BASE_URL = 'https://splitvote.io'
 
 interface Props {
   params: { id: string }
-  searchParams: { challenge?: string; ref?: string }
+  searchParams: { challenge?: string; ref?: string; path?: string; step?: string; target?: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -115,6 +116,18 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
 
   const nextId = getFreshNextScenarioId(params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
 
+  // Parse guided path params (use IT labels)
+  const rawPath = searchParams.path
+  const pathCat = CATEGORIES.find(c => c.value === rawPath && c.value !== 'all')
+  const pathCategory = pathCat?.value as Category | undefined
+  const pathCategoryLabel = pathCategory ? (CATEGORY_LABELS_IT[pathCategory] ?? pathCat?.label) : undefined
+  const pathCategoryEmoji = pathCat?.emoji
+  const pathStep = pathCategory ? Math.max(1, parseInt(searchParams.step ?? '1', 10) || 1) : undefined
+  const pathTarget = pathCategory ? Math.max(1, parseInt(searchParams.target ?? '3', 10) || 3) : undefined
+  const nextPathId = pathCategory !== undefined
+    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
+    : undefined
+
   const isChallenge = searchParams.challenge === '1'
   const referralCode = typeof searchParams.ref === 'string' ? searchParams.ref : undefined
 
@@ -167,6 +180,12 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
         referralCode={referralCode}
         localePrefix="/it"
         nextId={nextId}
+        pathCategory={pathCategory}
+        pathStep={pathStep}
+        pathTarget={pathTarget}
+        pathCategoryLabel={pathCategoryLabel}
+        pathCategoryEmoji={pathCategoryEmoji}
+        nextPathId={nextPathId}
       />
     </>
   )

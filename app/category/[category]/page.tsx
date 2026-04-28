@@ -138,6 +138,26 @@ export default async function CategoryPage({ params }: Props) {
           </p>
         </div>
 
+        {/* Start path CTA */}
+        {allForCategory.length >= 3 && (
+          <div className="mb-8 rounded-2xl border border-blue-500/25 bg-blue-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-bold text-white text-sm mb-0.5">
+                🏁 3-question {cat.label} path
+              </p>
+              <p className="text-xs text-[var(--muted)]">
+                Answer 3 {cat.label.toLowerCase()} dilemmas in a row — fresh questions only.
+              </p>
+            </div>
+            <Link
+              href={`/play/${allForCategory[0].id}?path=${cat.value}&step=1&target=3`}
+              className="flex-shrink-0 text-sm font-bold px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors whitespace-nowrap"
+            >
+              Start path →
+            </Link>
+          </div>
+        )}
+
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {allForCategory.map((scenario) => (

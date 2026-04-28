@@ -23,6 +23,15 @@ SplitVote should evolve in this order:
 
 Core rule: anonymous users must always be able to vote without creating an account.
 
+i18n expansion rule:
+
+- EN/IT are enough for controlled soft launch.
+- Do not add another language until the core loop, personality sharing, guided category paths, and social content workflow are stable.
+- Next language: Spanish (`es`) because it has the best global/social expansion fit after English.
+- Next after Spanish: Brazilian Portuguese (`pt-BR`) because it is stronger for social/viral growth than French for this product category.
+- French (`fr`) should follow PT-BR as the next broad international language.
+- Chinese should be treated as a separate localization/distribution project, not a routine translation sprint.
+
 Current priority override:
 
 - Fix the core loop before adding more monetization or personality complexity.
@@ -70,6 +79,95 @@ Current priority override:
 - Discussion threads under dilemmas.
 - External community integration such as Reddit.
 - Full moderation/audit workflow for user-generated content.
+- Spanish localization (`es`) and additional non-EN/IT locales.
+
+---
+
+## Internationalization Roadmap
+
+Current state:
+
+- English is the global default.
+- Italian is implemented through the `/it` route family.
+- EN/IT routes, sitemap, hreflang, blog, legal pages, personality, social captions, and core voting flows exist.
+
+Recommended language order:
+
+1. Spanish (`es`)
+2. Brazilian Portuguese (`pt-BR`)
+3. French (`fr`)
+4. German (`de`) or Japanese (`ja`) only after traffic data supports it
+5. Chinese Simplified (`zh-CN`) as a separate market-entry project
+6. Chinese Traditional (`zh-TW`) only if there is a specific Taiwan/Hong Kong strategy
+
+Why this order:
+
+- Spanish has the best mix of global reach, social virality, SEO opportunity, and implementation effort.
+- Brazilian Portuguese is a strong social/mobile market and a natural next growth language after Spanish.
+- French adds Europe, Canada, and parts of Africa, but likely has lower immediate viral fit than Spanish/PT-BR.
+- Chinese requires different SEO, social distribution, cultural review, legal review, and possibly platform strategy. Do not treat it as a simple string translation.
+
+Spanish launch gate:
+
+- Core voting loop stable with fresh next dilemmas.
+- Guided category path MVP shipped.
+- Personality share card stable.
+- Social Content Factory works reliably for EN/IT.
+- At least basic Search Console / social signal review from EN/IT.
+- Legal pages can be translated and reviewed.
+
+Spanish scope:
+
+- `/es` route family:
+  - `/es`
+  - `/es/trending`
+  - `/es/play/[id]`
+  - `/es/results/[id]`
+  - `/es/category/[category]`
+  - `/es/faq`
+  - `/es/privacy`
+  - `/es/terms`
+  - `/es/personality`
+  - `/es/blog`
+- Spanish static scenario translations.
+- Spanish metadata, canonical, hreflang, sitemap entries.
+- Spanish personality copy and share card copy.
+- Spanish cookie banner and legal pages.
+- Spanish social captions in Social Content Factory.
+- Spanish blog starter set only after route quality is stable.
+
+PT-BR launch gate:
+
+- Spanish implementation is stable.
+- Spanish content/social workflow has low maintenance cost.
+- Product copy is centralized enough that adding a fourth locale does not require duplicating fragile client logic.
+
+PT-BR scope:
+
+- Use `pt-BR`, not generic `pt`, unless there is a Portugal-specific strategy.
+- Localize tone for Brazil rather than literal Portuguese translation.
+- Add Portuguese social captions after core routes work.
+
+French launch gate:
+
+- EN/IT/ES/PT-BR content workflows are maintainable.
+- Legal pages and cookie copy can be reviewed in French.
+
+Chinese launch gate:
+
+- Dedicated market strategy.
+- Cultural/content moderation review.
+- Separate SEO/social distribution plan.
+- Legal/privacy review for the target market.
+- Decide `zh-CN` vs `zh-TW`; do not launch both by default.
+
+Implementation rule:
+
+- Add one language per dedicated sprint.
+- Do not mix language expansion with product feature sprints.
+- Keep legal pages and cookie consent in sync for every supported locale.
+- Every locale must have reciprocal hreflang and sitemap coverage before deploy is considered complete.
+- If copy starts duplicating heavily, create a locale dictionary/i18n helper before adding the fourth language.
 
 ---
 
@@ -337,6 +435,10 @@ Do not build all ideas at once. Recommended order after current social-content c
 ## Dedicated Sprint Plan
 
 Use these as the next implementation ladder. Each sprint should be given to Claude separately and should finish with typecheck, build, diff check, commit, and push.
+
+### ~~Guided Category Path MVP~~ — COMPLETED 28 Apr 2026
+
+Implemented: `getFreshNextScenarioIdByCategory` helper. Query-param path flow (`?path=technology&step=1&target=3`). Category page CTAs. Play/results pages path-aware. VoteClientPage preserves path params in all redirects. ResultsClientPage shows continue/complete/exhausted states. No DB, no auth, no paid feature.
 
 ### ~~Immediate Sprint — Fresh Next Dilemma + Vote Grace UX~~ — COMPLETED 28 Apr 2026
 

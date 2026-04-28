@@ -3,11 +3,24 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Fresh Next Dilemma + Vote Grace UX completato
+Ultimo aggiornamento: 28 Aprile 2026 — Guided Category Path MVP completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
+
+---
+
+## Sprint completati — Guided Category Path MVP (28 Apr 2026)
+
+- [x] `lib/scenarios.ts` — aggiunto `getFreshNextScenarioIdByCategory(category, currentId, votedIds, dynamicPool)`: esclude già-votati, preferisce dynamic top-half per categoria, fallback statici
+- [x] `lib/scenarios-it.ts` — aggiunto `CATEGORY_LABELS_IT` per nomi italiani delle categorie
+- [x] Category pages EN/IT — CTA "Start path →" / "Inizia percorso →" che linka al primo dilemma della categoria con `?path=[cat]&step=1&target=3`
+- [x] Play pages EN/IT — leggono `?path`, `?step`, `?target`; calcolano `nextPathId`; passano props a VoteClientPage; progress indicator "Category · step/target" sopra la domanda
+- [x] VoteClientPage — path props; cookie-redirect preserva path params; `submitVote` redirect preserva path params; CTA "already voted" route-aware
+- [x] Results pages EN/IT — leggono path params; calcolano `nextPathId` via `getFreshNextScenarioIdByCategory`; passano tutto a ResultsClientPage
+- [x] ResultsClientPage — CTA section path-aware: "Continue path →" (step < target), "Path complete 🎉" + browse (step = target), "No fresh dilemmas" (esaurito); progress indicator inline
+- [x] Nessun DB schema, nessun auth change, nessun paid feature, nessun nuovo tracking oltre eventi GA già esistenti
 
 ---
 
@@ -944,6 +957,7 @@ iOS App Store → **Capacitor (WKWebView wrapper)**
 - [ ] **Upgrade framework**: Next 16 + React 19 + Node 24 è uno sprint dedicato, non va mischiato alla push corrente.
 - [ ] **Social trend sources**: X/Instagram/TikTok solo con API ufficiali o provider conformi. Niente scraping fragile.
 - [ ] **Legal/compliance reconciliation**: prima dello scaling aggiornare Privacy EN/IT, Terms EN/IT, cookie/storage inventory e consent UX seguendo `LEGAL.md`.
+- [ ] **i18n expansion**: prossima lingua `es`, poi `pt-BR`, poi `fr`; cinese solo come progetto market-entry separato.
 
 ---
 
@@ -1041,6 +1055,10 @@ Non fare insieme a feature/product sprint.
 - [ ] Admin scoring dashboard con breakdown di viral/SEO/novelty/feedback
 - [ ] Weekly digest email
 - [ ] Friend challenge leaderboard
+- [ ] **Spanish localization (`es`)**: route `/es`, static scenarios, play/results/category/blog/legal/personality, hreflang, sitemap, Social Content Factory captions
+- [ ] **Brazilian Portuguese localization (`pt-BR`)**: dopo ES stabile; tono Brazil-first, non portoghese generico
+- [ ] **French localization (`fr`)**: dopo PT-BR, con legal/cookie copy review
+- [ ] **Chinese localization (`zh-CN`)**: solo con strategia dedicata di distribuzione, legal/privacy e cultural review
 - [ ] Media kit pubblico con insight aggregati
 - [ ] API read-only per ricercatori
 - [ ] Video share cards animate

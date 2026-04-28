@@ -21,6 +21,12 @@ interface Props {
   nextId: string | null
   /** Optional locale prefix for share URLs, e.g. "/it" for Italian results */
   sharePrefix?: string
+  pathCategory?: string
+  pathStep?: number
+  pathTarget?: number
+  nextPathId?: string | null
+  pathCategoryLabel?: string
+  pathCategoryEmoji?: string
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
@@ -83,6 +89,12 @@ const EN_COPY = {
   webShareCopied:    '✅ Link copied!',
   insightWhySplit:   'Why people split',
   insightYourChoice: 'What your choice may suggest',
+  pathProgress:      (step: number, target: number) => `${step}/${target} complete`,
+  pathContinue:      'Continue path →',
+  pathDone:          '🎉 Path complete!',
+  pathDoneDesc:      (label: string) => `You finished the ${label} path. Try another category.`,
+  pathExhausted:     'No fresh dilemmas left in this path',
+  pathOtherCats:     'Browse categories',
 }
 
 const IT_COPY = {
@@ -140,9 +152,15 @@ const IT_COPY = {
   webShareCopied:    '✅ Link copiato!',
   insightWhySplit:   'Perché le persone si dividono',
   insightYourChoice: 'Cosa potrebbe suggerire la tua scelta',
+  pathProgress:      (step: number, target: number) => `${step}/${target} completato`,
+  pathContinue:      'Continua il percorso →',
+  pathDone:          '🎉 Percorso completato!',
+  pathDoneDesc:      (label: string) => `Hai completato il percorso di ${label}. Prova un'altra categoria.`,
+  pathExhausted:     'Non ci sono altri dilemmi nuovi in questo percorso',
+  pathOtherCats:     'Sfoglia categorie',
 }
 
-export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '' }: Props) {
+export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '', pathCategory, pathStep, pathTarget, nextPathId, pathCategoryLabel, pathCategoryEmoji }: Props) {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const [webShareCopied, setWebShareCopied] = useState(false)
@@ -783,24 +801,72 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         </div>
       )}
 
-      {/* ── Next dilemma CTA ── */}
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <Link
-          href={nextId ? `${sharePrefix}/play/${nextId}` : sharePrefix || '/'}
-          onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'results_bottom' })}
-          className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
-        >
-          {nextId ? copy.nextDilemma : copy.browsedAll}
-        </Link>
-        {nextId && (
+      {/* ── Next dilemma / Path CTA ── */}
+      {pathCategory && pathStep !== undefined && pathTarget !== undefined ? (
+        <div className="flex flex-col gap-3">
+          {/* Path progress indicator */}
+          <div className="flex items-center gap-2 text-xs text-[var(--muted)] justify-center mb-1">
+            {pathCategoryEmoji && <span aria-hidden>{pathCategoryEmoji}</span>}
+            <span className="font-bold uppercase tracking-widest">{pathCategoryLabel ?? pathCategory}</span>
+            <span className="text-white/25">·</span>
+            <span>{copy.pathProgress(pathStep, pathTarget)}</span>
+          </div>
+
+          {pathStep >= pathTarget ? (
+            /* Path complete */
+            <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-5 text-center">
+              <p className="text-green-400 font-black text-lg mb-1">{copy.pathDone}</p>
+              <p className="text-sm text-[var(--muted)] mb-4">{copy.pathDoneDesc(pathCategoryLabel ?? pathCategory)}</p>
+              <Link
+                href={`${sharePrefix}/category/${pathCategory}`}
+                className="inline-flex items-center gap-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/40 text-green-300 font-bold text-sm px-5 py-2.5 rounded-xl transition-colors"
+              >
+                {copy.pathOtherCats}
+              </Link>
+            </div>
+          ) : nextPathId ? (
+            /* Continue path */
+            <Link
+              href={`${sharePrefix}/play/${nextPathId}?path=${pathCategory}&step=${pathStep + 1}&target=${pathTarget}`}
+              onClick={() => track('path_continue_clicked', { scenario_id: scenario.id, locale, path: pathCategory, step: pathStep + 1 })}
+              className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
+            >
+              {copy.pathContinue}
+            </Link>
+          ) : (
+            /* No fresh dilemmas in path */
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center">
+              <p className="text-sm text-[var(--muted)]">{copy.pathExhausted}</p>
+            </div>
+          )}
+
           <Link
             href={sharePrefix || '/'}
-            className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
+            className="flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
           >
             {copy.allDilemmas}
           </Link>
-        )}
-      </div>
+        </div>
+      ) : (
+        /* Standard CTA */
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href={nextId ? `${sharePrefix}/play/${nextId}` : sharePrefix || '/'}
+            onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'results_bottom' })}
+            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
+          >
+            {nextId ? copy.nextDilemma : copy.browsedAll}
+          </Link>
+          {nextId && (
+            <Link
+              href={sharePrefix || '/'}
+              className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
+            >
+              {copy.allDilemmas}
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   )
 }

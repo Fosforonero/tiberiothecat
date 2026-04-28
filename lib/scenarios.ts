@@ -389,7 +389,7 @@ export function getScenariosByCategory(category: Category | 'all'): Scenario[] {
   return scenarios.filter((s) => s.category === category)
 }
 
-interface ScoredItem { id: string; scores?: { finalScore?: number } }
+interface ScoredItem { id: string; scores?: { finalScore?: number }; category?: string }
 
 /**
  * Pick the next scenario ID, preferring dynamic approved scenarios over static ones.
@@ -430,6 +430,38 @@ export function getFreshNextScenarioId(
   }
 
   const freshStatic = scenarios.filter(s => !excluded.has(s.id))
+  if (freshStatic.length) {
+    return freshStatic[Math.floor(Math.random() * freshStatic.length)].id
+  }
+
+  return null
+}
+
+/**
+ * Pick the next unvoted scenario ID within a specific category.
+ * Excludes currentId AND all ids in votedIds.
+ * Prefers dynamic approved scenarios of that category by top-half finalScore.
+ * Falls back to static scenarios of that category.
+ * Returns null if no fresh dilemmas are available in the category.
+ */
+export function getFreshNextScenarioIdByCategory(
+  category: Category,
+  currentId: string | undefined,
+  votedIds: Set<string>,
+  dynamicPool?: ScoredItem[],
+): string | null {
+  const excluded = new Set<string>([...(currentId ? [currentId] : []), ...votedIds])
+
+  if (dynamicPool?.length) {
+    const fresh = dynamicPool.filter(s => s.category === category && !excluded.has(s.id))
+    if (fresh.length) {
+      const sorted = [...fresh].sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
+      const topHalf = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)))
+      return topHalf[Math.floor(Math.random() * topHalf.length)].id
+    }
+  }
+
+  const freshStatic = scenarios.filter(s => s.category === category && !excluded.has(s.id))
   if (freshStatic.length) {
     return freshStatic[Math.floor(Math.random() * freshStatic.length)].id
   }

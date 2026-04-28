@@ -119,6 +119,26 @@ export default async function ItCategoryPage({ params }: Props) {
           </p>
         </div>
 
+        {/* Start path CTA */}
+        {(dynamicIT.length + staticFiltered.length) >= 3 && (
+          <div className="mb-8 rounded-2xl border border-blue-500/25 bg-blue-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <p className="font-bold text-white text-sm mb-0.5">
+                🏁 Percorso {itMeta.label} — 3 domande
+              </p>
+              <p className="text-xs text-[var(--muted)]">
+                Rispondi a 3 dilemmi di {itMeta.label.toLowerCase()} di seguito — solo domande nuove.
+              </p>
+            </div>
+            <Link
+              href={`/it/play/${(dynamicIT[0] ?? staticFiltered[0]).id}?path=${category}&step=1&target=3`}
+              className="flex-shrink-0 text-sm font-bold px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors whitespace-nowrap"
+            >
+              Inizia percorso →
+            </Link>
+          </div>
+        )}
+
         {/* Dynamic IT dilemmas first */}
         {dynamicIT.length > 0 && (
           <div className="mb-8">

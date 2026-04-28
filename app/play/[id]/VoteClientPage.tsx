@@ -20,6 +20,12 @@ interface Props {
   localePrefix?: '' | '/it'
   nextId?: string | null
   referralCode?: string
+  pathCategory?: string
+  pathStep?: number
+  pathTarget?: number
+  pathCategoryLabel?: string
+  pathCategoryEmoji?: string
+  nextPathId?: string | null
 }
 
 function getCookie(name: string): string | null {
@@ -106,6 +112,12 @@ export default function VoteClientPage({
   localePrefix = '',
   nextId,
   referralCode,
+  pathCategory,
+  pathStep,
+  pathTarget,
+  pathCategoryLabel,
+  pathCategoryEmoji,
+  nextPathId,
 }: Props) {
   const [pendingOption, setPendingOption] = useState<'a' | 'b' | null>(null)
   const [graceSecsLeft, setGraceSecsLeft] = useState(0)
@@ -124,14 +136,18 @@ export default function VoteClientPage({
   const locale = localePrefix === '/it' ? 'it' : 'en'
   const nextHref = nextId ? `${localePrefix}/play/${nextId}` : localePrefix || '/'
 
-  // Cookie-based redirect for non-logged users
+  // Cookie-based redirect for non-logged users — preserves path params
   useEffect(() => {
     if (existingVote) return
     const previousVote = getCookie(`sv_voted_${scenario.id}`)
     if (previousVote === 'a' || previousVote === 'b') {
-      router.replace(`${localePrefix}/results/${scenario.id}?voted=${previousVote}`)
+      let redirectUrl = `${localePrefix}/results/${scenario.id}?voted=${previousVote}`
+      if (pathCategory && pathStep && pathTarget) {
+        redirectUrl += `&path=${pathCategory}&step=${pathStep}&target=${pathTarget}`
+      }
+      router.replace(redirectUrl)
     }
-  }, [scenario.id, router, existingVote, localePrefix])
+  }, [scenario.id, router, existingVote, localePrefix, pathCategory, pathStep, pathTarget])
 
   // Update time remaining every minute
   useEffect(() => {
@@ -231,7 +247,11 @@ export default function VoteClientPage({
         choice: option,
         locale,
       })
-      router.push(`${localePrefix}/results/${scenario.id}?voted=${option}`)
+      let resultsUrl = `${localePrefix}/results/${scenario.id}?voted=${option}`
+      if (pathCategory && pathStep && pathTarget) {
+        resultsUrl += `&path=${pathCategory}&step=${pathStep}&target=${pathTarget}`
+      }
+      router.push(resultsUrl)
     } catch {
       setLoading(false)
       setSubmittedOption(null)
@@ -284,6 +304,18 @@ export default function VoteClientPage({
         <Link href={localePrefix || '/'} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
           {copy.back}
         </Link>
+
+        {/* Path progress indicator */}
+        {pathCategory && pathStep && pathTarget && (
+          <div className="mb-5 flex items-center gap-2 text-xs text-[var(--muted)]">
+            {pathCategoryEmoji && <span aria-hidden>{pathCategoryEmoji}</span>}
+            <span className="font-bold uppercase tracking-widest text-white/70">
+              {pathCategoryLabel ?? pathCategory}
+            </span>
+            <span className="text-white/25">·</span>
+            <span>{pathStep}/{pathTarget}</span>
+          </div>
+        )}
 
         {/* ── Challenge banner ── */}
         {isChallenge && !existingVote && (
@@ -367,21 +399,41 @@ export default function VoteClientPage({
             </div>
 
             {/* CTA to results / next */}
-            <div className="flex gap-3 mt-6">
-              <Link
-                href={`${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`}
-                className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm text-center transition-colors"
-              >
-                {copy.seeResults}
-              </Link>
-              <Link
-                href={nextHref}
-                onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
-                className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
-              >
-                {nextId ? copy.nextDilemma : copy.browsedAll}
-              </Link>
-            </div>
+            {(() => {
+              const seeResultsHref = pathCategory && pathStep && pathTarget
+                ? `${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}&path=${pathCategory}&step=${pathStep}&target=${pathTarget}`
+                : `${localePrefix}/results/${scenario.id}?voted=${existingVote.choice.toLowerCase()}`
+              const pathNextHref = (nextPathId && pathCategory && pathStep !== undefined && pathTarget)
+                ? `${localePrefix}/play/${nextPathId}?path=${pathCategory}&step=${pathStep + 1}&target=${pathTarget}`
+                : localePrefix || '/'
+              return (
+                <div className="flex gap-3 mt-6">
+                  <Link
+                    href={seeResultsHref}
+                    className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm text-center transition-colors"
+                  >
+                    {copy.seeResults}
+                  </Link>
+                  {pathCategory && pathStep && pathTarget ? (
+                    <Link
+                      href={pathNextHref}
+                      onClick={() => nextPathId && track('path_next_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
+                      className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
+                    >
+                      {nextPathId ? copy.nextDilemma : copy.browsedAll}
+                    </Link>
+                  ) : (
+                    <Link
+                      href={nextHref}
+                      onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
+                      className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
+                    >
+                      {nextId ? copy.nextDilemma : copy.browsedAll}
+                    </Link>
+                  )}
+                </div>
+              )
+            })()}
           </div>
         ) : (
           <>

@@ -1,5 +1,16 @@
 import { getScenario, type Scenario } from './scenarios'
 
+export const CATEGORY_LABELS_IT: Record<string, string> = {
+  morality:      'Moralità',
+  survival:      'Sopravvivenza',
+  loyalty:       'Lealtà',
+  justice:       'Giustizia',
+  freedom:       'Libertà',
+  technology:    'Tecnologia',
+  society:       'Società',
+  relationships: 'Relazioni',
+}
+
 type ItalianScenarioText = Pick<Scenario, 'question' | 'optionA' | 'optionB'>
 
 export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
