@@ -3,6 +3,7 @@ import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { scenarios } from '@/lib/scenarios'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 
 export const metadata: Metadata = {
   title: 'Trending Dilemmas Today | SplitVote',
@@ -97,16 +98,9 @@ export default async function TrendingPage() {
                 <p className="font-semibold text-[var(--text)] leading-snug mb-4">
                   {scenario.question}
                 </p>
-                <div className="flex gap-2 flex-wrap">
-                  <span className="text-xs bg-red-500/10 text-red-400 border border-red-500/20 rounded-full px-3 py-1">
-                    {scenario.optionA.split('.')[0]}
-                  </span>
-                  <span className="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-3 py-1">
-                    {scenario.optionB.split('.')[0]}
-                  </span>
-                </div>
+                <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
               </div>
-              <span className="text-[var(--muted)] text-xs group-hover:text-purple-400 transition-colors flex-shrink-0">
+              <span className="hidden sm:inline text-[var(--muted)] text-xs group-hover:text-purple-400 transition-colors flex-shrink-0">
                 Vote →
               </span>
             </div>

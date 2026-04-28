@@ -5,6 +5,7 @@ import { Sparkles } from 'lucide-react'
 import { CATEGORIES } from '@/lib/scenarios'
 import type { Scenario, Category } from '@/lib/scenarios'
 import Link from 'next/link'
+import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 
 interface Props {
   scenarios: Scenario[]
@@ -67,14 +68,7 @@ export default function DilemmaGrid({ scenarios }: Props) {
                 <p className="font-semibold text-[var(--text)] leading-snug mb-3 line-clamp-3 text-sm sm:text-base">
                   {scenario.question}
                 </p>
-                <div className="flex gap-2 flex-wrap">
-                  <span className="text-xs bg-red-500/10 text-red-400 border border-red-500/20 rounded-full px-3 py-1 line-clamp-1 max-w-[45%]">
-                    {scenario.optionA.split('.')[0]}
-                  </span>
-                  <span className="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full px-3 py-1 line-clamp-1 max-w-[45%]">
-                    {scenario.optionB.split('.')[0]}
-                  </span>
-                </div>
+                <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
               </div>
             </div>
           </Link>
