@@ -3,11 +3,21 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 (sprint Security Hardening Pre-Scaling)
+Ultimo aggiornamento: 28 Aprile 2026 — Sprint 1 Profile UX + Personality Entry Point completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
+
+---
+
+## Sprint completati — Profile UX + Personality Entry Point (28 Apr 2026)
+
+- [x] Personality CTA card nel Dashboard (server component, locked/unlocked via votesCount)
+- [x] Personality entry card in ProfileClient con progress bar se < 3 voti
+- [x] Link "Moral Personality" nel MobileMenu sezione Account (EN/IT locale-aware)
+- [x] Footer: icone SVG ufficiali per tutti i social (Instagram, TikTok, Reddit, Twitch)
+- [x] Aggiunti Reddit (`https://www.reddit.com/user/Splitvote/`) e Twitch (`https://www.twitch.tv/splitvote`) a `lib/social-links.ts`
 
 ---
 

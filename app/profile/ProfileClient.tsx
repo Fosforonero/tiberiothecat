@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { CreditCard, Loader2, Check, Star, ExternalLink } from 'lucide-react'
+import { CreditCard, Loader2, Check, Star, ExternalLink, ChevronRight } from 'lucide-react'
 
 const AVATARS = ['🌍', '🔥', '⚡', '🧠', '🎭', '👾', '🦁', '🐺', '🦊', '🐉', '🌙', '☀️', '🎯', '🏆', '💎', '🌊', '🎪', '🚀', '🎲', '🧩']
 
@@ -489,6 +489,36 @@ export default function ProfileClient({
           'Save Profile'
         )}
       </button>
+
+      {/* ── Personality ── */}
+      <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-5 sm:p-6">
+        <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">🧭 Moral Personality</h2>
+        {votesCount >= 3 ? (
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="font-bold text-purple-400 text-sm">Your archetype is ready</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">Discover your moral profile based on your SplitVote choices.</p>
+            </div>
+            <Link
+              href="/personality"
+              className="flex-shrink-0 flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors"
+            >
+              View <ChevronRight size={12} />
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <p className="font-bold text-white text-sm mb-3">Discover your moral archetype</p>
+            <div className="h-1.5 bg-white/5 rounded-full mb-2">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all"
+                style={{ width: `${Math.min(100, Math.round((votesCount / 3) * 100))}%` }}
+              />
+            </div>
+            <p className="text-xs text-[var(--muted)]">{votesCount} / 3 votes — keep voting to unlock your personality</p>
+          </div>
+        )}
+      </div>
 
       {/* ── Coming soon ── */}
       <div className="rounded-2xl border border-dashed border-[var(--border)] p-5 sm:p-6 text-center">

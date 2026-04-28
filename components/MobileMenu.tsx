@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import {
   Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap,
   HelpCircle, Compass, UserPlus, Home, BookOpen,
-  LayoutDashboard, LogOut, Mail,
+  LayoutDashboard, LogOut, Mail, Sparkles,
 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -181,6 +181,13 @@ export default function MobileMenu() {
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                     <Compass size={15} className="text-cyan-400 flex-shrink-0" />
                     <span style={LABEL}>{isIT ? 'Il mio profilo' : 'My Profile'}</span>
+                  </Link>
+
+                  <Link href={isIT ? '/it/personality' : '/personality'} onClick={close} role="menuitem" style={ITEM}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                    <Sparkles size={15} className="text-purple-400 flex-shrink-0" />
+                    <span style={LABEL}>{isIT ? 'Personalità Morale' : 'Moral Personality'}</span>
                   </Link>
 
                   <Link href="/dashboard" onClick={close} role="menuitem" style={ITEM}

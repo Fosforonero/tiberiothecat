@@ -183,6 +183,31 @@ export default async function DashboardPage() {
         streakDays={streakDays}
       />
 
+      {/* ── Personality entry ── */}
+      <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-5 mb-8 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center flex-shrink-0">
+            <span className="text-lg">🧭</span>
+          </div>
+          <div>
+            <p className="font-bold text-purple-400 text-sm">
+              {votesCount >= 3 ? 'Your Moral Personality' : 'Unlock Your Moral Personality'}
+            </p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">
+              {votesCount >= 3
+                ? 'Discover your archetype based on your votes.'
+                : `Vote on ${Math.max(0, 3 - votesCount)} more dilemma${3 - votesCount === 1 ? '' : 's'} to unlock.`}
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/personality"
+          className="text-xs font-bold px-4 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors flex-shrink-0"
+        >
+          {votesCount >= 3 ? 'View →' : `${votesCount} / 3`}
+        </Link>
+      </div>
+
       {/* ── Access status ── */}
       {ents.isAdmin ? (
         <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-5 mb-8 flex items-center gap-3">
