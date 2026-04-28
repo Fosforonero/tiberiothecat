@@ -3,13 +3,38 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Full IT profile audit + mobile landscape responsive
+Ultimo aggiornamento: 28 Aprile 2026 — Stripe QA audit + error handling fix
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Stripe QA Audit + Error Handling Fix (28 Apr 2026)
+
+**Obiettivo**: audit statico completo del flow Stripe (checkout, subscription, portal, webhook, entitlements, AdSlot, idempotency); fix bug mancante try/catch su chiamate Stripe API; preparare checklist manuale QA per esecuzione con Stripe CLI.
+
+**Bug trovato e corretto**:
+- `app/api/stripe/checkout/route.ts`: `stripe.checkout.sessions.create()` non wrapped in try/catch — se Stripe throwava (timeout, price ID non valido, rate limit), Next.js restituiva un 500 non-JSON e il client mostrava "Network error" generico invece di un messaggio utile. Fix: aggiunto try/catch con `console.error` e return 500 JSON.
+- `app/api/stripe/subscription/route.ts`: stessa situazione su `stripe.checkout.sessions.create()`. Fix identico.
+- `app/api/stripe/portal/route.ts`: stessa situazione su `stripe.billingPortal.sessions.create()`. Fix identico.
+
+**Audit statico — risultati**:
+- Webhook idempotency (`lib/stripe-webhook-events.ts`): implementazione corretta, copre tutti i casi edge (primo invio, duplicato processed, failed reclaim, stale processing reclaim, race condition). ✅
+- Firma webhook: verificata prima del processing, signature error → 400. ✅
+- Premium activation: `checkout.session.completed` type=subscription → `is_premium=true` + `stripe_subscription_id` + `subscription_status='active'`. ✅
+- Cancellation: `customer.subscription.deleted` → `is_premium=false` + `stripe_subscription_id=null` + `subscription_status='cancelled'`. ✅
+- AdSlot: legge `/api/me/entitlements`, nasconde se `noAds=true`, non renderizza durante caricamento (`null` state). ✅
+- `/api/me/entitlements`: usa Supabase user client per auth, wrapped in try/catch con fallback ANON_ENTITLEMENTS. ✅
+- Runbook LAUNCH_AUDIT.md: allineato al codice — endpoint, error codes, failure modes tutti corretti. ✅
+- Log safety: nessun log di PII — solo userId tronco, error.code, customerId tronco. ✅
+
+**Stato Stripe QA**: preparato per esecuzione manuale. Runbook in `LAUNCH_AUDIT.md` sezione "Stripe QA End-to-End" pronto e allineato al codice. Da eseguire con `stripe listen` + carta test prima di attivare Premium a utenti reali.
+
+**Nessuna modifica a**: vote flow, Supabase schema, Redis, i18n, analytics, prezzi, entitlement logic, product behavior.
 
 ---
 

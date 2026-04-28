@@ -37,10 +37,16 @@ export async function POST(_req: NextRequest) {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
-  const session = await stripe.billingPortal.sessions.create({
-    customer:   profile.stripe_customer_id,
-    return_url: `${baseUrl}/profile`,
-  })
+  let session: Stripe.BillingPortal.Session
+  try {
+    session = await stripe.billingPortal.sessions.create({
+      customer:   profile.stripe_customer_id,
+      return_url: `${baseUrl}/profile`,
+    })
+  } catch (err) {
+    console.error('[stripe/portal] billingPortal.sessions.create failed:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: 'Could not open billing portal' }, { status: 500 })
+  }
 
   return NextResponse.json({ url: session.url })
 }

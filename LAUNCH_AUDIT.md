@@ -276,9 +276,11 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 
 #### Checklist stato
 
-- [ ] **Test acquisto premium con carta test e Stripe CLI** — ⚠️ Ancora da eseguire
-- [ ] **Verificare customer portal funzionante (cancellazione)** — ⚠️ Ancora da eseguire
+- [ ] **Test acquisto premium con carta test e Stripe CLI** — ⚠️ Ancora da eseguire manualmente
+- [ ] **Verificare customer portal funzionante (cancellazione)** — ⚠️ Ancora da eseguire manualmente
 - [x] Idempotenza webhook implementata e verificata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client; comportamento dedup confermato operativo
+- [x] **Bug fix (28 Apr 2026)**: aggiunto try/catch su `stripe.checkout.sessions.create()` in checkout, subscription e `billingPortal.sessions.create()` in portal — prima, Stripe throw → 500 non-JSON → client "Network error"; ora → 500 JSON con messaggio utile
+- [x] **Audit statico completo (28 Apr 2026)**: webhook lifecycle, idempotency, premium activation, cancellation, AdSlot, entitlements API, log safety — tutti verificati. Runbook allineato al codice.
 - [ ] **Stripe price IDs reali configurati in Vercel** (`STRIPE_PRICE_ID_PREMIUM` + `STRIPE_PRICE_ID_NAME_CHANGE`) — ⚠️ Da verificare prima di go-live
 
 ### Blog Dynamic Storage

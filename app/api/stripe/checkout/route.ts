@@ -44,15 +44,21 @@ export async function POST(req: NextRequest) {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [{ price: process.env.STRIPE_PRICE_ID_NAME_CHANGE!, quantity: 1 }],
-    mode: 'payment',
-    success_url: `${baseUrl}/profile?name_changed=1`,
-    cancel_url: `${baseUrl}/profile?payment=cancelled`,
-    metadata: { userId: user.id, newName: name, type: 'name_change' },
-    customer_email: user.email ?? undefined,
-  })
+  let session: Stripe.Checkout.Session
+  try {
+    session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [{ price: process.env.STRIPE_PRICE_ID_NAME_CHANGE!, quantity: 1 }],
+      mode: 'payment',
+      success_url: `${baseUrl}/profile?name_changed=1`,
+      cancel_url: `${baseUrl}/profile?payment=cancelled`,
+      metadata: { userId: user.id, newName: name, type: 'name_change' },
+      customer_email: user.email ?? undefined,
+    })
+  } catch (err) {
+    console.error('[stripe/checkout] sessions.create failed:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: 'Payment initiation failed' }, { status: 500 })
+  }
 
   return NextResponse.json({ url: session.url })
 }
