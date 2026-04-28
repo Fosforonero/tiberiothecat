@@ -31,7 +31,7 @@ const INSIGHTS: InsightMap = {
       title: 'Expert Insight',
       expertType: 'Ethics',
       body: 'Two major frameworks divide most moral intuitions here. Consequentialism asks which choice produces the best outcome. Deontology says some actions are wrong regardless of outcome — there are lines you shouldn\'t cross. Most people apply both without realizing it.',
-      whyPeopleSplit: 'People split because they\'re reasoning from different ethical systems — and both positions are internally consistent.',
+      whyPeopleSplit: 'People split because when consequences are severe enough, even principled people temporarily suspend their rules — and when a rule feels sacred enough, even outcome-focused people refuse to cross it. The threshold that triggers each response is different for everyone.',
       whatYourAnswerMaySuggest: {
         a: 'Choosing this option may suggest you\'re weighing outcomes — what matters most is that the result is as good as possible, even when the action feels uncomfortable.',
         b: 'Choosing this option may suggest you\'re guided by principles — some lines feel like they shouldn\'t be crossed regardless of what comes after.',
@@ -42,7 +42,7 @@ const INSIGHTS: InsightMap = {
       title: 'Parere esperto',
       expertType: 'Etica',
       body: 'Due grandi correnti dividono la maggior parte delle intuizioni morali. Il consequenzialismo chiede quale scelta produca il miglior esito. La deontologia dice che alcune azioni sono sbagliate indipendentemente dalle conseguenze. La maggior parte delle persone applica entrambi senza rendersene conto.',
-      whyPeopleSplit: 'Le persone si dividono perché ragionano da sistemi etici diversi — ed entrambe le posizioni sono internamente coerenti.',
+      whyPeopleSplit: 'Le persone si dividono perché quando le conseguenze sono abbastanza gravi, anche chi ha principi forti finisce per sospenderli — e quando una regola sembra sacra abbastanza, anche chi ragiona sugli esiti si rifiuta di violarla. La soglia che attiva l\'una o l\'altra risposta è diversa per ciascuno.',
       whatYourAnswerMaySuggest: {
         a: 'Scegliere questa opzione potrebbe suggerire che stai pesando i risultati — ciò che conta di più è che l\'esito sia il migliore possibile, anche quando l\'azione sembra scomoda.',
         b: 'Scegliere questa opzione potrebbe suggerire che sei guidato da principi — certi confini sembrano non dovessero essere varcati indipendentemente da ciò che viene dopo.',
@@ -199,7 +199,7 @@ const INSIGHTS: InsightMap = {
       title: 'Expert Insight',
       expertType: 'Social Psychology',
       body: 'Loyalty is one of the most powerful moral emotions — research shows it can override both rules and consequences when a close relationship feels at stake. People often judge the same action differently depending on who it affects.',
-      whyPeopleSplit: 'People split because loyalty and universal principles come into direct conflict here — and both feel like the more morally serious position, depending on your values.',
+      whyPeopleSplit: 'People split because loyalty is felt, while fairness is reasoned. In-group obligation activates viscerally; abstract principles require deliberate thought. Under pressure, felt obligations often win — but not everyone accepts that they should.',
       whatYourAnswerMaySuggest: {
         a: 'This choice may suggest you weight personal bonds highly — relationships carry moral weight that abstract principles sometimes can\'t override.',
         b: 'This choice may suggest you apply more universal principles — fairness means consistency, even toward people we care about.',
@@ -210,7 +210,7 @@ const INSIGHTS: InsightMap = {
       title: 'Parere esperto',
       expertType: 'Psicologia Sociale',
       body: 'La lealtà è una delle emozioni morali più potenti — la ricerca mostra che può prevalere sia sulle regole che sulle conseguenze quando una relazione stretta sembra in gioco. Le persone spesso giudicano la stessa azione in modo diverso a seconda di chi ne è colpito.',
-      whyPeopleSplit: 'Le persone si dividono perché lealtà e principi universali entrano in conflitto diretto — ed entrambe sembrano la posizione moralmente più seria, a seconda dei propri valori.',
+      whyPeopleSplit: 'Le persone si dividono perché la lealtà si sente, mentre l\'equità si ragiona. L\'obbligo verso chi ci è vicino si attiva in modo viscerale; i principi astratti richiedono pensiero deliberato. Sotto pressione, gli obblighi sentiti spesso vincono — ma non tutti accettano che sia giusto così.',
       whatYourAnswerMaySuggest: {
         a: 'Questa scelta potrebbe suggerire che dai molto peso ai legami personali — le relazioni hanno un peso morale che i principi astratti a volte non possono superare.',
         b: 'Questa scelta potrebbe suggerire che applichi principi più universali — l\'equità significa coerenza, anche verso chi amiamo.',

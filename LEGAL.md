@@ -21,6 +21,7 @@ Compliance posture:
 
 Recent sprints:
 
+- `feat: polish anonymous sharing insights and content qa` — 28 Apr 2026. Share flows hardened: story card, webShareText, and instagramCaption no longer expose the user's own vote choice — all share content is now aggregate-only. PersonalityClient IT loginHref fixed. No new data collection; net privacy improvement. LEGAL.md sprint trigger: share flows that include or expose a user's selected vote ✓ resolved.
 - `774c131 fix: harden redirects json-ld and api inputs` — 28 Apr 2026. Redirect safety, JSON-LD escaping, GA script proxy hardening, input bounds, reduced PII logging.
 - `chore: reconcile legal consent and policy docs` — 28 Apr 2026. Granular cookie consent banner, Privacy Policy EN/IT full reconciliation, Terms EN/IT alignment, Footer cookie settings link.
 
@@ -119,6 +120,8 @@ Update this file and the public legal pages when any sprint changes:
 - AI generation, content moderation, autopublish/draft approval
 - Personality expansion, zodiac overlays, birth date/month collection, or personality-style profiling changes
 - Geo features, country/city profile fields, approximate IP-derived location, country breakdowns, demographic fields, leaderboards
+- New public locales or translated legal/cookie pages
+- Share flows that include or expose a user's selected vote
 - Internal comments, discussion threads, reporting, moderation, or community features
 - Security controls that change data processing, IP handling, logging, rate limiting, or admin access
 

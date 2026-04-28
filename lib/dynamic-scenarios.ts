@@ -132,6 +132,20 @@ export async function rejectDraftScenario(id: string): Promise<boolean> {
   return true
 }
 
+type PatchableFields = Pick<DynamicScenario, 'question' | 'optionA' | 'optionB' | 'seoTitle' | 'seoDescription'>
+
+export async function patchApprovedScenario(
+  id: string,
+  patch: Partial<PatchableFields>,
+): Promise<boolean> {
+  const scenarios = await getDynamicScenarios()
+  const idx = scenarios.findIndex(s => s.id === id)
+  if (idx === -1) return false
+  scenarios[idx] = { ...scenarios[idx], ...patch }
+  await redis.set(DYNAMIC_KEY, scenarios)
+  return true
+}
+
 // ── Feedback score update ────────────────────────────────────
 
 /**

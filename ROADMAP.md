@@ -3,11 +3,28 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Guided Category Path MVP completato
+Ultimo aggiornamento: 28 Aprile 2026 — Social Share + Insight + Content QA Polish completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
+
+---
+
+## Sprint completati — Social Share + Insight + Content QA Polish (28 Apr 2026)
+
+- [x] `app/play/[id]/VoteClientPage.tsx` — aggiunto pulsante "Share this dilemma" / "Condividi questo dilemma" pre-voto: Web Share API + clipboard fallback; solo domanda + link, zero percentuali
+- [x] `app/results/[id]/ResultsClientPage.tsx` — `webShareText` ora sempre aggregato (maggioranza, non voto utente); rimossa riga "I voted:" / "Ho votato:" da `instagramCaption`; `storyCardUrl` senza parametro `voted`
+- [x] `app/api/story-card/route.tsx` — rimosso `votedLabel` ("You chose" / "Hai scelto"); colori barre uniformi (nessuna evidenza del voto personale); parametro `voted` rimosso
+- [x] `lib/expert-insights.ts` — migliorati `whyPeopleSplit` per `morality` (soglia che attiva ciascun sistema etico) e `loyalty` (lealtà si sente, equità si ragiona)
+- [x] `app/personality/PersonalityClient.tsx` — fix IT bug: `loginHref` ora `/login?locale=it` per utenti IT non loggati
+- [x] `lib/dynamic-scenarios.ts` — aggiunto `patchApprovedScenario(id, fields)` per patch testo su scenari Redis approvati
+- [x] `app/api/admin/dilemmas/[id]/route.ts` — nuovo endpoint `PATCH /api/admin/dilemmas/[id]` per correggere refusi in scenari Redis (admin-only); usare per correggere `dipendeme` → `dipendente` sullo scenario IT segnalato
+- [x] Nessun DB schema, nessun paid feature, nessun nuovo tracking
+
+**Nota fix typo Redis**: per correggere `dipendeme` → `dipendente` sullo scenario AI approvato:
+1. `GET /api/admin/dilemmas?locale=it&status=approved` → trova l'`id` dello scenario con il refuso
+2. `PATCH /api/admin/dilemmas/{id}` con body `{ "optionA": "..." }` (o il campo corretto)
 
 ---
 
@@ -21,6 +38,16 @@ Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimita
 - [x] Results pages EN/IT — leggono path params; calcolano `nextPathId` via `getFreshNextScenarioIdByCategory`; passano tutto a ResultsClientPage
 - [x] ResultsClientPage — CTA section path-aware: "Continue path →" (step < target), "Path complete 🎉" + browse (step = target), "No fresh dilemmas" (esaurito); progress indicator inline
 - [x] Nessun DB schema, nessun auth change, nessun paid feature, nessun nuovo tracking oltre eventi GA già esistenti
+
+---
+
+## Prossimo Sprint Prioritario — da definire
+
+Candidati post-polish:
+- i18n espansione: prossima lingua `es` (spagnolo), poi `pt-BR`, poi `fr` — seguire lo stesso pattern middleware + route duplicate + CATEGORY_LABELS_*
+- Admin: editor scenari inline nel dashboard admin (form + save via PATCH endpoint già disponibile)
+- Performance: rimuovere `force-dynamic` da `play/[id]` e `results/[id]`, aggiungere `revalidate=60` (vedere audit)
+- Stripe webhook idempotency (tabella `webhook_events` con unique su `stripe_event_id`)
 
 ---
 
@@ -1055,6 +1082,7 @@ Non fare insieme a feature/product sprint.
 - [ ] Admin scoring dashboard con breakdown di viral/SEO/novelty/feedback
 - [ ] Weekly digest email
 - [ ] Friend challenge leaderboard
+- [ ] **Content QA/refusi**: controllo periodico static + dynamic approved, soprattutto IT e contenuti AI approvati
 - [ ] **Spanish localization (`es`)**: route `/es`, static scenarios, play/results/category/blog/legal/personality, hreflang, sitemap, Social Content Factory captions
 - [ ] **Brazilian Portuguese localization (`pt-BR`)**: dopo ES stabile; tono Brazil-first, non portoghese generico
 - [ ] **French localization (`fr`)**: dopo PT-BR, con legal/cookie copy review

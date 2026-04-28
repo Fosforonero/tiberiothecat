@@ -55,53 +55,57 @@ function Spinner() {
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
 const EN_COPY = {
-  back:           '← All dilemmas',
-  challengeTitle: '🔥 Someone challenged you!',
-  challengeText:  "A friend wants to know which side you're on. Choose wisely.",
-  joinVoted:      (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
-  alreadyVoted:   '✅ You already voted',
-  canChange:      (t: string) => `🕐 Can change for ${t}`,
-  voteLocked:     '🔒 Vote locked',
-  yourChoice:     'YOUR CHOICE',
-  or:             'OR',
-  yourVote:       '← your vote',
-  seeResults:     'See results →',
-  nextDilemma:    'Next dilemma →',
-  browsedAll:     "You've answered all available dilemmas. Browse all →",
-  counting:       'Counting your vote…',
-  voteError:      'Something went wrong. Please try again.',
-  disclaimer:     'Anonymous voting. No account required. Results update in real time.',
-  optionA:        'Option A',
-  optionB:        'Option B',
-  graceCountdown: (s: number) => `Recording in ${s}…`,
-  graceHint:      'Changed your mind? You have a short window to switch before it\'s recorded.',
-  graceUndo:      'Undo',
-  graceConfirm:   'Confirm now',
+  back:                '← All dilemmas',
+  challengeTitle:      '🔥 Someone challenged you!',
+  challengeText:       "A friend wants to know which side you're on. Choose wisely.",
+  joinVoted:           (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
+  alreadyVoted:        '✅ You already voted',
+  canChange:           (t: string) => `🕐 Can change for ${t}`,
+  voteLocked:          '🔒 Vote locked',
+  yourChoice:          'YOUR CHOICE',
+  or:                  'OR',
+  yourVote:            '← your vote',
+  seeResults:          'See results →',
+  nextDilemma:         'Next dilemma →',
+  browsedAll:          "You've answered all available dilemmas. Browse all →",
+  counting:            'Counting your vote…',
+  voteError:           'Something went wrong. Please try again.',
+  disclaimer:          'Anonymous voting. No account required. Results update in real time.',
+  optionA:             'Option A',
+  optionB:             'Option B',
+  graceCountdown:      (s: number) => `Recording in ${s}…`,
+  graceHint:           'Changed your mind? You have a short window to switch before it\'s recorded.',
+  graceUndo:           'Undo',
+  graceConfirm:        'Confirm now',
+  shareQuestion:       'Share this dilemma',
+  shareQuestionCopied: '✅ Link copied!',
 }
 
 const IT_COPY = {
-  back:           '← Tutti i dilemmi',
-  challengeTitle: '🔥 Ti hanno sfidato!',
-  challengeText:  'Un amico vuole sapere da che parte stai. Scegli con cura.',
-  joinVoted:      (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
-  alreadyVoted:   '✅ Hai già votato',
-  canChange:      (t: string) => `🕐 Puoi cambiare per altri ${t}`,
-  voteLocked:     '🔒 Voto bloccato',
-  yourChoice:     'LA TUA SCELTA',
-  or:             'OPPURE',
-  yourVote:       '← il tuo voto',
-  seeResults:     'Vedi risultati →',
-  nextDilemma:    'Prossimo dilemma →',
-  browsedAll:     'Hai risposto a tutti i dilemmi disponibili. Sfoglia tutti →',
-  counting:       'Conteggio del tuo voto…',
-  voteError:      'Qualcosa è andato storto. Riprova.',
-  disclaimer:     'Voto anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
-  optionA:        'Opzione A',
-  optionB:        'Opzione B',
-  graceCountdown: (s: number) => `Registrazione tra ${s}…`,
-  graceHint:      'Hai cambiato idea? Hai qualche secondo per correggere prima che venga registrato.',
-  graceUndo:      'Annulla',
-  graceConfirm:   'Conferma subito',
+  back:                '← Tutti i dilemmi',
+  challengeTitle:      '🔥 Ti hanno sfidato!',
+  challengeText:       'Un amico vuole sapere da che parte stai. Scegli con cura.',
+  joinVoted:           (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
+  alreadyVoted:        '✅ Hai già votato',
+  canChange:           (t: string) => `🕐 Puoi cambiare per altri ${t}`,
+  voteLocked:          '🔒 Voto bloccato',
+  yourChoice:          'LA TUA SCELTA',
+  or:                  'OPPURE',
+  yourVote:            '← il tuo voto',
+  seeResults:          'Vedi risultati →',
+  nextDilemma:         'Prossimo dilemma →',
+  browsedAll:          'Hai risposto a tutti i dilemmi disponibili. Sfoglia tutti →',
+  counting:            'Conteggio del tuo voto…',
+  voteError:           'Qualcosa è andato storto. Riprova.',
+  disclaimer:          'Voto anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
+  optionA:             'Opzione A',
+  optionB:             'Opzione B',
+  graceCountdown:      (s: number) => `Registrazione tra ${s}…`,
+  graceHint:           'Hai cambiato idea? Hai qualche secondo per correggere prima che venga registrato.',
+  graceUndo:           'Annulla',
+  graceConfirm:        'Conferma subito',
+  shareQuestion:       'Condividi questo dilemma',
+  shareQuestionCopied: '✅ Link copiato!',
 }
 
 export default function VoteClientPage({
@@ -125,6 +129,7 @@ export default function VoteClientPage({
   const [loading, setLoading] = useState(false)
   const [voteError, setVoteError] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
+  const [questionLinkCopied, setQuestionLinkCopied] = useState(false)
   const router = useRouter()
 
   // Grace UX — refs prevent stale closures in timers
@@ -256,6 +261,22 @@ export default function VoteClientPage({
       setLoading(false)
       setSubmittedOption(null)
       setVoteError(true)
+    }
+  }
+
+  async function handleShareQuestion() {
+    const shareUrl = `${BASE_URL}${localePrefix}/play/${scenario.id}`
+    const shareText = locale === 'it'
+      ? `"${scenario.question}" — cosa sceglieresti?`
+      : `"${scenario.question}" — what would you choose?`
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: scenario.question, text: shareText, url: shareUrl })
+      } catch { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
+      setQuestionLinkCopied(true)
+      setTimeout(() => setQuestionLinkCopied(false), 2000)
     }
   }
 
@@ -530,6 +551,18 @@ export default function VoteClientPage({
             <p className="text-center text-xs text-[var(--muted)] mt-10 opacity-60">
               {copy.disclaimer}
             </p>
+
+            {!submittedOption && !loading && (
+              <div className="mt-6 text-center">
+                <button
+                  onClick={handleShareQuestion}
+                  className="text-xs text-[var(--muted)] hover:text-white transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span aria-hidden>📤</span>
+                  {questionLinkCopied ? copy.shareQuestionCopied : copy.shareQuestion}
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

@@ -228,7 +228,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     ? `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1&ref=${referralCode}`
     : `${BASE_URL}${sharePrefix}/play/${scenario.id}?challenge=1`
   const ogImageUrl = `${BASE_URL}/api/og?id=${scenario.id}`
-  const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}${voted ? `&voted=${voted}` : ''}&locale=${locale}`
+  const storyCardUrl = `${BASE_URL}/api/story-card?id=${scenario.id}&locale=${locale}`
 
   const winnerOption = pctA > pctB ? 'a' : pctA < pctB ? 'b' : null
   const majorityPct = pctA > pctB ? pctA : pctB
@@ -239,14 +239,10 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const isMinority = pctVoted !== null && pctVoted < 50
   const isTie = pctA === pctB
 
-  // Punchy share text using winner/chosen option
-  const pctChosen = pctVoted ?? majorityPct
-  const labelChosen = voted
-    ? (voted === 'a' ? scenario.optionA : scenario.optionB)
-    : majorityLabel
+  // Aggregate share text — always uses majority stats, never reveals user's own vote
   const webShareText = sharePrefix === '/it'
-    ? `Il ${pctChosen}% ha scelto "${labelChosen}". Tu cosa faresti?\n"${scenario.question}"`
-    : `${pctChosen}% chose "${labelChosen}". What would you do?\n"${scenario.question}"`
+    ? `Il ${majorityPct}% ha scelto "${majorityLabel}". Tu cosa faresti?\n"${scenario.question}"`
+    : `${majorityPct}% chose "${majorityLabel}". What would you do?\n"${scenario.question}"`
 
   // Platform share texts
   const twitterText = sharePrefix === '/it'
@@ -256,8 +252,8 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     ? `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
     : `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
   const instagramCaption = sharePrefix === '/it'
-    ? `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.${voted ? `\n\nHo votato: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
-    : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.${voted ? `\n\nI voted: ${voted === 'a' ? scenario.optionA : scenario.optionB}` : ''}\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
+    ? `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
+    : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`

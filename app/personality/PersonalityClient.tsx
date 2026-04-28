@@ -103,7 +103,7 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
 
   const copy = locale === 'it' ? IT_COPY : EN_COPY
   const homeHref = locale === 'it' ? '/it' : '/'
-  const loginHref = '/login'
+  const loginHref = locale === 'it' ? '/login?locale=it' : '/login'
 
   useEffect(() => {
     fetch(locale === 'it' ? '/api/personality?locale=it' : '/api/personality')

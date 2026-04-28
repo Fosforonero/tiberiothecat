@@ -12,13 +12,13 @@ function trunc(text: string, max: number): string {
 }
 
 /**
- * GET /api/story-card?id={scenarioId}&voted=a|b&locale=en|it
+ * GET /api/story-card?id={scenarioId}&locale=en|it
  * Returns a 1080×1920 PNG story card ready for Instagram/TikTok Stories.
+ * Card shows aggregate results only — no personal vote data.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const id     = searchParams.get('id') ?? 'trolley'
-  const voted  = searchParams.get('voted') as 'a' | 'b' | null
   const locale = searchParams.get('locale') ?? 'en'
   const isIT   = locale === 'it'
 
@@ -48,17 +48,14 @@ export async function GET(request: NextRequest) {
     }
   } catch { /* fallback 50/50 */ }
 
-  const colorA = voted === 'a' ? '#ef4444' : 'rgba(239,68,68,0.45)'
-  const colorB = voted === 'b' ? '#3b82f6' : 'rgba(59,130,246,0.45)'
+  const colorA = 'rgba(239,68,68,0.65)'
+  const colorB = 'rgba(59,130,246,0.65)'
 
-  const subtitle     = isIT ? 'Cosa sceglierebbe il mondo?' : 'What would the world choose?'
-  const votesLabel   = isIT
+  const subtitle   = isIT ? 'Cosa sceglierebbe il mondo?' : 'What would the world choose?'
+  const votesLabel = isIT
     ? `${totalVotes.toLocaleString('it-IT')} voti nel mondo`
     : `${totalVotes.toLocaleString()} votes worldwide`
-  const votedLabel   = voted
-    ? `${isIT ? 'Hai scelto' : 'You chose'}: ${trunc(voted === 'a' ? optA : optB, 36)}`
-    : null
-  const ctaText      = isIT ? 'Cosa sceglieresti TU? →' : 'What would YOU choose? →'
+  const ctaText    = isIT ? 'Cosa sceglieresti TU? →' : 'What would YOU choose? →'
   const urlLabel     = `splitvote.io/play/${id}`
 
   return new ImageResponse(
@@ -173,11 +170,6 @@ export async function GET(request: NextRequest) {
           <div style={{ display: 'flex', fontSize: 28, color: 'rgba(255,255,255,0.35)' }}>
             {votesLabel}
           </div>
-          {votedLabel && (
-            <div style={{ display: 'flex', fontSize: 28, color: 'rgba(255,255,255,0.5)' }}>
-              {votedLabel}
-            </div>
-          )}
         </div>
 
         {/* CTA */}

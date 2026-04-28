@@ -4,7 +4,7 @@ Working PM notes for premium, user-generated polls, learning paths, social growt
 
 This file is intentionally strategic. Implementation prompts must still be scoped as small production-safe sprints.
 
-Last reviewed: 28 Apr 2026
+Last reviewed: 28 Apr 2026 (Social Share + Insight + Content QA Polish sprint)
 
 ---
 
@@ -38,6 +38,9 @@ Current priority override:
 - "Next dilemma" must avoid questions the user already answered whenever possible.
 - Vote changes must be obvious and low-friction.
 - Add gamified paths only after the basic fresh-question loop is reliable.
+- Share should focus on questions and live aggregate results, not exposing a user's own vote by default.
+- Post-vote insights are a strong retention feature; keep improving quality, specificity, and localization.
+- Content QA/refuso checks are production polish, especially for AI-generated approved dilemmas.
 
 ---
 
@@ -419,22 +422,59 @@ If internal threads are built later:
 
 Do not build all ideas at once. Recommended order after current social-content cleanup:
 
-1. Profile UX + Personality share card
-2. Premium dashboard simplification and VIP/no-ads polish
-3. Stripe production QA + webhook idempotency
-4. Paid poll submission design + legal review
-5. User-submitted poll MVP with admin review
-6. Micro-learning paths MVP
-7. Public bacheca with badges/trophies
-8. Cosmetic/VIP visual system
-9. Geo quests
-10. Discussion/community layer
+1. Social/share + insight polish
+2. Profile UX + Personality share card
+3. Premium dashboard simplification and VIP/no-ads polish
+4. Stripe production QA + webhook idempotency
+5. Paid poll submission design + legal review
+6. User-submitted poll MVP with admin review
+7. Micro-learning paths MVP
+8. Public bacheca with badges/trophies
+9. Cosmetic/VIP visual system
+10. Geo quests
+11. Discussion/community layer
 
 ---
 
 ## Dedicated Sprint Plan
 
 Use these as the next implementation ladder. Each sprint should be given to Claude separately and should finish with typecheck, build, diff check, commit, and push.
+
+### Immediate Sprint — Social Share + Insight + Content QA Polish
+
+Goal: improve the share loop and post-vote educational value without exposing the user's own vote.
+
+Scope:
+
+- Add pre-vote "Share question" action on play pages.
+- Keep post-vote sharing, but make it anonymous aggregate sharing:
+  - share question + live percentages
+  - do not include "I voted" / "You chose" / selected option by default
+- Update story cards so result cards do not reveal the user's vote unless a future explicit mode is added.
+- Improve Expert Insight quality and presentation after voting.
+- Fix IT personality/profile locale issues.
+- Run a lightweight content QA/refuso sweep for static and approved dynamic dilemmas, especially Italian text.
+
+Out of scope:
+
+- New social APIs
+- Auto-posting
+- New DB schema
+- New tracking beyond existing safe share events
+- New personality archetypes
+- Zodiac overlay
+
+Why now:
+
+- Sharing the question before a vote increases top-of-funnel.
+- Anonymous aggregate sharing matches the product promise better than "my vote" sharing.
+- Better post-vote insights increase session depth.
+- Content typos damage trust quickly during soft launch.
+
+Legal/docs:
+
+- No legal update expected if no new personal data is collected.
+- Maintain anonymous wording and avoid implying psychological diagnosis.
 
 ### ~~Guided Category Path MVP~~ — COMPLETED 28 Apr 2026
 

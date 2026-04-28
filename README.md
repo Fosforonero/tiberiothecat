@@ -194,6 +194,8 @@ Italian SEO is implemented with a lightweight `/it` route family:
 
 Sitemap is locale-aware, includes Italian static dilemma URLs, blog articles, SEO landing pages, and excludes draft dilemmas.
 
+Language expansion is planned but not immediate. EN/IT are enough for controlled soft launch. The next locale should be Spanish (`/es`), followed by Brazilian Portuguese (`pt-BR`) and French (`fr`). Chinese should be treated as a separate market-entry project, not a routine translation sprint. See `PRODUCT_STRATEGY.md` for gates and scope.
+
 **SEO technical standards:**
 - All page-level titles omit `| SplitVote` — the `template` in `app/layout.tsx` appends it automatically
 - `alternates.languages` with `en`, `it-IT`, `x-default` is present on all play, results, and landing pages for reciprocal hreflang
