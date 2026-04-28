@@ -423,8 +423,8 @@ export default function ProfileClient({
         {votesCount >= 3 ? (
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-bold text-purple-400 text-sm">Your archetype is ready</p>
-              <p className="text-xs text-[var(--muted)] mt-0.5">Discover your moral profile based on your SplitVote choices.</p>
+              <p className="font-bold text-purple-400 text-sm">{IT ? 'Il tuo archetipo è pronto' : 'Your archetype is ready'}</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">{IT ? 'Scopri il tuo profilo morale basato sulle tue scelte.' : 'Discover your moral profile based on your SplitVote choices.'}</p>
             </div>
             <Link
               href={IT ? '/it/personality' : '/personality'}
@@ -435,14 +435,14 @@ export default function ProfileClient({
           </div>
         ) : (
           <div>
-            <p className="font-bold text-white text-sm mb-3">Discover your moral archetype</p>
+            <p className="font-bold text-white text-sm mb-3">{IT ? 'Scopri il tuo archetipo morale' : 'Discover your moral archetype'}</p>
             <div className="h-1.5 bg-white/5 rounded-full mb-2">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all"
                 style={{ width: `${Math.min(100, Math.round((votesCount / 3) * 100))}%` }}
               />
             </div>
-            <p className="text-xs text-[var(--muted)]">{votesCount} / 3 votes — keep voting to unlock your personality</p>
+            <p className="text-xs text-[var(--muted)]">{votesCount} / 3 {IT ? 'voti — vota per sbloccare la personalità' : 'votes — keep voting to unlock your personality'}</p>
           </div>
         )}
       </div>
