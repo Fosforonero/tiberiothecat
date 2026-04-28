@@ -6,6 +6,8 @@ Live at **[splitvote.io](https://splitvote.io)**
 
 Legal/compliance tracking lives in **[LEGAL.md](./LEGAL.md)**. Read it before changing cookies, analytics, ads, auth/account data, payments, AI content generation, email, geo features, or public profile visibility.
 
+Product strategy and staged sprint planning live in **[PRODUCT_STRATEGY.md](./PRODUCT_STRATEGY.md)**. Read it before changing premium/VIP, user-submitted polls, personality sharing, public profiles, quests, cosmetics, learning paths, or community features.
+
 ---
 
 ## Stack

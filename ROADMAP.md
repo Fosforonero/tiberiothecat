@@ -7,6 +7,8 @@ Ultimo aggiornamento: 28 Aprile 2026 (sprint Security Hardening Pre-Scaling)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
+Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
+
 ---
 
 ## Sprint completati — Security Hardening Pre-Scaling (28 Apr 2026)

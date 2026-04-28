@@ -46,6 +46,7 @@ Related docs:
 - `README.md`
 - `ROADMAP.md`
 - `LAUNCH_AUDIT.md`
+- `PRODUCT_STRATEGY.md`
 
 ---
 
@@ -113,9 +114,11 @@ Update this file and the public legal pages when any sprint changes:
 - Cookies, localStorage, tracking scripts, analytics, AdSense, or Consent Mode
 - Auth, account data, profile visibility, public profiles, badges, streaks, missions, referrals
 - Payments, premium, subscriptions, refunds, Stripe webhook behavior
+- Paid poll submissions, poll credits, creator/VIP tiers, or user-generated content monetization
 - Email collection, transactional email, marketing email, Resend
 - AI generation, content moderation, autopublish/draft approval
 - Geo features, country breakdowns, demographic fields, leaderboards
+- Internal comments, discussion threads, reporting, moderation, or community features
 - Security controls that change data processing, IP handling, logging, rate limiting, or admin access
 
 ---
