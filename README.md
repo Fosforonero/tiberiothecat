@@ -141,6 +141,7 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v8_user_events.sql` | User event tracking for share_result mission | ✅ Applied |
 | `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ✅ Applied |
 | `migration_v10_content_events.sql` | Content events view + index — DRAFT, review before applying | ⏳ Pending |
+| `migration_v11_stripe_webhook_events.sql` | Stripe webhook idempotency table (`stripe_webhook_events`) | ⏳ Pending |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
@@ -381,6 +382,18 @@ Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBH
 Test locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
 Required production events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`.
 
+**Idempotency**: the webhook uses `lib/stripe-webhook-events.ts` to guard against double-processing Stripe retries. Each `stripe.event.id` is claimed in `public.stripe_webhook_events` before processing. If the same event arrives again (Stripe retry after 5xx), the handler returns 200 immediately without reprocessing. Requires `migration_v11_stripe_webhook_events.sql` to be applied. **Backward-compatible**: if the table is missing, processing continues as before and a `console.warn` is emitted — no silent failure.
+
+Stripe CLI testing (requires Stripe CLI installed and logged in):
+```bash
+# Forward local webhook
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+
+# Trigger a test event (in a second terminal)
+stripe trigger checkout.session.completed
+stripe trigger customer.subscription.updated
+```
+
 ### Entitlements system
 
 `lib/entitlements.ts` is the canonical source of truth for what a user can do. Never check `is_premium` directly in app code — always go through entitlements.
@@ -447,7 +460,7 @@ All `@splitvote.io` addresses route via Cloudflare Email Routing → Gmail. No p
 **GA collect proxy** (`/api/_g/g/collect`): forwards `X-Forwarded-For` to Google intentionally — required for accurate geo and session data in GA4. No raw IPs are stored server-side.
 
 ### Known issues / TODOs
-- Stripe webhook idempotency: if `checkout.session.completed` fires twice for the same session, `name_changes` would be incremented twice. Low probability (Stripe retry dedup), but not fully mitigated. Backlog: store processed `session_id` in DB to skip duplicates.
+- Stripe webhook idempotency: implemented in `lib/stripe-webhook-events.ts` + `app/api/stripe/webhook/route.ts`. Requires `migration_v11_stripe_webhook_events.sql` applied in Supabase to be fully active. Until then, the webhook is backward-compatible (processes events without idempotency guard, emits `console.warn`).
 - Cosmetic store / companion unlocks: logic exists for `equipped_frame` and `equipped_badge` in DB, but no unlock/store UI is implemented. Admin sees all existing badges from the `user_badges` table; no special unlock logic is needed until the store ships. See ROADMAP.
 - Stripe premium subscription/customer portal is implemented. Production requires the Stripe env vars and webhook events to remain configured in Vercel/Stripe.
 - Full framework upgrade (`next@16`, `react@19`, Node 24 LTS) is intentionally deferred to a dedicated sprint.

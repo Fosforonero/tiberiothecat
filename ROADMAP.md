@@ -3,13 +3,30 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — k6 Load Test Harness
+Ultimo aggiornamento: 28 Aprile 2026 — Stripe Webhook Idempotency
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Stripe Webhook Idempotency (28 Apr 2026)
+
+- [x] `supabase/migration_v11_stripe_webhook_events.sql` — tabella `stripe_webhook_events` con `stripe_event_id UNIQUE`, `status CHECK (processing/processed/failed)`, trigger `updated_at`, RLS abilitata (nessuna policy pubblica — service role bypassa RLS)
+- [x] `lib/stripe-webhook-events.ts` — tre helper: `claimWebhookEvent()`, `markWebhookEventProcessed()`, `markWebhookEventFailed()`
+- [x] `app/api/stripe/webhook/route.ts` — integrazione idempotency: claim before processing, mark processed on success, mark failed + return 500 on error (so Stripe retries); estratto `processStripeEvent()` helper interno
+- [x] **Backward-compatible**: se `migration_v11` non è ancora applicata, Postgres restituisce errore `42P01` (undefined_table) → il webhook processa come prima e logga `console.warn`; nessuna interruzione del servizio
+- [x] Flusso status: `processing` → `processed` (successo) | `failed` (errore, Stripe ritenta) → reset `processing` (retry allowed)
+- [x] Log sicuri: nessuna email, nome, payload Stripe o metadata sensibili — solo `userId.slice(0,8)`, `customerId.slice(0,12)`, error code DB
+- [x] README.md — migration v11 aggiunta alla tabella, nota idempotency nella sezione Stripe webhook, Known Issues aggiornato, Stripe CLI commands documentati
+- [x] LEGAL.md — nota nel recent sprints per audit trail webhook/payment
+
+**Comportamento se migration non è applicata**: `claimWebhookEvent()` riceve `insertError.code === '42P01'` da Postgres → restituisce `{ claimed: true, fallback: true }` → webhook processa normalmente → `markProcessed`/`markFailed` ricevono `42P01` e sono no-op → `console.warn` in ogni caso. Zero breaking change per utenti finali.
+
+**Prossimo step manuale**: applicare `supabase/migration_v11_stripe_webhook_events.sql` in Supabase dashboard → SQL Editor, poi verificare con `stripe trigger checkout.session.completed` tramite Stripe CLI che la riga venga creata in `stripe_webhook_events`.
 
 ---
 

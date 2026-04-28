@@ -21,6 +21,7 @@ Compliance posture:
 
 Recent sprints:
 
+- `feat: stripe webhook idempotency` — 28 Apr 2026. Added `stripe_webhook_events` table and idempotency helpers to prevent double-processing of Stripe retries. No new personal data collected; existing payment/subscription data handling is unchanged. The new table stores only `stripe_event_id`, `event_type`, `status`, and a sanitised error string — no PII, no payment card data, no email. LEGAL.md sprint trigger: payments / Stripe webhook behavior ✓ assessed — no privacy policy or terms update required; data processor (Stripe) and data flows are unchanged.
 - `feat: polish anonymous sharing insights and content qa` — 28 Apr 2026. Share flows hardened: story card, webShareText, and instagramCaption no longer expose the user's own vote choice — all share content is now aggregate-only. PersonalityClient IT loginHref fixed. No new data collection; net privacy improvement. LEGAL.md sprint trigger: share flows that include or expose a user's selected vote ✓ resolved.
 - `774c131 fix: harden redirects json-ld and api inputs` — 28 Apr 2026. Redirect safety, JSON-LD escaping, GA script proxy hardening, input bounds, reduced PII logging.
 - `chore: reconcile legal consent and policy docs` — 28 Apr 2026. Granular cookie consent banner, Privacy Policy EN/IT full reconciliation, Terms EN/IT alignment, Footer cookie settings link.
