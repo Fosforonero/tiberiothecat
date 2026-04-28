@@ -52,7 +52,7 @@ Current priority override:
 - Premium/admin entitlement logic is centralized in `lib/entitlements.ts`.
 - Premium/admin users do not see ads through `AdSlot` entitlement checks.
 - One-time paid rename flow exists.
-- User dashboard/profile exists, but UX still needs simplification.
+- User dashboard/profile UX simplified (28 Apr 2026): stats show XP/streak/votes/badges; premium benefits explicit (no ads, renames, submit polls); personality CTA promoted above trophy case in profile; coming-soon block removed from profile; public profile has "Public Profile" indicator.
 - Personality route exists (`/personality`, `/it/personality`).
 - Public profile route exists (`/u/[id]`) with basic public stats/badges.
 - XP, streaks, badges, daily missions exist at foundation level.
@@ -67,7 +67,7 @@ Current priority override:
 
 ## Not Started / Not Ready Yet
 
-- Dedicated simplified premium dashboard.
+- Dedicated simplified premium dashboard — ✅ basic UX done (28 Apr 2026); advanced features below still pending.
 - VIP-only visual identity features such as colored names, profile frames, special avatars, text styles.
 - Public profile board / bacheca with curated badges, trophies, skins, and privacy controls.
 - Personality share card image generation and social sharing from profile/personality.
@@ -200,13 +200,13 @@ Do not sell pay-to-win mechanics. Paid users must not affect:
 
 ### Future Premium Features
 
-- Simplified premium dashboard:
-  - no ads
-  - submitted poll status
-  - profile customization
-  - badges/trophies inventory
-  - personality share card
-  - billing/customer portal
+- Simplified premium dashboard — ✅ base done (28 Apr 2026):
+  - ✅ no ads — benefit confirmed in dashboard copy
+  - ✅ profile customization — avatar, name, demographics
+  - ✅ badges/trophies inventory — trophy case in profile
+  - ✅ billing/customer portal — Manage Billing button links to Stripe portal
+  - [ ] submitted poll status — polls section exists but only shown when polls > 0
+  - [ ] personality share card — personality page exists; card download exists; direct access from profile pending
 - VIP visual status:
   - name color
   - profile frame

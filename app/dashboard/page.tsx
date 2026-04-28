@@ -115,8 +115,6 @@ export default async function DashboardPage() {
   const streakDays = profile?.streak_days ?? 0
   const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
 
-  const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
-  const approvedCount = typedPolls.filter(p => p.status === 'approved').length
 
   // Fetch dynamic scenarios ONCE (no N+1 Redis calls)
   let dynamicMap = new Map<string, Awaited<ReturnType<typeof getDynamicScenarios>>[number]>()
@@ -223,7 +221,7 @@ export default async function DashboardPage() {
             <span className="text-2xl">⭐</span>
             <div>
               <p className="font-bold text-yellow-400 text-sm">Premium Active</p>
-              <p className="text-[var(--muted)] text-xs mt-0.5">All features unlocked.</p>
+              <p className="text-[var(--muted)] text-xs mt-0.5">No ads · Unlimited renames · Submit polls</p>
             </div>
           </div>
           <Link
@@ -237,7 +235,7 @@ export default async function DashboardPage() {
         <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="font-bold text-blue-400 text-sm">Free Plan</p>
-            <p className="text-[var(--muted)] text-xs mt-0.5">Upgrade for unlimited features.</p>
+            <p className="text-[var(--muted)] text-xs mt-0.5">Remove ads and unlock unlimited renames.</p>
           </div>
           <Link
             href="/profile#membership"
@@ -251,10 +249,10 @@ export default async function DashboardPage() {
       {/* ── Stats ── */}
       <div className="grid grid-cols-4 gap-3 mb-10">
         {[
-          { label: 'Dilemmas voted', value: votesCount },
-          { label: 'Polls submitted', value: typedPolls.length },
-          { label: 'Polls live', value: approvedCount },
-          { label: 'Badges earned', value: userBadges.length },
+          { label: 'Votes cast', value: votesCount },
+          { label: 'XP earned', value: xp },
+          { label: 'Day streak', value: streakDays },
+          { label: 'Badges', value: userBadges.length },
         ].map(stat => (
           <div key={stat.label} className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-4 text-center">
             <p className="text-2xl font-black text-white">{stat.value}</p>

@@ -3,13 +3,23 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Post-Idempotency Verification Sprint
+Ultimo aggiornamento: 28 Aprile 2026 — Profile UX Cleanup + Premium Dashboard Simplification
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Profile UX Cleanup + Premium Dashboard Simplification (28 Apr 2026)
+
+- [x] `app/dashboard/page.tsx` — stats grid riorganizzata: sostituiti "Polls submitted / Polls live" (sempre 0 per la maggioranza degli utenti) con "XP earned" e "Day streak" — dati rilevanti per tutti gli account; copy Premium: "No ads · Unlimited renames · Submit polls" (specifico); copy Free: "Remove ads and unlock unlimited renames" (chiaro beneficio)
+- [x] `app/profile/ProfileClient.tsx` — Moral Personality CTA spostata PRIMA della Trophy Case (era dopo il bottone Save — invisibile); rimossa sezione "Coming soon" con promesse false (Avatar shop, Frame shop, Streak tracker, Country leaderboard — nessuno implementato); lista benefit Premium corretta: rimossa "Exclusive avatar frames & badges" (non implementata), aggiunta "No ads — browse without interruptions" (implementata) e "Submit polls for the community to vote on" (implementata); rimossa nota "Premium packs coming soon" dall'avatar section
+- [x] `app/u/[id]/page.tsx` — aggiunto badge "👁 Public Profile" nella hero del profilo pubblico, allineato con Premium badge esistente — chiarisce visivamente che la pagina è pubblica
+
+**Nessuna modifica a**: Stripe, DB schema, entitlements, tracking, legal pages, auth. LEGAL.md non aggiornato — nessun cambio a dati pubblici, billing behavior, visibility default o ads behavior.
 
 ---
 
@@ -157,8 +167,8 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 
 - **Stripe QA end-to-end**: test acquisto premium con carta reale in produzione + customer portal cancellation + verifica migration v11 (sopra)
 - **i18n espansione `es`**: prossima lingua spagnolo — seguire pattern middleware + route duplicate + CATEGORY_LABELS_ES; attendere metriche traffico IT prima di iniziare
-- **Premium dashboard simplification**: ridurre friction onboarding premium, rendere i benefici più visibili
-- **Profile UX cleanup**: streak milestones, badge bacheca, share card profilo
+- **Stripe QA end-to-end** (ancora prioritario): test acquisto premium con carta reale + customer portal cancellation
+- **Streak milestones**: badge 7/15/30 giorni basati su `streak_days` già in DB — next gamification step
 
 ---
 

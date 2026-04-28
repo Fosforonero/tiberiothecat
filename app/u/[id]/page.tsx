@@ -95,13 +95,18 @@ export default async function PublicProfilePage({ params }: Props) {
       {/* ── Profile hero ── */}
       <div className="rounded-3xl border border-[var(--border)] bg-[#0d0d1a]/60 p-8 mb-8 text-center">
         <div className="text-7xl mb-4">{avatar}</div>
-        <h1 className="text-3xl font-black text-white mb-1">{displayName}</h1>
-        {profile.is_premium && (
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full mb-3">
-            ⭐ Premium
+        <h1 className="text-3xl font-black text-white mb-2">{displayName}</h1>
+        <div className="flex items-center justify-center gap-2 flex-wrap mb-2">
+          <span className="text-xs text-[var(--muted)] border border-white/10 px-2.5 py-0.5 rounded-full">
+            👁 Public Profile
           </span>
-        )}
-        <p className="text-[var(--muted)] text-sm mt-2">Member since {joinDate}</p>
+          {profile.is_premium && (
+            <span className="text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full">
+              ⭐ Premium
+            </span>
+          )}
+        </div>
+        <p className="text-[var(--muted)] text-sm mt-1">Member since {joinDate}</p>
         {profile.country_code && (
           <p className="text-[var(--muted)] text-sm mt-1">📍 {profile.country_code}</p>
         )}
