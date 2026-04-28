@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Migrations v11/v12 Applied + RLS Audit + v13
+Ultimo aggiornamento: 28 Aprile 2026 — Migration v13 Applied (user_polls write path fully hardened)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -206,7 +206,7 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 
 - [x] **migration v11 applicata e verificata** (28 Apr 2026): `stripe_webhook_events` esiste, trigger `updated_at` presente, RLS abilitato, zero policy client, comportamento dedup confermato
 - [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
-- [ ] **Applica migration v13**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v13_user_polls_no_client_update.sql` → Run. Rimuove la policy residua `Users can update own pending polls` — nessuna feature client la usa; gli admin usano service role.
+- [x] **migration v13 applicata e verificata** (28 Apr 2026): policy "Users can update own pending polls" rimossa; restano solo "Anyone can view approved polls" + "Users can view own polls" — `user_polls` write path server-only completamente hardened (v11 + v12 + v13)
 - [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks. Vedi LAUNCH_AUDIT.md §C per la tabella metriche.
 
 ### Candidati prodotto
