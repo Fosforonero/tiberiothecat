@@ -3,13 +3,27 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Personality v2 (18 archetipi, Euclidean distance classifier)
+Ultimo aggiornamento: 28 Aprile 2026 — Personality v2 QA (copy audit + validation script)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Personality v2 QA — Copy Audit + Validation Script (28 Apr 2026)
+
+**Obiettivo**: micro-sprint QA su copy EN/IT, consistency cross-file, e script di validazione automatica.
+
+- [x] `lib/personality.ts` — refusi e copy corretti: `'Liberatarian'` → `'Libertarian'` in `MORAL_AXES`; 3× `'Principiato'` (guardian, idealist, stoic traitsIt) → `'Di principio'`; `'Collective'` (idealist, advocate traits EN) → `'Collaborative'` / `'Community-driven'`; `'Collettivo'` (idealist, advocate traitsIt) → `'Collaborativo'` / `'Solidale'`; `'Orientato ai risultati'` (pioneer traitsIt) → `'Determinato'` (evita duplicato con pragmatist IT)
+- [x] `scripts/validate-personality.mjs` — nuovo script di validazione: 18 archetipi, ID unici, original 6 presenti, diplomat at index 3, EN/IT fields presenti, traits/traitsIt stessa lunghezza, profile presente per tutti, cross-check VALID_IDS + ARCHETYPE_HEX + SIGN_COLORS; output ✅/❌/⚠
+- [x] `package.json` — aggiunto `"validate:personality": "node scripts/validate-personality.mjs"`
+
+**Nessun cambio a**: DB, Stripe, auth, vote flow, tracking, card API logic, profili target degli archetipi, significato strategico degli archetipi.
+
+**Verifica**: `npm run validate:personality` → 13/13 checks ✅; `npm run typecheck` ✅; `npm run build` ✅.
 
 ---
 

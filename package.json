@@ -12,6 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "generate:social-content": "node scripts/generate-social-content.mjs",
+    "validate:personality": "node scripts/validate-personality.mjs",
     "load:smoke": "k6 run tests/load/splitvote-smoke-load.js"
   },
   "dependencies": {
