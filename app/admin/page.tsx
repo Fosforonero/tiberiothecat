@@ -5,19 +5,20 @@ import {
   Users, Vote, Trophy, ClipboardList, Flame, UserPlus,
   Clock, CheckCircle, XCircle, Flag, Star, Settings,
   LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
-  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap,
+  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap, Search,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
 import GenerateDraftPanel from './GenerateDraftPanel'
 import SeedBatchPanel from './SeedBatchPanel'
+import ScenarioQAEditor from './ScenarioQAEditor'
 import { isAdminEmail } from '@/lib/admin-auth'
 
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
 
-type AdminTab = 'overview' | 'voting' | 'content' | 'ai-drafts' | 'blog' | 'monetization'
-const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'ai-drafts', 'blog', 'monetization']
+type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'blog' | 'monetization'
+const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'blog', 'monetization']
 
 interface AdminProps {
   searchParams: { preview?: string; tab?: string }
@@ -212,6 +213,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { id: 'overview'     as AdminTab, label: 'Overview',     Icon: LayoutDashboard },
     { id: 'voting'       as AdminTab, label: 'Voting',        Icon: Vote            },
     { id: 'content'      as AdminTab, label: 'Content',       Icon: ClipboardList   },
+    { id: 'content-qa'   as AdminTab, label: 'Content QA',    Icon: Search          },
     { id: 'ai-drafts'    as AdminTab, label: 'AI Drafts',     Icon: Zap             },
     { id: 'blog'         as AdminTab, label: 'Blog',          Icon: BookOpen        },
     { id: 'monetization' as AdminTab, label: 'Monetization',  Icon: Star            },
@@ -524,6 +526,27 @@ export default async function AdminPage({ searchParams }: AdminProps) {
               No feedback data yet — ratings from users will appear here.
             </div>
           )}
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          TAB: Content QA
+      ══════════════════════════════════════════════ */}
+      {activeTab === 'content-qa' && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-4 flex items-start gap-3">
+            <Search size={16} className="text-blue-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-bold text-blue-300 mb-1">Scenario text editor</p>
+              <p className="text-xs text-white/50 leading-relaxed">
+                Search and inline-edit approved AI-generated scenarios stored in Redis.
+                Changes are applied immediately — no deploy required.
+              </p>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+            <ScenarioQAEditor />
+          </div>
         </div>
       )}
 

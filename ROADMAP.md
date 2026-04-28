@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Social Share + Insight + Content QA Polish completato
+Ultimo aggiornamento: 28 Aprile 2026 — Admin Content QA editor completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -41,11 +41,18 @@ Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimita
 
 ---
 
+## Sprint completati — Admin Content QA Editor (28 Apr 2026)
+
+- [x] `app/admin/ScenarioQAEditor.tsx` — nuovo client component con search full-text, filtro locale EN/IT/All, editing inline per `question`/`optionA`/`optionB`/`seoTitle`/`seoDescription`, char counter per campo, salvataggio via `PATCH /api/admin/dilemmas/[id]`, update ottimistico lista locale
+- [x] `app/admin/page.tsx` — aggiunta tab "Content QA" con `ScenarioQAEditor`
+- [x] Ora possibile correggere `dipendeme` → `dipendente` direttamente dalla tab Content QA senza deploy
+
+---
+
 ## Prossimo Sprint Prioritario — da definire
 
 Candidati post-polish:
 - i18n espansione: prossima lingua `es` (spagnolo), poi `pt-BR`, poi `fr` — seguire lo stesso pattern middleware + route duplicate + CATEGORY_LABELS_*
-- Admin: editor scenari inline nel dashboard admin (form + save via PATCH endpoint già disponibile)
 - Performance: rimuovere `force-dynamic` da `play/[id]` e `results/[id]`, aggiungere `revalidate=60` (vedere audit)
 - Stripe webhook idempotency (tabella `webhook_events` con unique su `stripe_event_id`)
 
