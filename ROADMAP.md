@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Mobile App Readiness tracking (docs/governance)
+Ultimo aggiornamento: 28 Aprile 2026 — Expert Insight V2 (copy + UX results page)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -34,6 +34,22 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 
 Agente da usare: `.claude/agents/mobile-app-readiness-reviewer.md`
 Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
+
+---
+
+## Sprint completati — Expert Insight V2: copy + UX results page (28 Apr 2026)
+
+**Obiettivo**: migliorare gli Expert Insights post-voto per aumentare retention, interesse e sharability. Zero AI runtime, zero DB, zero nuovi servizi.
+
+**Modifiche**:
+- `lib/expert-insights.ts`: riscrittura completa del copy per tutte le 8 categorie (morality, justice, relationships, technology, society, freedom, survival, loyalty). Body più pungente e narrativo; whyPeopleSplit più specifico con meccanismo psicologico/sociologico; whatYourAnswerMaySuggest meno hedged e più concreto. EN e IT entrambi riscritti come testo nativo, non come traduzione.
+- `app/results/[id]/ResultsClientPage.tsx`: Expert Insight spostato prima del Primary Share CTA (era dopo). Utenti leggono l'insight contestualmente ai risultati, aumentando motivazione a condividere. Sezione-label "Why people split" / "Perché le persone si dividono" resa leggermente più visibile (`text-[11px]` + opacity più alta). Nessuna modifica strutturale ai dati, al vote flow, ai cookie, all'anonimato o alle share card.
+
+**Anonimato share**: invariato. Tutte le share card e caption usano dati aggregati (`pctA%/pctB%`, maggioranza) — mai il voto personale dell'utente.
+
+**LEGAL.md**: nessuna modifica — nessun nuovo dato raccolto, nessuna variazione nel trattamento dati, share content rimane aggregate-only.
+
+**Categorie migliorate**: morality, justice, relationships, technology, society, freedom, survival, loyalty (tutte e 8).
 
 ---
 

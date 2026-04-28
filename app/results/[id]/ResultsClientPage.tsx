@@ -497,17 +497,6 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         {copy.aggregateNote}
       </p>
 
-      {/* ── Primary Web Share CTA ── */}
-      <div className="mb-8">
-        <button
-          onClick={handleWebShare}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-base px-6 py-4 transition-all"
-        >
-          {webShareCopied ? copy.webShareCopied : copy.webShareCTA}
-        </button>
-        <p className="text-[11px] text-[var(--muted)] text-center mt-2">{copy.webShareSub}</p>
-      </div>
-
       {/* ── Expert Insight ── */}
       <div className="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5">
         <div className="flex items-center gap-2 mb-3">
@@ -525,7 +514,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         </p>
 
         <div className="mb-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400/60 mb-1.5">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400/70 mb-1.5">
             {copy.insightWhySplit}
           </p>
           <p className="text-sm text-[var(--muted)] leading-relaxed">
@@ -535,7 +524,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
         {voted && (
           <div className="mb-4 rounded-xl border border-cyan-500/15 bg-cyan-500/[0.06] px-4 py-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400/60 mb-1.5">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-cyan-400/70 mb-1.5">
               {copy.insightYourChoice}
             </p>
             <p className="text-sm text-[var(--text)] leading-relaxed">
@@ -549,6 +538,17 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <p className="text-[11px] text-[var(--muted)] italic">
           {expertInsight.disclaimer}
         </p>
+      </div>
+
+      {/* ── Primary Web Share CTA ── */}
+      <div className="mb-8">
+        <button
+          onClick={handleWebShare}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-base px-6 py-4 transition-all"
+        >
+          {webShareCopied ? copy.webShareCopied : copy.webShareCTA}
+        </button>
+        <p className="text-[11px] text-[var(--muted)] text-center mt-2">{copy.webShareSub}</p>
       </div>
 
       {/* ── Dilemma quality feedback ── */}
