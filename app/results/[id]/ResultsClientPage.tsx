@@ -18,7 +18,7 @@ interface Props {
   pctB: number
   total: number
   voted: 'a' | 'b' | null
-  nextId: string
+  nextId: string | null
   /** Optional locale prefix for share URLs, e.g. "/it" for Italian results */
   sharePrefix?: string
 }
@@ -72,6 +72,7 @@ const EN_COPY = {
   storyIg:           'IG Caption',
   storyNote:         'Auto-posting is not available from the web. Upload the PNG manually.',
   nextDilemma:       'Next dilemma →',
+  browsedAll:        "You've answered all available dilemmas. Browse all →",
   allDilemmas:       'All dilemmas',
   aggregateNote:     'Results based on anonymous votes from users worldwide.',
   anonCTAHeadline:   'Want to track your choices over time?',
@@ -128,6 +129,7 @@ const IT_COPY = {
   storyIg:           'Caption IG',
   storyNote:         'La pubblicazione automatica non è disponibile dal web. Carica il PNG manualmente.',
   nextDilemma:       'Prossimo dilemma →',
+  browsedAll:        'Hai risposto a tutti i dilemmi disponibili. Sfoglia tutti →',
   allDilemmas:       'Tutti i dilemmi',
   aggregateNote:     'Risultati basati su voti anonimi di utenti da tutto il mondo.',
   anonCTAHeadline:   'Vuoi tracciare le tue scelte nel tempo?',
@@ -784,18 +786,20 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       {/* ── Next dilemma CTA ── */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Link
-          href={`${sharePrefix}/play/${nextId}`}
-          onClick={() => track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'results_bottom' })}
+          href={nextId ? `${sharePrefix}/play/${nextId}` : sharePrefix || '/'}
+          onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'results_bottom' })}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-6 py-3.5 transition-colors text-center"
         >
-          {copy.nextDilemma}
+          {nextId ? copy.nextDilemma : copy.browsedAll}
         </Link>
-        <Link
-          href={sharePrefix || '/'}
-          className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
-        >
-          {copy.allDilemmas}
-        </Link>
+        {nextId && (
+          <Link
+            href={sharePrefix || '/'}
+            className="flex-1 flex items-center justify-center border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--border)] text-[var(--text)] font-semibold text-sm px-6 py-3.5 rounded-xl transition-colors text-center"
+          >
+            {copy.allDilemmas}
+          </Link>
+        )}
       </div>
     </div>
   )

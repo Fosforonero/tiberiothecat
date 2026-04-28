@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { Scenario } from '@/lib/scenarios'
@@ -18,7 +18,7 @@ interface Props {
   totalVotes?: number
   isChallenge?: boolean
   localePrefix?: '' | '/it'
-  nextId?: string
+  nextId?: string | null
   referralCode?: string
 }
 
@@ -61,11 +61,16 @@ const EN_COPY = {
   yourVote:       '← your vote',
   seeResults:     'See results →',
   nextDilemma:    'Next dilemma →',
+  browsedAll:     "You've answered all available dilemmas. Browse all →",
   counting:       'Counting your vote…',
   voteError:      'Something went wrong. Please try again.',
   disclaimer:     'Anonymous voting. No account required. Results update in real time.',
   optionA:        'Option A',
   optionB:        'Option B',
+  graceCountdown: (s: number) => `Recording in ${s}…`,
+  graceHint:      'Changed your mind? You have a short window to switch before it\'s recorded.',
+  graceUndo:      'Undo',
+  graceConfirm:   'Confirm now',
 }
 
 const IT_COPY = {
@@ -81,11 +86,16 @@ const IT_COPY = {
   yourVote:       '← il tuo voto',
   seeResults:     'Vedi risultati →',
   nextDilemma:    'Prossimo dilemma →',
+  browsedAll:     'Hai risposto a tutti i dilemmi disponibili. Sfoglia tutti →',
   counting:       'Conteggio del tuo voto…',
   voteError:      'Qualcosa è andato storto. Riprova.',
   disclaimer:     'Voto anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
   optionA:        'Opzione A',
   optionB:        'Opzione B',
+  graceCountdown: (s: number) => `Registrazione tra ${s}…`,
+  graceHint:      'Hai cambiato idea? Hai qualche secondo per correggere prima che venga registrato.',
+  graceUndo:      'Annulla',
+  graceConfirm:   'Conferma subito',
 }
 
 export default function VoteClientPage({
@@ -97,11 +107,18 @@ export default function VoteClientPage({
   nextId,
   referralCode,
 }: Props) {
-  const [selected, setSelected] = useState<'a' | 'b' | null>(null)
+  const [pendingOption, setPendingOption] = useState<'a' | 'b' | null>(null)
+  const [graceSecsLeft, setGraceSecsLeft] = useState(0)
+  const [submittedOption, setSubmittedOption] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
   const [voteError, setVoteError] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
   const router = useRouter()
+
+  // Grace UX — refs prevent stale closures in timers
+  const pendingOptionRef = useRef<'a' | 'b' | null>(null)
+  const graceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const graceTickRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const copy = localePrefix === '/it' ? IT_COPY : EN_COPY
   const locale = localePrefix === '/it' ? 'it' : 'en'
@@ -139,9 +156,61 @@ export default function VoteClientPage({
     }).catch(() => { /* non-blocking */ })
   }, [referralCode, scenario.id])
 
-  async function vote(option: 'a' | 'b') {
-    if (loading || selected) return
-    setSelected(option)
+  function clearGraceTimers() {
+    if (graceTimerRef.current) { clearTimeout(graceTimerRef.current); graceTimerRef.current = null }
+    if (graceTickRef.current) { clearInterval(graceTickRef.current); graceTickRef.current = null }
+  }
+
+  function cancelGrace() {
+    clearGraceTimers()
+    pendingOptionRef.current = null
+    setPendingOption(null)
+    setGraceSecsLeft(0)
+  }
+
+  function confirmNow() {
+    const opt = pendingOptionRef.current
+    clearGraceTimers()
+    pendingOptionRef.current = null
+    setPendingOption(null)
+    setGraceSecsLeft(0)
+    if (opt) void submitVote(opt)
+  }
+
+  function startGrace(option: 'a' | 'b') {
+    clearGraceTimers()
+    pendingOptionRef.current = option
+    setPendingOption(option)
+    setGraceSecsLeft(3)
+    graceTickRef.current = setInterval(() => {
+      setGraceSecsLeft(s => Math.max(0, s - 1))
+    }, 1000)
+    graceTimerRef.current = setTimeout(() => {
+      const opt = pendingOptionRef.current
+      clearGraceTimers()
+      pendingOptionRef.current = null
+      setPendingOption(null)
+      setGraceSecsLeft(0)
+      if (opt) void submitVote(opt)
+    }, 3000)
+  }
+
+  function handleOptionClick(option: 'a' | 'b') {
+    if (loading || !!submittedOption) return
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      cancelGrace()
+      void submitVote(option)
+      return
+    }
+    if (pendingOption === option) {
+      confirmNow()
+      return
+    }
+    startGrace(option)
+  }
+
+  async function submitVote(option: 'a' | 'b') {
+    setSubmittedOption(option)
     setLoading(true)
     setVoteError(false)
     try {
@@ -152,7 +221,7 @@ export default function VoteClientPage({
       })
       if (!res.ok) {
         setLoading(false)
-        setSelected(null)
+        setSubmittedOption(null)
         setVoteError(true)
         return
       }
@@ -165,10 +234,15 @@ export default function VoteClientPage({
       router.push(`${localePrefix}/results/${scenario.id}?voted=${option}`)
     } catch {
       setLoading(false)
-      setSelected(null)
+      setSubmittedOption(null)
       setVoteError(true)
     }
   }
+
+  // Cleanup grace timers on unmount
+  useEffect(() => {
+    return clearGraceTimers
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // JSON-LD structured data for rich snippets
   const jsonLd = {
@@ -302,10 +376,10 @@ export default function VoteClientPage({
               </Link>
               <Link
                 href={nextHref}
-                onClick={() => track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
+                onClick={() => nextId && track('next_dilemma_clicked', { scenario_id: scenario.id, locale, source: 'play_already_voted' })}
                 className="flex-1 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-[var(--muted)] font-bold text-sm text-center transition-colors"
               >
-                {copy.nextDilemma}
+                {nextId ? copy.nextDilemma : copy.browsedAll}
               </Link>
             </div>
           </div>
@@ -319,45 +393,74 @@ export default function VoteClientPage({
             </div>
 
             {/* Vote buttons */}
-            <div className="grid grid-cols-1 gap-4 mt-8">
-              <button
-                onClick={() => vote('a')}
-                disabled={!!selected || loading}
-                className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
-                  ${selected === 'a'
-                    ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
-                    : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
-                  }
-                  ${selected && selected !== 'a' ? 'opacity-30' : ''}
-                  transition-all duration-200
-                `}
-              >
-                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
-                {scenario.optionA}
-              </button>
+            {(() => {
+              const activeOption = submittedOption ?? pendingOption
+              return (
+                <div className="grid grid-cols-1 gap-4 mt-8">
+                  <button
+                    onClick={() => handleOptionClick('a')}
+                    disabled={loading || !!submittedOption}
+                    className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                      ${activeOption === 'a'
+                        ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
+                        : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
+                      }
+                      ${activeOption && activeOption !== 'a' ? 'opacity-30' : ''}
+                      transition-all duration-200
+                    `}
+                  >
+                    <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
+                    {scenario.optionA}
+                  </button>
 
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-[var(--border)]" />
-                <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
-                <div className="flex-1 h-px bg-[var(--border)]" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 h-px bg-[var(--border)]" />
+                    <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
+                    <div className="flex-1 h-px bg-[var(--border)]" />
+                  </div>
+
+                  <button
+                    onClick={() => handleOptionClick('b')}
+                    disabled={loading || !!submittedOption}
+                    className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                      ${activeOption === 'b'
+                        ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
+                        : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
+                      }
+                      ${activeOption && activeOption !== 'b' ? 'opacity-30' : ''}
+                      transition-all duration-200
+                    `}
+                  >
+                    <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
+                    {scenario.optionB}
+                  </button>
+                </div>
+              )
+            })()}
+
+            {/* Grace countdown UI */}
+            {pendingOption && graceSecsLeft > 0 && !submittedOption && (
+              <div className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center" aria-live="polite">
+                <p className="text-white font-bold text-sm mb-1">
+                  {copy.graceCountdown(graceSecsLeft)}
+                </p>
+                <p className="text-xs text-[var(--muted)] mb-3">{copy.graceHint}</p>
+                <div className="flex gap-2 justify-center">
+                  <button
+                    onClick={cancelGrace}
+                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-[var(--muted)] border border-[var(--border)] hover:bg-white/5 transition-colors"
+                  >
+                    {copy.graceUndo}
+                  </button>
+                  <button
+                    onClick={confirmNow}
+                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-white/10 border border-white/20 hover:bg-white/15 transition-colors"
+                  >
+                    {copy.graceConfirm}
+                  </button>
+                </div>
               </div>
-
-              <button
-                onClick={() => vote('b')}
-                disabled={!!selected || loading}
-                className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
-                  ${selected === 'b'
-                    ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
-                    : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
-                  }
-                  ${selected && selected !== 'b' ? 'opacity-30' : ''}
-                  transition-all duration-200
-                `}
-              >
-                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
-                {scenario.optionB}
-              </button>
-            </div>
+            )}
 
             {loading && (
               <div className="flex items-center justify-center gap-2 text-[var(--muted)] text-sm mt-8">

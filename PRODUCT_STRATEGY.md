@@ -23,6 +23,13 @@ SplitVote should evolve in this order:
 
 Core rule: anonymous users must always be able to vote without creating an account.
 
+Current priority override:
+
+- Fix the core loop before adding more monetization or personality complexity.
+- "Next dilemma" must avoid questions the user already answered whenever possible.
+- Vote changes must be obvious and low-friction.
+- Add gamified paths only after the basic fresh-question loop is reliable.
+
 ---
 
 ## Already Started / Implemented Foundations
@@ -249,6 +256,8 @@ Known issue:
 
 - Personality is not discoverable enough from profile.
 - Profile/dashboard is currently too busy and needs professional UX restructuring.
+- Personality is highly promising, but the current 6-archetype system should be validated before expanding to 20+ archetypes.
+- Zodiac alignment can be a strong entertainment layer, but it must be framed as playful and optional, never scientific or diagnostic.
 
 Recommended sprint:
 
@@ -268,6 +277,14 @@ Need to verify:
 
 - Number of personality archetypes.
 - Whether personality share cards already exist or only text share exists.
+
+Future personality expansion:
+
+- Target: expand from 6 to about 18-24 archetypes only after the current personality share loop shows engagement.
+- Use the existing 5 moral axes as the base. Avoid arbitrary personality labels that do not map to vote behavior.
+- Add "zodiac alignment" as an optional overlay, not as part of the core moral score.
+- Do not collect full birth date unless there is a clear product need. Prefer optional zodiac sign selection to reduce personal data.
+- Copy must remain entertainment/reflective: "based on your SplitVote choices", "for fun", "not scientifically validated".
 
 ---
 
@@ -320,6 +337,10 @@ Do not build all ideas at once. Recommended order after current social-content c
 ## Dedicated Sprint Plan
 
 Use these as the next implementation ladder. Each sprint should be given to Claude separately and should finish with typecheck, build, diff check, commit, and push.
+
+### ~~Immediate Sprint — Fresh Next Dilemma + Vote Grace UX~~ — COMPLETED 28 Apr 2026
+
+Implemented: `getFreshNextScenarioId` excludes all voted IDs server-side (Supabase for auth users, `sv_voted_*` cookies for anon). 3-second grace countdown before POST with Undo/Confirm. `nextId = null` fallback → "Browse all" CTA.
 
 ### Sprint 1 — Profile UX + Personality Entry Point
 

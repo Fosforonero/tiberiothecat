@@ -5,9 +5,10 @@
 import { notFound } from 'next/navigation'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getNextScenarioId } from '@/lib/scenarios'
+import { getFreshNextScenarioId } from '@/lib/scenarios'
 import { getItalianScenario } from '@/lib/scenarios-it'
 import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from '@/app/play/[id]/VoteClientPage'
 import JsonLd from '@/components/JsonLd'
@@ -82,25 +83,37 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
   let dynamicScenarios: DynamicScenario[] = []
   try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
   const itPool = dynamicScenarios.filter((s) => s.locale === 'it')
-  const nextId = getNextScenarioId(params.id, itPool.length ? itPool : dynamicScenarios)
 
-  // Check if logged-in user already voted
+  // Collect voted IDs + check existing vote for current dilemma
   let existingVote: { choice: 'A' | 'B'; canChangeUntil: string } | null = null
+  let votedIds = new Set<string>()
+  let userDetected = false
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      const { data } = await supabase
+      userDetected = true
+      const { data: allVotedRows } = await supabase
         .from('dilemma_votes')
-        .select('choice, can_change_until')
+        .select('dilemma_id, choice, can_change_until')
         .eq('user_id', user.id)
-        .eq('dilemma_id', params.id)
-        .single()
-      if (data) {
-        existingVote = { choice: data.choice as 'A' | 'B', canChangeUntil: data.can_change_until }
+      if (allVotedRows) {
+        votedIds = new Set(allVotedRows.map(r => r.dilemma_id))
+        const row = allVotedRows.find(r => r.dilemma_id === params.id)
+        if (row) {
+          existingVote = { choice: row.choice as 'A' | 'B', canChangeUntil: row.can_change_until }
+        }
       }
     }
   } catch { /* non-blocking */ }
+  if (!userDetected) {
+    const cookieStore = await cookies()
+    for (const c of cookieStore.getAll()) {
+      if (c.name.startsWith('sv_voted_')) votedIds.add(c.name.slice('sv_voted_'.length))
+    }
+  }
+
+  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
 
   const isChallenge = searchParams.challenge === '1'
   const referralCode = typeof searchParams.ref === 'string' ? searchParams.ref : undefined

@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Sprint 2 Personality Share Card completato
+Ultimo aggiornamento: 28 Aprile 2026 — Fresh Next Dilemma + Vote Grace UX completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -18,6 +18,19 @@ Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimita
 - [x] `lib/personality.ts` invariato — `shareText`/`shareTextIt` già presenti; nessun nuovo archetipo
 - [x] Copy: "Based on my SplitVote choices" + disclaimer entertainment-only nella card
 - [x] Nessuna API social, nessun auto-post, nessun nuovo DB schema, nessun nuovo tracking
+
+---
+
+## Sprint completati — Fresh Next Dilemma + Vote Grace UX (28 Apr 2026)
+
+- [x] `lib/scenarios.ts` — aggiunto `getFreshNextScenarioId(currentId, votedIds, dynamicPool)` che esclude currentId + tutti i già-votati
+- [x] Utenti loggati: query Supabase ottimizzata (una sola query) raccoglie tutti i voti incluso quello corrente
+- [x] Utenti anonimi: cookie `sv_voted_*` letti server-side via `cookies()` da `next/headers`
+- [x] Fallback: `nextId = null` quando tutte le domande disponibili sono già state votate; bottone "Browse all" / "Sfoglia tutti" EN/IT
+- [x] `VoteClientPage.tsx` — grace UX 3 secondi: countdown con [Undo] / [Confirm now], `prefers-reduced-motion` respected, click stesso bottone = conferma immediata
+- [x] `ResultsClientPage.tsx` — `nextId: string | null`, copy `browsedAll` EN/IT
+- [x] Nessuna modifica API, nessun nuovo DB schema, nessun nuovo tracking
+- [x] Base per path gamificati: `getFreshNextScenarioId` accetta `votedIds: Set<string>` — pronto per filtrare per categoria
 
 ---
 
@@ -114,6 +127,7 @@ Loop strategico:
 - [ ] Weekly quest
 - [ ] Event quest
 - [ ] Quest per categoria
+- [ ] Path guidati per categoria, es. "3 domande technology", evitando dilemmi già votati
 - [ ] Premi: XP, badge, trofei
 - [ ] Server-side verification obbligatoria
 - [ ] Niente reward basati su azioni non verificabili

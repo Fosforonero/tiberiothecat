@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
-import { getScenario, getNextScenarioId, scenarios } from '@/lib/scenarios'
+import { getScenario, getFreshNextScenarioId, scenarios } from '@/lib/scenarios'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
 import JsonLd from '@/components/JsonLd'
@@ -70,7 +72,26 @@ export default async function ResultsPage({ params, searchParams }: Props) {
 
   let dynamicScenarios: DynamicScenario[] = []
   try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
-  const nextId = getNextScenarioId(params.id, dynamicScenarios)
+
+  let votedIds = new Set<string>()
+  let userDetected = false
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      userDetected = true
+      const { data } = await supabase.from('dilemma_votes').select('dilemma_id').eq('user_id', user.id)
+      if (data) votedIds = new Set(data.map(r => r.dilemma_id))
+    }
+  } catch { /* non-blocking */ }
+  if (!userDetected) {
+    const cookieStore = await cookies()
+    for (const c of cookieStore.getAll()) {
+      if (c.name.startsWith('sv_voted_')) votedIds.add(c.name.slice('sv_voted_'.length))
+    }
+  }
+
+  const nextId = getFreshNextScenarioId(params.id, votedIds, dynamicScenarios)
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',

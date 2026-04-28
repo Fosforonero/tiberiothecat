@@ -407,3 +407,32 @@ export function getNextScenarioId(excludeId: string, dynamicPool?: ScoredItem[])
   }
   return getRandomScenario(excludeId).id
 }
+
+/**
+ * Pick the next unvoted scenario ID.
+ * Excludes currentId AND all ids in votedIds, preferring dynamic top-half by score.
+ * Returns null only if every available scenario has been voted on (triggers "Browse all" fallback).
+ */
+export function getFreshNextScenarioId(
+  currentId: string,
+  votedIds: Set<string>,
+  dynamicPool?: ScoredItem[],
+): string | null {
+  const excluded = new Set([currentId, ...votedIds])
+
+  if (dynamicPool?.length) {
+    const fresh = dynamicPool.filter(s => !excluded.has(s.id))
+    if (fresh.length) {
+      const sorted = [...fresh].sort((a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0))
+      const topHalf = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)))
+      return topHalf[Math.floor(Math.random() * topHalf.length)].id
+    }
+  }
+
+  const freshStatic = scenarios.filter(s => !excluded.has(s.id))
+  if (freshStatic.length) {
+    return freshStatic[Math.floor(Math.random() * freshStatic.length)].id
+  }
+
+  return null
+}

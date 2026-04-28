@@ -5,8 +5,10 @@
 import { notFound } from 'next/navigation'
 import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getNextScenarioId } from '@/lib/scenarios'
+import { getFreshNextScenarioId } from '@/lib/scenarios'
 import { getItalianScenario } from '@/lib/scenarios-it'
+import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from '@/app/results/[id]/ResultsClientPage'
 import JsonLd from '@/components/JsonLd'
@@ -76,9 +78,28 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
 
   let dynamicScenarios: DynamicScenario[] = []
   try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
-  // Prefer IT-locale dynamic scenarios; fall back to any dynamic, then static
   const itPool = dynamicScenarios.filter((s) => s.locale === 'it')
-  const nextId = getNextScenarioId(params.id, itPool.length ? itPool : dynamicScenarios)
+
+  let votedIds = new Set<string>()
+  let userDetected = false
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      userDetected = true
+      const { data } = await supabase.from('dilemma_votes').select('dilemma_id').eq('user_id', user.id)
+      if (data) votedIds = new Set(data.map(r => r.dilemma_id))
+    }
+  } catch { /* non-blocking */ }
+  if (!userDetected) {
+    const cookieStore = await cookies()
+    for (const c of cookieStore.getAll()) {
+      if (c.name.startsWith('sv_voted_')) votedIds.add(c.name.slice('sv_voted_'.length))
+    }
+  }
+
+  // Prefer IT-locale dynamic scenarios; fall back to any dynamic, then static
+  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
