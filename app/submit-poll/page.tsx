@@ -22,6 +22,7 @@ export default function SubmitPollPage() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [agreed, setAgreed] = useState(false)
 
   const [form, setForm] = useState({
     question: '',
@@ -46,28 +47,35 @@ export default function SubmitPollPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!agreed) return
     setLoading(true)
     setError(null)
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    try {
+      const res = await fetch('/api/polls/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
 
-    const { error: insertError } = await supabase.from('user_polls').insert({
-      user_id: user.id,
-      question: form.question.trim(),
-      option_a: form.option_a.trim(),
-      option_b: form.option_b.trim(),
-      category: form.category,
-      emoji: form.emoji,
-    })
-
-    if (insertError) {
-      setError(insertError.message)
-      setLoading(false)
-    } else {
-      setSubmitted(true)
-      setLoading(false)
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        if (res.status === 403) {
+          setError('Poll submission requires a Premium account.')
+        } else if (res.status === 401) {
+          router.push('/login')
+          return
+        } else {
+          setError((data as { error?: string }).error ?? 'Submission failed. Please try again.')
+        }
+      }
+    } catch {
+      setError('Network error. Please try again.')
     }
+
+    setLoading(false)
   }
 
   function set(field: string, value: string) {
@@ -88,11 +96,22 @@ export default function SubmitPollPage() {
         <p className="text-5xl mb-4">⭐</p>
         <h1 className="text-2xl font-black text-white mb-3">Premium Feature</h1>
         <p className="text-[var(--muted)] mb-6">
-          Poll submission is coming soon. Stay tuned for updates!
+          Poll submission is available with Premium. Upgrade to submit your own dilemmas for the community to vote on.
         </p>
-        <a href="/" className="inline-block px-6 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-white font-bold text-sm transition-colors">
-          ← Back to dilemmas
-        </a>
+        <div className="flex gap-3 justify-center">
+          <a
+            href="/profile#membership"
+            className="inline-block px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm transition-colors"
+          >
+            Upgrade to Premium →
+          </a>
+          <a
+            href="/"
+            className="inline-block px-6 py-3 rounded-xl border border-[var(--border)] hover:bg-white/5 text-white font-bold text-sm transition-colors"
+          >
+            ← Back to dilemmas
+          </a>
+        </div>
       </div>
     )
   }
@@ -108,7 +127,11 @@ export default function SubmitPollPage() {
         </p>
         <div className="flex gap-3 justify-center">
           <button
-            onClick={() => { setSubmitted(false); setForm({ question: '', option_a: '', option_b: '', category: 'morality', emoji: '🤔' }) }}
+            onClick={() => {
+              setSubmitted(false)
+              setAgreed(false)
+              setForm({ question: '', option_a: '', option_b: '', category: 'morality', emoji: '🤔' })
+            }}
             className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-white text-sm font-bold transition-colors"
           >
             Submit Another
@@ -221,6 +244,19 @@ export default function SubmitPollPage() {
           <p>✗ No real people, brands, or current events</p>
         </div>
 
+        {/* Required acknowledgement */}
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={e => setAgreed(e.target.checked)}
+            className="mt-0.5 flex-shrink-0"
+          />
+          <span className="text-xs text-[var(--muted)]">
+            I confirm this submission follows the guidelines and understand it may be rejected by the SplitVote team.
+          </span>
+        </label>
+
         {error && (
           <div className="rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">
             {error}
@@ -229,7 +265,7 @@ export default function SubmitPollPage() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !agreed}
           className="w-full py-3.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm transition-colors disabled:opacity-50"
         >
           {loading ? 'Submitting…' : 'Submit for Review'}

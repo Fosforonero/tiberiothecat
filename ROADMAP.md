@@ -3,13 +3,36 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Profile UX Cleanup + Premium Dashboard Simplification
+Ultimo aggiornamento: 28 Aprile 2026 — Poll Submit Hardening + RLS
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Poll Submit Hardening + RLS (28 Apr 2026)
+
+**Obiettivo**: rendere la submission di poll production-safe — premium/admin enforcement server-side, input validation, RLS hardening.
+
+**Audit RLS/sicurezza**:
+- `app/submit-poll/page.tsx` faceva insert diretto client-side su `user_polls` — entitlement check era solo UI (bypassabile via Supabase REST API diretta)
+- Nessuna validation server-side
+- `schema.sql` non disponibile nel repo — stato RLS su `user_polls` sconosciuto, presumibilmente nessuna protezione INSERT adeguata
+
+- [x] `app/api/polls/submit/route.ts` — nuova route POST: (1) auth via `supabase.auth.getUser()`; (2) entitlement check server-side con `getUserEntitlements` → 403 se non premium/admin; (3) input validation: question 10-300 chars, option_a/b 2-150 chars, category allowlist, emoji safe bound, controllo control-char; (4) insert via `createAdminClient()` con `status='pending'` e `user_id` dall'auth session — client non può impostare né status né user_id
+- [x] `app/submit-poll/page.tsx` — rimosso insert diretto `supabase.from('user_polls').insert(...)`; usa `fetch('/api/polls/submit', { method: 'POST' })`; gestione errori 401/403/500; aggiunta checkbox obbligatoria "I confirm this submission follows the guidelines"; copy non-premium corretto: "Poll submission is available with Premium" + CTA upgrade (rimosso "coming soon")
+- [x] `supabase/migration_v12_user_polls_rls_hardening.sql` — abilita RLS su `user_polls`, rimuove policy INSERT client, aggiunge policy SELECT per "own polls"; documenta pattern server-only insert
+- [x] `LEGAL.md` — sprint note: UGC hardening, entitlement enforcement, input validation, RLS; Terms già coprono user-submitted content — nessun aggiornamento Terms/Privacy necessario
+- [x] `README.md` — migration v12 aggiunta alla tabella
+
+**Admin approve/reject invariato**: `app/api/admin/polls/[id]/approve|reject/route.ts` già usano `createAdminClient()` + `isAdminEmail()` — non modificati.
+
+**Nessuna modifica a**: Stripe, pricing, entitlements logic, DB schema (oltre migration v12 RLS), tracking, legal pages, auth.
+
+**Manual step**: applicare `supabase/migration_v12_user_polls_rls_hardening.sql` in Supabase dashboard → SQL Editor → Run.
 
 ---
 
@@ -160,15 +183,15 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 
 ### Step operativi pre-scaling (no codice, solo ops)
 
+- [ ] **Applica migration v12**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v12_user_polls_rls_hardening.sql` → Run. Verificare: utente non-premium che POST a Supabase REST API direttamente riceve 42501 insufficient_privilege.
 - [ ] **Applica e verifica migration v11**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v11_stripe_webhook_events.sql` → Run. Poi verificare con Stripe CLI: `stripe trigger checkout.session.completed` → riga `status=processed` in `stripe_webhook_events`; `stripe events resend <evt_id>` → risposta `duplicate:true`. Vedi README §Stripe webhook per la procedura completa.
 - [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks. Vedi LAUNCH_AUDIT.md §C per la tabella metriche.
 
 ### Candidati prodotto
 
 - **Stripe QA end-to-end**: test acquisto premium con carta reale in produzione + customer portal cancellation + verifica migration v11 (sopra)
-- **i18n espansione `es`**: prossima lingua spagnolo — seguire pattern middleware + route duplicate + CATEGORY_LABELS_ES; attendere metriche traffico IT prima di iniziare
-- **Stripe QA end-to-end** (ancora prioritario): test acquisto premium con carta reale + customer portal cancellation
 - **Streak milestones**: badge 7/15/30 giorni basati su `streak_days` già in DB — next gamification step
+- **i18n espansione `es`**: prossima lingua spagnolo — seguire pattern middleware + route duplicate + CATEGORY_LABELS_ES; attendere metriche traffico IT prima di iniziare
 
 ---
 

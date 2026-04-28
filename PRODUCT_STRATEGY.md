@@ -71,7 +71,7 @@ Current priority override:
 - VIP-only visual identity features such as colored names, profile frames, special avatars, text styles.
 - Public profile board / bacheca with curated badges, trophies, skins, and privacy controls.
 - Personality share card image generation and social sharing from profile/personality.
-- Paid user-generated poll submission with review/legal workflow.
+- Paid user-generated poll submission — basic foundation secured (28 Apr 2026): server-side Premium enforcement, input validation, RLS hardening. Full paid workflow (per-question credits, poll analytics, submission quotas) not started.
 - Tiered paid poll plans such as per-question pricing or monthly question bundles.
 - Micro-learning section with thematic paths.
 - Learning-path generation using OpenRouter.
