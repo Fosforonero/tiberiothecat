@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import JsonLd from '@/components/JsonLd'
 
 export const metadata: Metadata = {
   title: 'FAQ — How SplitVote Works',
@@ -344,10 +345,7 @@ export default function FaqPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       {/* JSON-LD for SEO rich results */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
-      />
+      <JsonLd data={faqJsonLd()} />
 
       {/* Hero */}
       <div className="text-center mb-12">

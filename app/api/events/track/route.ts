@@ -40,6 +40,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unknown event type' }, { status: 400 })
     }
 
+    // scenarioId must be a safe slug if provided
+    if (scenarioId !== undefined && (typeof scenarioId !== 'string' || !/^[a-z0-9-]{1,80}$/.test(scenarioId))) {
+      return NextResponse.json({ error: 'Invalid scenarioId' }, { status: 400 })
+    }
+
+    // metadata must be a plain object and must not exceed 2 KB serialized
+    if (metadata !== undefined) {
+      if (typeof metadata !== 'object' || Array.isArray(metadata) || metadata === null) {
+        return NextResponse.json({ error: 'Invalid metadata' }, { status: 400 })
+      }
+      if (JSON.stringify(metadata).length > 2048) {
+        return NextResponse.json({ error: 'metadata too large' }, { status: 400 })
+      }
+    }
+
     // Dedup: skip if same (user, type, scenario) inserted in last 60s
     const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString()
     const { count } = scenarioId

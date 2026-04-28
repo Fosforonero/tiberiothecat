@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import JsonLd from '@/components/JsonLd'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -62,10 +63,7 @@ const jsonLd = {
 export default function MoralDilemmasPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       {/* Hero */}
       <div className="text-center mb-12">

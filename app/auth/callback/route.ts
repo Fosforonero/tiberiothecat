@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { safeRedirect } from '@/lib/safe-redirect'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const redirect = searchParams.get('redirect') ?? '/dashboard'
+  const redirect = safeRedirect(searchParams.get('redirect'), '/dashboard')
 
   if (code) {
     // Create the redirect response FIRST so we can set cookies directly on it

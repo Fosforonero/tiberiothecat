@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { safeRedirect } from '@/lib/safe-redirect'
 import { Loader2, Mail, Lock, Vote, Trophy, Heart } from 'lucide-react'
 
 const EN_COPY = {
@@ -58,7 +59,7 @@ const IT_COPY = {
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/dashboard'
+  const redirect = safeRedirect(searchParams.get('redirect'), '/dashboard')
   const locale = searchParams.get('locale')
   const errorParam = searchParams.get('error')
   const copy = locale === 'it' ? IT_COPY : EN_COPY

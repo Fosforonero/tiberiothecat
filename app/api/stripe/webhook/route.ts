@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         console.error('Webhook: failed to update name:', error)
         return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
       }
-      console.log(`✅ Name change: user=${userId.slice(0, 8)} → "${newName}" (#${currentChanges + 1})`)
+      console.log(`✅ Name change: user=${userId.slice(0, 8)} (#${currentChanges + 1})`)
     }
 
     // ── subscription checkout completed ──

@@ -18,6 +18,10 @@ export async function POST(req: NextRequest) {
     if (name.length < 2 || name.length > 32) {
       return NextResponse.json({ error: 'Name must be 2–32 characters' }, { status: 400 })
     }
+    // Reject control characters (null bytes, newlines, etc.)
+    if (/[\x00-\x1f\x7f]/.test(name)) {
+      return NextResponse.json({ error: 'Name contains invalid characters' }, { status: 400 })
+    }
     const forbidden = ['admin', 'splitvote', 'moderator']
     if (forbidden.some(w => name.toLowerCase().includes(w))) {
       return NextResponse.json({ error: 'That name is reserved' }, { status: 400 })
@@ -75,12 +79,16 @@ export async function POST(req: NextRequest) {
     updatePayload.gender = gender
   }
 
-  if (countryCode !== undefined && String(countryCode).length === 2) {
+  if (countryCode !== undefined && /^[A-Z]{2}$/.test(String(countryCode).toUpperCase())) {
     updatePayload.country_code = String(countryCode).toUpperCase()
   }
 
   if (avatarEmoji !== undefined) {
-    updatePayload.avatar_emoji = String(avatarEmoji)
+    const emoji = String(avatarEmoji)
+    // Cap to 8 chars — allows multi-codepoint emoji (flags, ZWJ sequences) while blocking abuse
+    if (emoji.length <= 8) {
+      updatePayload.avatar_emoji = emoji
+    }
   }
 
   if (Object.keys(updatePayload).length === 0) {
@@ -93,7 +101,7 @@ export async function POST(req: NextRequest) {
     .eq('id', user.id)
 
   if (error) {
-    console.error('Profile update error:', error)
+    console.error('Profile update error:', (error as { code?: string }).code ?? 'db_error')
     return NextResponse.json({ error: 'Update failed' }, { status: 500 })
   }
 

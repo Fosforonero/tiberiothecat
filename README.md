@@ -4,6 +4,8 @@ Real-time global voting on impossible moral dilemmas. No right answers — just 
 
 Live at **[splitvote.io](https://splitvote.io)**
 
+Legal/compliance tracking lives in **[LEGAL.md](./LEGAL.md)**. Read it before changing cookies, analytics, ads, auth/account data, payments, AI content generation, email, geo features, or public profile visibility.
+
 ---
 
 ## Stack
@@ -416,6 +418,20 @@ All `@splitvote.io` addresses route via Cloudflare Email Routing → Gmail. No p
 > **DNS note:** `splitvote.io` currently redirects to `www.splitvote.io` via Cloudflare.
 > All canonical URLs in code use `https://splitvote.io` (no www). Configure a Cloudflare
 > Redirect Rule to redirect `www` → non-www (301) to avoid duplicate content.
+
+### Security Notes
+
+**Redirect safety** (`lib/safe-redirect.ts`): all user-controlled redirect targets pass through `safeRedirect()` before use. Allows only paths starting with `/` (not `//`), rejects backslashes and `/api/*` targets. Applied to `app/auth/callback/route.ts` and `app/login/page.tsx`.
+
+**JSON-LD escaping** (`components/JsonLd.tsx`): the `safeJsonStringify()` helper escapes `<`, `>`, and `&` as `<`/`>`/`&` to prevent `</script>` injection. All JSON-LD injection goes through `<JsonLd>` or applies the same escape pattern inline.
+
+**Admin/service role rules**: `ADMIN_EMAILS` is server-side only (never exported to client). `SUPABASE_SERVICE_ROLE_KEY` is used only in `lib/supabase/admin.ts`. Every `app/api/admin/**` route checks `isAdminEmail(user.email)` and returns 401 on failure.
+
+**API input bounds**: `POST /api/events/track` caps metadata at 2 KB serialized and validates `scenarioId` format (`^[a-z0-9-]{1,80}$`). `POST /api/profile/update` validates `countryCode` against `^[A-Z]{2}$`, caps `avatarEmoji` at 8 chars, and rejects `displayName` with control characters.
+
+**GA proxy** (`/api/_g/script`): ignores the `id` query param and always uses the configured `NEXT_PUBLIC_GA_ID` / hardcoded `G-5MPQ8PW0CE` — prevents proxying arbitrary GA IDs.
+
+**GA collect proxy** (`/api/_g/g/collect`): forwards `X-Forwarded-For` to Google intentionally — required for accurate geo and session data in GA4. No raw IPs are stored server-side.
 
 ### Known issues / TODOs
 - Stripe webhook idempotency: if `checkout.session.completed` fires twice for the same session, `name_changes` would be incremented twice. Low probability (Stripe retry dedup), but not fully mitigated. Backlog: store processed `session_id` in DB to skip duplicates.

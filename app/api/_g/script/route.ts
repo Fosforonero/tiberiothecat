@@ -7,8 +7,10 @@ import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-5MPQ8PW0CE'
+
 export async function GET(request: NextRequest) {
-  const id = request.nextUrl.searchParams.get('id') || 'G-5MPQ8PW0CE'
+  const id = GA_ID
 
   try {
     const res = await fetch(

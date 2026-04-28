@@ -63,7 +63,7 @@ const EN_COPY = {
   nextDilemma:    'Next dilemma →',
   counting:       'Counting your vote…',
   voteError:      'Something went wrong. Please try again.',
-  disclaimer:     'Anonymous. No account needed. Results update in real time.',
+  disclaimer:     'Anonymous voting. No account required. Results update in real time.',
   optionA:        'Option A',
   optionB:        'Option B',
 }
@@ -83,7 +83,7 @@ const IT_COPY = {
   nextDilemma:    'Prossimo dilemma →',
   counting:       'Conteggio del tuo voto…',
   voteError:      'Qualcosa è andato storto. Riprova.',
-  disclaimer:     'Anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
+  disclaimer:     'Voto anonimo. Nessun account richiesto. I risultati si aggiornano in tempo reale.',
   optionA:        'Opzione A',
   optionB:        'Opzione B',
 }
@@ -202,7 +202,7 @@ export default function VoteClientPage({
       <Script
         id={`jsonld-${scenario.id}`}
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }}
       />
 
       <div className="max-w-2xl mx-auto px-4 py-16">

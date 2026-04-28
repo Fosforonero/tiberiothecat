@@ -52,6 +52,11 @@
 - [x] OPENROUTER_API_KEY server-side only
 - [x] Nessuna PII nei tracking events (solo scenario_id, category, locale, choice)
 - [x] Trust strip "Anonymous voting / No account required" su home + vote + footer
+- [x] Open Redirect fix: `safeRedirect()` in `auth/callback` e `login/page` — blocca `//`, backslash, URL assoluti
+- [x] JSON-LD escaping: `JsonLd.tsx` + VoteClientPage escapa `</script>` injection
+- [x] GA proxy hardening: `/api/_g/script` usa solo GA ID configurato, ignora param user-supplied
+- [x] API input bounds: metadata 2KB cap, scenarioId pattern, countryCode regex, avatarEmoji max 8, displayName no control chars
+- [x] Stripe webhook non logga display name in chiaro; profile/update riduce error log a error code
 
 ### Middleware & Performance
 - [x] isAuthRelevantPath(): Supabase auth.getUser() solo su route che lo richiedono

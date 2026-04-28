@@ -3,7 +3,20 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 27 Aprile 2026 (sprint Admin Pro Dashboard + Content Tools)
+Ultimo aggiornamento: 28 Aprile 2026 (sprint Security Hardening Pre-Scaling)
+
+Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
+
+---
+
+## Sprint completati — Security Hardening Pre-Scaling (28 Apr 2026)
+
+- [x] Open Redirect fix: `lib/safe-redirect.ts` — `safeRedirect()` su `auth/callback` e `login/page`
+- [x] JSON-LD XSS fix: `JsonLd.tsx` escapa `<`/`>`/`&`; tutti i JSON-LD inline ora sicuri
+- [x] GA proxy: `/api/_g/script` ignora `id` user-supplied, usa solo GA ID configurato
+- [x] API input bounds: metadata cap 2KB, scenarioId pattern, countryCode regex, avatarEmoji length, displayName control chars
+- [x] Log safety: nome utente rimosso da Stripe webhook log; profile error log ridotto a error code
+- [x] Docs: README Security Notes, ROADMAP sprint, LAUNCH_AUDIT aggiornato
 
 ---
 
@@ -871,6 +884,7 @@ iOS App Store → **Capacitor (WKWebView wrapper)**
 - [ ] **Build locale**: la shell di default usa Node 14; usare `nvm use` dentro questo repo.
 - [ ] **Upgrade framework**: Next 16 + React 19 + Node 24 è uno sprint dedicato, non va mischiato alla push corrente.
 - [ ] **Social trend sources**: X/Instagram/TikTok solo con API ufficiali o provider conformi. Niente scraping fragile.
+- [ ] **Legal/compliance reconciliation**: prima dello scaling aggiornare Privacy EN/IT, Terms EN/IT, cookie/storage inventory e consent UX seguendo `LEGAL.md`.
 
 ---
 
