@@ -228,10 +228,18 @@ Geo quests are high potential but high privacy risk.
 Rules:
 
 - Opt-in only.
-- Prefer user-declared country/city over IP geolocation.
+- Use a hybrid model, but with clear priority:
+  - preferred source for city quests: user-declared country/city in profile
+  - allowed fallback: approximate IP-derived location only after clear consent / opt-in
+  - analytics-only coarse geography can remain aggregate and non-user-facing
 - Neighborhood-level quests only if there is a strong privacy design and enough active users.
 - Use aggregation thresholds to prevent re-identification.
 - No precise location tracking by default.
+- Never store raw IP for geo features.
+- Store only normalized coarse fields needed for the product, such as `country_code`, `region`, and `city`.
+- Let users edit or remove declared location from profile.
+- Public geo breakdowns and leaderboards need minimum sample thresholds.
+- Neighborhood quests should remain design-only until there is enough traffic and a legal/privacy review.
 
 ---
 
@@ -584,7 +592,10 @@ Goal: design privacy-safe geo and event quests before any implementation.
 Scope:
 
 - Country/city quest design.
-- Opt-in location model.
+- Hybrid location model:
+  - user-declared city/country in profile as the primary source
+  - approximate IP-based location only as an explicit opt-in fallback
+  - no raw IP storage for geo features
 - Aggregation thresholds.
 - Anti-abuse and privacy constraints.
 - Badge/trophy rewards.
@@ -602,6 +613,7 @@ Why tenth:
 Legal/docs:
 
 - Required. Update `LEGAL.md` and likely Privacy before implementation.
+- Required before storing any city/country profile field or using IP-derived location for product features.
 
 ### Sprint 11 — Discussion/Community Design
 

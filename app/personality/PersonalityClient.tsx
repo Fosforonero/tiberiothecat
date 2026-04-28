@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Compass, Share2, RefreshCw, Lock, ChevronRight, Sparkles } from 'lucide-react'
+import { Compass, Share2, RefreshCw, Lock, ChevronRight, Sparkles, Download } from 'lucide-react'
 import Link from 'next/link'
 
 interface AxisData {
@@ -64,6 +64,7 @@ const EN_COPY = {
   sign:             (s: string) => `SplitVote Sign: ${s}`,
   lowConfidence:    '⚠️ Low confidence — vote on more dilemmas for a better reading',
   share:            'Share my archetype',
+  download:         'Save card',
   copied:           'Copied!',
   communityVerdict: 'Community verdict: ',
   axesTitle:        '🧠 Your Moral Axes',
@@ -86,6 +87,7 @@ const IT_COPY = {
   sign:             (s: string) => `Segno SplitVote: ${s}`,
   lowConfidence:    '⚠️ Bassa attendibilità — vota altri dilemmi per un risultato più preciso',
   share:            'Condividi il mio archetipo',
+  download:         'Salva card',
   copied:           'Copiato!',
   communityVerdict: 'Verdetto della community: ',
   axesTitle:        '🧠 I Tuoi Assi Morali',
@@ -232,12 +234,22 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
           <p className="text-xs text-yellow-400/70 mb-4">{copy.lowConfidence}</p>
         )}
 
-        {/* Share button */}
-        <button onClick={handleShare}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-colors">
-          <Share2 size={14} />
-          {copied ? copy.copied : copy.share}
-        </button>
+        {/* Share + Download buttons */}
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <button onClick={handleShare}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-colors">
+            <Share2 size={14} />
+            {copied ? copy.copied : copy.share}
+          </button>
+          <a
+            href={`/api/personality-card?archetype=${archetype.id}&locale=${locale}`}
+            download={`splitvote-personality-${archetype.id}.png`}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/15 transition-colors"
+          >
+            <Download size={14} />
+            {copy.download}
+          </a>
+        </div>
       </div>
 
       {/* ── Community label ── */}

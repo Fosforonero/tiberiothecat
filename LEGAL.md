@@ -117,7 +117,7 @@ Update this file and the public legal pages when any sprint changes:
 - Paid poll submissions, poll credits, creator/VIP tiers, or user-generated content monetization
 - Email collection, transactional email, marketing email, Resend
 - AI generation, content moderation, autopublish/draft approval
-- Geo features, country breakdowns, demographic fields, leaderboards
+- Geo features, country/city profile fields, approximate IP-derived location, country breakdowns, demographic fields, leaderboards
 - Internal comments, discussion threads, reporting, moderation, or community features
 - Security controls that change data processing, IP handling, logging, rate limiting, or admin access
 

@@ -3,11 +3,21 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Sprint 1 Profile UX + Personality Entry Point completato
+Ultimo aggiornamento: 28 Aprile 2026 — Sprint 2 Personality Share Card completato
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
+
+---
+
+## Sprint completati — Personality Share Card (28 Apr 2026)
+
+- [x] `app/api/personality-card/route.tsx` — edge `ImageResponse` 1080×1920 PNG per tutti e 6 gli archetipi, EN/IT
+- [x] `PersonalityClient.tsx` — aggiunto pulsante "Save card" / "Salva card" con `<a download>` accanto al pulsante Share
+- [x] `lib/personality.ts` invariato — `shareText`/`shareTextIt` già presenti; nessun nuovo archetipo
+- [x] Copy: "Based on my SplitVote choices" + disclaimer entertainment-only nella card
+- [x] Nessuna API social, nessun auto-post, nessun nuovo DB schema, nessun nuovo tracking
 
 ---
 
@@ -115,7 +125,8 @@ Loop strategico:
 - [ ] Quest per quartiere solo se privacy-safe
 - [ ] Leaderboard aggregate
 - [ ] Niente tracciamento preciso obbligatorio
-- [ ] Geografia dichiarata volontariamente dall'utente o derivata solo con consenso/approccio privacy-safe
+- [ ] Geografia dichiarata volontariamente dall'utente come fonte primaria per città/quest
+- [ ] IP geolocation solo approssimativa, opt-in/consenso esplicito se usata per feature prodotto, mai con raw IP salvato
 - [ ] Soglie minime di campione per evitare identificazione indiretta
 
 #### Fase 5 — Unique Trophies
