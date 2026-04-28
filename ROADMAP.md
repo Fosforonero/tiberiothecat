@@ -3,13 +3,37 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — k6 production spike test passed
+Ultimo aggiornamento: 28 Aprile 2026 — pre-launch code health audit
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Pre-launch Code Health Audit (28 Apr 2026)
+
+**Obiettivo**: ridurre rischio tecnico pre-lancio applicando solo fix a basso rischio. Nessuna modifica a runtime behavior, vote flow, Stripe, caching, DB schema.
+
+- [x] **`next.config.js` consolidato** — eliminati `next.config.mjs` e `next.config.ts` (file duplicati ignorati o potenzialmente ambigui con Next.js 14.2). Config unica `next.config.js` ora include: `eslint.ignoreDuringBuilds: true` (ESLint 8/9 incompatibility), header `X-XSS-Protection`, header `X-DNS-Prefetch-Control`, commento CSP, commento `payment=(self)` per Stripe. Tutti gli altri security header invariati.
+- [x] **`postcss.config.mjs` eliminato** — usava `@tailwindcss/postcss` non presente in `package.json`; `postcss.config.js` (CJS con tailwindcss + autoprefixer) rimane l'unica config PostCSS attiva.
+- [x] **README cron schedule corretto** — l'esempio codice nella sezione Vercel Cron mostrava `0 8 * * *` ma `vercel.json` ha `0 6 * * *` (6am UTC). Allineati.
+- [x] **Personality validation**: ✅ 18 archetipi, VALID_IDS, ARCHETYPE_HEX, SIGN_COLORS — tutti coerenti.
+
+**Verifiche eseguite**: `npm run typecheck` ✅ — `npm run build` ✅ (148 pagine statiche) — `git diff --check` ✅ — `npm run validate:personality` ✅.
+
+**Non modificato** (fuori scope o deliberatamente invariato):
+- `force-dynamic` + `generateStaticParams` su play/results — per-user data, nessuna cache per anti-regression rule. play/results p95 < 600ms a ~30 req/s già verificato con k6 spike.
+- `SLOT_HOME ?? 'TODO'` in `app/page.tsx` — AdSlot renders null su 'TODO'; safe, intenzionale.
+- `push_*.command` untracked — mai committare, confermato.
+- Admin page 632 righe — refactor post-lancio.
+- Duplicazione EN/IT pages — refactor post-lancio.
+
+**Performance status: ✅ INVARIATO** — baseline smoke + spike production results invariati (nessuna modifica a runtime o caching).
+
+**Prossimo step consigliato**: eseguire Stripe QA end-to-end (runbook in `LAUNCH_AUDIT.md`), poi Spanish i18n foundation.
 
 ---
 

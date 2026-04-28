@@ -156,7 +156,7 @@ The cron job auto-generates new dilemma drafts daily using Claude. Configured in
 
 ```json
 {
-  "crons": [{ "path": "/api/cron/generate-dilemmas", "schedule": "0 8 * * *" }]
+  "crons": [{ "path": "/api/cron/generate-dilemmas", "schedule": "0 6 * * *" }]
 }
 ```
 
