@@ -3,13 +3,24 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Stripe Webhook Idempotency Hardening
+Ultimo aggiornamento: 28 Aprile 2026 — Post-Idempotency Verification Sprint
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Post-Idempotency Verification Sprint (28 Apr 2026)
+
+- [x] README.md — Stripe webhook runbook espanso: procedura di verifica step-by-step post-migration v11, test duplicate detection con `stripe events resend`, expected outcomes documentati
+- [x] LAUNCH_AUDIT.md — idempotency item aggiornato (implementazione completata, awaiting migration v11 + verification); sezione k6 Vercel Preview baseline espansa con tabella metriche da registrare e istruzioni no-ENABLE_WRITE_TESTS per primo run
+- [x] ROADMAP.md — "Prossimo Sprint Prioritario" ripulito: rimossi candidati completati (Stripe webhook idempotency, k6 harness); aggiunti step operativi pre-scaling (migration v11 apply, k6 Preview baseline) e candidati prodotto realistici
+- [x] Nessun codice applicativo, DB, API, Stripe, Redis, auth o runtime behavior modificato
+
+**Nota migration v11**: non è possibile verificare lo stato di Supabase da codice — resta ⏳ Pending fino a conferma manuale. La backward-compatibility garantisce che il webhook funzioni in entrambi i casi.
 
 ---
 
@@ -137,10 +148,17 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 
 ## Prossimo Sprint Prioritario — da definire
 
-Candidati post-polish:
-- i18n espansione: prossima lingua `es` (spagnolo), poi `pt-BR`, poi `fr` — seguire lo stesso pattern middleware + route duplicate + CATEGORY_LABELS_*
-- Stripe webhook idempotency (tabella `webhook_events` con unique su `stripe_event_id`)
-- Performance follow-up: load test con k6 (vedere LAUNCH_AUDIT.md §C) — unico modo per verificare comportamento reale sotto stress di play/results con force-dynamic
+### Step operativi pre-scaling (no codice, solo ops)
+
+- [ ] **Applica e verifica migration v11**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v11_stripe_webhook_events.sql` → Run. Poi verificare con Stripe CLI: `stripe trigger checkout.session.completed` → riga `status=processed` in `stripe_webhook_events`; `stripe events resend <evt_id>` → risposta `duplicate:true`. Vedi README §Stripe webhook per la procedura completa.
+- [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks. Vedi LAUNCH_AUDIT.md §C per la tabella metriche.
+
+### Candidati prodotto
+
+- **Stripe QA end-to-end**: test acquisto premium con carta reale in produzione + customer portal cancellation + verifica migration v11 (sopra)
+- **i18n espansione `es`**: prossima lingua spagnolo — seguire pattern middleware + route duplicate + CATEGORY_LABELS_ES; attendere metriche traffico IT prima di iniziare
+- **Premium dashboard simplification**: ridurre friction onboarding premium, rendere i benefici più visibili
+- **Profile UX cleanup**: streak milestones, badge bacheca, share card profilo
 
 ---
 

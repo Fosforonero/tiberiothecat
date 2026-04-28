@@ -127,7 +127,7 @@
 ### Stripe QA End-to-End
 - [ ] Test acquisto premium con carta reale in produzione (non solo webhook simulator)
 - [ ] Verificare customer portal funzionante (cancellazione subscription)
-- [ ] Idempotenza webhook: session_id già processati in DB per evitare doppio increment
+- [x] Idempotenza webhook implementata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ⚠️ verificare: (1) applicare migration v11 in Supabase dashboard, (2) `stripe trigger checkout.session.completed`, (3) riga `status=processed` in `stripe_webhook_events`, (4) `stripe events resend <evt_id>` → risposta `duplicate:true` senza nuova riga (vedi README §Stripe webhook)
 - [ ] Stripe price IDs reali configurati in Vercel (STRIPE_PRICE_ID_PREMIUM + STRIPE_PRICE_ID_NAME_CHANGE)
 
 ### Blog Dynamic Storage
@@ -225,13 +225,34 @@ BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitv
 - Nessun 500 in Vercel logs durante il test
 - `vote_rate_limited` < 20% nel write test (rate limit attivo ma non dominante a 1 req/s)
 
-#### Prossimo step consigliato
+#### Vercel Preview baseline — procedura consigliata
 
-1. Eseguire baseline smoke (`5 VU, 30s`) contro Vercel Preview del branch corrente
-2. Verificare latenze p95 per play/results — questi sono force-dynamic e ogni VU colpisce il server
-3. Se play/results p95 > 2s anche a 5 VU: investigare Redis cold start su Upstash free tier
-4. Se ok, eseguire test più lungo (`20 VU, 2m`) sempre su Preview prima di produzione
-5. Solo dopo: eseguire stesso test su produzione in orario basso traffico
+Ottenere l'URL della Vercel Preview più recente dal deploy log o da `npx vercel ls`.
+
+```bash
+# Prima esecuzione: solo read-only (NO ENABLE_WRITE_TESTS — non serve per il baseline)
+BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js
+```
+
+**Non usare `ENABLE_WRITE_TESTS=true` per il primo baseline.** I write test su Preview consumano rate-limit Redis reali e potrebbero causare 429 che distorcono le metriche ISR/dynamic.
+
+Metriche da registrare e riportare nel commit/ROADMAP:
+
+| Metrica | Descrizione | Pass target soft launch |
+|---|---|---|
+| `http_req_duration{name:GET /} p(95)` | Home ISR — deve arrivare da edge cache | < 500ms |
+| `http_req_duration{name:GET /trending} p(95)` | Trending ISR | < 500ms |
+| `http_req_duration{name:GET /category/technology} p(95)` | Category ISR | < 1500ms |
+| `http_req_duration{name:GET /play/trolley} p(95)` | Play force-dynamic — ogni VU colpisce server | < 3000ms |
+| `http_req_duration{name:GET /results/trolley} p(95)` | Results force-dynamic | < 3000ms |
+| `http_req_failed` | % richieste fallite (5xx, rete) | < 1% |
+| `checks` | % check status 200 passati | > 98% |
+
+Se play/results p95 > 2s a 5 VU: investigare Redis cold start su Upstash free tier (latenza primo hit).
+
+Dopo il baseline su Preview (se ok):
+1. Eseguire test più lungo (`20 VU, 2m`) sempre su Preview
+2. Solo dopo: stesso test su produzione in orario basso traffico con esplicita finestra controllata
 
 ### Analytics & Business Intelligence
 - [ ] GA4 funnel: vote → results → share → signup (verificare eventi in GA4 dashboard)

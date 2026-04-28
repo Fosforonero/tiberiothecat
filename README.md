@@ -384,14 +384,40 @@ Required production events: `checkout.session.completed`, `customer.subscription
 
 **Idempotency**: the webhook uses `lib/stripe-webhook-events.ts` to guard against double-processing Stripe retries. Each `stripe.event.id` is claimed in `public.stripe_webhook_events` before processing. If the same event arrives again (Stripe retry after 5xx), the handler returns 200 immediately without reprocessing. Requires `migration_v11_stripe_webhook_events.sql` to be applied. **Backward-compatible**: if the table is missing, processing continues as before and a `console.warn` is emitted — no silent failure.
 
-Stripe CLI testing (requires Stripe CLI installed and logged in):
+**Idempotency verification runbook** (requires Stripe CLI installed + `migration_v11` applied in Supabase):
+
 ```bash
-# Forward local webhook
+# Terminal 1 — start local dev server, then forward webhook
+npm run dev
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 
-# Trigger a test event (in a second terminal)
+# Terminal 2 — trigger a test event; note the event ID printed in Terminal 1
 stripe trigger checkout.session.completed
+```
+
+After the trigger, verify in **Supabase dashboard → Table Editor → `stripe_webhook_events`**:
+- A row exists with `stripe_event_id` matching the `evt_...` ID shown in Terminal 1
+- `status` = `processed` (not `processing` or `failed`)
+- `processed_at` is set (not null)
+- `error` is null
+
+**Test duplicate detection** — same event ID sent twice:
+```bash
+# Copy the event ID from the Terminal 1 output, e.g. evt_1AbCdEf...
+stripe events resend evt_1AbCdEf...
+```
+
+Expected outcome for the resent event:
+- Webhook handler logs `received: true, duplicate: true` (visible in Terminal 1)
+- No new row is inserted in `stripe_webhook_events`
+- No DB update is triggered — the event is acknowledged without reprocessing
+
+**If `migration_v11` has not yet been applied**: every event logs `[stripe/idempotency] stripe_webhook_events table not found` to Vercel logs and processing continues normally. No silent failure — this is the designed backward-compatible fallback.
+
+Stripe CLI test for other event types:
+```bash
 stripe trigger customer.subscription.updated
+stripe trigger customer.subscription.deleted
 ```
 
 ### Entitlements system
