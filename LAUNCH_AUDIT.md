@@ -78,6 +78,8 @@
 - [x] Premium subscription MVP (Stripe checkout + customer portal)
 - [x] Webhook lifecycle: checkout.session.completed, subscription.updated, subscription.deleted
 - [x] Entitlements centralizzati (lib/entitlements.ts): noAds, unlimitedRenames, canSubmitPoll
+- [x] Poll submission server-enforced: `POST /api/polls/submit` verifica auth + entitlement server-side; insert via admin client con `status='pending'`; input validation server-side — ✅ 28 Apr 2026
+- [x] `user_polls` RLS abilitato (migration_v12): INSERT client bloccato; policy SELECT own polls presente; INSERT/UPDATE/DELETE da client non autorizzati → 42501 — ✅ migration v12 applicata in Supabase (28 Apr 2026); policy "Anyone can view approved polls" + "Users can view own polls" presenti; residual UPDATE policy da rimuovere con migration_v13 (⏳ Pending)
 - [x] AdSense official script (pagead2.googlesyndication.com)
 - [x] AdSlot: no ads per admin/premium via /api/me/entitlements
 
@@ -127,7 +129,7 @@
 ### Stripe QA End-to-End
 - [ ] Test acquisto premium con carta reale in produzione (non solo webhook simulator)
 - [ ] Verificare customer portal funzionante (cancellazione subscription)
-- [x] Idempotenza webhook implementata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ⚠️ verificare: (1) applicare migration v11 in Supabase dashboard, (2) `stripe trigger checkout.session.completed`, (3) riga `status=processed` in `stripe_webhook_events`, (4) `stripe events resend <evt_id>` → risposta `duplicate:true` senza nuova riga (vedi README §Stripe webhook)
+- [x] Idempotenza webhook implementata e verificata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client; comportamento dedup confermato operativo
 - [ ] Stripe price IDs reali configurati in Vercel (STRIPE_PRICE_ID_PREMIUM + STRIPE_PRICE_ID_NAME_CHANGE)
 
 ### Blog Dynamic Storage

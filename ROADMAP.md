@@ -3,13 +3,34 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Poll Submit Hardening + RLS
+Ultimo aggiornamento: 28 Aprile 2026 — Migrations v11/v12 Applied + RLS Audit + v13
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Migrations v11/v12 Applied + RLS Audit + v13 (28 Apr 2026)
+
+**Obiettivo**: aggiornare docs per v11/v12 ora applicate; auditare policy residua UPDATE su `user_polls`; creare migration v13.
+
+**Audit risultato UPDATE user_polls**:
+- `user_polls.update` nel codice: solo `app/api/admin/polls/[id]/approve/route.ts` e `app/api/admin/polls/[id]/reject/route.ts` — entrambi usano `createAdminClient()` (service role, bypassa RLS)
+- Nessuna feature client per edit pending poll
+- Policy `Users can update own pending polls` è residua di schema.sql — attack surface: un utente autenticato potrebbe modificare il contenuto del poll durante il review dell'admin tramite Supabase REST API diretta, rendendo il review privo di significato
+
+- [x] `README.md` — migration_v11 e migration_v12 aggiornate da ⏳ Pending a ✅ Applied; migration_v13 aggiunta come ⏳ Pending
+- [x] `LAUNCH_AUDIT.md` — item idempotency webhook aggiornato a confermato; item poll submit/RLS aggiunto
+- [x] `ROADMAP.md` — step operativi v11/v12 marcati completati; v13 aggiunto come prossimo step manuale
+- [x] `LEGAL.md` — nota sprint: v11/v12 applicate, v13 audit
+- [x] `supabase/migration_v13_user_polls_no_client_update.sql` — drop `Users can update own pending polls` + varianti; commenti spiegano perché e documentano le policy SELECT ancora necessarie
+
+**Nessun runtime behavior modificato**: nessuna modifica a API, auth, vote flow, Stripe, entitlements, tracking, legal pages.
+
+**Manual step**: applicare `migration_v13` in Supabase dashboard → SQL Editor → Run.
 
 ---
 
@@ -183,8 +204,9 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 
 ### Step operativi pre-scaling (no codice, solo ops)
 
-- [ ] **Applica migration v12**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v12_user_polls_rls_hardening.sql` → Run. Verificare: utente non-premium che POST a Supabase REST API direttamente riceve 42501 insufficient_privilege.
-- [ ] **Applica e verifica migration v11**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v11_stripe_webhook_events.sql` → Run. Poi verificare con Stripe CLI: `stripe trigger checkout.session.completed` → riga `status=processed` in `stripe_webhook_events`; `stripe events resend <evt_id>` → risposta `duplicate:true`. Vedi README §Stripe webhook per la procedura completa.
+- [x] **migration v11 applicata e verificata** (28 Apr 2026): `stripe_webhook_events` esiste, trigger `updated_at` presente, RLS abilitato, zero policy client, comportamento dedup confermato
+- [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
+- [ ] **Applica migration v13**: Supabase dashboard → SQL Editor → incolla `supabase/migration_v13_user_polls_no_client_update.sql` → Run. Rimuove la policy residua `Users can update own pending polls` — nessuna feature client la usa; gli admin usano service role.
 - [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks. Vedi LAUNCH_AUDIT.md §C per la tabella metriche.
 
 ### Candidati prodotto

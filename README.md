@@ -141,8 +141,9 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v8_user_events.sql` | User event tracking for share_result mission | ✅ Applied |
 | `migration_v9_referral_codes.sql` | `profiles.referral_code` for challenge_friend mission | ✅ Applied |
 | `migration_v10_content_events.sql` | Content events view + index — DRAFT, review before applying | ⏳ Pending |
-| `migration_v11_stripe_webhook_events.sql` | Stripe webhook idempotency table (`stripe_webhook_events`) | ⏳ Pending |
-| `migration_v12_user_polls_rls_hardening.sql` | Enable RLS on `user_polls`, remove client INSERT policy — all inserts via server API | ⏳ Pending |
+| `migration_v11_stripe_webhook_events.sql` | Stripe webhook idempotency table (`stripe_webhook_events`) | ✅ Applied |
+| `migration_v12_user_polls_rls_hardening.sql` | Enable RLS on `user_polls`, remove client INSERT policy — all inserts via server API | ✅ Applied |
+| `migration_v13_user_polls_no_client_update.sql` | Drop residual UPDATE client policy on `user_polls` — no client-side edit feature exists | ⏳ Pending |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 
