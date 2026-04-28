@@ -349,13 +349,15 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 
 #### Checklist stato
 
-- [ ] **Test acquisto premium (carta test 4242)** — ⚠️ Non eseguito — richiede Vercel Preview con test mode
-- [ ] **Test customer portal e cancellazione** — ⚠️ Non eseguito — richiede Vercel Preview con test mode
-- [ ] **Configura env test su Vercel Preview** (`sk_test_...`, price IDs test, webhook test → `whsec_...`) — ⚠️ Prossimo step manuale
-- [x] Idempotenza webhook implementata e verificata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client; comportamento dedup confermato operativo
+- [x] **Vercel Preview configurata con Stripe test mode** — ✅ Eseguito 28 Apr 2026. Branch: `stripe-preview-qa`. URL: `splitvote-git-stripe-preview-qa-matpizzi-gmailcoms-projects.vercel.app`. Env vars test (`sk_test_...`, price IDs test, `whsec_...`) configurate su scope Preview.
+- [x] **Test acquisto premium — backend/webhook/entitlements** — ✅ Verificato 28 Apr 2026. `POST /api/stripe/subscription` genera Checkout Session test correttamente. Webhook `checkout.session.completed` ricevuto e processato. Supabase `profiles` dopo attivazione: `is_premium=true`, `stripe_customer_id` valorizzato, `stripe_subscription_id` valorizzato, `subscription_status='active'`. `GET /api/me/entitlements`: `effectivePremium=true`, `noAds=true`, `canSubmitPoll=true`. ⚠️ Submit finale della hosted Checkout page non completato via browser automatizzato (Stripe applica controlli anti-automation sull'UI di pagamento) — richiede una singola verifica manuale umana con carta `4242 4242 4242 4242`.
+- [x] **Test customer portal e cancellazione** — ✅ Verificato 28 Apr 2026. `POST /api/stripe/portal` apre correttamente il Stripe Billing Portal. Cancellazione immediata forzata via Stripe CLI → evento `customer.subscription.deleted` generato → webhook processato (log Vercel: `Subscription cancelled`). `profiles` dopo cancellazione: `is_premium=false`, `noAds=false`, `canSubmitPoll=false`.
+- [x] **Webhook idempotency verificata end-to-end** — ✅ Verificato 28 Apr 2026. Duplicate webhook resend eseguito: nessuna seconda attivazione Premium, nessuna nuova riga in `stripe_webhook_events` per lo stesso `stripe_event_id`. Idempotency operativa.
+- [x] Idempotenza webhook implementata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client
 - [x] **Bug fix (28 Apr 2026)**: aggiunto try/catch su `stripe.checkout.sessions.create()` in checkout, subscription e `billingPortal.sessions.create()` in portal — prima, Stripe throw → 500 non-JSON → client "Network error"; ora → 500 JSON con messaggio utile
 - [x] **Audit statico completo (28 Apr 2026)**: webhook lifecycle, idempotency, premium activation, cancellation, AdSlot, entitlements API, log safety — tutti verificati. Runbook allineato al codice.
-- [ ] **Stripe price IDs reali configurati in Vercel production** (`STRIPE_PRICE_ID_PREMIUM` + `STRIPE_PRICE_ID_NAME_CHANGE`) — ⚠️ Da verificare prima di aprire Premium a utenti reali
+- [ ] **⛔ BLOCKER PRODUZIONE — `STRIPE_PRICE_ID_PREMIUM` live è one-time, non ricorrente** — Il prezzo Premium configurato in Stripe live mode risulta `one-time`; il codice usa `mode: 'subscription'`. Stripe rifiuterà la chiamata in produzione. Azioni richieste prima del go-live Premium: (1) creare un prezzo ricorrente mensile per Premium in Stripe live mode dashboard; (2) aggiornare `STRIPE_PRICE_ID_PREMIUM` su Vercel → Environment Variables → scope Production; (3) eseguire un singolo checkout reale controllato o verifica live a basso rischio per conferma.
+- [ ] **Submit finale hosted Checkout — verifica manuale umana** — eseguire con carta `4242 4242 4242 4242` su Preview dopo il blocco produzione risolto, oppure direttamente in live mode con carta reale durante la verifica finale. Chiude il loop UX end-to-end.
 
 ### Blog Dynamic Storage
 - [ ] Progettare BlogDraft schema (vedi ROADMAP — Blog Weekly Generation)
@@ -568,7 +570,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 
 3. **Google-certified TCF CMP**: per servire annunci personalizzati AdSense in EEA/UK/Svizzera a scala, Google richiede una CMP certificata TCF. Il banner custom attuale è sufficiente per il soft launch; prima di scaling aggressivo valutare CMP certificata (Cookiebot, Axeptio, ecc.).
 
-4. **Stripe QA end-to-end**: con utenti premium reali, i bug nel webhook lifecycle diventano critici (doppio addebito, mancata disabilitazione premium).
+4. **Stripe go-live Premium**: backend/webhook/entitlements verificati su Preview (28 Apr 2026). Blocker residuo: `STRIPE_PRICE_ID_PREMIUM` in produzione è one-time, non ricorrente — Stripe rifiuterà `mode: 'subscription'`. Richiede nuovo prezzo ricorrente live + aggiornamento env var production + verifica finale prima di promuovere Premium a utenti reali.
 
 5. **Disaster recovery**: senza runbook e backup verificati, un'interruzione Redis o Supabase durante alto traffico è un evento catastrofico senza piano di risposta.
 
@@ -579,7 +581,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 | # | Blocker | Impatto | Effort |
 |---|---------|---------|--------|
 | 1 | Load test + Redis/Supabase stress test | Stabilità a scala | Medio (1 sprint) |
-| 2 | Stripe QA end-to-end + webhook idempotency | Revenue + user trust | Medio (1 sprint) |
+| 2 | Stripe Premium go-live — live recurring price + verifica finale | Revenue + user trust | Basso (config Stripe + 1 test) |
 | 3 | AdSense approval | Monetizzazione | Fuori dal nostro controllo |
 | 4 | Google TCF CMP (per personalized ads EEA a scala) | AdSense policy compliance | Basso-medio (libreria esterna) |
 | 5 | Disaster recovery runbook | Resilienza operativa | Basso (documentazione) |

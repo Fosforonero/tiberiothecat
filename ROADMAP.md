@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Expert Insight V2 (copy + UX results page)
+Ultimo aggiornamento: 28 Aprile 2026 — Stripe Preview QA eseguito (backend/webhook/entitlements verified)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -37,6 +37,28 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ---
 
+## Sprint completati — Stripe Preview QA: backend/webhook/entitlements verified (28 Apr 2026)
+
+**Obiettivo**: eseguire il QA Stripe su Vercel Preview con test mode. Nessuna modifica al codice runtime.
+
+**Preview**: branch `stripe-preview-qa` — `splitvote-git-stripe-preview-qa-matpizzi-gmailcoms-projects.vercel.app`
+
+**Risultati verificati**:
+- ✅ `POST /api/stripe/subscription` → Checkout Session test generata correttamente
+- ✅ Webhook `checkout.session.completed` ricevuto e processato → `is_premium=true`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status='active'`
+- ✅ `GET /api/me/entitlements` post-attivazione → `effectivePremium=true`, `noAds=true`, `canSubmitPoll=true`
+- ✅ Billing Portal → apre correttamente
+- ✅ Cancellazione via Stripe CLI → `customer.subscription.deleted` processato → `is_premium=false`, entitlements revocati
+- ✅ Webhook idempotency end-to-end → duplicate resend non riattiva Premium
+
+**Limitazione**: submit finale hosted Checkout non completato via browser automatizzato (Stripe anti-automation sull'UI) — richiede verifica manuale umana con carta `4242`.
+
+**⛔ Blocker produzione identificato**: `STRIPE_PRICE_ID_PREMIUM` in live mode è configurato come `one-time`, non ricorrente. Il codice usa `mode: 'subscription'` → Stripe rifiuta in produzione. Prima del go-live Premium: creare prezzo ricorrente in Stripe live → aggiornare env var Vercel production → verifica finale.
+
+**Nessuna modifica a**: codice runtime, Stripe env production, Supabase schema, Redis, vote flow.
+
+---
+
 ## Sprint completati — Expert Insight V2: copy + UX results page (28 Apr 2026)
 
 **Obiettivo**: migliorare gli Expert Insights post-voto per aumentare retention, interesse e sharability. Zero AI runtime, zero DB, zero nuovi servizi.
@@ -67,8 +89,8 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 **Stato Stripe QA (aggiornato)**:
 - ✅ Audit statico completo: webhook lifecycle, idempotency, AdSlot, entitlements, log safety
 - ✅ Bug fix: try/catch su chiamate Stripe API (checkout, subscription, portal)
-- ⚠️ QA manuale su Vercel Preview: **non eseguito** — bloccato su configurazione env test
-- ⏭️ Prossimo step manuale: Matteo deve configurare `sk_test_...`, price IDs test e webhook test su Vercel Preview; poi eseguire il runbook
+- ✅ QA Vercel Preview eseguito (28 Apr 2026) — backend/webhook/entitlements verified — vedi sprint "Stripe Preview QA" sopra
+- ⛔ Blocker produzione: live Premium price è one-time, non ricorrente — richiede fix prima del go-live
 
 **Nessuna modifica a**: codice runtime, Stripe env in produzione, pricing, Supabase schema, Redis, vote flow, analytics, i18n.
 
