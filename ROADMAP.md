@@ -3,13 +3,38 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — QA closure sprint 1a8830e: fix 4 stringhe inglesi hardcoded in ProfileClient sezione personality
+Ultimo aggiornamento: 28 Aprile 2026 — Full IT profile audit + mobile landscape responsive
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Full IT Profile Audit + Mobile Landscape Responsive (28 Apr 2026)
+
+**Obiettivo**: completare localizzazione IT del profilo/account (demografici, membership, stats, messaggi); migliorare layout su mobile landscape (844×390) e tablet; aggiungere script QA per stringhe hardcoded.
+
+**Stringhe IT corrette in `app/profile/ProfileClient.tsx`** (audit completo):
+- Demografici: `Used only in aggregate…` → `Usati solo in forma aggregata…`; `Birth Year` → `Anno di nascita`; `Gender` → `Genere`; opzioni genere (Maschio/Femmina/Non binario/Preferisco non dirlo); `Country` → `Paese`; `Select country` → `Seleziona paese`; nomi paesi con `nameIT` per tutti i 20 paesi (Italia, Stati Uniti, Regno Unito, ecc.)
+- Stats: `Dilemmas voted` → `Dilemmi votati`; `Badges earned` → `Badge ottenuti`; `Day streak 🔥` → `Giorni di serie 🔥`; `Member since` → `Iscritto da`; formato data `'en-GB'` → `'it-IT'` per IT
+- Membership: `Upgrade to Premium` → `Passa a Premium`; `Unlock all SplitVote features` → `Sblocca tutte le funzioni SplitVote`; feature list IT; `Manage Billing` → `Gestisci Abbonamento`; `Opening…` → `Apertura…`; admin description; tutte le 4 feature bullets
+- Identità: `Display Name` → `Nome visualizzato`; `Your display name` → `Il tuo nome`; `🔒 More avatars unlock…` → `🔒 Altri avatar si sbloccano…`; `Your public profile` → `Il tuo profilo pubblico`; messaggio rename a pagamento
+- Trophy case: `Your public profile shows all trophies →` → localizzato; `preview` → `anteprima`
+- Messaggi success/error da URL params e funzioni save/checkout: tutti localizzati
+- `renameLabel()`: labels `Unlimited (Admin/Premium)`, `First change free` → localizzati
+
+**Responsive (mobile landscape + tablet)**:
+- `app/dashboard/page.tsx` stats grid: `grid-cols-4` → `grid-cols-2 sm:grid-cols-4` — migliora portrait (2×2) senza rompere landscape (4 colonne a 640px+)
+- `app/profile/ProfileClient.tsx` premium feature list: `ul` flat → `grid grid-cols-1 sm:grid-cols-2 gap-y-1.5 gap-x-4` — 2 colonne a landscape/tablet
+- Verificato: breakpoint `sm:` (640px) copre landscape 844px, `md:` (768px) copre tablet portrait. Nessuna dipendenza da orientation hack.
+
+**Script QA**:
+- `scripts/check-it-copy.mjs` — grep mirato su ProfileClient, DailyMissions, CompanionDisplay, PersonalityClient per stringhe EN hardcoded fuori da ternario `IT ?`; exit 1 se trova violazioni; aggiunto `npm run check:it-copy`
+
+**Nessuna modifica a**: vote flow, Supabase schema, Redis, Stripe, analytics, middleware, lib/missions.ts.
 
 ---
 

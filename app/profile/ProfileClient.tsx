@@ -7,16 +7,26 @@ import { CreditCard, Loader2, Check, Star, ExternalLink, ChevronRight } from 'lu
 const AVATARS = ['🌍', '🔥', '⚡', '🧠', '🎭', '👾', '🦁', '🐺', '🦊', '🐉', '🌙', '☀️', '🎯', '🏆', '💎', '🌊', '🎪', '🚀', '🎲', '🧩']
 
 const COUNTRIES = [
-  { code: 'IT', name: 'Italy' }, { code: 'US', name: 'United States' },
-  { code: 'GB', name: 'United Kingdom' }, { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' }, { code: 'ES', name: 'Spain' },
-  { code: 'PT', name: 'Portugal' }, { code: 'BR', name: 'Brazil' },
-  { code: 'CA', name: 'Canada' }, { code: 'AU', name: 'Australia' },
-  { code: 'JP', name: 'Japan' }, { code: 'IN', name: 'India' },
-  { code: 'MX', name: 'Mexico' }, { code: 'AR', name: 'Argentina' },
-  { code: 'NL', name: 'Netherlands' }, { code: 'PL', name: 'Poland' },
-  { code: 'SE', name: 'Sweden' }, { code: 'NO', name: 'Norway' },
-  { code: 'CH', name: 'Switzerland' }, { code: 'Other', name: 'Other' },
+  { code: 'IT',    name: 'Italy',           nameIT: 'Italia'       },
+  { code: 'US',    name: 'United States',   nameIT: 'Stati Uniti'  },
+  { code: 'GB',    name: 'United Kingdom',  nameIT: 'Regno Unito'  },
+  { code: 'DE',    name: 'Germany',         nameIT: 'Germania'     },
+  { code: 'FR',    name: 'France',          nameIT: 'Francia'      },
+  { code: 'ES',    name: 'Spain',           nameIT: 'Spagna'       },
+  { code: 'PT',    name: 'Portugal',        nameIT: 'Portogallo'   },
+  { code: 'BR',    name: 'Brazil',          nameIT: 'Brasile'      },
+  { code: 'CA',    name: 'Canada',          nameIT: 'Canada'       },
+  { code: 'AU',    name: 'Australia',       nameIT: 'Australia'    },
+  { code: 'JP',    name: 'Japan',           nameIT: 'Giappone'     },
+  { code: 'IN',    name: 'India',           nameIT: 'India'        },
+  { code: 'MX',    name: 'Mexico',          nameIT: 'Messico'      },
+  { code: 'AR',    name: 'Argentina',       nameIT: 'Argentina'    },
+  { code: 'NL',    name: 'Netherlands',     nameIT: 'Paesi Bassi'  },
+  { code: 'PL',    name: 'Poland',          nameIT: 'Polonia'      },
+  { code: 'SE',    name: 'Sweden',          nameIT: 'Svezia'       },
+  { code: 'NO',    name: 'Norway',          nameIT: 'Norvegia'     },
+  { code: 'CH',    name: 'Switzerland',     nameIT: 'Svizzera'     },
+  { code: 'Other', name: 'Other',           nameIT: 'Altro'        },
 ]
 
 interface Props {
@@ -67,19 +77,19 @@ export default function ProfileClient({
   const [gender, setGender]           = useState(initialGender ?? '')
   const [country, setCountry]         = useState(initialCountry ?? '')
   const [avatar, setAvatar]           = useState(initialAvatar ?? '🌍')
-  const [saving, setSaving]                   = useState(false)
-  const [redirecting, setRedirecting]         = useState(false)
+  const [saving, setSaving]                     = useState(false)
+  const [redirecting, setRedirecting]           = useState(false)
   const [upgradingPremium, setUpgradingPremium] = useState(false)
-  const [managingBilling, setManagingBilling] = useState(false)
-  const [message, setMessage]                 = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [shareCopied, setShareCopied]         = useState(false)
+  const [managingBilling, setManagingBilling]   = useState(false)
+  const [message, setMessage]                   = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [shareCopied, setShareCopied]           = useState(false)
 
   const firstFreeAvailable = nameChanges === 0
 
   function renameLabel(): { text: string; color: string } {
-    if (isAdmin) return { text: '✅ Unlimited (Admin)', color: 'text-red-400' }
-    if (effectivePremium) return { text: '✅ Unlimited (Premium)', color: 'text-yellow-400' }
-    if (firstFreeAvailable) return { text: '✅ First change free', color: 'text-green-400' }
+    if (isAdmin)         return { text: IT ? '✅ Illimitati (Admin)'   : '✅ Unlimited (Admin)',   color: 'text-red-400'    }
+    if (effectivePremium) return { text: IT ? '✅ Illimitati (Premium)' : '✅ Unlimited (Premium)', color: 'text-yellow-400' }
+    if (firstFreeAvailable) return { text: IT ? '✅ Prima modifica gratuita' : '✅ First change free', color: 'text-green-400' }
     return { text: '€0.99', color: 'text-orange-400' }
   }
   const rename = renameLabel()
@@ -89,18 +99,19 @@ export default function ProfileClient({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('name_changed') === '1') {
-      setMessage({ type: 'success', text: '✅ Name changed successfully!' })
+      setMessage({ type: 'success', text: IT ? '✅ Nome cambiato con successo!' : '✅ Name changed successfully!' })
       window.history.replaceState({}, '', '/profile')
     } else if (params.get('payment') === 'cancelled') {
-      setMessage({ type: 'error', text: 'Payment cancelled — your name was not changed.' })
+      setMessage({ type: 'error', text: IT ? 'Pagamento annullato — il nome non è stato cambiato.' : 'Payment cancelled — your name was not changed.' })
       window.history.replaceState({}, '', '/profile')
     } else if (params.get('premium') === 'activated') {
-      setMessage({ type: 'success', text: '⭐ Welcome to Premium! All features are now unlocked.' })
+      setMessage({ type: 'success', text: IT ? '⭐ Benvenuto in Premium! Tutte le funzioni sono ora sbloccate.' : '⭐ Welcome to Premium! All features are now unlocked.' })
       window.history.replaceState({}, '', '/profile')
     } else if (params.get('premium') === 'cancelled') {
-      setMessage({ type: 'error', text: 'Upgrade cancelled — you remain on the free plan.' })
+      setMessage({ type: 'error', text: IT ? 'Upgrade annullato — resti sul piano gratuito.' : 'Upgrade cancelled — you remain on the free plan.' })
       window.history.replaceState({}, '', '/profile')
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function save() {
@@ -121,19 +132,17 @@ export default function ProfileClient({
       const data = await res.json()
 
       if (res.ok) {
-        setMessage({ type: 'success', text: '✅ Profile updated!' })
-        // Keep local state in sync with what was saved (no stale values after refresh)
+        setMessage({ type: 'success', text: IT ? '✅ Profilo aggiornato!' : '✅ Profile updated!' })
         if (data.nameChangesUsed !== undefined) {
           // displayName is already in state — no reset needed
         }
       } else if (res.status === 402) {
-        // Name change requires payment — redirect to Stripe
         await startStripeCheckout()
       } else {
-        setMessage({ type: 'error', text: data.error ?? 'Something went wrong' })
+        setMessage({ type: 'error', text: data.error ?? (IT ? 'Qualcosa è andato storto' : 'Something went wrong') })
       }
     } catch {
-      setMessage({ type: 'error', text: 'Network error — try again' })
+      setMessage({ type: 'error', text: IT ? 'Errore di rete — riprova' : 'Network error — try again' })
     } finally {
       setSaving(false)
     }
@@ -141,7 +150,7 @@ export default function ProfileClient({
 
   async function startStripeCheckout() {
     if (!displayName.trim()) {
-      setMessage({ type: 'error', text: 'Enter a name first' })
+      setMessage({ type: 'error', text: IT ? 'Inserisci prima un nome' : 'Enter a name first' })
       return
     }
     setRedirecting(true)
@@ -155,11 +164,11 @@ export default function ProfileClient({
       if (data.url) {
         window.location.href = data.url
       } else {
-        setMessage({ type: 'error', text: data.error ?? 'Could not start payment' })
+        setMessage({ type: 'error', text: data.error ?? (IT ? 'Impossibile avviare il pagamento' : 'Could not start payment') })
         setRedirecting(false)
       }
     } catch {
-      setMessage({ type: 'error', text: 'Network error — try again' })
+      setMessage({ type: 'error', text: IT ? 'Errore di rete — riprova' : 'Network error — try again' })
       setRedirecting(false)
     }
   }
@@ -171,16 +180,16 @@ export default function ProfileClient({
       const res  = await fetch('/api/stripe/subscription', { method: 'POST' })
       const data = await res.json()
       if (res.status === 409) {
-        setMessage({ type: 'success', text: '⭐ You are already on Premium!' })
+        setMessage({ type: 'success', text: IT ? '⭐ Sei già in Premium!' : '⭐ You are already on Premium!' })
         return
       }
       if (data.url) {
         window.location.href = data.url
       } else {
-        setMessage({ type: 'error', text: data.error ?? 'Could not start upgrade' })
+        setMessage({ type: 'error', text: data.error ?? (IT ? "Impossibile avviare l'upgrade" : 'Could not start upgrade') })
       }
     } catch {
-      setMessage({ type: 'error', text: 'Network error — try again' })
+      setMessage({ type: 'error', text: IT ? 'Errore di rete — riprova' : 'Network error — try again' })
     } finally {
       setUpgradingPremium(false)
     }
@@ -195,10 +204,10 @@ export default function ProfileClient({
       if (data.url) {
         window.location.href = data.url
       } else {
-        setMessage({ type: 'error', text: data.error ?? 'Could not open billing portal' })
+        setMessage({ type: 'error', text: data.error ?? (IT ? 'Impossibile aprire il portale di fatturazione' : 'Could not open billing portal') })
       }
     } catch {
-      setMessage({ type: 'error', text: 'Network error — try again' })
+      setMessage({ type: 'error', text: IT ? 'Errore di rete — riprova' : 'Network error — try again' })
     } finally {
       setManagingBilling(false)
     }
@@ -241,7 +250,11 @@ export default function ProfileClient({
             </div>
             <div>
               <p className="font-bold text-red-400 text-sm">Admin Access</p>
-              <p className="text-xs text-[var(--muted)] mt-0.5">Internal full access — all features unlocked, no ads, unlimited renames.</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">
+                {IT
+                  ? 'Accesso completo interno — tutte le funzioni sbloccate, nessuna pubblicità, rename illimitati.'
+                  : 'Internal full access — all features unlocked, no ads, unlimited renames.'}
+              </p>
             </div>
           </div>
         ) : isPremium ? (
@@ -261,7 +274,9 @@ export default function ProfileClient({
               className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20 transition-colors disabled:opacity-50"
             >
               {managingBilling ? <Loader2 size={12} className="animate-spin" /> : <ExternalLink size={12} />}
-              {managingBilling ? 'Opening…' : 'Manage Billing'}
+              {managingBilling
+                ? (IT ? 'Apertura…' : 'Opening…')
+                : (IT ? 'Gestisci Abbonamento' : 'Manage Billing')}
             </button>
           </div>
         ) : (
@@ -271,17 +286,23 @@ export default function ProfileClient({
                 <Star size={18} className="text-blue-400" />
               </div>
               <div>
-                <p className="font-bold text-white text-sm">Upgrade to Premium</p>
-                <p className="text-xs text-[var(--muted)] mt-0.5">Unlock all SplitVote features</p>
+                <p className="font-bold text-white text-sm">{IT ? 'Passa a Premium' : 'Upgrade to Premium'}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5">{IT ? 'Sblocca tutte le funzioni SplitVote' : 'Unlock all SplitVote features'}</p>
               </div>
             </div>
-            <ul className="space-y-1.5 mb-5">
-              {[
+            {/* Feature list — 2 columns at sm+ for landscape/tablet readability */}
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-1.5 gap-x-4 mb-5">
+              {(IT ? [
+                'Nessuna pubblicità — naviga senza interruzioni',
+                'Rename illimitati del nome visualizzato',
+                'Badge Premium ⭐ sul profilo pubblico',
+                'Invia sondaggi alla community',
+              ] : [
                 'No ads — browse without interruptions',
                 'Unlimited display name changes',
                 'Premium ⭐ badge on your public profile',
                 'Submit polls for the community to vote on',
-              ].map(f => (
+              ]).map(f => (
                 <li key={f} className="flex items-center gap-2 text-xs text-[var(--muted)]">
                   <Check size={12} className="text-green-400 flex-shrink-0" />
                   {f}
@@ -294,9 +315,9 @@ export default function ProfileClient({
               className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm px-6 py-3 rounded-xl transition-all disabled:opacity-50 neon-glow-blue"
             >
               {upgradingPremium ? (
-                <><Loader2 size={14} className="animate-spin" />Redirecting to payment…</>
+                <><Loader2 size={14} className="animate-spin" />{IT ? 'Reindirizzamento al pagamento…' : 'Redirecting to payment…'}</>
               ) : (
-                <><Star size={14} />Upgrade to Premium</>
+                <><Star size={14} />{IT ? 'Passa a Premium' : 'Upgrade to Premium'}</>
               )}
             </button>
           </div>
@@ -326,14 +347,14 @@ export default function ProfileClient({
             ))}
           </div>
           <p className="text-xs text-[var(--muted)] mt-2">
-            🔒 More avatars unlock as you vote.
+            {IT ? '🔒 Altri avatar si sbloccano man mano che voti.' : '🔒 More avatars unlock as you vote.'}
           </p>
         </div>
 
         {/* Display Name */}
         <div className="mb-5">
           <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
-            Display Name
+            {IT ? 'Nome visualizzato' : 'Display Name'}
             <span className={`ml-2 normal-case font-normal ${rename.color}`}>
               — {rename.text}
             </span>
@@ -342,14 +363,16 @@ export default function ProfileClient({
             type="text"
             value={displayName}
             onChange={e => setDisplayName(e.target.value)}
-            placeholder="Your display name"
+            placeholder={IT ? 'Il tuo nome' : 'Your display name'}
             maxLength={32}
             className="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-xl px-4 py-3 text-white placeholder-[var(--muted)] focus:outline-none focus:border-blue-500/60 text-sm"
           />
           {!effectivePremium && !firstFreeAvailable && (
             <p className="text-xs text-orange-400/80 mt-1.5 flex items-center gap-1.5">
               <CreditCard size={11} />
-              You&apos;ve used your free rename — next one costs €0.99 via Stripe.
+              {IT
+                ? 'Hai usato il rename gratuito — il prossimo costa €0.99 via Stripe.'
+                : "You've used your free rename — next one costs €0.99 via Stripe."}
             </p>
           )}
         </div>
@@ -357,7 +380,9 @@ export default function ProfileClient({
         {/* Public Profile */}
         <div className="rounded-xl border border-[var(--border)] bg-[var(--surface2)] px-4 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold mb-0.5">Your public profile</p>
+            <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold mb-0.5">
+              {IT ? 'Il tuo profilo pubblico' : 'Your public profile'}
+            </p>
             <p className="text-sm text-white font-mono truncate">{profileUrl}</p>
           </div>
           <button
@@ -373,44 +398,52 @@ export default function ProfileClient({
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
         <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">📊 {IT ? 'Dati demografici' : 'Demographics'}</h2>
         <p className="text-xs text-[var(--muted)] mb-5">
-          Used only in aggregate for global trend analytics. Never shared individually.
+          {IT
+            ? 'Usati solo in forma aggregata per le analisi globali. Mai condivisi individualmente.'
+            : 'Used only in aggregate for global trend analytics. Never shared individually.'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Birth Year</label>
+            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
+              {IT ? 'Anno di nascita' : 'Birth Year'}
+            </label>
             <input
               type="number"
               value={birthYear}
               onChange={e => setBirthYear(e.target.value)}
-              placeholder="e.g. 1990"
+              placeholder="es. 1990"
               min={1920} max={2015}
               className="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-xl px-4 py-3 text-white placeholder-[var(--muted)] focus:outline-none focus:border-blue-500/60 text-sm"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Gender</label>
+            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
+              {IT ? 'Genere' : 'Gender'}
+            </label>
             <select
               value={gender}
               onChange={e => setGender(e.target.value)}
               className="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/60 text-sm"
             >
-              <option value="">Prefer not to say</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="non_binary">Non-binary</option>
-              <option value="prefer_not">Prefer not to say</option>
+              <option value="">{IT ? 'Preferisco non dirlo' : 'Prefer not to say'}</option>
+              <option value="male">{IT ? 'Maschio' : 'Male'}</option>
+              <option value="female">{IT ? 'Femmina' : 'Female'}</option>
+              <option value="non_binary">{IT ? 'Non binario' : 'Non-binary'}</option>
+              <option value="prefer_not">{IT ? 'Preferisco non dirlo' : 'Prefer not to say'}</option>
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">Country</label>
+            <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
+              {IT ? 'Paese' : 'Country'}
+            </label>
             <select
               value={country}
               onChange={e => setCountry(e.target.value)}
               className="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/60 text-sm"
             >
-              <option value="">Select country</option>
+              <option value="">{IT ? 'Seleziona paese' : 'Select country'}</option>
               {COUNTRIES.map(c => (
-                <option key={c.code} value={c.code}>{c.name}</option>
+                <option key={c.code} value={c.code}>{IT ? c.nameIT : c.name}</option>
               ))}
             </select>
           </div>
@@ -424,7 +457,9 @@ export default function ProfileClient({
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-bold text-purple-400 text-sm">{IT ? 'Il tuo archetipo è pronto' : 'Your archetype is ready'}</p>
-              <p className="text-xs text-[var(--muted)] mt-0.5">{IT ? 'Scopri il tuo profilo morale basato sulle tue scelte.' : 'Discover your moral profile based on your SplitVote choices.'}</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">
+                {IT ? 'Scopri il tuo profilo morale in base alle tue scelte su SplitVote.' : 'Discover your moral profile based on your SplitVote choices.'}
+              </p>
             </div>
             <Link
               href={IT ? '/it/personality' : '/personality'}
@@ -469,8 +504,10 @@ export default function ProfileClient({
             ))}
           </div>
           <p className="text-xs text-[var(--muted)] mt-4 text-center">
-            Your public profile shows all trophies →{' '}
-            <a href={`/u/${userId}`} className="text-blue-400 hover:text-blue-300 underline" target="_blank">preview</a>
+            {IT ? 'Il tuo profilo pubblico mostra tutti i trofei →' : 'Your public profile shows all trophies →'}{' '}
+            <a href={`/u/${userId}`} className="text-blue-400 hover:text-blue-300 underline" target="_blank">
+              {IT ? 'anteprima' : 'preview'}
+            </a>
           </p>
         </div>
       )}
@@ -481,21 +518,21 @@ export default function ProfileClient({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-blue-400">{votesCount.toLocaleString()}</p>
-            <p className="text-xs text-[var(--muted)] mt-1">Dilemmas voted</p>
+            <p className="text-xs text-[var(--muted)] mt-1">{IT ? 'Dilemmi votati' : 'Dilemmas voted'}</p>
           </div>
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-purple-400">{badges.length}</p>
-            <p className="text-xs text-[var(--muted)] mt-1">Badges earned</p>
+            <p className="text-xs text-[var(--muted)] mt-1">{IT ? 'Badge ottenuti' : 'Badges earned'}</p>
           </div>
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-orange-400">{streakDays}</p>
-            <p className="text-xs text-[var(--muted)] mt-1">Day streak 🔥</p>
+            <p className="text-xs text-[var(--muted)] mt-1">{IT ? 'Giorni di serie 🔥' : 'Day streak 🔥'}</p>
           </div>
           <div className="text-center">
             <p className="text-xs sm:text-sm font-black text-[var(--muted)]">
-              {new Date(joinedAt).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+              {new Date(joinedAt).toLocaleDateString(IT ? 'it-IT' : 'en-GB', { month: 'short', year: 'numeric' })}
             </p>
-            <p className="text-xs text-[var(--muted)] mt-1">Member since</p>
+            <p className="text-xs text-[var(--muted)] mt-1">{IT ? 'Iscritto da' : 'Member since'}</p>
           </div>
         </div>
       </div>

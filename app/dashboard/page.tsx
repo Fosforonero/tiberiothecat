@@ -262,7 +262,7 @@ export default async function DashboardPage() {
       )}
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-3 mb-10">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
         {[
           { label: IT ? 'Voti' : 'Votes cast', value: votesCount },
           { label: IT ? 'XP' : 'XP earned', value: xp },
