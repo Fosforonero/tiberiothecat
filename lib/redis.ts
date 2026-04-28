@@ -39,17 +39,23 @@ export async function getVotes(scenarioId: string): Promise<{ a: number; b: numb
 }
 
 /**
- * Batch-fetch vote totals for multiple dilemmas in parallel.
+ * Batch-fetch vote totals for multiple dilemmas in a single HTTP round-trip.
+ * Uses Upstash pipeline to batch all HGETALL commands into one request.
  * Returns a map: dilemmaId → total votes.
  */
 export async function getVotesBatch(
   ids: string[],
 ): Promise<Map<string, number>> {
   if (ids.length === 0) return new Map()
-  const results = await Promise.all(ids.map(id => getVotes(id)))
+  const p = redis.pipeline()
+  for (const id of ids) p.hgetall(`votes:${id}`)
+  const results = await p.exec() as Array<Record<string, string> | null>
   const map = new Map<string, number>()
   ids.forEach((id, i) => {
-    map.set(id, results[i].a + results[i].b)
+    const r = results[i]
+    const a = Math.max(0, Number(r?.a ?? 0))
+    const b = Math.max(0, Number(r?.b ?? 0))
+    map.set(id, a + b)
   })
   return map
 }

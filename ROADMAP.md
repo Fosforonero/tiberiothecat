@@ -3,13 +3,40 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — pre-launch code health audit
+Ultimo aggiornamento: 28 Aprile 2026 — homepage performance micro-optimization
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Homepage Performance Micro-Optimization (28 Apr 2026)
+
+**Obiettivo**: ridurre latenza homepage cold render dopo aver identificato che ogni nuovo deploy causa ISR cache miss con p95 ~2.4s (Run #3 post-config: 2.36s). Nessun cambiamento a behavior, voting flow, o caching play/results.
+
+**Root cause identificata**: `app/page.tsx` faceva 4 call async sequenziali durante il cold render ISR:
+1. `getDynamicScenarios()` — Redis GET (necessario per allScenarios)
+2. `getVotes(dailyScenario.id)` — Redis HGETALL separato (potenzialmente duplicato se daily era in batch)
+3. `getVotesBatch(30 ids)` — **30 HTTP request separate** ad Upstash via `Promise.all`
+4. `getTrendingScenarioIds24h(...)` — Supabase admin query (sequenziale dopo step 3)
+
+Trending e category page fanno solo step 1 → p95 ~490–590ms. Homepage aveva 4 step → p95 2.4–3.2s cold.
+
+**Fix applicati**:
+- [x] `lib/redis.ts` — `getVotesBatch` convertito a Upstash pipeline: **30 HTTP call → 1 HTTP call**. Stessa semantica, stesso return type. Beneficia anche la trending fallback path.
+- [x] `app/page.tsx` — rimosso import `getVotes` (non più necessario); daily scenario ID incluso nel batch (elimina 1 Redis call separata); `getVotesBatch` e `getTrendingScenarioIds24h` parallelizzati con `Promise.allSettled` (step 2+3+4 → 2 step paralleli).
+- [x] `next.config.js` — aggiunto `poweredByHeader: false` (rimuove header `X-Powered-By: Next.js`).
+- [x] `LOAD_TEST_RESULTS.md` — Run #3 registrato (2.36s cold, tutti gli altri threshold OK).
+- [x] `LAUNCH_AUDIT.md` — nota homepage cold cache pattern e fix applicato.
+
+**Performance attesa post-deploy**: homepage cold render ~800–1200ms (da ~2400ms). ISR warm invariato (~1.28s già era k6 pass). Rerun k6 richiesto per misurare.
+
+**Nessuna modifica a**: vote flow, Redis vote atomicity, Stripe, play/results caching, Supabase schema, API routes, SEO/hreflang, behavior visivo.
+
+**Prossimo step**: rerun k6 smoke post-deploy → se `/` p95 < 1500ms con cold render → baseline confermato. Poi Stripe QA end-to-end (runbook in `LAUNCH_AUDIT.md`).
 
 ---
 

@@ -4,6 +4,7 @@ const nextConfig = {
     // ESLint 9 flat config is incompatible with eslint@8 — skip during builds
     ignoreDuringBuilds: true,
   },
+  poweredByHeader: false,
   experimental: {},
 
   async headers() {

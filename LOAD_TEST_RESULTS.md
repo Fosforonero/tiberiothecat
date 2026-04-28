@@ -99,6 +99,7 @@ Aggiungere una riga per ogni run significativo. Annotare commit, environment, e 
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 2026-04-28 | `0add453` | Production | `https://splitvote.io` | 3200ms ⚠️ | 548.77ms ✅ | 498.18ms ✅ | 675.11ms ✅ | 685.61ms ✅ | 0% ✅ | 100% ✅ | Run #1 — cold cache; homepage threshold failed (3.2s > 1500ms k6); repeat run required |
 | 2026-04-28 | `0add453` | Production | `https://splitvote.io` | 1280ms ✅ | 490.06ms ✅ | 415.02ms ✅ | 545.36ms ✅ | 553.22ms ✅ | 0% ✅ | 100% ✅ | Run #2 — **BASELINE PASS** — all k6 thresholds passed; homepage ISR warmup resolved |
+| 2026-04-28 | `2dc4e4a` | Production | `https://splitvote.io` | 2360ms ⚠️ | 589.89ms ✅ | 485.83ms ✅ | 578.69ms ✅ | 570.97ms ✅ | 0% ✅ | 100% ✅ | Run #3 — post-config-audit deploy, cold cache again; homepage threshold failed; play/results ✅; Redis pipeline fix deployed in next commit |
 
 ---
 
@@ -143,6 +144,27 @@ Aggiungere una riga per ogni run significativo. Annotare commit, environment, e 
 | `checks` | **100%** ✅ |
 | Status | ✅ **SOFT LAUNCH PASS** — tutti i k6 threshold passati |
 | Notes | Tutti i threshold k6 passati. Play/results p95 < 600ms — ottimi per force-dynamic. Homepage ISR 1.28s con warmup (k6 ✅; audit < 500ms raggiungibile con traffico continuato). |
+
+---
+
+### Run #3 — Production, post-config-audit deploy (2026-04-28) ⚠️ Homepage cold cache
+
+| Campo | Valore |
+|---|---|
+| Date | 2026-04-28 |
+| Commit | `2dc4e4a` |
+| Environment | **Production** |
+| BASE_URL | `https://splitvote.io` |
+| Comando | `BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` |
+| p95 `GET /` | **2360ms** ⚠️ — k6 threshold FAIL (> 1500ms); cold cache post-deploy; pattern coerente con Run #1 (3200ms cold) |
+| p95 `GET /trending` | 589.89ms ✅ |
+| p95 `GET /category` | 485.83ms ✅ |
+| p95 `GET /play` | 578.69ms ✅ |
+| p95 `GET /results` | 570.97ms ✅ |
+| `http_req_failed` | **0%** ✅ |
+| `checks` | **100%** ✅ |
+| Status | ⚠️ Partial — homepage cold cache; tutti gli altri threshold passati |
+| Notes | Homepage cold cache confermato: 3.2s (Run #1) → 1.28s (Run #2 warm) → 2.36s (Run #3 nuovo deploy cold). Trend: ogni nuovo deploy richiede un warmup hit. Fix Redis pipeline deployato nel commit successivo — rerun necessario post-deploy per validare. |
 
 ---
 

@@ -1,7 +1,7 @@
 import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getVotes, getVotesBatch } from '@/lib/redis'
+import { getVotesBatch } from '@/lib/redis'
 import { getTrendingScenarioIds24h } from '@/lib/trending'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
@@ -35,25 +35,19 @@ export default async function HomePage() {
   const allScenarios: Scenario[] = [...uniqueDynamic, ...scenarios]
 
   const dailyScenario = getDailyScenario(allScenarios)
-  let dailyVotes = 0
-  try {
-    const v = await getVotes(dailyScenario.id)
-    dailyVotes = v.a + v.b
-  } catch {
-    // Non-blocking
-  }
 
-  // Batch vote counts for Most Voted section (top 30 by heuristic)
+  // Include daily scenario in the vote batch to avoid a separate fetch.
+  // Run vote batch and trending lookup in parallel — both independent once allScenarios is known.
+  const batchIds = [...new Set([dailyScenario.id, ...allScenarios.slice(0, 30).map((s) => s.id)])]
   let voteMap = new Map<string, number>()
-  try {
-    const batchIds = allScenarios.slice(0, 30).map((s) => s.id)
-    voteMap = await getVotesBatch(batchIds)
-  } catch {
-    // Non-blocking
-  }
-
-  // Sections
-  const trendingIds = await getTrendingScenarioIds24h(allScenarios.map(s => s.id), 6)
+  let trendingIds: string[] = []
+  const [voteMapResult, trendingResult] = await Promise.allSettled([
+    getVotesBatch(batchIds),
+    getTrendingScenarioIds24h(allScenarios.map(s => s.id), 6),
+  ])
+  if (voteMapResult.status === 'fulfilled') voteMap = voteMapResult.value
+  if (trendingResult.status === 'fulfilled') trendingIds = trendingResult.value
+  const dailyVotes = voteMap.get(dailyScenario.id) ?? 0
   const scenarioById = new Map(allScenarios.map(s => [s.id, s]))
   const trendingNow = trendingIds.map(id => scenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
 
