@@ -4,6 +4,8 @@ Real-time global voting on impossible moral dilemmas. No right answers — just 
 
 Live at **[splitvote.io](https://splitvote.io)**
 
+Claude Code operating instructions live in **[CLAUDE.md](./CLAUDE.md)**. Read them before starting implementation work, especially around voting, auth, admin, Stripe, legal/compliance, i18n, and caching.
+
 Legal/compliance tracking lives in **[LEGAL.md](./LEGAL.md)**. Read it before changing cookies, analytics, ads, auth/account data, payments, AI content generation, email, geo features, or public profile visibility.
 
 Product strategy and staged sprint planning live in **[PRODUCT_STRATEGY.md](./PRODUCT_STRATEGY.md)**. Read it before changing premium/VIP, user-submitted polls, personality sharing, public profiles, quests, cosmetics, learning paths, or community features.

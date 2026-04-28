@@ -3,13 +3,24 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Performance Safety Audit + dynamicParams category
+Ultimo aggiornamento: 28 Aprile 2026 — Claude Code Governance Docs
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
+Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
 ---
+
+## Sprint completati — Claude Code Governance Docs (28 Apr 2026)
+
+- [x] `CLAUDE.md` — guida operativa root con stack, source-of-truth docs, aree sensibili, regole anti-regressione, workflow e definition of done
+- [x] `.claude/agents/security-reviewer.md` — reviewer per auth/admin/API/Stripe/input/log/security
+- [x] `.claude/agents/seo-content-reviewer.md` — reviewer per SEO, hreflang, metadata, JSON-LD, content quality e social sharing
+- [x] `.claude/agents/release-readiness-reviewer.md` — reviewer per ship/no-ship, verifiche, rischio deploy e fine giornata
+- [x] `.claude/agents/product-growth-reviewer.md` — reviewer per retention, share loop, gamification, premium, i18n e scoping sprint
+- [x] Nessun codice applicativo, DB, API, Stripe, Supabase, Redis, AdSense o runtime behavior modificato
 
 ## Sprint completati — Social Share + Insight + Content QA Polish (28 Apr 2026)
 
