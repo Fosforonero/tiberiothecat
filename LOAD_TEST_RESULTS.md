@@ -213,7 +213,59 @@ BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true \
 
 | Date | Commit | Environment | VUs | Duration | p95 overall | p95 `/play` | p95 `/results` | `http_req_failed` | `checks` | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| YYYY-MM-DD | `abc1234` | Preview / Prod | N | Xs | ms | ms | ms | % | % | |
+| 2026-04-28 | `a8119ec` | Production | 10 | 30s | 847.74ms ✅ | 617.23ms ✅ | 614.64ms ✅ | 0% ✅ | 100% ✅ | Spike #1 — PASS — 355 req, 11.59 req/s |
+| 2026-04-28 | `a8119ec` | Production | 25 | 60s | 777.09ms ✅ | 563.88ms ✅ | 580.21ms ✅ | 0% ✅ | 100% ✅ | Spike #2 — **PASS** — 1819 req, 29.91 req/s |
+
+### Spike Run #1 — Production 10 VU × 30s (2026-04-28)
+
+| Campo | Valore |
+|---|---|
+| Date | 2026-04-28 |
+| Commit | `a8119ec` |
+| Environment | **Production** |
+| Comando | `BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true k6 run --vus 10 --duration 30s tests/load/splitvote-spike-load.js` |
+| VUs | 10 |
+| Duration | 30s |
+| Total requests | 355 |
+| Throughput | 11.59 req/s |
+| p95 overall | **847.74ms** ✅ (< 3000ms) |
+| p95 `GET /play` | **617.23ms** ✅ |
+| p95 `GET /results` | **614.64ms** ✅ |
+| `http_req_failed` | **0%** ✅ |
+| `checks` | **100%** ✅ |
+| Status | ✅ **PASS** |
+
+---
+
+### Spike Run #2 — Production 25 VU × 60s (2026-04-28) ✅ SPIKE PASS
+
+| Campo | Valore |
+|---|---|
+| Date | 2026-04-28 |
+| Commit | `a8119ec` |
+| Environment | **Production** |
+| Comando | `BASE_URL=https://splitvote.io ALLOW_PROD_LOAD_TEST=true k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js` |
+| VUs | 25 |
+| Duration | 60s |
+| Total requests | 1819 |
+| Throughput | 29.91 req/s |
+| p95 overall | **777.09ms** ✅ (< 3000ms) |
+| p95 `GET /play` | **563.88ms** ✅ |
+| p95 `GET /results` | **580.21ms** ✅ |
+| `http_req_failed` | **0%** ✅ |
+| `checks` | **100%** ✅ |
+| Status | ✅ **PASS** |
+| Notes | play/results p95 < 600ms a ~30 req/s — ottimi per force-dynamic sotto carico moderato |
+
+> **⚠️ No 50 VU su produzione** senza aver prima eseguito Preview spike 50 VU o una finestra dedicata a basso traffico. Il prossimo livello di stress va validato su Preview.
+
+---
+
+### Conclusione spike
+
+**Production read-only moderate social spike: ✅ PASSED (28 Apr 2026)**
+
+Sotto carico di ~30 req/s (25 VU) le pagine force-dynamic (`/play`, `/results`) restano < 600ms p95. Nessun errore, 100% check. Il sistema regge un burst sociale moderato senza degradazione misurabile.
 
 ---
 

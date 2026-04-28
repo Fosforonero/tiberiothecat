@@ -411,14 +411,12 @@ Dopo il baseline su Preview (se ok):
 
 Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `default` export → `--vus`/`--duration` CLI override funzionano senza errori. Read-only, nessun write test.
 
-Prossimo step consigliato: eseguire Preview spike 25 VU 60s prima di campagne paid:
+**✅ Production spike read-only passed (28 Apr 2026)** — vedi `LOAD_TEST_RESULTS.md` → Spike Tests:
+- Spike #1 (10 VU × 30s, 11.59 req/s): overall p95 847ms, play p95 617ms, results p95 614ms — PASS
+- Spike #2 (25 VU × 60s, ~30 req/s): overall p95 777ms, play p95 564ms, results p95 580ms — PASS
+- play/results p95 < 600ms a ~30 req/s — ottimi per force-dynamic sotto carico moderato sociale.
 
-```bash
-BASE_URL=https://<preview>.vercel.app ALLOW_PROD_LOAD_TEST=true \
-  k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js
-```
-
-**⚠️ Produzione**: solo in finestra controllata (basso traffico, orario notturno) dopo che Preview ha passato. Mai senza `ALLOW_PROD_LOAD_TEST=true`. Risultati in `LOAD_TEST_RESULTS.md` → Spike Tests.
+**⚠️ No 50 VU su produzione** senza aver prima eseguito Preview spike 50 VU o una finestra controllata dedicata (basso traffico, orario notturno). Mai senza `ALLOW_PROD_LOAD_TEST=true`.
 
 ### Analytics & Business Intelligence
 - [ ] GA4 funnel: vote → results → share → signup (verificare eventi in GA4 dashboard)

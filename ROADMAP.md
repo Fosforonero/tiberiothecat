@@ -3,13 +3,30 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — k6 spike test script
+Ultimo aggiornamento: 28 Aprile 2026 — k6 production spike test passed
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — k6 Production Spike Tests (28 Apr 2026)
+
+**Obiettivo**: eseguire e registrare spike test read-only su produzione con lo script dedicato. Docs only.
+
+- [x] **Spike #1** (10 VU × 30s): overall p95 847ms, play p95 617ms, results p95 614ms, 355 req, 11.59 req/s — ✅ PASS
+- [x] **Spike #2** (25 VU × 60s, ~30 req/s): overall p95 777ms, play p95 564ms, results p95 580ms, 1819 req, 29.91 req/s — ✅ PASS
+- [x] `LOAD_TEST_RESULTS.md` — Spike #1 e Spike #2 registrati con dati completi; conclusione spike aggiunta.
+- [x] `LAUNCH_AUDIT.md` — subsection spike aggiornata con risultati reali + no-50-VU-prod warning.
+
+**Performance status: ✅ PASSED** — soft launch baseline + moderate social spike (25 VU, ~30 req/s). play/results p95 < 600ms sotto carico moderato.
+
+**Nessuna modifica a**: codice runtime, script k6, API routes, DB schema.
+
+**Prossimo step consigliato**: Stripe QA end-to-end (runbook in `LAUNCH_AUDIT.md`), poi Spanish i18n foundation. Per spike più aggressivi (50 VU): eseguire prima su Preview.
 
 ---
 
@@ -327,7 +344,7 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 - [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
 - [x] **migration v13 applicata e verificata** (28 Apr 2026): policy "Users can update own pending polls" rimossa; restano solo "Anyone can view approved polls" + "Users can view own polls" — `user_polls` write path server-only completamente hardened (v11 + v12 + v13)
 - [x] **k6 production read-only baseline completato** (28 Apr 2026): Run #1 cold cache homepage 3.20s (threshold fail); Run #2 tutti passati — play 545ms, results 553ms, 0% errors, 100% checks. Risultati in `LOAD_TEST_RESULTS.md`.
-- [ ] **k6 spike test Preview 25 VU**: `BASE_URL=https://<preview>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run --vus 25 --duration 60s tests/load/splitvote-spike-load.js` — registrare risultati in `LOAD_TEST_RESULTS.md` → Spike Tests.
+- [x] **k6 production spike test completato** (28 Apr 2026): Spike #1 10 VU/30s overall p95 847ms; Spike #2 25 VU/60s overall p95 777ms, play 564ms, results 580ms — entrambi PASS. Risultati in `LOAD_TEST_RESULTS.md`. No 50 VU produzione senza Preview o finestra controllata.
 
 ### Candidati prodotto
 
