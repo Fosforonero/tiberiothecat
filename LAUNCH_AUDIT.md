@@ -128,7 +128,22 @@
 
 ### Stripe QA End-to-End
 
-**Runbook v1 — 28 Apr 2026.** Da eseguire con Stripe CLI + carta test prima di promuovere Premium a utenti reali.
+**Runbook v2 — 28 Apr 2026.** Aggiornato dopo aver verificato che la produzione usa live mode.
+
+---
+
+> **⚠️ PRODUZIONE IN LIVE MODE — non eseguire QA su splitvote.io**
+>
+> `STRIPE_SECRET_KEY` su Vercel production è `sk_live_...`. Le carte test Stripe (`4242 4242 4242 4242`)
+> **non funzionano in live mode** — Stripe le rifiuta. Qualsiasi checkout su `splitvote.io` con carta test
+> fallirà silenziosamente o genererà un errore Stripe.
+>
+> **Il QA manuale deve essere eseguito su un Vercel Preview deployment con variabili d'ambiente
+> in test mode (`sk_test_...`), price IDs test, e webhook endpoint test separato.**
+>
+> Non sostituire mai `sk_live_...` con `sk_test_...` su Vercel production.
+
+---
 
 #### Endpoint Stripe coinvolti
 
@@ -148,39 +163,92 @@
 | `customer.subscription.updated` | `is_premium` (true se active/trialing), `subscription_status`, `stripe_subscription_id` |
 | `customer.subscription.deleted` | `is_premium=false`, `stripe_subscription_id=null`, `subscription_status='cancelled'` |
 
-#### Prerequisiti
+---
 
-| Requisito | Verifica |
-|---|---|
-| `STRIPE_SECRET_KEY` (test mode: `sk_test_...`) | Vercel env + `.env.local` |
-| `STRIPE_WEBHOOK_SECRET` (`whsec_...` da `stripe listen`) | `.env.local` durante test locale |
-| `STRIPE_PRICE_ID_PREMIUM` (subscription price ID) | Vercel env + Stripe → Products |
-| `STRIPE_PRICE_ID_NAME_CHANGE` (one-time price ID) | Vercel env + Stripe → Products |
-| `NEXT_PUBLIC_BASE_URL=https://splitvote.io` | Vercel env |
-| Stripe CLI installata: `stripe --version` | Locale |
-| migration_v11 applicata (`stripe_webhook_events` presente) | ✅ Confermata 28 Apr 2026 |
+#### Setup — Vercel Preview con Test Mode (percorso raccomandato)
 
-#### Setup Stripe CLI (test locale)
+Questo è il percorso corretto per eseguire il QA senza toccare la produzione live.
 
-```bash
-# Terminal 1 — dev server
-nvm use && npm run dev
+**Step 1 — Attiva test mode nel dashboard Stripe**
 
-# Terminal 2 — forward webhook
-stripe listen --forward-to localhost:3000/api/stripe/webhook
-# Copia il whsec_... stampato → .env.local STRIPE_WEBHOOK_SECRET
+1. Apri [dashboard.stripe.com](https://dashboard.stripe.com) → toggle "Test mode" in alto a destra
+2. Copia la chiave segreta test: `Developers → API keys → Secret key` → `sk_test_...`
+
+**Step 2 — Crea o identifica i price IDs test**
+
+In Stripe test mode (`Products → Add product`):
+- Crea prodotto **SplitVote Premium** → piano ricorrente mensile → copia `price_test_...` (Premium subscription)
+- Crea prodotto **Name Change** → prezzo una tantum €0.99 → copia `price_test_...` (Name change)
+
+Se i prodotti test esistono già (da sessioni precedenti), recupera i price IDs dalla lista Products in test mode.
+
+**Step 3 — Configura le env vars sul Vercel Preview**
+
+Vai su Vercel → Settings → Environment Variables → seleziona scope **Preview** (non Production):
+
+```
+STRIPE_SECRET_KEY       = sk_test_...
+STRIPE_PRICE_ID_PREMIUM = price_test_...  (subscription test)
+STRIPE_PRICE_ID_NAME_CHANGE = price_test_...  (one-time test)
 ```
 
-#### Utente test
+> Non modificare le variabili con scope Production — lasciale su `sk_live_...`.
 
-1. Creare account SplitVote normale (non admin).
-2. Verificare Supabase → Table Editor → `profiles` — stato iniziale:
+**Step 4 — Crea il webhook endpoint test in Stripe**
+
+1. Stripe dashboard (test mode) → `Developers → Webhooks → Add endpoint`
+2. Endpoint URL: `https://<preview-url>.vercel.app/api/stripe/webhook`
+   - L'URL del Preview è visibile su Vercel → Deployments → copia il dominio del branch
+3. Events da ascoltare: seleziona `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+4. Crea → copia il `whsec_...` generato
+
+**Step 5 — Aggiungi il webhook secret su Vercel Preview**
+
+Vercel → Settings → Environment Variables → scope **Preview**:
+
+```
+STRIPE_WEBHOOK_SECRET = whsec_...  (dal webhook test creato al passo 4)
+```
+
+Opzionale — se il Preview URL non corrisponde a `NEXT_PUBLIC_BASE_URL`:
+```
+NEXT_PUBLIC_BASE_URL = https://<preview-url>.vercel.app
+```
+
+**Step 6 — Redeploy il Preview**
+
+Vercel → Deployments → Redeploy il branch (per far leggere le nuove env vars).
+
+**Step 7 — Crea un utente test**
+
+1. Apri `https://<preview-url>.vercel.app` → crea account normale (non admin)
+2. Verifica Supabase → Table Editor → `profiles` — stato iniziale:
    - `is_premium = false`
    - `stripe_customer_id = null`
    - `stripe_subscription_id = null`
    - `subscription_status = null`
 
+---
+
+#### Alternativa: Setup Stripe CLI (test locale)
+
+Usare solo se si vuole testare in locale invece che su Preview. Richiede `npm run dev` attivo.
+
+```bash
+# Terminal 1 — dev server
+nvm use && npm run dev
+
+# Terminal 2 — forward webhook a localhost
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+# Copia il whsec_... stampato → .env.local STRIPE_WEBHOOK_SECRET=whsec_...
+# Ricorda: serve anche STRIPE_SECRET_KEY=sk_test_... in .env.local
+```
+
+---
+
 #### Test 1 — Checkout Premium
+
+> Eseguire su Preview URL o localhost (mai su splitvote.io production)
 
 - [ ] Navigare a `/profile` o `/dashboard` con utente test loggato
 - [ ] Cliccare "Upgrade to Premium" → redirect a Stripe Checkout
@@ -193,7 +261,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 - [ ] `stripe_subscription_id` popolato (`sub_...`)
 - [ ] `subscription_status = 'active'`
 
-**Verifica log (Terminal 2 o Vercel logs):**
+**Verifica Vercel logs (Preview) o log Terminal 2 (locale):**
 - [ ] `✅ Premium activated: user=<truncated_id>`
 - [ ] Supabase → `stripe_webhook_events`: riga con `status = 'processed'`, `processed_at` non null
 
@@ -218,7 +286,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 #### Test 5 — Cancellation
 
 - [ ] Nel Customer Portal, cancellare la subscription
-- [ ] Attendere webhook `customer.subscription.deleted` in Terminal 2
+- [ ] Attendere webhook `customer.subscription.deleted` (Stripe dashboard → Webhooks → log, o Terminal 2 locale)
 - [ ] Verificare log: `✅ Subscription cancelled: customer=cus_...`
 - [ ] Verificare Supabase → `profiles`:
   - [ ] `is_premium = false`
@@ -229,9 +297,14 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 #### Test 6 — Webhook Idempotency (duplicate event)
 
+Da Stripe dashboard test mode → `Developers → Webhooks → <endpoint> → Event log`:
+copia l'event ID `evt_...` del `checkout.session.completed` appena processato.
+
 ```bash
-# Copia l'event ID evt_... dall'output di Terminal 2 (checkout.session.completed)
+# Con Stripe CLI
 stripe events resend evt_1AbCdEfGhIjKlMnOp...
+
+# Oppure: Stripe dashboard → Webhooks → endpoint test → Event log → "Resend"
 ```
 
 - [ ] Webhook risponde 200 `{ received: true, duplicate: true }` (nessun reprocessing)
@@ -243,7 +316,7 @@ stripe events resend evt_1AbCdEfGhIjKlMnOp...
 
 | Scenario | Come testare | Risultato atteso |
 |---|---|---|
-| Webhook senza firma | `curl -X POST /api/stripe/webhook` senza `stripe-signature` | 400 `Missing stripe-signature header` |
+| Webhook senza firma | `curl -X POST <preview-url>/api/stripe/webhook` senza `stripe-signature` | 400 `Missing stripe-signature header` |
 | Firma errata | Modificare `STRIPE_WEBHOOK_SECRET` con valore sbagliato e reinviare | 400 `Invalid signature` |
 | Utente già premium → subscribe | Chiamare `POST /api/stripe/subscription` con utente già premium | 409 `Already premium` |
 | Portal senza `stripe_customer_id` | Chiamare `POST /api/stripe/portal` con utente senza checkout | 404 `No billing account found` |
@@ -276,12 +349,13 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 
 #### Checklist stato
 
-- [ ] **Test acquisto premium con carta test e Stripe CLI** — ⚠️ Ancora da eseguire manualmente
-- [ ] **Verificare customer portal funzionante (cancellazione)** — ⚠️ Ancora da eseguire manualmente
+- [ ] **Test acquisto premium (carta test 4242)** — ⚠️ Non eseguito — richiede Vercel Preview con test mode
+- [ ] **Test customer portal e cancellazione** — ⚠️ Non eseguito — richiede Vercel Preview con test mode
+- [ ] **Configura env test su Vercel Preview** (`sk_test_...`, price IDs test, webhook test → `whsec_...`) — ⚠️ Prossimo step manuale
 - [x] Idempotenza webhook implementata e verificata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client; comportamento dedup confermato operativo
 - [x] **Bug fix (28 Apr 2026)**: aggiunto try/catch su `stripe.checkout.sessions.create()` in checkout, subscription e `billingPortal.sessions.create()` in portal — prima, Stripe throw → 500 non-JSON → client "Network error"; ora → 500 JSON con messaggio utile
 - [x] **Audit statico completo (28 Apr 2026)**: webhook lifecycle, idempotency, premium activation, cancellation, AdSlot, entitlements API, log safety — tutti verificati. Runbook allineato al codice.
-- [ ] **Stripe price IDs reali configurati in Vercel** (`STRIPE_PRICE_ID_PREMIUM` + `STRIPE_PRICE_ID_NAME_CHANGE`) — ⚠️ Da verificare prima di go-live
+- [ ] **Stripe price IDs reali configurati in Vercel production** (`STRIPE_PRICE_ID_PREMIUM` + `STRIPE_PRICE_ID_NAME_CHANGE`) — ⚠️ Da verificare prima di aprire Premium a utenti reali
 
 ### Blog Dynamic Storage
 - [ ] Progettare BlogDraft schema (vedi ROADMAP — Blog Weekly Generation)

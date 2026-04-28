@@ -4,7 +4,7 @@ Operational tracker for privacy, cookies, terms, ads, payments, analytics, and s
 
 This file is not legal advice. It is the project source of truth for engineering and PM follow-up. Before high-traffic launch, AdSense scaling, paid acquisition, or broad international rollout, get a qualified legal review.
 
-Last reviewed: 28 Apr 2026 (Legal & Consent Reconciliation Sprint)
+Last reviewed: 28 Apr 2026 (Stripe QA docs — live mode warning)
 
 ---
 
@@ -18,6 +18,8 @@ Compliance posture:
 - Not ready to claim "globally compliant".
 - Before scaling, reconcile policy text with the actual production implementation.
 - Treat legal/compliance as a release gate whenever ads, analytics, payments, account data, AI content, or public profile features change.
+
+**Payments — QA status**: Production uses live mode (`sk_live_...`). The Stripe checkout / cancellation / refund flow has **not been manually tested end-to-end** with a real or test card. Before broadly promoting Premium to real users, execute the runbook in `LAUNCH_AUDIT.md → "Stripe QA End-to-End"` on a Vercel Preview with test mode keys. Terms of Service already document the subscription, cancellation, and 14-day refund window — those terms apply once real transactions begin.
 
 Recent sprints:
 
