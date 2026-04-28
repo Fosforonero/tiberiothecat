@@ -57,6 +57,17 @@
 - [x] GA proxy hardening: `/api/_g/script` usa solo GA ID configurato, ignora param user-supplied
 - [x] API input bounds: metadata 2KB cap, scenarioId pattern, countryCode regex, avatarEmoji max 8, displayName no control chars
 - [x] Stripe webhook non logga display name in chiaro; profile/update riduce error log a error code
+- [x] Cookie consent banner granulare (28 Apr 2026): Decline / Personalizza / Accetta tutto
+- [x] Consent Mode v2: analytics_storage + ad_storage + ad_user_data + ad_personalization — tutti denied by default
+- [x] Preferenze granulari: toggle separati Analytics (GA4 + Vercel) e Advertising (AdSense)
+- [x] localStorage backward-compat: sv_cookie_consent ('granted'/'denied'/'custom') + sv_cookie_prefs (JSON granulare)
+- [x] "Cookie settings" riapribile dal Footer in qualsiasi momento (event: sv:openCookieSettings)
+- [x] Privacy policy EN/IT: tutti i processor documentati (Stripe, Resend, Anthropic, OpenRouter, Vercel Analytics)
+- [x] Privacy policy EN/IT: GA4 first-party proxy + X-Forwarded-For forwarding dichiarato esplicitamente
+- [x] Privacy policy EN: rimossa frase errata "powered by Google's CMP"; banner è custom
+- [x] Terms EN/IT allineati: account/gamification, Premium/Stripe, AI content, moderazione
+- [x] Terms IT: contatto legale corretto in legal@splitvote.io (era hello@splitvote.io)
+- [x] LEGAL.md: gap tracker aggiornato con items chiusi e ancora aperti prima di scaling
 
 ### Middleware & Performance
 - [x] isAuthRelevantPath(): Supabase auth.getUser() solo su route che lo richiedono
@@ -168,10 +179,12 @@
 - [ ] Monitoring: policy violations alerts
 
 ### Legal & Privacy
-- [ ] GDPR/CCPA review finale con occhio a: consent per analytics, cookie banner (mancante?)
-- [ ] Cookie banner: /privacy descrive i cookie ma non c'è banner di consenso — valutare se necessario per GDPR Italia
-- [ ] Privacy policy: data processor agreements aggiornati (Upstash, Supabase, OpenRouter)
-- [ ] Terms of Service: revisione clausole AI-generated content
+- [x] Cookie banner granulare con Consent Mode v2 — COMPLETATO 28 Apr 2026
+- [x] Privacy policy EN/IT aggiornate con tutti i processor e GA proxy disclosure — COMPLETATO 28 Apr 2026
+- [x] Terms EN/IT allineati con AI content, Premium, gamification — COMPLETATO 28 Apr 2026
+- [ ] GDPR/CCPA review finale con avvocato prima di scaling (>50k utenti/mese)
+- [ ] Google-certified TCF CMP: valutare prima di servire annunci personalizzati in EEA/UK/Svizzera a scala
+- [ ] Privacy policy: data processor agreements formali (DPA firmati con Upstash, OpenRouter, Resend)
 
 ### Accessibilità
 - [ ] WCAG 2.1 AA pass: focus states, color contrast su tutti i componenti
@@ -212,7 +225,7 @@
 **Rischi residui accettabili per soft launch:**
 - Stripe non testato end-to-end con carta reale (feature non-critica per MVP)
 - AdSense non ancora approvato (no revenue impact sul funzionamento)
-- Cookie banner consenso assente (rischio GDPR basso per traffico iniziale, da affrontare prima di scala)
+- DPA formali non firmati con tutti i processor (rischio basso a traffico minimo)
 
 ---
 
@@ -224,7 +237,7 @@
 
 2. **AdSense approval**: account deve essere approvato prima di scalare il traffico. Pubblicità su traffico non approvato può portare alla disabilitazione dell'account.
 
-3. **Cookie consent (GDPR)**: con traffico italiano significativo, l'assenza di banner consenso analytics è un rischio legale reale. Da implementare prima della crescita aggressiva.
+3. **Google-certified TCF CMP**: per servire annunci personalizzati AdSense in EEA/UK/Svizzera a scala, Google richiede una CMP certificata TCF. Il banner custom attuale è sufficiente per il soft launch; prima di scaling aggressivo valutare CMP certificata (Cookiebot, Axeptio, ecc.).
 
 4. **Stripe QA end-to-end**: con utenti premium reali, i bug nel webhook lifecycle diventano critici (doppio addebito, mancata disabilitazione premium).
 
@@ -236,10 +249,10 @@
 
 | # | Blocker | Impatto | Effort |
 |---|---------|---------|--------|
-| 1 | Cookie consent banner (GDPR) | Rischio legale con scala | Basso (1 sprint) |
+| 1 | Load test + Redis/Supabase stress test | Stabilità a scala | Medio (1 sprint) |
 | 2 | Stripe QA end-to-end + webhook idempotency | Revenue + user trust | Medio (1 sprint) |
-| 3 | Load test + Redis/Supabase stress test | Stabilità a scala | Medio (1 sprint) |
-| 4 | AdSense approval | Monetizzazione | Fuori dal nostro controllo |
+| 3 | AdSense approval | Monetizzazione | Fuori dal nostro controllo |
+| 4 | Google TCF CMP (per personalized ads EEA a scala) | AdSense policy compliance | Basso-medio (libreria esterna) |
 | 5 | Disaster recovery runbook | Resilienza operativa | Basso (documentazione) |
 
 ---

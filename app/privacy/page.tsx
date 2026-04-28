@@ -4,14 +4,21 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Privacy Policy for SplitVote.io — how we collect, use and protect your data.',
   robots: { index: true, follow: true },
-  alternates: { canonical: 'https://splitvote.io/privacy' },
+  alternates: {
+    canonical: 'https://splitvote.io/privacy',
+    languages: {
+      'en': 'https://splitvote.io/privacy',
+      'it-IT': 'https://splitvote.io/it/privacy',
+      'x-default': 'https://splitvote.io/privacy',
+    },
+  },
 }
 
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Privacy Policy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Last updated: April 27, 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Last updated: April 28, 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 
@@ -30,35 +37,44 @@ export default function PrivacyPage() {
         <div>
           <h2 className="text-base font-bold text-white mb-2">2. Data we collect</h2>
           <p className="mb-2">We collect the minimum data necessary to operate the service:</p>
-          <ul className="list-disc pl-5 space-y-1">
+          <ul className="list-disc pl-5 space-y-2">
             <li>
               <strong className="text-white">Anonymous vote data</strong> — when you vote without an
               account, we store only an anonymous aggregated counter (option A or B). Your IP address
-              may be processed temporarily for abuse prevention and rate limiting, stored in hashed
-              form in short-lived rate-limit keys (automatically deleted after a maximum of 1 hour).
-              The raw IP address is never stored in our permanent database.
+              is processed temporarily for abuse prevention and rate limiting, stored only as a
+              SHA-256 hash in short-lived rate-limit keys that are automatically deleted after a
+              maximum of 1 hour. The raw IP address is never stored in our permanent database.
             </li>
             <li>
               <strong className="text-white">Account data</strong> (registered users only) — if you
-              create an account, we store your email address, a pseudonymous display name, and your
-              vote history linked to your user ID. This is used to prevent duplicate votes across
-              devices and to power profile features (XP, streaks, badges, daily missions). Share
-              actions and referral link visits are recorded for mission progress tracking.
+              create an account we store: your email address; a pseudonymous display name (auto-generated
+              as &ldquo;Splitvoter-XXXXXX&rdquo; unless you change it); your vote history linked to your
+              user ID; XP points, streak count, badges earned, and daily mission progress; share
+              actions and referral link visits recorded for mission verification. Optional demographic
+              fields you may provide: birth year, country, gender.
             </li>
             <li>
-              <strong className="text-white">Country of origin</strong> — we may detect the approximate
-              country of your request to show country-level vote breakdowns. This information is not
-              stored or logged beyond the aggregated result.
+              <strong className="text-white">Payment data</strong> (Premium users only) — if you
+              purchase a Premium subscription or a paid name change, Stripe processes your payment.
+              We receive only a Stripe customer ID and subscription status; we never store card numbers
+              or full payment details.
             </li>
             <li>
               <strong className="text-white">Analytics data</strong> — with your consent, Google Analytics
-              4 collects page views, session duration, and general engagement metrics. This data is
-              pseudonymised and processed by Google LLC under a Data Processing Agreement.
+              4 collects page views, session duration, and general engagement metrics via a first-party
+              proxy on our own domain. Vercel Analytics may collect anonymised usage signals. See
+              Section 4 for how consent controls this.
             </li>
             <li>
               <strong className="text-white">Advertising data</strong> — with your consent, Google AdSense
-              may use cookies to serve personalised advertisements. Without consent, only non-personalised
-              ads are shown.
+              may use cookies to serve personalised advertisements. Without consent, only
+              non-personalised ads may be shown (where ad serving is active).
+            </li>
+            <li>
+              <strong className="text-white">AI-generated content</strong> — dilemma content may be
+              generated by AI (Anthropic Claude or OpenRouter models) and queued as drafts. All drafts
+              are reviewed and approved by a human admin before becoming public. No user personal data
+              is sent to AI providers beyond what is needed to generate dilemma text.
             </li>
           </ul>
         </div>
@@ -67,58 +83,79 @@ export default function PrivacyPage() {
           <h2 className="text-base font-bold text-white mb-2">3. Legal basis for processing (GDPR)</h2>
           <p>For users in the European Economic Area (EEA) and UK:</p>
           <ul className="list-disc pl-5 space-y-1 mt-2">
-            <li><strong className="text-white">Legitimate interest</strong> — anonymous aggregated vote counting; IP-based rate limiting for abuse prevention (temporary, auto-deleted after max 1 hour).</li>
-            <li><strong className="text-white">Contract performance</strong> — providing account services to registered users (vote history, profile, gamification).</li>
-            <li><strong className="text-white">Consent</strong> — analytics and advertising cookies. You can withdraw consent at any time via the cookie banner.</li>
+            <li><strong className="text-white">Legitimate interest</strong> — anonymous aggregated vote counting; IP-based rate limiting for abuse prevention (temporary hashed keys, auto-deleted after max 1 hour).</li>
+            <li><strong className="text-white">Contract performance</strong> — providing account services to registered users (vote history, profile, gamification, Premium features).</li>
+            <li><strong className="text-white">Consent</strong> — analytics and advertising cookies. You can withdraw consent at any time via the cookie banner or Cookie settings in the footer.</li>
           </ul>
         </div>
 
         <div>
           <h2 className="text-base font-bold text-white mb-2">4. Google Consent Mode v2</h2>
           <p>
-            We implement Google Consent Mode v2. If you deny consent, Google Analytics operates in
-            &ldquo;cookieless&rdquo; mode using modelled data. No identifying cookies are set without
-            your explicit consent.
+            We implement Google Consent Mode v2. All analytics and advertising consent signals are set
+            to <strong className="text-white">denied by default</strong> before you make a choice.
+            If you deny consent, Google Analytics operates in &ldquo;cookieless&rdquo; mode using
+            modelled data only. No analytics or advertising cookies are set without your explicit
+            consent. You can change your preferences at any time using the &ldquo;Cookie settings&rdquo;
+            link in the footer.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">5. Third-party services</h2>
-          <ul className="list-disc pl-5 space-y-1">
-            <li><strong className="text-white">Vercel</strong> — hosting and edge network (USA). <a href="https://vercel.com/legal/privacy-policy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+          <h2 className="text-base font-bold text-white mb-2">5. GA4 first-party proxy</h2>
+          <p>
+            GA4 measurement hits are relayed through a first-party endpoint on our own domain
+            (<code className="text-xs bg-white/10 px-1 rounded">/api/_g/g/collect</code>). This proxy
+            intentionally forwards the visitor&apos;s real IP address to Google in the
+            <code className="text-xs bg-white/10 px-1 rounded ml-1">X-Forwarded-For</code> header
+            so that GA4 can determine geographic region accurately. This forwarding only occurs when
+            analytics consent has been granted; GA4 Consent Mode prevents hits from being sent before
+            consent.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-base font-bold text-white mb-2">6. Third-party services (processors)</h2>
+          <ul className="list-disc pl-5 space-y-2">
+            <li><strong className="text-white">Vercel</strong> — hosting, edge network, and Vercel Analytics (USA/global). <a href="https://vercel.com/legal/privacy-policy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
             <li><strong className="text-white">Supabase</strong> — authentication and user database (EU region). <a href="https://supabase.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
-            <li><strong className="text-white">Upstash Redis</strong> — real-time vote counters and rate limiting (EU region). <a href="https://upstash.com/trust/privacy.pdf" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
-            <li><strong className="text-white">Google Analytics 4</strong> — analytics (with consent). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
-            <li><strong className="text-white">Google AdSense</strong> — advertising (with consent). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Upstash Redis</strong> — real-time vote counters and rate-limit keys (EU/global edge). <a href="https://upstash.com/trust/privacy.pdf" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Google Analytics 4</strong> — analytics after consent (global). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Google AdSense</strong> — advertising after consent (global). <a href="https://policies.google.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Stripe</strong> — payment processing for Premium subscriptions and paid name changes (USA/global). <a href="https://stripe.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Resend</strong> — transactional email delivery (USA). <a href="https://resend.com/legal/privacy-policy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">Anthropic</strong> — AI dilemma generation via server-side cron (USA). No user personal data is included in generation prompts. <a href="https://www.anthropic.com/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+            <li><strong className="text-white">OpenRouter</strong> — AI dilemma draft generation via admin panel (USA). No user personal data is included in generation prompts. <a href="https://openrouter.ai/privacy" className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
           </ul>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">6. Data retention</h2>
+          <h2 className="text-base font-bold text-white mb-2">7. Data retention</h2>
           <p>
             Aggregated vote counts are retained indefinitely as they are anonymous statistical data.
-            IP addresses are hashed before being used as rate-limit keys and are automatically deleted after a maximum of 1 hour.
+            IP hashes used for rate limiting are automatically deleted after a maximum of 1 hour.
             Google Analytics data is retained for 14 months (our configured retention period).
-            Account data (email address, display name, vote history) is retained until you delete
-            your account. To request account deletion, contact{' '}
-            <a href="mailto:hello@splitvote.io" className="text-blue-400 hover:underline">
-              hello@splitvote.io
-            </a>{' '}
-            from the address used to register.
+            Account data (email address, display name, vote history, XP, badges) is retained until
+            you delete your account. To request account deletion, contact{' '}
+            <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
+              privacy@splitvote.io
+            </a>.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">7. International transfers</h2>
+          <h2 className="text-base font-bold text-white mb-2">8. International transfers</h2>
           <p>
-            Our hosting provider Vercel may process data in the United States. Such transfers are
-            covered by Standard Contractual Clauses (SCCs) as provided in Vercel&apos;s Data
-            Processing Agreement. Google processes analytics data globally under Google&apos;s SCCs.
+            Several processors listed in Section 6 may process data outside the EEA (primarily in the
+            USA). Such transfers are covered by Standard Contractual Clauses (SCCs) included in each
+            processor&apos;s Data Processing Agreement: Vercel, Supabase, Upstash, Google (Analytics
+            and AdSense), Stripe, Resend, Anthropic, and OpenRouter each publish SCCs or equivalent
+            transfer mechanisms. We rely on these mechanisms to comply with Chapter V of the GDPR.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">8. Your rights (GDPR / EEA users)</h2>
+          <h2 className="text-base font-bold text-white mb-2">9. Your rights (GDPR / EEA users)</h2>
           <p>You have the right to:</p>
           <ul className="list-disc pl-5 space-y-1 mt-2">
             <li>Access any personal data we hold about you</li>
@@ -129,17 +166,23 @@ export default function PrivacyPage() {
             <li>Lodge a complaint with your national Data Protection Authority (e.g. Garante Privacy in Italy)</li>
           </ul>
           <p className="mt-2">
-            Since we collect no personal data beyond what anonymous cookies handle, most rights are
-            exercised through your browser cookie settings or our consent banner.
+            To exercise these rights, contact{' '}
+            <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
+              privacy@splitvote.io
+            </a>.
+            For anonymous voting, no personal data is held — rights are exercised via browser cookie
+            settings or our consent banner. For account data, we will respond within 30 days.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">9. California residents (CCPA)</h2>
+          <h2 className="text-base font-bold text-white mb-2">10. California residents (CCPA / CPRA)</h2>
           <p>
-            We do not sell personal information. We do not share personal information for cross-context
-            behavioural advertising without consent. California residents have the right to know, delete,
-            and opt out. To exercise these rights, contact us at{' '}
+            We do not sell personal information. If Google AdSense personalisation is enabled with
+            your consent, sharing data with Google for targeted advertising may qualify as
+            &ldquo;sharing&rdquo; under CPRA. You can opt out at any time by declining advertising
+            cookies via Cookie settings. California residents have the right to know, delete, and
+            opt out. To exercise these rights, contact{' '}
             <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
               privacy@splitvote.io
             </a>.
@@ -147,48 +190,111 @@ export default function PrivacyPage() {
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">10. Children&apos;s privacy (COPPA)</h2>
+          <h2 className="text-base font-bold text-white mb-2">11. Children&apos;s privacy (COPPA)</h2>
           <p>
             SplitVote is not directed to children under 13 years of age. We do not knowingly collect
             personal information from children. If you believe a child has provided us with personal
-            information, please contact us and we will delete it.
+            information, please contact us at{' '}
+            <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
+              privacy@splitvote.io
+            </a>{' '}
+            and we will delete it promptly.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">11. Cookies</h2>
-          <p className="mb-2">
-            We use a consent banner (powered by Google&apos;s CMP) to manage cookies. Cookie categories:
+          <h2 className="text-base font-bold text-white mb-2">12. Cookies and local storage</h2>
+          <p className="mb-3">
+            We use a custom cookie consent banner with granular controls. Consent is stored in
+            your browser&apos;s local storage. You can change your preferences at any time via
+            the &ldquo;Cookie settings&rdquo; link in the footer.
           </p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>
-              <strong className="text-white">Strictly necessary</strong> — functional cookies set by
-              our server: <strong className="text-white">sv_voted_*</strong> (records your vote choice
-              per dilemma to prevent duplicate votes, persists 1 year);{' '}
-              <strong className="text-white">sv_fb_*</strong> (records your feedback per dilemma,
-              1 year); <strong className="text-white">lang-pref</strong> (language preference,
-              12 hours); authentication cookies (session management for logged-in users, managed by
-              Supabase). None of these cookies contain personal data beyond your vote/feedback choices
-              and are never used for tracking or advertising.
-            </li>
-            <li><strong className="text-white">Analytics</strong> (consent required) — Google Analytics cookies (set only after your explicit consent).</li>
-            <li><strong className="text-white">Advertising</strong> (consent required) — Google AdSense cookies.</li>
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="text-[11px] border-collapse w-full">
+              <thead>
+                <tr className="text-white border-b border-[var(--border)]">
+                  <th className="text-left py-1 pr-3 font-semibold">Name</th>
+                  <th className="text-left py-1 pr-3 font-semibold">Type</th>
+                  <th className="text-left py-1 pr-3 font-semibold">Purpose</th>
+                  <th className="text-left py-1 pr-3 font-semibold">Category</th>
+                  <th className="text-left py-1 font-semibold">Duration</th>
+                </tr>
+              </thead>
+              <tbody className="space-y-1">
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">sv_cookie_consent</td>
+                  <td className="py-1.5 pr-3">localStorage</td>
+                  <td className="py-1.5 pr-3">Stores your overall consent choice</td>
+                  <td className="py-1.5 pr-3">Necessary</td>
+                  <td className="py-1.5">Until cleared</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">sv_cookie_prefs</td>
+                  <td className="py-1.5 pr-3">localStorage</td>
+                  <td className="py-1.5 pr-3">Stores granular analytics/ads preference</td>
+                  <td className="py-1.5 pr-3">Necessary</td>
+                  <td className="py-1.5">Until cleared</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">sv_voted_*</td>
+                  <td className="py-1.5 pr-3">Cookie</td>
+                  <td className="py-1.5 pr-3">Prevents duplicate anonymous votes per dilemma</td>
+                  <td className="py-1.5 pr-3">Necessary</td>
+                  <td className="py-1.5">1 year</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">sv_fb_*</td>
+                  <td className="py-1.5 pr-3">Cookie</td>
+                  <td className="py-1.5 pr-3">Prevents duplicate feedback per dilemma</td>
+                  <td className="py-1.5 pr-3">Necessary</td>
+                  <td className="py-1.5">1 year</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">lang-pref</td>
+                  <td className="py-1.5 pr-3">Cookie</td>
+                  <td className="py-1.5 pr-3">Language preference (EN/IT)</td>
+                  <td className="py-1.5 pr-3">Preference</td>
+                  <td className="py-1.5">12 hours</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">Supabase auth</td>
+                  <td className="py-1.5 pr-3">Cookie/storage</td>
+                  <td className="py-1.5 pr-3">Logged-in session management</td>
+                  <td className="py-1.5 pr-3">Necessary</td>
+                  <td className="py-1.5">Session</td>
+                </tr>
+                <tr className="border-b border-[var(--border)]/40">
+                  <td className="py-1.5 pr-3 font-mono">_ga, _ga_*</td>
+                  <td className="py-1.5 pr-3">Cookie</td>
+                  <td className="py-1.5 pr-3">Google Analytics — set only after analytics consent</td>
+                  <td className="py-1.5 pr-3">Analytics</td>
+                  <td className="py-1.5">Up to 14 months</td>
+                </tr>
+                <tr>
+                  <td className="py-1.5 pr-3 font-mono">Google ad cookies</td>
+                  <td className="py-1.5 pr-3">Cookie/storage</td>
+                  <td className="py-1.5 pr-3">Google AdSense — set only after advertising consent</td>
+                  <td className="py-1.5 pr-3">Advertising</td>
+                  <td className="py-1.5">Provider dependent</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">12. Changes to this policy</h2>
+          <h2 className="text-base font-bold text-white mb-2">13. Changes to this policy</h2>
           <p>
             We may update this Privacy Policy periodically. Significant changes will be indicated by
-            updating the &ldquo;Last updated&rdquo; date above. Continued use of the service after changes
-            constitutes acceptance.
+            updating the &ldquo;Last updated&rdquo; date above. Continued use of the service after
+            changes constitutes acceptance.
           </p>
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">13. Contact</h2>
+          <h2 className="text-base font-bold text-white mb-2">14. Contact</h2>
           <p>
-            For privacy-related questions, please contact:{' '}
+            For privacy-related questions or to exercise your rights, contact:{' '}
             <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
               privacy@splitvote.io
             </a>

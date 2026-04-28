@@ -10,7 +10,8 @@ export default function Footer() {
   return (
     <footer className="text-center text-[var(--muted)] text-xs py-10 mt-16">
       <div className="neon-divider mb-8 mx-auto max-w-2xl" />
-      <p className="mb-2">© 2026 SplitVote.io — {isIT ? 'Nessuna risposta giusta. Solo una onesta.' : 'No right answers. Just honest ones.'}</p>
+      <p className="mb-1">© 2026 SplitVote.io — {isIT ? 'Nessuna risposta giusta. Solo una onesta.' : 'No right answers. Just honest ones.'}</p>
+      <p className="text-[10px] opacity-40 mb-3">{isIT ? 'Piattaforma di voto anonimo' : 'Anonymous voting platform'}</p>
       <p className="flex items-center justify-center gap-4 flex-wrap mb-3">
         <a href={isIT ? '/it/blog' : '/blog'} className="hover:text-white transition-colors">
           Blog
@@ -29,6 +30,13 @@ export default function Footer() {
         <a href="mailto:support@splitvote.io" className="hover:text-white transition-colors">
           {isIT ? 'Supporto' : 'Support'}
         </a>
+        <span>·</span>
+        <button
+          onClick={() => window.dispatchEvent(new Event('sv:openCookieSettings'))}
+          className="hover:text-white transition-colors"
+        >
+          {isIT ? 'Cookie' : 'Cookie settings'}
+        </button>
       </p>
       <p className="flex items-center justify-center gap-4 flex-wrap">
         <a
