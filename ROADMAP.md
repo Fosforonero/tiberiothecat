@@ -3,13 +3,37 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Stripe QA docs: live mode warning + Preview test runbook
+Ultimo aggiornamento: 28 Aprile 2026 — Mobile App Readiness tracking (docs/governance)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Future Track — Mobile App Readiness
+
+**Non è uno sprint attivo.** Web-first rimane la priorità. Queste fasi sono gate di readiness per un eventuale rilascio su app store.
+
+**Decisione (28 Apr 2026):** nessuna app nativa ora. Un unico agente copre l'intero track: `.claude/agents/mobile-app-readiness-reviewer.md`.
+
+| Fase | Stato | Gate richiesto |
+|---|---|---|
+| Phase 0 — Web mobile hardening | ⚠️ Parziale (landscape/portrait fix 28 Apr) | Prima di PWA |
+| Phase 1 — PWA foundation | 🔲 Non iniziato | Phase 0 completo |
+| Phase 2 — Store policy audit | 🔲 Non iniziato | Phase 1 + decisione iOS IAP |
+| Phase 3 — Android wrapper (TWA/Capacitor) | 🔲 Non iniziato | Phase 2 completo |
+| Phase 4 — iOS wrapper (Capacitor) | 🔲 Non iniziato | Phase 3 o decisione PM |
+
+**Blockers critici prima di qualsiasi store submission:**
+- Account deletion in-app flow (richiesta da Apple dal 2022 e da Google dal 2024)
+- Decisione iOS IAP vs Stripe web checkout (rischio policy Apple — vedi `PRODUCT_STRATEGY.md → Phase 2`)
+- QA su dispositivi reali (non solo DevTools)
+
+Agente da usare: `.claude/agents/mobile-app-readiness-reviewer.md`
+Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ---
 

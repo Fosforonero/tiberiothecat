@@ -477,6 +477,78 @@ Do not build all ideas at once. Recommended order after current social-content c
 
 ---
 
+## Mobile App Readiness
+
+This track is not a current sprint. It is a sequenced readiness plan for an eventual app store release. Web-first strategy remains the priority until the core loop and premium QA are stable.
+
+**Decision (28 Apr 2026):** do not build native app now. Do not create separate Android/iOS agents yet. Use one single agent (`.claude/agents/mobile-app-readiness-reviewer.md`) for the entire track. Rationale: the highest-value work (Phase 0-2) is shared between platforms; splitting too early creates context fragmentation.
+
+Each phase is a gate for the next. Do not start Phase N+1 without completing Phase N.
+
+### Phase 0 — Web Mobile Hardening
+
+Prerequisites for anything store-related.
+
+- Portrait/landscape layout correct on real devices (iOS Safari, Android Chrome)
+- No horizontal overflow on 320px–390px viewports
+- Touch targets minimum 44×44px on all interactive elements
+- Safe area insets respected (notch, home indicator, mobile browser chrome)
+- `viewport-fit=cover` in viewport meta when fixed/sticky elements overlap notch
+- No font-size below 16px on form inputs (prevents iOS Safari auto-zoom)
+- Keyboard-aware layout (inputs not hidden behind soft keyboard)
+- QA on real devices or high-fidelity emulator, not only DevTools
+
+### Phase 1 — PWA Foundation
+
+Prerequisite: Phase 0 complete.
+
+- `site.webmanifest` complete: name, short_name, all icon sizes, theme_color, display, start_url, orientation
+- Icon set: 192×192, 512×512, maskable, Apple touch icon 180×180
+- Splash behavior verified on iOS (no blank flash)
+- Install prompt UX: `beforeinstallprompt` handled, dismissal state persisted, no forced banner
+- Offline fallback page (`/offline`) polished
+- Service worker: network-first for pages, API routes excluded, static assets cache-first
+- Deep link behavior: all routes resolve correctly in standalone mode
+- Lighthouse PWA score ≥ 90
+
+### Phase 2 — Store Policy Audit
+
+Prerequisite: Phase 1 complete.
+
+- **Account deletion** — required by both Apple (2022) and Google (2024): in-app delete-account flow that removes account and all data, with URL registered in store listing
+- **UGC report mechanism** — required by both stores if user-generated content (poll submissions, public profiles) is accessible in-app
+- **Content rating** — dilemma content reviewed against store guidelines; age rating determined (likely 12+ or 17+)
+- **Apple privacy nutrition labels** — data types, linked to identity, tracking purposes
+- **Google Play Data Safety** — data collected/shared, security, deletion
+- **iOS IAP policy decision** — highest-risk constraint: if Premium (no-ads, renames, poll submission) is primarily accessed in-app, Apple may require Apple IAP instead of Stripe web checkout. Options: (a) web-only checkout redirect, (b) implement IAP alongside Stripe, (c) remove premium from iOS V1. Requires PM + legal decision before submission.
+- **Android billing** — TWA is more permissive than iOS for web billing; verify Play Billing policy for chosen wrapper
+- Developer accounts: Apple Developer Program (€99/year), Google Play Console (€25 one-time)
+
+### Phase 3 — Android Wrapper
+
+Prerequisite: Phase 2 complete.
+
+- TWA vs Capacitor decision: TWA is lighter and URL-native (recommended if PWA is solid); Capacitor adds native access (haptics, notifications, share sheet)
+- `assetlinks.json` at `/.well-known/assetlinks.json`, verified with Digital Asset Links tool
+- Package name chosen (e.g. `io.splitvote.app`)
+- Signed APK/AAB built (Bubblewrap CLI for TWA; Capacitor build for Capacitor)
+- Play Store listing: icon, screenshots, description, content rating, privacy policy URL, account deletion URL
+- Android QA: vote flow, auth, premium, portrait/landscape, back-button behavior, deep links
+
+### Phase 4 — iOS Wrapper
+
+Prerequisite: Phase 3 complete, or explicit PM decision to ship iOS first.
+
+- Capacitor is the recommended approach (TWA is Android-only)
+- WKWebView behavior reviewed: cookie persistence, Supabase auth tokens, redirect handling
+- Universal Links via `apple-app-site-association` at `/.well-known/apple-app-site-association`
+- iOS IAP policy decision from Phase 2 implemented
+- Haptic feedback, native share sheet, local notifications: V1 scope decision
+- App Store listing: screenshots all device sizes, App Privacy labels filled, support URL, account deletion URL
+- iOS QA: vote flow, Safari cookie behavior, auth, premium, portrait/landscape, notch/safe areas
+
+---
+
 ## Dedicated Sprint Plan
 
 Use these as the next implementation ladder. Each sprint should be given to Claude separately and should finish with typecheck, build, diff check, commit, and push.

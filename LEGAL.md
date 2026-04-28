@@ -4,7 +4,7 @@ Operational tracker for privacy, cookies, terms, ads, payments, analytics, and s
 
 This file is not legal advice. It is the project source of truth for engineering and PM follow-up. Before high-traffic launch, AdSense scaling, paid acquisition, or broad international rollout, get a qualified legal review.
 
-Last reviewed: 28 Apr 2026 (Stripe QA docs — live mode warning)
+Last reviewed: 28 Apr 2026 (Mobile App Readiness tracking added)
 
 ---
 
@@ -20,6 +20,8 @@ Compliance posture:
 - Treat legal/compliance as a release gate whenever ads, analytics, payments, account data, AI content, or public profile features change.
 
 **Payments — QA status**: Production uses live mode (`sk_live_...`). The Stripe checkout / cancellation / refund flow has **not been manually tested end-to-end** with a real or test card. Before broadly promoting Premium to real users, execute the runbook in `LAUNCH_AUDIT.md → "Stripe QA End-to-End"` on a Vercel Preview with test mode keys. Terms of Service already document the subscription, cancellation, and 14-day refund window — those terms apply once real transactions begin.
+
+**Mobile App / Store release — future trigger**: No app store submission is planned now. When Phase 2 (Store Policy Audit) in `PRODUCT_STRATEGY.md → Mobile App Readiness` is reached, the following legal surfaces will require review and update before submission: (1) Apple App Store privacy nutrition labels and Google Play Data Safety form — require documenting all data types collected, shared, and deletable; (2) account deletion in-app flow — mandatory for both stores, must delete account + all associated data and be registered in store listing; (3) UGC moderation and report mechanism — required if user-submitted polls or public profiles are accessible in-app; (4) iOS IAP vs Stripe decision — if Apple determines that premium features (no-ads, renames, poll submission) are primarily consumed in-app, a policy decision is required before submission (IAP, web-only checkout, or feature exclusion); (5) Terms and Privacy may require updates to cover in-app purchase terms, IAP refund policy (governed by Apple/Google, not Stripe), and any new data flows introduced by the native wrapper. No public legal pages changed now.
 
 Recent sprints:
 

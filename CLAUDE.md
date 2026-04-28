@@ -139,5 +139,6 @@ Use `.claude/agents/` when a sprint benefits from a focused review:
 - `seo-content-reviewer.md`
 - `release-readiness-reviewer.md`
 - `product-growth-reviewer.md`
+- `mobile-app-readiness-reviewer.md` — use before any PWA, manifest, or app store sprint
 
 These agents must read the live docs above instead of relying on stale project history.
