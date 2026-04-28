@@ -247,9 +247,16 @@ content-output/
 
 **No auto-publish.** Every item has a `[ ] Approved` checkbox in the markdown file. Upload manually after review.
 
+**Each item includes (Phase 2):**
+- `playUrl` — direct play URL without UTM (EN: `/play/{id}`, IT: `/it/play/{id}`)
+- `resultsUrl` — results URL for the same dilemma
+- `utmUrl` — play URL with `utm_source=platform&utm_medium=social&utm_campaign=soft_launch` — use this for link-in-bio or story link sticker
+- `publishChecklist` — per-platform manual posting steps
+- `priority` — `'high'` for dynamic approved, `'medium'` for static evergreen
+
 **Roadmap:**
-- Phase 2 (future sprint): Remotion 1080×1920 vertical video generator — `npm run render-social <id>`. Do NOT install Remotion until that sprint starts.
-- Phase 3 (future sprint): AI-assisted captions via OpenRouter — draft-only, admin review required, same no-autopublish policy.
+- Phase 3 (future sprint): Remotion 1080×1920 vertical video generator — `npm run render-social <id>`. Do NOT install Remotion until that sprint starts.
+- Phase 4 (future sprint): AI-assisted captions via OpenRouter — draft-only, admin review required, same no-autopublish policy.
 
 ### Content Engine (base layer)
 

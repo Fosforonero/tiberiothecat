@@ -355,6 +355,28 @@ Regole:
 
 ---
 
+### Sprint Precedente — Social Content Factory Phase 2 (28 Apr 2026)
+
+**UTM tracking, links strutturati e publish checklist ✅**
+
+- [x] `lib/social-content.ts`: aggiunti campi opzionali backward-compatible a `SocialContentItem`:
+  - `playUrl` — URL play diretto senza UTM (EN: `/play/{id}`, IT: `/it/play/{id}`)
+  - `resultsUrl` — URL results per lo stesso dilemma
+  - `utmUrl` — URL play con `utm_source=platform&utm_medium=social&utm_campaign=soft_launch`
+  - `utmSource` — valore utm_source: 'tiktok' o 'instagram'
+  - `utmCampaign` — valore utm_campaign: 'soft_launch'
+  - `publishChecklist` — passi manuali di pubblicazione per piattaforma (array di stringhe)
+  - `priority` — `'high'` per dynamic approved, `'medium'` per statici evergreen
+- [x] `scripts/generate-social-content.mjs`: aggiornato con:
+  - `buildUtmUrl()`: costruisce UTM con `utm_content={id}-{locale}-{platform}`
+  - `buildPublishChecklist()`: checklist 5 step per TikTok, 5 step per Instagram
+  - `priority`: dynamic approved → 'high'; statici → 'medium'
+  - Markdown: sezione **Links** con Play URL, Results URL, UTM URL, Story Card PNG
+- [x] Zero auto-publish, zero API social, output sempre locale in `content-output/`
+- [x] Verificato in locale: 20 item (5 per combo), tutti i link EN/IT corretti ✅
+
+---
+
 ### Sprint Precedente — Social Content Factory Phase 1 (27 Apr 2026)
 
 **Pipeline locale caption social da dilemmi approvati ✅**
@@ -917,11 +939,11 @@ Da verificare post-deploy:
 
 ---
 
-## Prossimo Sprint — Social Content Factory Phase 2 (Remotion Video)
+## Prossimo Sprint — Social Content Factory Phase 3 (Remotion Video)
 
 Obiettivo: generare vertical video 1080×1920 MP4 dai dilemmi approvati per TikTok/Reels. **Non installare Remotion prima di iniziare questo sprint.**
 
-**Fase 2 — Remotion vertical video**
+**Fase 3 — Remotion vertical video**
 - [ ] Installare Remotion solo quando questo sprint inizia
 - [ ] Template Remotion 1080×1920 per TikTok/Reels
   - Dati: question, optionA, optionB, emoji, pctA/pctB, categoria
