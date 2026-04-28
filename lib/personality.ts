@@ -3,7 +3,8 @@
  *
  * Calculates a user's moral profile based on their dilemma_votes choices.
  * Each dilemma is mapped to moral axes. Choices shift axis scores.
- * Final scores determine the user's archetype + SplitVote Sign.
+ * Final scores are compared to archetype target profiles via Euclidean
+ * distance — the closest archetype wins.
  *
  * IMPORTANT: This is for fun only — not scientifically validated.
  * Copy always says "based on your SplitVote choices" not "you are X".
@@ -158,7 +159,7 @@ export const SCENARIO_AXIS_MAP: Record<string, ScenarioMapping> = {
   },
 }
 
-// ── Archetypes (6 moral personalities) ────────────────────────
+// ── Archetypes (18 moral personalities) ───────────────────────
 
 export interface Archetype {
   id:            string
@@ -177,9 +178,14 @@ export interface Archetype {
   glow:          string
   shareText:     string
   shareTextIt:   string
+  // Target axis profile for Euclidean distance classification.
+  // Values in [-5, +5]: positive = rightPole, negative = leftPole.
+  // Omit or leave undefined only for legacy entries; all production archetypes define this.
+  profile?:      Record<string, number>
 }
 
 export const ARCHETYPES: Archetype[] = [
+  // ── Original 6 ──────────────────────────────────────────────
   {
     id: 'guardian',
     name: 'The Guardian',
@@ -197,6 +203,7 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-blue',
     shareText: "My SplitVote personality is The Guardian ⚖️ — I vote with my principles, not my gut. What's yours?",
     shareTextIt: "La mia personalità SplitVote è Il Guardiano ⚖️ — voto seguendo i miei principi, non l'istinto. E la tua?",
+    profile: { utility: 4, freedom: 1, loyalty: 2, risk: 3, individual: 1 },
   },
   {
     id: 'rebel',
@@ -215,6 +222,7 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-red',
     shareText: "My SplitVote personality is The Rebel 🔥 — I follow my own moral compass, consequences be damned. What's yours?",
     shareTextIt: "La mia personalità SplitVote è Il Ribelle 🔥 — seguo la mia bussola morale, conseguenze incluse. E la tua?",
+    profile: { utility: -1, freedom: -4, loyalty: -1, risk: -3, individual: -3 },
   },
   {
     id: 'oracle',
@@ -233,6 +241,7 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-cyan',
     shareText: "My SplitVote personality is The Oracle 🧭 — I optimize for outcomes, not feelings. What's yours?",
     shareTextIt: "La mia personalità SplitVote è L'Oracolo 🧭 — ottimizzo i risultati, non i sentimenti. E la tua?",
+    profile: { utility: -4, freedom: 0, loyalty: 1, risk: 0, individual: 1 },
   },
   {
     id: 'diplomat',
@@ -251,6 +260,7 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-yellow',
     shareText: "My SplitVote personality is The Diplomat ⭐ — I vote for the collective good. What's yours?",
     shareTextIt: "La mia personalità SplitVote è Il Diplomatico ⭐ — voto per il bene collettivo. E la tua?",
+    profile: { utility: 1, freedom: 1, loyalty: 3, risk: 1, individual: 4 },
   },
   {
     id: 'strategist',
@@ -269,6 +279,7 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-purple',
     shareText: "My SplitVote personality is The Strategist 🌑 — I play the long game on every moral dilemma. What's yours?",
     shareTextIt: "La mia personalità SplitVote è Lo Stratega 🌑 — gioco sul lungo periodo su ogni dilemma morale. E la tua?",
+    profile: { utility: -2, freedom: 0, loyalty: -3, risk: 3, individual: -1 },
   },
   {
     id: 'empath',
@@ -287,6 +298,237 @@ export const ARCHETYPES: Archetype[] = [
     glow: 'neon-glow-cyan',
     shareText: "My SplitVote personality is The Empath 🌊 — I vote with my heart, not a spreadsheet. What's yours?",
     shareTextIt: "La mia personalità SplitVote è L'Empatico 🌊 — voto con il cuore, non con un foglio di calcolo. E la tua?",
+    profile: { utility: 0, freedom: 3, loyalty: -3, risk: 1, individual: -2 },
+  },
+
+  // ── New 12 ───────────────────────────────────────────────────
+  {
+    id: 'idealist',
+    name: 'The Idealist',
+    nameIt: "L'Idealista",
+    sign: 'The Torch',
+    signIt: 'La Torcia',
+    signEmoji: '✨',
+    tagline: 'A better world is not just possible — it\'s necessary.',
+    taglineIt: 'Un mondo migliore non è solo possibile — è necessario.',
+    description: "You believe in universal rights and collective progress. Principles aren't abstract ideals to you — they're the blueprint for a better future. You take risks others won't because the cause is worth it.",
+    descriptionIt: "Credi nei diritti universali e nel progresso collettivo. I principi non sono ideali astratti per te — sono il progetto per un futuro migliore. Rischi ciò che altri non osano perché la causa ne vale la pena.",
+    traits: ['Principled', 'Bold', 'Collective', 'Hopeful'],
+    traitsIt: ['Principiato', 'Audace', 'Collettivo', 'Ottimista'],
+    color: 'text-indigo-400',
+    glow: 'neon-glow-blue',
+    shareText: "My SplitVote personality is The Idealist ✨ — I vote for a better world, not just the easier choice. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è L'Idealista ✨ — voto per un mondo migliore, non per la scelta più facile. E la tua?",
+    profile: { utility: 3, freedom: -1, loyalty: 3, risk: -2, individual: 3 },
+  },
+  {
+    id: 'pragmatist',
+    name: 'The Pragmatist',
+    nameIt: 'Il Pragmatico',
+    sign: 'The Gear',
+    signIt: "L'Ingranaggio",
+    signEmoji: '⚙️',
+    tagline: 'What works is what\'s right.',
+    taglineIt: 'Ciò che funziona è ciò che è giusto.',
+    description: "You cut through the noise and focus on results. Ideology is a luxury when lives are on the line. You're cautious, realistic, and you trust your own judgment over abstract theories.",
+    descriptionIt: "Tagli il rumore e ti concentri sui risultati. L'ideologia è un lusso quando le vite sono in gioco. Sei prudente, realistico e ti fidi del tuo giudizio più che delle teorie astratte.",
+    traits: ['Realistic', 'Cautious', 'Self-reliant', 'Results-focused'],
+    traitsIt: ['Realistico', 'Prudente', 'Autonomo', 'Orientato ai risultati'],
+    color: 'text-slate-400',
+    glow: 'neon-glow-purple',
+    shareText: "My SplitVote personality is The Pragmatist ⚙️ — I care about what works, not what sounds good. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Pragmatico ⚙️ — mi interessa ciò che funziona, non ciò che suona bene. E la tua?",
+    profile: { utility: -3, freedom: 0, loyalty: 0, risk: 3, individual: -2 },
+  },
+  {
+    id: 'protector',
+    name: 'The Protector',
+    nameIt: 'Il Protettore',
+    sign: 'The Shield',
+    signIt: 'Lo Scudo',
+    signEmoji: '🛡️',
+    tagline: "I'll do anything to keep my people safe.",
+    taglineIt: 'Farò di tutto per tenere al sicuro le mie persone.',
+    description: "Safety is your first priority — especially for the people closest to you. You'll bend rules, break conventions, and accept the consequences if it means protecting those you love.",
+    descriptionIt: "La sicurezza è la tua prima priorità — specialmente per le persone più vicine a te. Piegherai le regole, romperai le convenzioni e accetterai le conseguenze pur di proteggere chi ami.",
+    traits: ['Fierce', 'Devoted', 'Resourceful', 'Unyielding'],
+    traitsIt: ['Feroce', 'Devoto', 'Intraprendente', 'Irremovibile'],
+    color: 'text-orange-400',
+    glow: 'neon-glow-red',
+    shareText: "My SplitVote personality is The Protector 🛡️ — I put my people first, rules second. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Protettore 🛡️ — prima le mie persone, poi le regole. E la tua?",
+    profile: { utility: 1, freedom: 4, loyalty: -4, risk: -2, individual: -2 },
+  },
+  {
+    id: 'truth-teller',
+    name: 'The Truth-Teller',
+    nameIt: "L'Onesto",
+    sign: 'The Diamond',
+    signIt: 'Il Diamante',
+    signEmoji: '💎',
+    tagline: 'Hard truths beat comfortable lies.',
+    taglineIt: 'Le verità difficili valgono più delle bugie confortanti.',
+    description: "You believe truth is sacred. Even when it's uncomfortable, unpopular, or costly, you say what needs to be said. You hold everyone — including yourself — to the same uncompromising standard.",
+    descriptionIt: "Credi che la verità sia sacra. Anche quando è scomoda, impopolare o costosa, dici ciò che deve essere detto. Tieni tutti — te stesso incluso — allo stesso standard intransigente.",
+    traits: ['Honest', 'Courageous', 'Uncompromising', 'Direct'],
+    traitsIt: ['Onesto', 'Coraggioso', 'Intransigente', 'Diretto'],
+    color: 'text-rose-400',
+    glow: 'neon-glow-red',
+    shareText: "My SplitVote personality is The Truth-Teller 💎 — I call it like I see it, no matter the cost. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è L'Onesto 💎 — dico le cose come stanno, qualunque sia il costo. E la tua?",
+    profile: { utility: 3, freedom: -3, loyalty: 4, risk: -2, individual: 0 },
+  },
+  {
+    id: 'pioneer',
+    name: 'The Pioneer',
+    nameIt: 'Il Pioniere',
+    sign: 'The Rocket',
+    signIt: 'Il Razzo',
+    signEmoji: '🚀',
+    tagline: 'Rules are for those who fear the future.',
+    taglineIt: 'Le regole sono per chi teme il futuro.',
+    description: "You charge into the unknown where others hesitate. Extreme risk is just the entry fee for discovery. You build your ethics from outcomes — and outcomes don't wait for permission.",
+    descriptionIt: "Ti lanci nell'ignoto dove gli altri esitano. Il rischio estremo è solo il biglietto d'ingresso per la scoperta. Costruisci la tua etica dai risultati — e i risultati non chiedono permesso.",
+    traits: ['Daring', 'Disruptive', 'Outcome-driven', 'Restless'],
+    traitsIt: ['Audace', 'Dirompente', 'Orientato ai risultati', 'Irrequieto'],
+    color: 'text-amber-400',
+    glow: 'neon-glow-yellow',
+    shareText: "My SplitVote personality is The Pioneer 🚀 — I'd rather ask forgiveness than permission. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Pioniere 🚀 — preferisco chiedere perdono che permesso. E la tua?",
+    profile: { utility: -3, freedom: -3, loyalty: 0, risk: -4, individual: -1 },
+  },
+  {
+    id: 'peacemaker',
+    name: 'The Peacemaker',
+    nameIt: 'Il Pacificatore',
+    sign: 'The Dove',
+    signIt: 'La Colomba',
+    signEmoji: '🕊️',
+    tagline: 'Every conflict has a middle ground.',
+    taglineIt: 'Ogni conflitto ha una via di mezzo.',
+    description: "You seek balance, consensus, and calm. Division unsettles you — not because you lack conviction, but because you believe cooperation is always the stronger path. Community comes first.",
+    descriptionIt: "Cerchi equilibrio, consenso e calma. La divisione ti disturba — non perché ti manchino le convinzioni, ma perché credi che la cooperazione sia sempre la strada più forte. La comunità viene prima di tutto.",
+    traits: ['Harmonious', 'Patient', 'Cooperative', 'Community-focused'],
+    traitsIt: ['Armonioso', 'Paziente', 'Cooperativo', 'Orientato alla comunità'],
+    color: 'text-teal-400',
+    glow: 'neon-glow-cyan',
+    shareText: "My SplitVote personality is The Peacemaker 🕊️ — I look for the bridge, not the battle. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Pacificatore 🕊️ — cerco il ponte, non la battaglia. E la tua?",
+    profile: { utility: 1, freedom: 2, loyalty: 2, risk: 4, individual: 3 },
+  },
+  {
+    id: 'sentinel',
+    name: 'The Sentinel',
+    nameIt: 'La Sentinella',
+    sign: 'The Watchtower',
+    signIt: 'La Torre di Guardia',
+    signEmoji: '🌅',
+    tagline: 'Order is the foundation of everything.',
+    taglineIt: "L'ordine è la base di tutto.",
+    description: "You value security, structure, and institutional trust above all else. Not because you fear change — but because you understand what's lost when systems collapse. Caution is your superpower.",
+    descriptionIt: "Valuti sicurezza, struttura e fiducia nelle istituzioni sopra ogni altra cosa. Non perché tu tema il cambiamento — ma perché capisci cosa si perde quando i sistemi collassano. La cautela è il tuo superpotere.",
+    traits: ['Vigilant', 'Disciplined', 'Trustworthy', 'Methodical'],
+    traitsIt: ['Vigile', 'Disciplinato', 'Affidabile', 'Metodico'],
+    color: 'text-sky-400',
+    glow: 'neon-glow-cyan',
+    shareText: "My SplitVote personality is The Sentinel 🌅 — I guard what matters before chasing what's new. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è La Sentinella 🌅 — proteggo ciò che conta prima di inseguire il nuovo. E la tua?",
+    profile: { utility: 3, freedom: 4, loyalty: 1, risk: 4, individual: 1 },
+  },
+  {
+    id: 'advocate',
+    name: 'The Advocate',
+    nameIt: 'Il Difensore',
+    sign: 'The Raised Fist',
+    signIt: 'Il Pugno Alzato',
+    signEmoji: '✊',
+    tagline: 'Justice is only justice when it\'s for everyone.',
+    taglineIt: 'La giustizia è tale solo quando è per tutti.',
+    description: "You fight for those who can't fight for themselves. Collective good drives every choice you make — and when justice demands bold action, you don't flinch. Systems should serve people, not the other way around.",
+    descriptionIt: "Combatti per chi non può farcela da solo. Il bene collettivo guida ogni tua scelta — e quando la giustizia richiede azioni audaci, non ti tiri indietro. I sistemi devono servire le persone, non il contrario.",
+    traits: ['Passionate', 'Justice-driven', 'Fearless', 'Collective'],
+    traitsIt: ['Appassionato', 'Orientato alla giustizia', 'Coraggioso', 'Collettivo'],
+    color: 'text-fuchsia-400',
+    glow: 'neon-glow-purple',
+    shareText: "My SplitVote personality is The Advocate ✊ — I always vote for those without a voice. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Difensore ✊ — voto sempre per chi non ha voce. E la tua?",
+    profile: { utility: -2, freedom: 1, loyalty: 4, risk: 0, individual: 4 },
+  },
+  {
+    id: 'visionary',
+    name: 'The Visionary',
+    nameIt: 'Il Visionario',
+    sign: 'The Comet',
+    signIt: 'La Cometa',
+    signEmoji: '🌠',
+    tagline: 'The status quo is just a failure we haven\'t fixed yet.',
+    taglineIt: 'Lo status quo è solo un fallimento che non abbiamo ancora risolto.',
+    description: "You see what others can't imagine. Big change, collective futures, and bold experimentation are your domain. You take risks for a better tomorrow — even when that tomorrow is uncertain.",
+    descriptionIt: "Vedi ciò che gli altri non riescono a immaginare. Il grande cambiamento, i futuri collettivi e la sperimentazione audace sono il tuo territorio. Rischi per un domani migliore — anche se quel domani è incerto.",
+    traits: ['Imaginative', 'Ambitious', 'Progressive', 'Daring'],
+    traitsIt: ['Immaginativo', 'Ambizioso', 'Progressista', 'Audace'],
+    color: 'text-violet-400',
+    glow: 'neon-glow-purple',
+    shareText: "My SplitVote personality is The Visionary 🌠 — I vote for the world that could be. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Visionario 🌠 — voto per il mondo che potrebbe essere. E la tua?",
+    profile: { utility: -3, freedom: -1, loyalty: 2, risk: -3, individual: 3 },
+  },
+  {
+    id: 'maverick',
+    name: 'The Maverick',
+    nameIt: 'Il Lupo Solitario',
+    sign: 'The Lightning',
+    signIt: 'Il Fulmine',
+    signEmoji: '⚡',
+    tagline: 'Belong to yourself first.',
+    taglineIt: 'Appartieni prima di tutto a te stesso.',
+    description: "Groups, institutions, and moral codes were invented by others — and you've never felt bound by them. You go your own way, trust your instincts, and don't need a crowd to validate your choices.",
+    descriptionIt: "I gruppi, le istituzioni e i codici morali sono stati inventati da altri — e non ti sei mai sentito vincolato da essi. Vai per la tua strada, ti fidi del tuo istinto e non hai bisogno della folla per validare le tue scelte.",
+    traits: ['Self-sufficient', 'Unconventional', 'Bold', 'Unfiltered'],
+    traitsIt: ['Autosufficiente', 'Non convenzionale', 'Audace', 'Senza filtri'],
+    color: 'text-zinc-400',
+    glow: 'neon-glow-purple',
+    shareText: "My SplitVote personality is The Maverick ⚡ — I write my own rules and own every choice. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Lupo Solitario ⚡ — scrivo le mie regole e sono responsabile di ogni scelta. E la tua?",
+    profile: { utility: 0, freedom: -2, loyalty: -1, risk: -2, individual: -5 },
+  },
+  {
+    id: 'stoic',
+    name: 'The Stoic',
+    nameIt: 'Lo Stoico',
+    sign: 'The Mountain',
+    signIt: 'La Montagna',
+    signEmoji: '⛰️',
+    tagline: 'Reason. Endure. Repeat.',
+    taglineIt: 'Ragiona. Resisti. Ripeti.',
+    description: "You process hard choices with calm reason. Emotion clouds judgment — so you strip it away and think clearly. Principles guide you, caution grounds you, and philosophy gives you the tools to face anything.",
+    descriptionIt: "Elabori le scelte difficili con ragione calma. Le emozioni offuscano il giudizio — quindi le metti da parte e pensi con chiarezza. I principi ti guidano, la cautela ti radica, la filosofia ti dà gli strumenti per affrontare qualsiasi cosa.",
+    traits: ['Calm', 'Principled', 'Enduring', 'Self-disciplined'],
+    traitsIt: ['Calmo', 'Principiato', 'Resistente', 'Autodisciplinato'],
+    color: 'text-stone-400',
+    glow: 'neon-glow-blue',
+    shareText: "My SplitVote personality is The Stoic ⛰️ — I face every dilemma with reason, not fear. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Lo Stoico ⛰️ — affronto ogni dilemma con la ragione, non con la paura. E la tua?",
+    profile: { utility: 4, freedom: 0, loyalty: -1, risk: 4, individual: 0 },
+  },
+  {
+    id: 'caretaker',
+    name: 'The Caretaker',
+    nameIt: 'Il Custode',
+    sign: 'The Hearth',
+    signIt: 'Il Focolare',
+    signEmoji: '🤲',
+    tagline: 'A society is only as strong as those it protects.',
+    taglineIt: 'Una società è forte quanto chi protegge.',
+    description: "You feel a deep responsibility for others' wellbeing. Safety, warmth, and community aren't just values — they're your purpose. You make decisions that create security, even when it costs you personally.",
+    descriptionIt: "Senti una profonda responsabilità per il benessere degli altri. Sicurezza, calore e comunità non sono solo valori — sono il tuo scopo. Prendi decisioni che creano sicurezza, anche quando ti costa personalmente.",
+    traits: ['Nurturing', 'Responsible', 'Steady', 'Community-minded'],
+    traitsIt: ['Premuroso', 'Responsabile', 'Stabile', 'Orientato alla comunità'],
+    color: 'text-pink-400',
+    glow: 'neon-glow-cyan',
+    shareText: "My SplitVote personality is The Caretaker 🤲 — I vote for the world I'd want everyone to live in. What's yours?",
+    shareTextIt: "La mia personalità SplitVote è Il Custode 🤲 — voto per il mondo in cui vorrei che tutti vivessero. E la tua?",
+    profile: { utility: 0, freedom: 2, loyalty: -1, risk: 2, individual: 4 },
   },
 ]
 
@@ -352,7 +594,7 @@ export function calculateProfile(votes: UserVoteInput[]): MoralProfile | null {
     }
   }
 
-  // ── Pick archetype based on dominant axis patterns ──
+  // ── Pick archetype by minimum Euclidean distance to target profile ──
   const archetype = pickArchetype(normalized)
 
   const confidence: 'low' | 'medium' | 'high' =
@@ -374,51 +616,24 @@ export function calculateProfile(votes: UserVoteInput[]): MoralProfile | null {
 }
 
 function pickArchetype(scores: Record<string, number>): Archetype {
-  const { utility, freedom, loyalty, risk, individual } = scores
+  const axisIds = MORAL_AXES.map(a => a.id)
+  let best: Archetype = ARCHETYPES[3] // default: diplomat
+  let bestDistSq = Infinity
 
-  // Scoring heuristic: check dominant axes and their directions
-  // Each archetype has a characteristic axis "fingerprint"
+  for (const arch of ARCHETYPES) {
+    if (!arch.profile) continue
+    let distSq = 0
+    for (const ax of axisIds) {
+      const diff = (scores[ax] ?? 0) - (arch.profile[ax] ?? 0)
+      distSq += diff * diff
+    }
+    if (distSq < bestDistSq) {
+      bestDistSq = distSq
+      best = arch
+    }
+  }
 
-  // Guardian: high utility (consequentialist... wait, high utility = rightPole = deontologist)
-  // Actually: utility rightPole = Deontologist (principle-based), leftPole = Consequentialist
-  // Let me rethink: positive utility = deontological = principle first
-  //   positive freedom = paternalist/safety-focused
-  //   positive loyalty = universalist/justice
-  //   positive risk = conservative/cautious
-  //   positive individual = collectivist
-
-  // Guardian: principled (utility high) + cautious (risk high) + justice (loyalty high)
-  const guardianScore = (utility > 0 ? utility : 0) + (loyalty > 0 ? loyalty * 0.5 : 0) + (risk > 0 ? risk * 0.5 : 0)
-
-  // Rebel: freedom low (libertarian) + risk low (risk-taker) + individual low (individualist)
-  const rebelScore = (freedom < 0 ? -freedom : 0) + (risk < 0 ? -risk * 0.5 : 0) + (individual < 0 ? -individual * 0.5 : 0)
-
-  // Oracle: utility low (consequentialist/utilitarian) + risk moderate
-  const oracleScore = (utility < 0 ? -utility : 0) + Math.abs(risk) * 0.3
-
-  // Diplomat: individual high (collectivist) + loyalty high (universalist)
-  const diplomatScore = (individual > 0 ? individual : 0) + (loyalty > 0 ? loyalty * 0.5 : 0)
-
-  // Strategist: loyalty low (loyalist to few) + risk high (conservative about big bets)
-  const strategistScore = (loyalty < 0 ? -loyalty * 0.7 : 0) + (risk > 0 ? risk * 0.3 : 0)
-
-  // Empath: loyalty low (loyal to inner circle) + freedom high (safety for loved ones)
-  const empathScore = (loyalty < 0 ? -loyalty * 0.5 : 0) + (freedom > 0 ? freedom * 0.5 : 0) + (individual < 0 ? -individual * 0.3 : 0)
-
-  const allScores: [string, number][] = [
-    ['guardian', guardianScore],
-    ['rebel', rebelScore],
-    ['oracle', oracleScore],
-    ['diplomat', diplomatScore],
-    ['strategist', strategistScore],
-    ['empath', empathScore],
-  ]
-
-  // Find highest-scoring archetype
-  allScores.sort((a, b) => b[1] - a[1])
-  const winnerId = allScores[0][0]
-
-  return ARCHETYPES.find(a => a.id === winnerId) ?? ARCHETYPES[3] // default: Diplomat
+  return best
 }
 
 export function getCommunityLabel(scores: Record<string, number>, locale: 'en' | 'it' = 'en'): string {

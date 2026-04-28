@@ -3,13 +3,31 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Migration v13 Applied (user_polls write path fully hardened)
+Ultimo aggiornamento: 28 Aprile 2026 — Personality v2 (18 archetipi, Euclidean distance classifier)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Personality v2 (28 Apr 2026)
+
+**Obiettivo**: espandere gli archetipi morali da 6 a 18, migliorare copy EN/IT, aggiornare classificatore e share card API.
+
+- [x] `lib/personality.ts` — 12 nuovi archetipi aggiunti (idealist, pragmatist, protector, truth-teller, pioneer, peacemaker, sentinel, advocate, visionary, maverick, stoic, caretaker); `profile?: Record<string, number>` aggiunto a interfaccia `Archetype`; `pickArchetype` riscritto con distanza euclidea dai profili target (più robusto con 18 archetipi vs heuristic score precedente); existing 6 invariati (id, copy, segni, emoji, colori)
+- [x] `app/api/personality-card/route.tsx` — `VALID_IDS` espanso a tutti i 18 id; `ARCHETYPE_HEX` aggiornato con colori hex per tutti i 18
+- [x] `app/personality/PersonalityClient.tsx` — `SIGN_COLORS` espanso con classi gradient Tailwind per tutti i 18 archetipi; fallback esistente `?? 'from-purple-600/20...'` preserved
+
+**Archetypes 6→18**: guardian, rebel, oracle, diplomat, strategist, empath + idealist ✨, pragmatist ⚙️, protector 🛡️, truth-teller 💎, pioneer 🚀, peacemaker 🕊️, sentinel 🌅, advocate ✊, visionary 🌠, maverick ⚡, stoic ⛰️, caretaker 🤲
+
+**Compatibilità**: id dei 6 archetipi esistenti invariati; il nuovo classificatore euclidean distance può assegnare archetipi diversi a utenti esistenti (normale — il profilo viene ricalcolato dai voti ogni volta, non è memorizzato in DB).
+
+**No zodiac**: nessun dato di nascita, nessun segno zodiacale. Zodiac overlay resta future/opzionale.
+
+**Nessuna modifica a**: DB schema, Stripe, auth, vote flow, tracking, AdSense, cookie consent, legal pages pubbliche.
 
 ---
 

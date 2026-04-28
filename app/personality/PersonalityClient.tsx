@@ -42,12 +42,24 @@ interface Props {
 }
 
 const SIGN_COLORS: Record<string, string> = {
-  guardian:   'from-blue-600/20 to-blue-500/5 border-blue-500/30',
-  rebel:      'from-red-600/20 to-red-500/5 border-red-500/30',
-  oracle:     'from-cyan-600/20 to-cyan-500/5 border-cyan-500/30',
-  diplomat:   'from-yellow-600/20 to-yellow-500/5 border-yellow-500/30',
-  strategist: 'from-purple-600/20 to-purple-500/5 border-purple-500/30',
-  empath:     'from-green-600/20 to-green-500/5 border-green-500/30',
+  guardian:      'from-blue-600/20 to-blue-500/5 border-blue-500/30',
+  rebel:         'from-red-600/20 to-red-500/5 border-red-500/30',
+  oracle:        'from-cyan-600/20 to-cyan-500/5 border-cyan-500/30',
+  diplomat:      'from-yellow-600/20 to-yellow-500/5 border-yellow-500/30',
+  strategist:    'from-purple-600/20 to-purple-500/5 border-purple-500/30',
+  empath:        'from-green-600/20 to-green-500/5 border-green-500/30',
+  idealist:      'from-indigo-600/20 to-indigo-500/5 border-indigo-500/30',
+  pragmatist:    'from-slate-600/20 to-slate-500/5 border-slate-500/30',
+  protector:     'from-orange-600/20 to-orange-500/5 border-orange-500/30',
+  'truth-teller':'from-rose-600/20 to-rose-500/5 border-rose-500/30',
+  pioneer:       'from-amber-600/20 to-amber-500/5 border-amber-500/30',
+  peacemaker:    'from-teal-600/20 to-teal-500/5 border-teal-500/30',
+  sentinel:      'from-sky-600/20 to-sky-500/5 border-sky-500/30',
+  advocate:      'from-fuchsia-600/20 to-fuchsia-500/5 border-fuchsia-500/30',
+  visionary:     'from-violet-600/20 to-violet-500/5 border-violet-500/30',
+  maverick:      'from-zinc-600/20 to-zinc-500/5 border-zinc-500/30',
+  stoic:         'from-stone-600/20 to-stone-500/5 border-stone-500/30',
+  caretaker:     'from-pink-600/20 to-pink-500/5 border-pink-500/30',
 }
 
 const EN_COPY = {

@@ -53,7 +53,7 @@ Current priority override:
 - Premium/admin users do not see ads through `AdSlot` entitlement checks.
 - One-time paid rename flow exists.
 - User dashboard/profile UX simplified (28 Apr 2026): stats show XP/streak/votes/badges; premium benefits explicit (no ads, renames, submit polls); personality CTA promoted above trophy case in profile; coming-soon block removed from profile; public profile has "Public Profile" indicator.
-- Personality route exists (`/personality`, `/it/personality`).
+- Personality v2 system (28 Apr 2026): 18 moral archetypes in `lib/personality.ts` (up from 6); Euclidean distance classifier; share card API supports all 18; full EN/IT copy for each archetype. No new data collected — profile is calculated on-the-fly from existing dilemma_votes. Zodiac overlay remains future/optional.
 - Public profile route exists (`/u/[id]`) with basic public stats/badges.
 - XP, streaks, badges, daily missions exist at foundation level.
 - `badges`, `user_badges`, `equipped_badge`, and `equipped_frame` already exist as DB foundations.
@@ -70,7 +70,7 @@ Current priority override:
 - Dedicated simplified premium dashboard — ✅ basic UX done (28 Apr 2026); advanced features below still pending.
 - VIP-only visual identity features such as colored names, profile frames, special avatars, text styles.
 - Public profile board / bacheca with curated badges, trophies, skins, and privacy controls.
-- Personality share card image generation and social sharing from profile/personality.
+- Personality share card image generation — ✅ done (28 Apr 2026): `/api/personality-card` generates 1080×1920 PNG for all 18 archetypes EN/IT. Zodiac overlay on personality share cards remains future/optional.
 - Paid user-generated poll submission — basic foundation secured (28 Apr 2026): server-side Premium enforcement, input validation, RLS hardening. Full paid workflow (per-question credits, poll analytics, submission quotas) not started.
 - Tiered paid poll plans such as per-question pricing or monthly question bundles.
 - Micro-learning section with thematic paths.

@@ -4,15 +4,31 @@ import { ARCHETYPES } from '@/lib/personality'
 
 export const runtime = 'edge'
 
-const VALID_IDS = new Set(['guardian', 'rebel', 'oracle', 'diplomat', 'strategist', 'empath'])
+const VALID_IDS = new Set([
+  'guardian', 'rebel', 'oracle', 'diplomat', 'strategist', 'empath',
+  'idealist', 'pragmatist', 'protector', 'truth-teller', 'pioneer',
+  'peacemaker', 'sentinel', 'advocate', 'visionary', 'maverick', 'stoic', 'caretaker',
+])
 
 const ARCHETYPE_HEX: Record<string, string> = {
-  guardian:   '#3b82f6',
-  rebel:      '#ef4444',
-  oracle:     '#06b6d4',
-  diplomat:   '#eab308',
-  strategist: '#a855f7',
-  empath:     '#22c55e',
+  guardian:      '#3b82f6',
+  rebel:         '#ef4444',
+  oracle:        '#06b6d4',
+  diplomat:      '#eab308',
+  strategist:    '#a855f7',
+  empath:        '#22c55e',
+  idealist:      '#6366f1',
+  pragmatist:    '#94a3b8',
+  protector:     '#f97316',
+  'truth-teller':'#f43f5e',
+  pioneer:       '#f59e0b',
+  peacemaker:    '#14b8a6',
+  sentinel:      '#0ea5e9',
+  advocate:      '#d946ef',
+  visionary:     '#8b5cf6',
+  maverick:      '#71717a',
+  stoic:         '#78716c',
+  caretaker:     '#ec4899',
 }
 
 /**
