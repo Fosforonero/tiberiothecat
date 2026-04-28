@@ -3,13 +3,26 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Stripe QA Runbook (docs only)
+Ultimo aggiornamento: 28 Aprile 2026 — k6 Load Test Results tracker (docs only)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — k6 Load Test Results Tracker (28 Apr 2026)
+
+**Obiettivo**: creare `LOAD_TEST_RESULTS.md` come registro strutturato dei risultati k6, con comando baseline, soglie, tabella di registrazione, e procedura di follow-up. Nessuna modifica al codice runtime.
+
+- [x] `LOAD_TEST_RESULTS.md` — creato: scopo, comando baseline Preview read-only (`BASE_URL=...ALLOW_PROD_LOAD_TEST=true k6 run`), regola no `ENABLE_WRITE_TESTS` per primo run, parametri harness (5 VU / 30s / scenario `trolley`), tabella soglie (k6 threshold vs pass target audit), tabella risultati con colonne date/commit/environment/BASE_URL/p95 per tutte e 5 le route/http_req_failed/checks/notes, Run #1 placeholder, procedura post-baseline (20 VU su Preview → poi prod finestra controllata), istruzioni lettura output k6, riferimenti.
+- [x] `LAUNCH_AUDIT.md` — item `[ ] Eseguire baseline k6` aggiornato per puntare a `LOAD_TEST_RESULTS.md`; nota aggiunta in fondo alla sezione "Vercel Preview baseline".
+
+**Nessuna modifica a**: codice runtime, script k6, API routes, DB schema, dipendenze.
+
+**Manual step**: ottenere URL Vercel Preview → eseguire comando baseline → incollare p95 e metriche nel Run #1 di `LOAD_TEST_RESULTS.md`.
 
 ---
 
@@ -280,7 +293,7 @@ Effetto: slug di categoria non esistenti (es. `/category/fake`) ricevono 404 imm
 - [x] **migration v11 applicata e verificata** (28 Apr 2026): `stripe_webhook_events` esiste, trigger `updated_at` presente, RLS abilitato, zero policy client, comportamento dedup confermato
 - [x] **migration v12 applicata** (28 Apr 2026): `user_polls` RLS attivo, INSERT client bloccato; policy "Anyone can view approved polls" + "Users can view own polls" presenti
 - [x] **migration v13 applicata e verificata** (28 Apr 2026): policy "Users can update own pending polls" rimossa; restano solo "Anyone can view approved polls" + "Users can view own polls" — `user_polls` write path server-only completamente hardened (v11 + v12 + v13)
-- [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks. Vedi LAUNCH_AUDIT.md §C per la tabella metriche.
+- [ ] **Vercel Preview k6 baseline**: ottenere URL Preview da Vercel dashboard, eseguire `BASE_URL=https://<branch>.vercel.app ALLOW_PROD_LOAD_TEST=true k6 run tests/load/splitvote-smoke-load.js` senza `ENABLE_WRITE_TESTS`. Registrare p95 home/play/results, http_req_failed, checks in **`LOAD_TEST_RESULTS.md` → Run #1**.
 
 ### Candidati prodotto
 

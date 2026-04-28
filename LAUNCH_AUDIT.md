@@ -314,7 +314,7 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 ### Performance & Scalabilità
 - [x] ISR/dynamic audit completato 28 Apr 2026 — play/results restano force-dynamic (per-user state: cookie anon, Supabase votedIds, nextId personalizzato); home/trending/category già ISR 3600; category pages ora hanno `dynamicParams=false` per 404 immediato su slug invalidi
 - [x] Harness k6 aggiunto 28 Apr 2026 — `tests/load/splitvote-smoke-load.js` con safety guard produzione, scenari read + write opzionale, thresholds conservativi (vedi §Load Test k6 sotto)
-- [ ] Eseguire baseline k6 contro Vercel Preview prima di campagne paid (vedi comandi sotto)
+- [ ] Eseguire baseline k6 contro Vercel Preview prima di campagne paid — **registrare risultati in `LOAD_TEST_RESULTS.md`** (vedi comandi in quel file e sotto)
 - [ ] Redis latenza: verificare percentili p99 con Upstash metrics
 - [ ] Image optimization: verificare che og-images siano cached e non ri-generate ogni volta
 - [ ] Bundle analysis: `npm run build` analizzare JS bundle size — target < 200KB first load
@@ -404,6 +404,8 @@ Se play/results p95 > 2s a 5 VU: investigare Redis cold start su Upstash free ti
 Dopo il baseline su Preview (se ok):
 1. Eseguire test più lungo (`20 VU, 2m`) sempre su Preview
 2. Solo dopo: stesso test su produzione in orario basso traffico con esplicita finestra controllata
+
+**Registrare i risultati di ogni run in [`LOAD_TEST_RESULTS.md`](LOAD_TEST_RESULTS.md)** — contiene tabella, soglie, e procedura completa per baseline e follow-up.
 
 ### Analytics & Business Intelligence
 - [ ] GA4 funnel: vote → results → share → signup (verificare eventi in GA4 dashboard)
