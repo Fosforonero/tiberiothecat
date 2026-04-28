@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — XP refresh + Moral Profile IT + Companion/Missions i18n + role model docs
+Ultimo aggiornamento: 28 Aprile 2026 — QA closure sprint 1a8830e: fix 4 stringhe inglesi hardcoded in ProfileClient sezione personality
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -26,7 +26,7 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 - [x] `components/CompanionDisplay.tsx` — aggiunto prop `locale?: string`; `IT_STAGE_LABELS` (Cucciolo/Apprendista/Esploratore/Campione/Leggendario); copy IT per "Il tuo Compagno", voti, stadio, XP Totale, missioni, forma leggendaria; fallback EN invariato.
 - [x] `app/dashboard/page.tsx` — `locale={locale}` passato a `CompanionDisplay` e `DailyMissions`; link personalità corretto: `IT ? '/it/personality' : '/personality'`.
 - [x] `app/personality/page.tsx` — aggiunto `import { cookies } from 'next/headers'`; `locale` letto dal cookie `lang-pref` server-side; `PersonalityClient` riceve `locale` corretto anche su `/personality` con utente IT.
-- [x] `app/profile/ProfileClient.tsx` — link "View personality" cambiato a `IT ? '/it/personality' : '/personality'`; label "Vedi" in IT.
+- [x] `app/profile/ProfileClient.tsx` — link "View personality" cambiato a `IT ? '/it/personality' : '/personality'`; label "Vedi" in IT. **QA fix (5322f04)**: 4 stringhe hardcoded inglesi nella sezione personality ("Your archetype is ready", "Discover your moral profile...", "Discover your moral archetype", "{n} / 3 votes — keep voting...") ora rispettano `IT`.
 - [x] `PRODUCT_STRATEGY.md` — sezione "Future Role Model" aggiunta: definizioni Super Admin / Admin / Moderator / Creator; prerequisiti implementazione (audit log, DB/RLS review, legal trigger).
 - [x] `ROADMAP.md` — timestamp aggiornato; sprint entry aggiunto.
 
