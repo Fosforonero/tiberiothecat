@@ -15,7 +15,7 @@ export default async function ProfilePage() {
   const [profileRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, birth_year, gender, country_code, avatar_emoji, name_changes, is_premium, votes_count, created_at')
+      .select('display_name, birth_year, gender, country_code, avatar_emoji, name_changes, is_premium, votes_count, streak_days, created_at')
       .eq('id', user.id)
       .single(),
     supabase
@@ -49,6 +49,7 @@ export default async function ProfilePage() {
       effectivePremium={ents.effectivePremium}
       badges={badges}
       votesCount={profile?.votes_count ?? 0}
+      streakDays={profile?.streak_days ?? 0}
       joinedAt={profile?.created_at ?? new Date().toISOString()}
     />
   )

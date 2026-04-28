@@ -32,6 +32,7 @@ interface Props {
   effectivePremium: boolean
   badges: { emoji: string; name: string; rarity: string }[]
   votesCount: number
+  streakDays: number
   joinedAt: string
 }
 
@@ -55,6 +56,7 @@ export default function ProfileClient({
   effectivePremium,
   badges,
   votesCount,
+  streakDays,
   joinedAt,
 }: Props) {
   const [displayName, setDisplayName] = useState(initialName ?? '')
@@ -469,7 +471,7 @@ export default function ProfileClient({
       {/* ── Stats ── */}
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
         <h2 className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-5">📈 Your Impact</h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-blue-400">{votesCount.toLocaleString()}</p>
             <p className="text-xs text-[var(--muted)] mt-1">Dilemmas voted</p>
@@ -477,6 +479,10 @@ export default function ProfileClient({
           <div className="text-center">
             <p className="text-xl sm:text-2xl font-black text-purple-400">{badges.length}</p>
             <p className="text-xs text-[var(--muted)] mt-1">Badges earned</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl sm:text-2xl font-black text-orange-400">{streakDays}</p>
+            <p className="text-xs text-[var(--muted)] mt-1">Day streak 🔥</p>
           </div>
           <div className="text-center">
             <p className="text-xs sm:text-sm font-black text-[var(--muted)]">

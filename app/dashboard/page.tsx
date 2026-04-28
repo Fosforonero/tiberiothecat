@@ -9,6 +9,7 @@ import OnboardingModal from './OnboardingModal'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import DailyMissions from '@/components/DailyMissions'
 import type { CompanionSpecies } from '@/lib/companion'
+import { STREAK_MILESTONES, getStreakProgress } from '@/lib/badges'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -260,6 +261,71 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Streak Milestones ── */}
+      {(() => {
+        const { nextMilestone, pct, allEarned } = getStreakProgress(streakDays)
+        const earnedIds = new Set(userBadges.map(b => b.badge_id))
+        return (
+          <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">🔥 Streak Milestones</h2>
+              <span className="text-xs text-[var(--muted)]">{streakDays} day{streakDays !== 1 ? 's' : ''} current</span>
+            </div>
+
+            {/* Progress bar toward next milestone */}
+            {!allEarned && nextMilestone && (
+              <div className="mb-4">
+                <div className="h-1.5 bg-white/5 rounded-full mb-1.5">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-orange-500 to-yellow-400 transition-all duration-500"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <p className="text-xs text-[var(--muted)]">
+                  {streakDays} / {nextMilestone.days} days to <span className="text-white">{nextMilestone.label}</span>
+                </p>
+              </div>
+            )}
+            {allEarned && (
+              <p className="text-xs text-yellow-400 mb-4">🏅 All streak milestones earned — legendary dedication!</p>
+            )}
+
+            {/* Milestone list */}
+            <div className="space-y-2">
+              {STREAK_MILESTONES.map(m => {
+                const earned = streakDays >= m.days || earnedIds.has(m.badgeId)
+                return (
+                  <div
+                    key={m.badgeId}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
+                      earned
+                        ? 'border-orange-500/30 bg-orange-500/5'
+                        : 'border-white/5 bg-white/2 opacity-50'
+                    }`}
+                  >
+                    <span className="text-xl flex-shrink-0">{earned ? m.emoji : '🔒'}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-xs font-bold leading-tight ${earned ? 'text-white' : 'text-[var(--muted)]'}`}>
+                        {m.label}
+                      </p>
+                      <p className="text-[10px] text-[var(--muted)] mt-0.5">{m.days} consecutive days</p>
+                    </div>
+                    {earned && (
+                      <span className="text-[10px] font-bold text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-lg flex-shrink-0">
+                        ✓ Earned
+                      </span>
+                    )}
+                    {!earned && (
+                      <span className="text-[10px] text-[var(--muted)] flex-shrink-0">{m.days}d</span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── Badge collection (with equip toggle) ── */}
       {userBadges.length > 0 && (

@@ -3,13 +3,42 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Personality v2 QA (copy audit + validation script)
+Ultimo aggiornamento: 28 Aprile 2026 — Streak Milestones (7/15/30 giorni, badge, UI)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — Streak Milestones (28 Apr 2026)
+
+**Obiettivo**: aggiungere badge milestone per streak 7/15/30 giorni, con progresso visibile su dashboard e profilo. Nessuna nuova gamification complessa, nessun leaderboard, nessuno shop.
+
+**Schema audit**:
+- `streak_7` già definito in migration_v2 + già assegnato in `increment_user_vote_count` (migration_v3) ✅
+- `streak_15` e `streak_30`: assenti — aggiunti in migration_v14
+- `user_badges.UNIQUE(user_id, badge_id)`: idempotent by design ✅
+- RLS `user_badges`: SELECT public, INSERT solo via DB function (security definer) — nessun client INSERT ✅
+- Integration point corretto: `app/api/vote/route.ts:240` → `supabase.rpc('increment_user_vote_count', ...)` ✅
+
+- [x] `supabase/migration_v14_streak_milestone_badges.sql` — seed `streak_15` (epic) + `streak_30` (legendary); updated `increment_user_vote_count` DB function per awardarli; backfill per utenti esistenti con `streak_days >= threshold`; idempotente. **⏳ Applicare in Supabase dashboard → SQL Editor → Run.**
+- [x] `lib/badges.ts` — `STREAK_MILESTONES` const; `getStreakProgress(streakDays)` helper per progress bar UI; `awardStreakMilestoneBadges(userId, streakDays)` per uso admin/manutenzione (primary award path resta DB function)
+- [x] `app/dashboard/page.tsx` — card "🔥 Streak Milestones" con progress bar verso prossimo target + lista dei 3 badge (earned/not earned); degrada gracefully se migration_v14 non applicata
+- [x] `app/profile/page.tsx` — aggiunto `streak_days` al SELECT query
+- [x] `app/profile/ProfileClient.tsx` — aggiunto `streakDays` prop; stats grid 3→4 colonne con "Day streak 🔥"
+- [x] `README.md` — migration_v14 aggiunta come ⏳ Pending
+- [x] `PRODUCT_STRATEGY.md` — streak milestones segnato come foundation implementata
+
+**Award flow**: voto → `increment_user_vote_count` (DB security definer) → aggiorna streak → `INSERT INTO user_badges ON CONFLICT DO NOTHING`. Nessun path client-side.
+
+**Degrada gracefully**: se migration_v14 non applicata, badge streak_15/30 non esistono in `badges` → non possono essere in `user_badges` → UI mostra "not earned" correttamente. Dashboard funziona sempre con `streakDays`.
+
+**Nessuna modifica a**: DB schema strutturale, Stripe, auth, vote logic, tracking, AdSense, cookie consent, legal pages, voting flow.
+
+**Manual step**: applicare `migration_v14_streak_milestone_badges.sql` in Supabase dashboard → SQL Editor → Run.
 
 ---
 
