@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import PersonalityClient from './PersonalityClient'
 
 export const metadata: Metadata = {
@@ -21,5 +22,6 @@ export const metadata: Metadata = {
 }
 
 export default function PersonalityPage() {
-  return <PersonalityClient />
+  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' as const : 'en' as const
+  return <PersonalityClient locale={locale} />
 }

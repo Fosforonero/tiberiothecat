@@ -3,13 +3,49 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — AdminCharts mobile fix + i18n account surfaces
+Ultimo aggiornamento: 28 Aprile 2026 — XP refresh + Moral Profile IT + Companion/Missions i18n + role model docs
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+---
+
+## Sprint completati — XP Refresh + Moral Profile IT + Companion/Missions i18n + Role Model Docs (28 Apr 2026)
+
+**Obiettivo**: fix XP bar che non si aggiornava dopo claim missione; fix Moral Profile in inglese su sito/account italiano; localizzazione Companion e Missioni; documentazione role model futuro.
+
+**Bug root cause — XP bar statica dopo claim**: `DailyMissions` usava la prop `xp` direttamente in `getLevelInfo(xp)` senza stato locale. Dopo un claim la prop era statica (il server component non veniva re-renderizzato automaticamente). Fix: aggiunto stato locale `currentXp` inizializzato dalla prop; dopo ogni claim con successo si legge `xpAwarded` dalla response API e si aggiorna `currentXp += xpAwarded`. Aggiunto `router.refresh()` per aggiornare anche il server component `CompanionDisplay` (XP Totale) e le stats del dashboard.
+
+**Bug root cause — Moral Profile in inglese**: `/personality` (route EN) non leggeva il cookie `lang-pref` e passava sempre `locale="en"` a `PersonalityClient`. Inoltre i link verso `/personality` nel dashboard e nel profilo non rispettavano la locale. Fix: `app/personality/page.tsx` ora legge il cookie `lang-pref` server-side e passa la locale corretta; dashboard e ProfileClient puntano a `/it/personality` quando IT.
+
+**Fix applicati**:
+- [x] `components/DailyMissions.tsx` — aggiunto prop `locale?: string`; stato locale `currentXp`; `useRouter` + `router.refresh()` dopo claim; `xpAwarded` letto dalla response; copy IT per header, streak, missioni complete, errori; mappa `IT_MISSION_TITLES` per i titoli missioni in italiano.
+- [x] `components/CompanionDisplay.tsx` — aggiunto prop `locale?: string`; `IT_STAGE_LABELS` (Cucciolo/Apprendista/Esploratore/Campione/Leggendario); copy IT per "Il tuo Compagno", voti, stadio, XP Totale, missioni, forma leggendaria; fallback EN invariato.
+- [x] `app/dashboard/page.tsx` — `locale={locale}` passato a `CompanionDisplay` e `DailyMissions`; link personalità corretto: `IT ? '/it/personality' : '/personality'`.
+- [x] `app/personality/page.tsx` — aggiunto `import { cookies } from 'next/headers'`; `locale` letto dal cookie `lang-pref` server-side; `PersonalityClient` riceve `locale` corretto anche su `/personality` con utente IT.
+- [x] `app/profile/ProfileClient.tsx` — link "View personality" cambiato a `IT ? '/it/personality' : '/personality'`; label "Vedi" in IT.
+- [x] `PRODUCT_STRATEGY.md` — sezione "Future Role Model" aggiunta: definizioni Super Admin / Admin / Moderator / Creator; prerequisiti implementazione (audit log, DB/RLS review, legal trigger).
+- [x] `ROADMAP.md` — timestamp aggiornato; sprint entry aggiunto.
+
+**Nessuna modifica a**: vote flow, Supabase queries, API routes, middleware, Stripe, Redis, `lib/missions.ts`, mission validation logic, XP reward values.
+
+**Cosa resta in inglese** (fuori scope di questo sprint):
+- Level titles nel XP bar ("New Voter", "Debater", etc.) — definiti in `lib/missions.ts`; sprint dedicato necessario
+- Rarity labels del companion ("common", "rare", etc.) — dati tecnici interni
+- Status badges admin ("Pending review", "Live", "Rejected") — stabilmente brevi
+
+**Check manuale richiesto post-deploy**:
+- Dashboard IT: riscattare una missione → barra XP si aggiorna immediatamente senza reload
+- Companion "XP Totale" aggiornato dopo reload (router.refresh)
+- Secondo claim della stessa missione: non aggiunge XP (idempotent, `xpAwarded: 0`)
+- `/it/personality` completamente in italiano (assi, archetipo, bottoni)
+- `/personality` con cookie `lang-pref=it`: risponde in italiano
+- `/personality` senza cookie: risponde in inglese
+- Dashboard IT → click personalità → porta a `/it/personality`
+- Profile IT → click "Vedi" personalità → porta a `/it/personality`
 
 ---
 

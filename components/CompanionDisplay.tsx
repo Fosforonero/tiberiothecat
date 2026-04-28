@@ -14,13 +14,23 @@ interface Props {
   species: CompanionSpecies
   votesCount: number
   xp?: number
-  compact?: boolean // smaller version for profile/public profile
+  compact?: boolean
+  locale?: string
 }
 
-export default function CompanionDisplay({ species, votesCount, xp = 0, compact = false }: Props) {
+const IT_STAGE_LABELS: Record<number, string> = {
+  1: 'Cucciolo',
+  2: 'Apprendista',
+  3: 'Esploratore',
+  4: 'Campione',
+  5: 'Leggendario',
+}
+
+export default function CompanionDisplay({ species, votesCount, xp = 0, compact = false, locale = 'en' }: Props) {
+  const IT = locale === 'it'
   const companion = COMPANION_MAP[species] ?? COMPANION_MAP['spark']
   const stage = getCompanionStage(votesCount)
-  const stageLabel = STAGE_LABELS[stage]
+  const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
   const emoji = companion.stageEmoji[stage - 1]
   const toNext = votesToNextStage(votesCount)
   const isMaxStage = stage === 5
@@ -39,7 +49,9 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
         <span className="text-2xl">{emoji}</span>
         <div>
           <p className="text-xs font-bold leading-none">{companion.name}</p>
-          <p className="text-xs opacity-70 mt-0.5">Stage {stage} · {stageLabel}</p>
+          <p className="text-xs opacity-70 mt-0.5">
+            {IT ? 'Stadio' : 'Stage'} {stage} · {stageLabel}
+          </p>
         </div>
       </div>
     )
@@ -49,7 +61,7 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
     <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
-          Your Companion
+          {IT ? 'Il tuo Compagno' : 'Your Companion'}
         </h2>
         <span className={`text-xs font-bold px-2 py-0.5 rounded-lg border ${rarityStyle}`}>
           {companion.rarity}
@@ -79,15 +91,15 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
         <div className="flex-1 min-w-0">
           <p className="text-lg font-black text-white leading-none mb-0.5">{companion.name}</p>
           <p className={`text-xs font-bold mb-3 ${companion.color}`}>
-            Stage {stage} · {stageLabel}
+            {IT ? 'Stadio' : 'Stage'} {stage} · {stageLabel}
           </p>
 
           {/* Progress to next stage */}
           {!isMaxStage ? (
             <>
               <div className="flex justify-between text-xs text-[var(--muted)] mb-1">
-                <span>{votesCount} votes</span>
-                <span>{toNext} to Stage {stage + 1}</span>
+                <span>{votesCount} {IT ? 'voti' : 'votes'}</span>
+                <span>{toNext} {IT ? `per Stadio ${stage + 1}` : `to Stage ${stage + 1}`}</span>
               </div>
               <div className="h-2 rounded-full bg-white/5 overflow-hidden">
                 <div
@@ -98,7 +110,7 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
             </>
           ) : (
             <div className="text-xs font-bold text-yellow-400">
-              ✨ Legendary form unlocked!
+              {IT ? '✨ Forma leggendaria sbloccata!' : '✨ Legendary form unlocked!'}
             </div>
           )}
         </div>
@@ -106,13 +118,16 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
 
       {xp > 0 && (
         <p className="mt-4 text-xs text-[var(--muted)] text-right">
-          Total XP: <span className="text-white font-bold">{xp.toLocaleString()}</span>
+          {IT ? 'XP Totale:' : 'Total XP:'}{' '}
+          <span className="text-white font-bold">{xp.toLocaleString()}</span>
         </p>
       )}
 
       {!isMaxStage && (
         <p className="mt-3 text-xs text-[var(--muted)] italic">
-          Complete today&apos;s missions to grow your companion faster.
+          {IT
+            ? 'Completa le missioni di oggi per far crescere il tuo compagno più velocemente.'
+            : "Complete today's missions to grow your companion faster."}
         </p>
       )}
     </div>

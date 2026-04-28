@@ -427,10 +427,10 @@ export default function ProfileClient({
               <p className="text-xs text-[var(--muted)] mt-0.5">Discover your moral profile based on your SplitVote choices.</p>
             </div>
             <Link
-              href="/personality"
+              href={IT ? '/it/personality' : '/personality'}
               className="flex-shrink-0 flex items-center gap-1 text-xs font-bold px-4 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors"
             >
-              View <ChevronRight size={12} />
+              {IT ? 'Vedi' : 'View'} <ChevronRight size={12} />
             </Link>
           </div>
         ) : (

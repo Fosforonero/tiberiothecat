@@ -175,6 +175,46 @@ Implementation rule:
 
 ---
 
+## Future Role Model (Design Only — Not Implemented)
+
+SplitVote currently has two effective roles: Admin (hardcoded email allowlist in `lib/admin-auth.ts`) and regular user. This section documents the intended future role hierarchy. **No implementation in this sprint.** Implementation requires a DB/RLS security review, legal review for any roles that can affect public content, and an audit log design.
+
+### Role Definitions
+
+**Super Admin**
+- Owner-level. Full destructive permissions: delete dilemmas, ban users, override billing, modify role assignments.
+- Intended first owner: `mat.pizzi@gmail.com`. This must NOT be hardcoded in runtime code — future implementation should use a secure DB role field or env-controlled bootstrap.
+- Can assign/revoke all roles below.
+
+**Admin**
+- Operations and content management: approve/reject polls and AI drafts, access admin dashboard, manage dilemmas, view aggregate stats.
+- No owner-level destructive permissions by default (cannot delete other admins, cannot modify billing config).
+- Future: can be granted by Super Admin.
+
+**Moderator**
+- Review and handle UGC: review reported content, handle community comments when built, flag/remove inappropriate submissions.
+- No billing config, no system settings, no AI draft generation.
+- Future: necessary when comments or community features go live — moderation capacity must exist before discussion threads launch.
+
+**Creator**
+- Trusted/premium user with expanded submission and analytics privileges: higher submission quota, access to per-poll analytics, optional verified creator badge.
+- No moderation or admin privileges.
+- Future: relevant once paid poll submission is live and there is a creator/community growth strategy.
+
+### Implementation Requirements (Future)
+
+Before any runtime implementation:
+
+- DB column `role` on `profiles` table with enum: `user | creator | moderator | admin | super_admin`. Default: `user`.
+- RLS policies must restrict role-escalation: only Super Admin can set `admin` or `super_admin`; regular DB writes cannot self-elevate.
+- `lib/admin-auth.ts` email allowlist approach must be replaced or extended — email-based check is acceptable for early admin only but does not scale to multiple roles.
+- Audit log table required: every role assignment/revocation must be recorded with actor, target, timestamp, and reason.
+- Security review required before any role with destructive permissions is exposed in production.
+- Legal/terms review trigger: if Moderators or Creators can affect public content visibility, Terms must be updated to describe moderation authority and creator responsibilities.
+- Do not mix role implementation with product feature sprints — dedicate a standalone Role Management sprint.
+
+---
+
 ## Premium / VIP Direction
 
 ### Existing Premium Meaning

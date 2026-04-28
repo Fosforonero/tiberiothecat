@@ -177,6 +177,7 @@ export default async function DashboardPage() {
         species={companionSpecies}
         votesCount={votesCount}
         xp={xp}
+        locale={locale}
       />
 
       {/* ── Daily Missions ── */}
@@ -184,6 +185,7 @@ export default async function DashboardPage() {
         userId={user.id}
         xp={xp}
         streakDays={streakDays}
+        locale={locale}
       />
 
       {/* ── Personality entry ── */}
@@ -208,7 +210,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         <Link
-          href="/personality"
+          href={IT ? '/it/personality' : '/personality'}
           className="text-xs font-bold px-4 py-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors flex-shrink-0"
         >
           {votesCount >= 3 ? (IT ? 'Vedi →' : 'View →') : `${votesCount} / 3`}

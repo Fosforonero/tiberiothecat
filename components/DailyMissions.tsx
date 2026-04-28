@@ -1,21 +1,34 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { getLevelInfo, type MissionId, type MissionState } from '@/lib/missions'
 
 interface Props {
   userId: string
   xp: number
   streakDays: number
+  locale?: string
 }
 
-export default function DailyMissions({ userId, xp, streakDays }: Props) {
+const IT_MISSION_TITLES: Record<string, string> = {
+  vote_3:            'Vota 3 dilemmi',
+  vote_2_categories: 'Esplora 2 categorie',
+  challenge_friend:  'Sfida un amico',
+  share_result:      'Condividi un risultato',
+  daily_dilemma:     'Dilemma del Giorno',
+}
+
+export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }: Props) {
+  const IT = locale === 'it'
+  const router = useRouter()
   const [missions, setMissions] = useState<MissionState[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [claiming, setClaiming] = useState<MissionId | null>(null)
   const [claimError, setClaimError] = useState<string | null>(null)
+  const [currentXp, setCurrentXp] = useState(xp)
 
-  const levelInfo = getLevelInfo(xp)
+  const levelInfo = getLevelInfo(currentXp)
 
   useEffect(() => {
     fetch('/api/missions')
@@ -36,6 +49,9 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
         body: JSON.stringify({ missionId: id }),
       })
       if (res.ok) {
+        const json = await res.json().catch(() => ({}))
+        const awarded: number = json.xpAwarded ?? 0
+        if (awarded > 0) setCurrentXp(prev => prev + awarded)
         setMissions(prev =>
           prev?.map(m =>
             m.id === id
@@ -43,12 +59,13 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
               : m,
           ) ?? null,
         )
+        router.refresh()
       } else {
         const data = await res.json().catch(() => ({}))
-        setClaimError(data.reason ?? data.error ?? 'Claim failed')
+        setClaimError(data.reason ?? data.error ?? (IT ? 'Errore nel riscattare la missione' : 'Claim failed'))
       }
     } catch {
-      setClaimError('Network error')
+      setClaimError(IT ? 'Errore di rete' : 'Network error')
     } finally {
       setClaiming(null)
     }
@@ -63,10 +80,10 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
-          Today&apos;s Missions
+          {IT ? 'Missioni di Oggi' : "Today's Missions"}
         </h2>
         <span className="text-xs text-[var(--muted)]">
-          {completedCount}/{missionCount} done
+          {completedCount}/{missionCount} {IT ? 'completate' : 'done'}
         </span>
       </div>
 
@@ -92,8 +109,12 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
       {streakDays > 0 && (
         <div className="flex items-center gap-2 mb-4 text-sm">
           <span className="text-orange-400">🔥</span>
-          <span className="font-bold text-orange-400">{streakDays}-day streak</span>
-          <span className="text-[var(--muted)] text-xs">— keep voting daily!</span>
+          <span className="font-bold text-orange-400">
+            {streakDays}{IT ? ' giorni di streak' : '-day streak'}
+          </span>
+          <span className="text-[var(--muted)] text-xs">
+            {IT ? '— vota ogni giorno!' : '— keep voting daily!'}
+          </span>
         </div>
       )}
 
@@ -119,6 +140,7 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
         <div className="space-y-2">
           {(missions ?? []).map(m => {
             const isClaiming = claiming === m.id
+            const displayTitle = IT ? (IT_MISSION_TITLES[m.id] ?? m.title) : m.title
 
             return (
               <div
@@ -147,10 +169,12 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
                           : 'text-white'
                     }`}
                   >
-                    {m.title}
+                    {displayTitle}
                   </p>
                   {m.comingSoon ? (
-                    <p className="text-[10px] text-white/25">Coming soon</p>
+                    <p className="text-[10px] text-white/25">
+                      {IT ? 'Prossimamente' : 'Coming soon'}
+                    </p>
                   ) : !m.completed ? (
                     <p className="text-[10px] text-[var(--muted)]">
                       {m.progress}/{m.required}
@@ -189,13 +213,13 @@ export default function DailyMissions({ userId, xp, streakDays }: Props) {
         totalXpAvailable > 0
           ? (
             <p className="text-xs text-[var(--muted)] text-center mt-3">
-              Complete missions to earn{' '}
+              {IT ? 'Completa le missioni per guadagnare' : 'Complete missions to earn'}{' '}
               <span className="text-yellow-400 font-bold">+{totalXpAvailable} XP</span>
             </p>
           )
           : (
             <p className="text-xs text-green-400 text-center mt-3 font-bold">
-              🎉 All missions complete for today!
+              {IT ? '🎉 Tutte le missioni completate per oggi!' : '🎉 All missions complete for today!'}
             </p>
           )
       )}
