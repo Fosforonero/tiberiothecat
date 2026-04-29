@@ -6,6 +6,7 @@ import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCH
 import { buildDilemmaPrompt, buildBlogArticlePrompt, type GenerationType, type GenerationLocale } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
 import { saveDraftScenarios, type DynamicScenario } from '@/lib/dynamic-scenarios'
+import { buildComparisonItems, runSemanticReview, isBlockingVerdict } from '@/lib/content-semantic-review'
 import type { Category } from '@/lib/scenarios'
 
 export const runtime = 'nodejs'
@@ -193,7 +194,43 @@ export async function POST(request: NextRequest) {
     }, { status: 409 })
   }
 
+  // ── Semantic review (save path only) ─────────────────────────────────────
+  const comparisonItems = buildComparisonItems(
+    locale as string,
+    dilemmaCandidate.category,
+    dilemmaCandidate.similarItems.map(s => ({ id: s.id, title: s.title })),
+    inventory,
+  )
+
+  const reviewOutcome = await runSemanticReview(
+    {
+      candidate: {
+        question: dilemmaCandidate.question,
+        optionA:  dilemmaCandidate.optionA,
+        optionB:  dilemmaCandidate.optionB,
+        category: dilemmaCandidate.category,
+        locale:   locale as string,
+      },
+      comparisonItems,
+    },
+    10_000,
+  )
+
+  if (!reviewOutcome.ok) {
+    dilemmaCandidate.warnings.push('semantic_review_failed')
+  } else if (isBlockingVerdict(reviewOutcome.result.verdict)) {
+    dilemmaCandidate.warnings.push(`semantic_review:${reviewOutcome.result.verdict}`)
+  }
+
   const scenario = dilemmaToScenario(dilemmaCandidate, cleanTopic)
+  if (reviewOutcome.ok) {
+    scenario.semanticReview = {
+      verdict:           reviewOutcome.result.verdict,
+      reason:            reviewOutcome.result.reason,
+      closestMatchId:    reviewOutcome.result.closestMatch?.id,
+      closestMatchTitle: reviewOutcome.result.closestMatch?.title,
+    }
+  }
 
   try {
     await saveDraftScenarios([scenario])

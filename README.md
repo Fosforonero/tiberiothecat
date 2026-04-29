@@ -83,7 +83,7 @@ EMAIL_FROM=SplitVote <hello@splitvote.io>  # optional — this is the default
 OPENROUTER_API_KEY=sk-or-...              # from openrouter.ai — used by POST /api/admin/generate-draft
 OPENROUTER_MODEL_DRAFT=deepseek/deepseek-chat-v3.1          # required — no hardcoded fallback
 OPENROUTER_MODEL_CLASSIFIER=google/gemini-flash-1.5-8b      # for future scoring/classification
-OPENROUTER_MODEL_REVIEW=anthropic/claude-3.5-haiku          # for future content review
+OPENROUTER_MODEL_REVIEW=google/gemini-pro-latest             # semantic novelty review for generated dilemmas (falls back to OPENROUTER_MODEL_DRAFT if unset)
 
 # AI Autopublish (optional — fail closed by default)
 # Set to 'true' ONLY after reviewing quality gate thresholds in lib/content-quality-gates.ts.

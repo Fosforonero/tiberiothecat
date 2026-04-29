@@ -17,6 +17,9 @@ interface SeedResult {
   errorCode?:          string
   publishNote?:        string
   qualityGateReasons?: string[]
+  semanticVerdict?:           string
+  semanticReason?:            string
+  semanticClosestMatchTitle?: string
 }
 
 interface SeedSummary {
@@ -74,6 +77,28 @@ export default function SeedBatchPanel() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function verdictBadge(r: SeedResult): React.ReactNode {
+    if (!r.semanticVerdict || r.semanticVerdict === 'novel') return null
+    const cfg: Record<string, { label: string; cls: string }> = {
+      related_but_distinct: { label: '≈ related',    cls: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+      too_similar:          { label: '⚠ too similar', cls: 'bg-red-500/20 text-red-300 border-red-500/30' },
+      duplicate:            { label: '✗ duplicate',   cls: 'bg-red-500/20 text-red-400 border-red-500/30' },
+      review_failed:        { label: 'review err',    cls: 'bg-white/10 text-white/40 border-white/10' },
+    }
+    const c = cfg[r.semanticVerdict]
+    if (!c) return null
+    const tooltipText = [r.semanticReason, r.semanticClosestMatchTitle ? `closest: ${r.semanticClosestMatchTitle}` : '']
+      .filter(Boolean).join(' — ')
+    return (
+      <span
+        className={`inline-block text-[9px] font-bold border rounded px-1 py-0.5 ml-1 cursor-help ${c.cls}`}
+        title={tooltipText}
+      >
+        {c.label}
+      </span>
+    )
   }
 
   const statusColor = (s: SeedResult['status']) =>
@@ -322,6 +347,7 @@ export default function SeedBatchPanel() {
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">#</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Locale</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Status</th>
+                  <th className="text-left px-3 py-2 text-white/40 font-semibold">Review</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Category</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Novelty</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Similar</th>
@@ -342,6 +368,7 @@ export default function SeedBatchPanel() {
                     <td className={`px-3 py-2 font-bold ${statusColor(r.status)}`}>
                       {statusLabel(r)}
                     </td>
+                    <td className="px-3 py-2">{verdictBadge(r)}</td>
                     <td className="px-3 py-2 text-white/70">{r.category ?? '—'}</td>
                     <td className="px-3 py-2 tabular-nums">
                       {r.noveltyScore !== undefined ? (

@@ -31,6 +31,7 @@ import {
   type DynamicScenario,
 } from '@/lib/dynamic-scenarios'
 import { runQualityGates } from '@/lib/content-quality-gates'
+import { buildComparisonItems, runSemanticReview, isBlockingVerdict, type SemanticReviewResult } from '@/lib/content-semantic-review'
 import { computeSeoScore } from '@/lib/trend-signals'
 import type { Category } from '@/lib/scenarios'
 
@@ -251,6 +252,9 @@ export interface SeedResult {
   // Auto-publish metadata
   publishNote?:        string    // 'quality_gate_failed' | 'publish_redis_error'
   qualityGateReasons?: string[]  // gate failure reasons (present when autoPublish was attempted)
+  semanticVerdict?:           string
+  semanticReason?:            string
+  semanticClosestMatchTitle?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -498,7 +502,48 @@ export async function POST(request: NextRequest) {
       continue
     }
 
+    // ── Semantic review ───────────────────────────────────────────────────────
+    const comparisonItems = buildComparisonItems(
+      entryLocale,
+      candidate.category,
+      candidate.similarItems.map(s => ({ id: s.id, title: s.title })),
+      inventory,
+    )
+
+    let semanticResult: SemanticReviewResult | undefined
+    let hasSemanticBlock = false
+
+    const reviewOutcome = await runSemanticReview(
+      {
+        candidate: {
+          question: candidate.question,
+          optionA:  candidate.optionA,
+          optionB:  candidate.optionB,
+          category: candidate.category,
+          locale:   entryLocale,
+        },
+        comparisonItems,
+      },
+      10_000,
+    )
+
+    if (!reviewOutcome.ok) {
+      candidate.warnings.push('semantic_review_failed')
+    } else {
+      semanticResult = reviewOutcome.result
+      hasSemanticBlock = isBlockingVerdict(semanticResult.verdict)
+      if (hasSemanticBlock) candidate.warnings.push(`semantic_review:${semanticResult.verdict}`)
+    }
+
     const scenario = dilemmaToScenario(candidate, topic)
+    if (semanticResult) {
+      scenario.semanticReview = {
+        verdict:           semanticResult.verdict,
+        reason:            semanticResult.reason,
+        closestMatchId:    semanticResult.closestMatch?.id,
+        closestMatchTitle: semanticResult.closestMatch?.title,
+      }
+    }
 
     // Always update local inventory so subsequent novelty checks within this request are aware
     inventory.push({
@@ -527,6 +572,11 @@ export async function POST(request: NextRequest) {
         similarItemsCount: candidate.similarItems.length,
         similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
         topKeyword:        candidate.keywords[0],
+        ...(semanticResult ? {
+          semanticVerdict:           semanticResult.verdict,
+          semanticReason:            semanticResult.reason,
+          semanticClosestMatchTitle: semanticResult.closestMatch?.title,
+        } : (!reviewOutcome.ok ? { semanticVerdict: 'review_failed' } : {})),
       })
       dryRunPassed++
     } else {
@@ -535,7 +585,7 @@ export async function POST(request: NextRequest) {
       let publishNote:     string   | undefined
       let gateReasons:    string[] | undefined
 
-      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP && !hasArchetypeSaturation) {
+      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP && !hasArchetypeSaturation && !hasSemanticBlock && reviewOutcome.ok) {
         const gateResult = runQualityGates({
           locale:            entryLocale,
           question:          candidate.question,
@@ -574,6 +624,11 @@ export async function POST(request: NextRequest) {
               similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
               topKeyword:        candidate.keywords[0],
               qualityGateReasons: [],
+              ...(semanticResult ? {
+                semanticVerdict:           semanticResult.verdict,
+                semanticReason:            semanticResult.reason,
+                semanticClosestMatchTitle: semanticResult.closestMatch?.title,
+              } : {}),
             })
             autoPublishedCount++
             didPublish = true
@@ -604,6 +659,11 @@ export async function POST(request: NextRequest) {
             topKeyword:        candidate.keywords[0],
             ...(publishNote  ? { publishNote }          : {}),
             ...(gateReasons  ? { qualityGateReasons: gateReasons } : {}),
+            ...(semanticResult ? {
+              semanticVerdict:           semanticResult.verdict,
+              semanticReason:            semanticResult.reason,
+              semanticClosestMatchTitle: semanticResult.closestMatch?.title,
+            } : (!reviewOutcome.ok ? { semanticVerdict: 'review_failed' } : {})),
           })
           savedDrafts++
         } catch {

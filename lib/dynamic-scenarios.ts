@@ -45,6 +45,12 @@ export interface DynamicScenario extends Scenario {
   // Override the static category-level fallback in lib/expert-insights.ts.
   expertInsightEn?:   import('./expert-insights').DynamicExpertInsight
   expertInsightIt?:   import('./expert-insights').DynamicExpertInsight
+  semanticReview?: {
+    verdict:            'novel' | 'related_but_distinct' | 'too_similar' | 'duplicate'
+    reason:             string
+    closestMatchId?:    string
+    closestMatchTitle?: string
+  }
 }
 
 // ── Approved (public) scenarios ───────────────────────────────
