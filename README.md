@@ -344,11 +344,71 @@ Product rules for future gamification:
 
 Events are written from `ResultsClientPage.tsx` after successful share actions (only on success, not on cancel).
 
-### Admin Seed Batch
+### Admin Seed Batch — Governed batch generation + controlled auto-publish
 
-`POST /api/admin/seed-draft-batch` generates 20 curated dilemma drafts (10 EN + 10 IT) sequentially via OpenRouter. Admin-only. Requires `OPENROUTER_API_KEY` + `OPENROUTER_MODEL_DRAFT`. Novelty guard: skips drafts below threshold 55. All results land in `dynamic:drafts` — admin approval required before publication.
+`POST /api/admin/seed-draft-batch` generates curated dilemma drafts sequentially via OpenRouter. Admin-only (Supabase session required). Requires `OPENROUTER_API_KEY` + `OPENROUTER_MODEL_DRAFT`.
 
-`app/admin/SeedBatchPanel.tsx` (admin-only client component) provides a UI button in `/admin` that calls the endpoint using the browser session. Shows summary + results table. No curl/cookie copying needed.
+**UI:** `/admin` → Seed Draft Batch panel (`app/admin/SeedBatchPanel.tsx`). No curl/cookie copying needed — uses the browser session.
+
+#### Modes
+
+| Mode | dryRun | autoPublish | Effect |
+|---|---|---|---|
+| **Dry run** | `true` | `false` | Generates and scores each dilemma but writes nothing to Redis. Use to preview novelty, category breakdown, and estimated call count before committing. |
+| **Save drafts** | `false` | `false` | Passing items (noveltyScore ≥ 55) saved to `dynamic:drafts`. Admin approval required before anything goes public. |
+| **Controlled auto-publish** | `false` | `true` | Items that pass all quality gates are written directly to `dynamic:scenarios` (max 10 per request). Others fall through to `dynamic:drafts` automatically. |
+
+> `dryRun` and `autoPublish` are mutually exclusive — the API returns `400` if both are `true`.
+
+#### Parameters
+
+| Param | Type | Default | Notes |
+|---|---|---|---|
+| `locale` | `'en' \| 'it' \| 'all'` | `'all'` | `'all'` runs both EN + IT |
+| `count` | number | `10` | Min 1, max 30 server-side. UI caps at 10 (matches 10 available seed topics per locale). Provide custom `topics` to exceed 10. |
+| `dryRun` | boolean | `false` | Preview only — no Redis writes |
+| `autoPublish` | boolean | `false` | Publish gate-passing items immediately |
+| `topics` | string[] | — | Custom topic override (max 60). Requires `locale='en'` or `'it'` (not `'all'`). |
+
+#### Safety guards
+
+- **Topic availability** — fails fast with `400 not_enough_seed_topics` if `count` exceeds available seed topics before any OpenRouter call starts. No silent partial runs.
+- **autoPublish cap** — max 10 items auto-published per request regardless of `count`.
+- **Pool capacity** — `MAX_DYNAMIC = 60` (public approved pool). If the pool is full, auto-publish skips to draft (`publishNote: 'pool_full'`). `MAX_DYNAMIC` is imported from `lib/dynamic-scenarios.ts` — no duplicated constant.
+- **Draft queue cap** — `MAX_DRAFTS = 120`.
+- **Quality gates** — auto-publish requires passing `runQualityGates()` (novelty, finalScore, SEO, no dangerous content). Gate failures fall through to draft (`publishNote: 'quality_gate_failed'`).
+- **seoScore** — computed from real generated metadata via `computeSeoScore(seoTitle, seoDescription, keywords)`. Not a fixed baseline.
+- **Novelty guard** — drafts with `noveltyScore < 55` are skipped entirely (not saved).
+- **Fail-closed** — any path that does not explicitly publish falls through to `saveDraftScenarios`. Redis errors on publish also fall through to draft.
+- **Cron independence** — `autoPublish` here does not change the `AUTO_PUBLISH_DILEMMAS` env var or the cron behaviour. They are separate controls.
+
+#### Recommended workflow
+
+1. **Dry run first** — `locale=all`, `count=10`, `dryRun=true`. Check the category breakdown, novelty scores, and error count.
+2. **Evaluate** — if novelty looks good (most items ≥ 55, several ≥ 75), proceed. If many items are skipped, wait or adjust topics.
+3. **Generate drafts** — `dryRun=false`, `autoPublish=false`. Review each draft in Dynamic Dilemmas ↓.
+4. **Optional auto-publish pass** — only if the dry-run results were strong and you want to reduce the backlog. `autoPublish=true` publishes only items that pass all gates; the rest land in drafts anyway.
+5. **Human editorial review** — approve or reject remaining drafts manually. Do not bulk-approve without reading each question.
+6. **Spacing** — avoid multiple large batches back-to-back without reviewing the draft queue. `MAX_DRAFTS = 120` is a hard ceiling.
+
+#### What NOT to do
+
+- Do not generate 500 dilemmas in a single run — sequential OpenRouter calls take 2–4 min for 20 items; larger batches time out or cost significantly more.
+- Do not use `autoPublish` to skip human review — it is a convenience for unambiguously strong content, not a bypass.
+- Do not raise `MAX_DYNAMIC` without a dedicated sprint — it affects the public approved pool, sitemap, and Redis public read performance.
+- Do not bulk-approve drafts without editorial control — each dilemma is public-facing and EN/IT localized.
+
+#### Verification commands
+
+```bash
+npm run typecheck
+npm run build
+# Then check the admin panel:
+# /admin → Dynamic Dilemmas — confirm draft count and approved pool size
+# /admin → Content Inventory — confirm no drafts leaked into sitemap
+```
+
+> **Legal note:** No new user data is collected by this feature. Policy remains draft/review-first. Auto-publish is a manual admin action limited by quality gates — it does not change data collection, tracking, or public profile behaviour.
 
 ### Expert Insight (v2)
 
