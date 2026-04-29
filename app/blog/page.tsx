@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPostsByLocale } from '@/lib/blog'
 
+export const revalidate = 86400
+
 const BASE = 'https://splitvote.io'
 
 export const metadata: Metadata = {

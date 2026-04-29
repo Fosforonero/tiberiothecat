@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getPost, getPostsByLocale, getAlternateUrl } from '@/lib/blog'
 import BlogArticle from '@/components/BlogArticle'
+import JsonLd from '@/components/JsonLd'
 
 const BASE = 'https://splitvote.io'
 
@@ -40,6 +41,13 @@ export function generateMetadata({ params }: Props): Metadata {
       locale: 'it_IT',
       tags: post.tags,
     },
+    twitter: {
+      card: 'summary',
+      title: post.seoTitle,
+      description: post.seoDescription,
+      site: '@splitvote',
+      creator: '@splitvote',
+    },
   }
 }
 
@@ -47,5 +55,27 @@ export default function ITBlogPostPage({ params }: Props) {
   const post = getPost(params.slug, 'it')
   if (!post) notFound()
 
-  return <BlogArticle post={post} localePrefix="/it" />
+  const canonical = `${BASE}/it/blog/${post.slug}`
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.seoTitle,
+    description: post.seoDescription,
+    datePublished: post.date,
+    dateModified: post.date,
+    url: canonical,
+    inLanguage: 'it',
+    publisher: {
+      '@type': 'Organization',
+      name: 'SplitVote',
+      url: BASE,
+    },
+  }
+
+  return (
+    <>
+      <JsonLd data={articleSchema} />
+      <BlogArticle post={post} localePrefix="/it" />
+    </>
+  )
 }

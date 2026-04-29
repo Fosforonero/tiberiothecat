@@ -4,6 +4,7 @@ import type { Category } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
+import { getCategoryContent } from '@/lib/categoryContent'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import JsonLd from '@/components/JsonLd'
@@ -70,6 +71,7 @@ export default async function ItCategoryPage({ params }: Props) {
 
   const category = cat.value as Category
   const itMeta = CAT_IT[category] ?? { label: cat.label, description: '' }
+  const content = getCategoryContent(cat.value, 'it')
 
   const staticFiltered = scenarios
     .filter(s => s.category === category)
@@ -188,6 +190,27 @@ export default async function ItCategoryPage({ params }: Props) {
                     </div>
                   </div>
                 </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Editorial + FAQ */}
+        {content && (
+          <div className="mt-16 border-t border-[var(--border)] pt-12">
+            <h2 className="text-lg font-black text-[var(--text)] mb-3">{content.faqHeading}</h2>
+            <p className="text-sm text-[var(--muted)] leading-relaxed mb-8 max-w-2xl">
+              {content.editorial}
+            </p>
+            <div className="space-y-3">
+              {content.faq.map(({ q, a }) => (
+                <details key={q} className="card-neon rounded-xl p-4 cursor-pointer">
+                  <summary className="font-semibold text-[var(--text)] list-none flex items-center justify-between">
+                    {q}
+                    <span className="text-[var(--muted)] ml-2 flex-shrink-0">▾</span>
+                  </summary>
+                  <p className="mt-3 text-sm text-[var(--muted)] leading-relaxed">{a}</p>
+                </details>
               ))}
             </div>
           </div>
