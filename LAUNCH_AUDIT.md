@@ -356,8 +356,9 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 - [x] Idempotenza webhook implementata: `lib/stripe-webhook-events.ts` + `migration_v11_stripe_webhook_events.sql` — ✅ migration v11 applicata in Supabase (28 Apr 2026); trigger `updated_at` presente; indici presenti; RLS abilitato; zero policy client
 - [x] **Bug fix (28 Apr 2026)**: aggiunto try/catch su `stripe.checkout.sessions.create()` in checkout, subscription e `billingPortal.sessions.create()` in portal — prima, Stripe throw → 500 non-JSON → client "Network error"; ora → 500 JSON con messaggio utile
 - [x] **Audit statico completo (28 Apr 2026)**: webhook lifecycle, idempotency, premium activation, cancellation, AdSlot, entitlements API, log safety — tutti verificati. Runbook allineato al codice.
-- [ ] **⛔ BLOCKER PRODUZIONE — `STRIPE_PRICE_ID_PREMIUM` live è one-time, non ricorrente** — Il prezzo Premium configurato in Stripe live mode risulta `one-time`; il codice usa `mode: 'subscription'`. Stripe rifiuterà la chiamata in produzione. Azioni richieste prima del go-live Premium: (1) creare un prezzo ricorrente mensile per Premium in Stripe live mode dashboard; (2) aggiornare `STRIPE_PRICE_ID_PREMIUM` su Vercel → Environment Variables → scope Production; (3) eseguire un singolo checkout reale controllato o verifica live a basso rischio per conferma.
-- [ ] **Submit finale hosted Checkout — verifica manuale umana** — eseguire con carta `4242 4242 4242 4242` su Preview dopo il blocco produzione risolto, oppure direttamente in live mode con carta reale durante la verifica finale. Chiude il loop UX end-to-end.
+- [x] **Env var fix (29 Apr 2026): `STRIPE_PRICE_ID_PREMIUM` Production corretta** — Root cause reale: `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key (`sk_live_...`) invece di un Price ID. Il codice usa `mode: 'subscription'` con `line_items: [{ price: STRIPE_PRICE_ID_PREMIUM }]` — Stripe rifiutava la chiamata perché il valore non era un Price ID valido. Nota: la narrativa precedente "prezzo one-time vs ricorrente" era imprecisa; la root cause era l'env var errata, non la configurazione del prodotto Stripe. Fix manuale (Matteo, 29 Apr 2026): env var aggiornata con il Price ID corretto del prodotto SplitVote Premium (recurring monthly, €4.99/mese). Vercel Production redeployata. Nessuna modifica al codice runtime.
+- [ ] **Checkout UI su `splitvote.io/profile` — verifica manuale** — env var fix completato (29 Apr 2026). Prossimo step: aprire `splitvote.io/profile` con account reale non-premium → cliccare "Upgrade to Premium" → verificare che Stripe Checkout si apra e mostri il piano ricorrente mensile correttamente. Non è ancora stata eseguita.
+- [ ] **Pagamento live end-to-end — verifica manuale** — il loop completo (checkout → webhook → `is_premium=true` → entitlements) non è ancora stato eseguito in live mode con carta reale o prepagata. Raccomandato prima di promuovere Premium a utenti reali.
 
 ### Blog Dynamic Storage
 - [ ] Progettare BlogDraft schema (vedi ROADMAP — Blog Weekly Generation)
@@ -570,7 +571,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 
 3. **Google-certified TCF CMP**: per servire annunci personalizzati AdSense in EEA/UK/Svizzera a scala, Google richiede una CMP certificata TCF. Il banner custom attuale è sufficiente per il soft launch; prima di scaling aggressivo valutare CMP certificata (Cookiebot, Axeptio, ecc.).
 
-4. **Stripe go-live Premium**: backend/webhook/entitlements verificati su Preview (28 Apr 2026). Blocker residuo: `STRIPE_PRICE_ID_PREMIUM` in produzione è one-time, non ricorrente — Stripe rifiuterà `mode: 'subscription'`. Richiede nuovo prezzo ricorrente live + aggiornamento env var production + verifica finale prima di promuovere Premium a utenti reali.
+4. **Stripe go-live Premium**: backend/webhook/entitlements verificati su Preview (28 Apr 2026). Env var fix (29 Apr 2026): `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key invece di un Price ID — corretta con il Price ID del prodotto SplitVote Premium (recurring monthly, €4.99/mese); Vercel Production redeployata. Codice già corretto, nessuna modifica runtime. Residuo: verifica checkout UI su `splitvote.io/profile` + pagamento live end-to-end non ancora eseguiti.
 
 5. **Disaster recovery**: senza runbook e backup verificati, un'interruzione Redis o Supabase durante alto traffico è un evento catastrofico senza piano di risposta.
 
@@ -581,7 +582,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 | # | Blocker | Impatto | Effort |
 |---|---------|---------|--------|
 | 1 | Load test + Redis/Supabase stress test | Stabilità a scala | Medio (1 sprint) |
-| 2 | Stripe Premium go-live — live recurring price + verifica finale | Revenue + user trust | Basso (config Stripe + 1 test) |
+| 2 | Stripe Premium — verifica checkout UI live + pagamento end-to-end (env fix ✅ 29 Apr) | Revenue + user trust | Basso (1–2 test manuali) |
 | 3 | AdSense approval | Monetizzazione | Fuori dal nostro controllo |
 | 4 | Google TCF CMP (per personalized ads EEA a scala) | AdSense policy compliance | Basso-medio (libreria esterna) |
 | 5 | Disaster recovery runbook | Resilienza operativa | Basso (documentazione) |

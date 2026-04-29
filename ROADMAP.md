@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 28 Aprile 2026 — Stripe Preview QA eseguito (backend/webhook/entitlements verified)
+Ultimo aggiornamento: 29 Aprile 2026 — Stripe Production env var fix (`STRIPE_PRICE_ID_PREMIUM` corretta, recurring monthly €4.99/mese)
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -37,6 +37,44 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ---
 
+## Sprint completati — Blog SEO: Article JSON-LD + Twitter card + Category editorial content (29 Apr 2026)
+
+**Obiettivo**: tre miglioramenti SEO tecnici su blog e category pages. Zero runtime behavior change, zero data/user tracking change.
+
+**Modifiche**:
+- `app/blog/[slug]/page.tsx` + `app/it/blog/[slug]/page.tsx`: aggiunto `schema.org/Article` JSON-LD (headline, description, datePublished, inLanguage, publisher) e `twitter:card summary` con site/creator tag
+- `app/blog/page.tsx` + `app/it/blog/page.tsx`: aggiunto `export const revalidate = 86400` (blog statico, nessun motivo di rigenerare ogni request)
+- `app/category/[category]/page.tsx` + `app/it/category/[category]/page.tsx`: aggiunta sezione editoriale (heading + editorial paragraph + 3 FAQ collassabili) importata da `lib/categoryContent.ts`
+- `lib/categoryContent.ts` (nuovo): mappa 8 categorie × 2 lingue → `{ editorial, faqHeading, faq[] }`. Copy revisionato: rimossi claim su "SplitVote global data", rimossi "most research suggests", rimosso claim neurologico su social rejection senza fonte
+
+**LEGAL.md**: nessun aggiornamento — nessun cambio a dati, tracking, cookies, auth, payments, user behavior.
+
+**Verifiche**: `npm run typecheck` ✅ · `npm run build` ✅ · `git diff --check` ✅
+
+---
+
+## Sprint completati — Stripe Production Env Fix: `STRIPE_PRICE_ID_PREMIUM` corretta (29 Apr 2026)
+
+**Obiettivo**: documentare la correzione manuale della env var `STRIPE_PRICE_ID_PREMIUM` in Vercel Production che impediva il funzionamento del checkout Premium. Nessuna modifica al codice runtime.
+
+**Root cause reale (confermata 29 Apr 2026)**: `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key (`sk_live_...`) invece di un Price ID. Il codice usa `mode: 'subscription'` con `line_items: [{ price: STRIPE_PRICE_ID_PREMIUM }]` — Stripe rifiutava la chiamata perché il valore passato non era un Price ID valido. La narrativa precedente "prezzo one-time vs ricorrente" era imprecisa; la root cause era l'env var errata.
+
+**Fix manuale (Matteo, 29 Apr 2026)**:
+- `STRIPE_PRICE_ID_PREMIUM` in Vercel → Environment Variables → scope Production aggiornata con il Price ID corretto del prodotto SplitVote Premium (recurring monthly, €4.99/mese)
+- Vercel Production redeployata con successo
+- Nessuna modifica al codice runtime
+
+**Stato post-fix**:
+- ✅ Env var corretta, Vercel Production redeployata
+- ✅ Codice già corretto (`mode: 'subscription'`, price via env) — nessuna modifica necessaria
+- ✅ Webhook lifecycle, idempotency, entitlements: verificati su Preview 28 Apr (invariati)
+- [ ] Checkout UI su `splitvote.io/profile`: da verificare manualmente — aprire checkout, confermare che mostri piano ricorrente mensile
+- [ ] Pagamento live end-to-end: non ancora eseguito
+
+**Nessuna modifica a**: codice runtime, Stripe webhook, Supabase schema, Redis, vote flow, i18n.
+
+---
+
 ## Sprint completati — Stripe Preview QA: backend/webhook/entitlements verified (28 Apr 2026)
 
 **Obiettivo**: eseguire il QA Stripe su Vercel Preview con test mode. Nessuna modifica al codice runtime.
@@ -53,7 +91,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 **Limitazione**: submit finale hosted Checkout non completato via browser automatizzato (Stripe anti-automation sull'UI) — richiede verifica manuale umana con carta `4242`.
 
-**⛔ Blocker produzione identificato**: `STRIPE_PRICE_ID_PREMIUM` in live mode è configurato come `one-time`, non ricorrente. Il codice usa `mode: 'subscription'` → Stripe rifiuta in produzione. Prima del go-live Premium: creare prezzo ricorrente in Stripe live → aggiornare env var Vercel production → verifica finale.
+**Blocker produzione identificato e risolto (29 Apr 2026)**: `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key invece di un Price ID — corretta il 29 Apr con il Price ID del prodotto SplitVote Premium (recurring monthly, €4.99/mese). Vedi sprint "Stripe Production Env Fix" sopra.
 
 **Nessuna modifica a**: codice runtime, Stripe env production, Supabase schema, Redis, vote flow.
 
