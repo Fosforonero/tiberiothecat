@@ -12,6 +12,7 @@ interface SeedResult {
   question?:           string
   noveltyScore?:       number
   similarItemsCount?:  number
+  similarItems?:       { title: string; similarity: number }[]
   topKeyword?:         string
   errorCode?:          string
   publishNote?:        string
@@ -353,7 +354,17 @@ export default function SeedBatchPanel() {
                         </span>
                       ) : '—'}
                     </td>
-                    <td className="px-3 py-2 text-white/40 tabular-nums">{r.similarItemsCount ?? '—'}</td>
+                    <td className="px-3 py-2 text-white/40 tabular-nums">
+                      <span>{r.similarItemsCount ?? '—'}</span>
+                      {r.similarItems?.[0] && (
+                        <span
+                          className="block text-[9px] text-[var(--muted)] truncate max-w-[110px] mt-0.5 cursor-help"
+                          title={r.similarItems.map(s => `${s.similarity}% — ${s.title}`).join('\n')}
+                        >
+                          ≈ {r.similarItems[0].title.slice(0, 40)}{r.similarItems[0].title.length > 40 ? '…' : ''}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-3 py-2 text-white/60 max-w-[80px] truncate">{r.topKeyword ?? '—'}</td>
                     <td className="px-3 py-2 text-white/80 max-w-[220px]">
                       <span title={r.question} className="truncate block">

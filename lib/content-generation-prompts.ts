@@ -13,6 +13,7 @@ export interface PromptInput {
   type: GenerationType
   locale: GenerationLocale
   topic: string
+  targetCategory?: string
   inventory: InventorySummary
   similarContentWarnings: string[]
 }
@@ -32,7 +33,7 @@ Safety and quality rules (strictly enforced — output will be rejected if viola
 `
 
 export function buildDilemmaPrompt(input: PromptInput): { system: string; prompt: string } {
-  const { locale, topic, inventory, similarContentWarnings } = input
+  const { locale, topic, targetCategory, inventory, similarContentWarnings } = input
   const lang = locale === 'it' ? 'Italian' : 'English'
 
   const system = `You are a creative writer for SplitVote, a global platform for moral dilemma voting. \
@@ -56,6 +57,7 @@ Requirements:
 - Both options represent different values, not good vs evil
 - Each option: concise, max 1 sentence
 - Novel angle — different from existing content
+- Preferred category: ${targetCategory ?? 'any of the 8 listed'} (soft preference — use a different category if it fits the topic better)
 - Category must be one of: morality, survival, loyalty, justice, freedom, technology, society, relationships
 
 Output this exact JSON object (no other text):
