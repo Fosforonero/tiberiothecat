@@ -96,6 +96,7 @@ async function generateDilemmas(
   signals: TrendSignal[],
   locale: 'en' | 'it',
   count = 3,
+  feedbackHint = '',
 ): Promise<Array<GeneratedDilemmaRaw & { _signal?: TrendSignal }>> {
   const client = new Anthropic()
   const trendList = signals.map((s, i) => `${i + 1}. ${s.title} [score:${s.score} src:${s.source}]`).join('\n')
@@ -112,7 +113,7 @@ ${trendList}
 ${langInstructions}
 
 Generate exactly ${count} moral dilemmas INSPIRED by these trends (not directly copied — adapt them into timeless ethical questions).
-
+${feedbackHint ? `\n${feedbackHint}\n` : ''}
 Rules:
 - Each dilemma must be a genuine ethical conflict with no obvious right answer
 - Options A and B should represent roughly equal, defensible positions
@@ -196,7 +197,43 @@ export async function GET(request: NextRequest) {
         continue
       }
 
-      const rawDilemmas = await generateDilemmas(signals, locale, 3)
+      // Compute category-level feedback hint — weak soft signal for prompt framing only.
+      // Non-blocking: if it fails, generation proceeds without it.
+      let feedbackHint = ''
+      try {
+        const localeApproved = existingApproved.filter(s => s.locale === locale)
+        const catScores = new Map<string, { sum: number; count: number }>()
+        for (const s of localeApproved) {
+          if (!s.scores || !s.category) continue
+          const score = s.scores.feedbackScore
+          if (score === 50) continue
+          const entry = catScores.get(s.category) ?? { sum: 0, count: 0 }
+          catScores.set(s.category, { sum: entry.sum + score, count: entry.count + 1 })
+        }
+        const catAverages = [...catScores.entries()]
+          .filter(([, v]) => v.count >= 3)
+          .map(([category, v]) => ({ category, avg: v.sum / v.count, count: v.count }))
+        const highCats = catAverages
+          .filter(c => c.avg >= 65)
+          .sort((a, b) => b.avg - a.avg)
+          .slice(0, 2).map(c => c.category)
+        const lowCats = catAverages
+          .filter(c => c.avg <= 40)
+          .sort((a, b) => a.avg - b.avg)
+          .slice(0, 2).map(c => c.category)
+        if (highCats.length > 0 || lowCats.length > 0) {
+          feedbackHint = `Internal audience feedback is a weak editorial hint, not a ranking rule.`
+          if (highCats.length > 0)
+            feedbackHint += `\nCategories with stronger recent feedback: ${highCats.join(', ')}`
+          if (lowCats.length > 0)
+            feedbackHint += `\nCategories with weaker recent feedback: ${lowCats.join(', ')}`
+          feedbackHint += `\nUse this only as a light signal for topic framing and variety. Do not over-optimize for it. Do not avoid weaker categories entirely.`
+        }
+      } catch {
+        // feedbackHint stays empty — generation proceeds without it
+      }
+
+      const rawDilemmas = await generateDilemmas(signals, locale, 3, feedbackHint)
       const now = new Date().toISOString()
 
       // Validate + score + dedup

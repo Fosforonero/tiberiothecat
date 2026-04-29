@@ -54,6 +54,7 @@ export async function GET(request: NextRequest) {
       seoDescription:    s.seoDescription ?? null,
       keywords:          s.keywords ?? [],
       noveltyScore:      s.scores?.noveltyScore,
+      scores:            s.scores ?? null,
       autoPublished:     s.autoPublished ?? false,
       qualityGateScore:  s.qualityGateScore,
       generatedBy:       s.generatedBy ?? null,

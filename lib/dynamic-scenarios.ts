@@ -150,7 +150,8 @@ export async function patchApprovedScenario(
 
 /**
  * Update the feedbackScore of an approved scenario based on up/down ratings.
- * feedbackScore = (upvotes / total) * 100, clamped to [0,100].
+ * Uses Bayesian smoothing (10 pseudo-votes at 50% prior) to prevent extreme
+ * scores from small samples. Converges to the true rate as volume grows.
  */
 export async function updateFeedbackScore(
   id: string,
@@ -162,7 +163,9 @@ export async function updateFeedbackScore(
   if (idx === -1) return
 
   const total = upvotes + downvotes
-  const feedbackScore = total > 0 ? Math.round((upvotes / total) * 100) : 50
+  // Bayesian smoothing: 10 pseudo-votes at 50% prior.
+  // Prevents extreme scores from small samples; converges to true rate at volume.
+  const feedbackScore = Math.round(((upvotes + 5) / (total + 10)) * 100)
 
   const s = scenarios[idx]
   const oldScores = s.scores
