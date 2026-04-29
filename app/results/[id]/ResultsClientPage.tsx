@@ -39,10 +39,14 @@ const EN_COPY = {
   votesWorldwide:    (n: number) => `${n.toLocaleString()} votes worldwide`,
   tieTitle:          '🤝 The world is perfectly split!',
   tieDesc:           '50/50 — this dilemma divides humanity equally.',
-  minorityTitle:     (pct: number) => `🔥 You're in the rebel ${pct}% minority!`,
-  minorityDesc:      'Most people disagreed with you. Are you an outsider — or just ahead of the curve?',
-  majorityTitle:     (pct: number) => `🌍 ${pct}% of the world agrees with you!`,
-  majorityDesc:      "You're with the majority on this one. Great minds think alike.",
+  minorityTitle:     (pct: number) => `🔥 You're in the ${pct}% minority.`,
+  minorityDesc:      'Most people see this differently. Are you an outsider — or ahead of the curve?',
+  majorityTitle:     (pct: number) => `🌍 ${pct}% of the world agrees with you.`,
+  majorityDesc:      "You're with the majority — but plenty of people see it differently.",
+  closeSplitTitle:   (pct: number) => `You're on the ${pct}% side — almost a coin flip.`,
+  closeSplitDesc:    'The world barely leans one way. A handful of votes could change it.',
+  landslideTitle:    (pct: number) => `🌊 ${pct}% of the world agrees with you.`,
+  landslideDesc:     'Almost everyone leans this way. But does the majority always make right?',
   youVoted:          'You voted:',
   majority:          (pct: number, label: string) => `🌍 ${pct}% of the world chose: `,
   majorityLabel:     (label: string) => label,
@@ -102,10 +106,14 @@ const IT_COPY = {
   votesWorldwide:    (n: number) => `${n.toLocaleString('it-IT')} voti nel mondo`,
   tieTitle:          '🤝 Il mondo è perfettamente diviso!',
   tieDesc:           '50/50 — questo dilemma divide l\'umanità equamente.',
-  minorityTitle:     (pct: number) => `🔥 Sei nel ${pct}% ribelle della minoranza!`,
-  minorityDesc:      'La maggior parte delle persone non era d\'accordo con te. Sei un outsider — o semplicemente in anticipo sui tempi?',
-  majorityTitle:     (pct: number) => `🌍 Il ${pct}% del mondo è d'accordo con te!`,
-  majorityDesc:      'Sei con la maggioranza. Le grandi menti si incontrano.',
+  minorityTitle:     (pct: number) => `🔥 Sei nel ${pct}% della minoranza.`,
+  minorityDesc:      "La maggior parte delle persone la vede diversamente. Sei un outsider — o semplicemente in anticipo?",
+  majorityTitle:     (pct: number) => `🌍 Il ${pct}% del mondo è d'accordo con te.`,
+  majorityDesc:      'Sei con la maggioranza — ma molti la vedono diversamente.',
+  closeSplitTitle:   (pct: number) => `Sei nel ${pct}% — quasi un tiro di moneta.`,
+  closeSplitDesc:    'Il mondo si inclina appena da una parte. Pochi voti potrebbero cambiare tutto.',
+  landslideTitle:    (pct: number) => `🌊 Il ${pct}% del mondo è d'accordo con te.`,
+  landslideDesc:     'Quasi tutti si inclinano in questa direzione. Ma la maggioranza ha sempre ragione?',
   youVoted:          'Hai votato:',
   majority:          (pct: number, label: string) => `🌍 Il ${pct}% del mondo ha scelto: `,
   majorityLabel:     (label: string) => label,
@@ -175,8 +183,9 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [isAnon, setIsAnon] = useState(false)
   const [referralCode, setReferralCode] = useState<string | null>(null)
 
-  const copy = sharePrefix === '/it' ? IT_COPY : EN_COPY
-  const locale = sharePrefix === '/it' ? 'it' : 'en'
+  const isIT = sharePrefix === '/it'
+  const copy = isIT ? IT_COPY : EN_COPY
+  const locale = isIT ? 'it' : 'en'
   const baseInsight = getExpertInsight(scenario.category, locale)
   const dynamicOverride: DynamicExpertInsight | undefined = locale === 'it'
     ? (scenario as Partial<DynamicScenario>).expertInsightIt
@@ -238,26 +247,53 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const pctVoted = voted === 'a' ? pctA : voted === 'b' ? pctB : null
   const isMinority = pctVoted !== null && pctVoted < 50
   const isTie = pctA === pctB
+  const isClose              = !isTie && Math.abs(pctA - pctB) <= 10
+  const isAggregateLandslide = !isTie && majorityPct >= 70
+  const isUserOnLandslideSide = isAggregateLandslide && pctVoted === majorityPct
 
   // Aggregate share text — always uses majority stats, never reveals user's own vote
-  const webShareText = sharePrefix === '/it'
-    ? `Il ${majorityPct}% ha scelto "${majorityLabel}". Tu cosa faresti?\n"${scenario.question}"`
-    : `${majorityPct}% chose "${majorityLabel}". What would you do?\n"${scenario.question}"`
+  const webShareText = isTie
+    ? (isIT
+        ? `Questo divide il mondo esattamente 50/50. Tu cosa sceglieresti?\n"${scenario.question}"`
+        : `This one splits the world exactly 50/50. What would you choose?\n"${scenario.question}"`)
+    : isClose
+    ? (isIT
+        ? `${pctA}% vs ${pctB}% — il mondo non riesce a decidere. Da che parte stai?\n"${scenario.question}"`
+        : `${pctA}% vs ${pctB}% — the world can barely decide. Which side are you on?\n"${scenario.question}"`)
+    : isAggregateLandslide
+    ? (isIT
+        ? `Il ${majorityPct}% del mondo ha scelto la stessa cosa. Sei d'accordo?\n"${scenario.question}"`
+        : `${majorityPct}% of the world agrees on this one. Do you?\n"${scenario.question}"`)
+    : (isIT
+        ? `Il ${majorityPct}% ha scelto "${majorityLabel}". Tu cosa faresti?\n"${scenario.question}"`
+        : `${majorityPct}% chose "${majorityLabel}". What would you do?\n"${scenario.question}"`)
 
   // Platform share texts
-  const twitterText = sharePrefix === '/it'
-    ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa faresti? 🌍`
-    : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`
-  const tiktokCaption = sharePrefix === '/it'
+  const twitterText = isTie
+    ? (isIT
+        ? `Questo divide il mondo 50/50 🤝 Tu da che parte stai?`
+        : `This one splits the world 50/50 🤝 Which side are you on?`)
+    : isClose
+    ? (isIT
+        ? `Il mondo è quasi diviso a metà. ${pctA}% vs ${pctB}% 🌍 Tu cosa faresti?`
+        : `The world is almost split on this. ${pctA}% vs ${pctB}% 🌍 What would YOU choose?`)
+    : isAggregateLandslide
+    ? (isIT
+        ? `Il ${majorityPct}% del mondo è d'accordo su questa. Sei tra loro? 🌊`
+        : `${majorityPct}% of the world agrees on this one. Are you? 🌊`)
+    : (isIT
+        ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa sceglieresti? 🌍`
+        : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`)
+  const tiktokCaption = isIT
     ? `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
     : `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
-  const instagramCaption = sharePrefix === '/it'
+  const instagramCaption = isIT
     ? `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
     : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`
-  const discordText = sharePrefix === '/it'
+  const discordText = isIT
     ? `${scenario.emoji} **"${scenario.question}"**\nIl mondo è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`
     : `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
 
@@ -401,7 +437,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       {/* ── Minority / Majority reveal ── */}
       {voted && pctVoted !== null && total >= 10 && (
         <div className={`text-center mb-6 rounded-2xl py-5 px-6 border ${
-          isTie
+          isTie || isClose
             ? 'border-purple-500/30 bg-purple-500/10'
             : isMinority
             ? 'border-orange-500/30 bg-orange-500/10'
@@ -412,6 +448,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               <p className="text-2xl font-black text-purple-400 mb-1">{copy.tieTitle}</p>
               <p className="text-sm text-[var(--muted)]">{copy.tieDesc}</p>
             </>
+          ) : isClose ? (
+            <>
+              <p className="text-2xl font-black text-purple-400 mb-1">
+                {copy.closeSplitTitle(pctVoted)}
+              </p>
+              <p className="text-sm text-[var(--muted)]">
+                {copy.closeSplitDesc}
+              </p>
+            </>
           ) : isMinority ? (
             <>
               <p className="text-2xl font-black text-orange-400 mb-1">
@@ -419,6 +464,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
               </p>
               <p className="text-sm text-[var(--muted)]">
                 {copy.minorityDesc}
+              </p>
+            </>
+          ) : isUserOnLandslideSide ? (
+            <>
+              <p className="text-2xl font-black text-green-400 mb-1">
+                {copy.landslideTitle(pctVoted)}
+              </p>
+              <p className="text-sm text-[var(--muted)]">
+                {copy.landslideDesc}
               </p>
             </>
           ) : (
@@ -789,7 +843,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             <p className="text-xs text-[var(--muted)] leading-relaxed">{copy.anonCTABody}</p>
           </div>
           <a
-            href={sharePrefix === '/it' ? '/login?locale=it' : '/login'}
+            href={isIT ? '/login?locale=it' : '/login'}
             className="flex-shrink-0 w-full sm:w-auto text-center text-sm font-bold px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors neon-glow-blue min-h-[48px] flex items-center justify-center"
           >
             {copy.anonCTAButton}
