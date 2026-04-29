@@ -7,6 +7,9 @@ export interface InventorySummary {
   categories: string[]
   recentKeywords: string[]
   similarTitles: string[]
+  categoryCounts: Record<string, number>
+  saturatedArchetypes: string[]
+  existingQuestionsInCategory: string[]
 }
 
 export interface PromptInput {
@@ -45,10 +48,22 @@ ${SAFETY_RULES}`
     ? `\n⚠️ Similar content already exists — choose a different angle:\n${similarContentWarnings.map(w => `- ${w}`).join('\n')}\n`
     : ''
 
+  const catCountStr = Object.entries(inventory.categoryCounts)
+    .map(([c, n]) => `${c}:${n}`)
+    .join(', ')
+
+  const satWarning = inventory.saturatedArchetypes.length > 0
+    ? `\n- ⚠️ Saturated moral archetypes — avoid reusing: ${inventory.saturatedArchetypes.join('; ')}`
+    : ''
+
+  const qInCategory = inventory.existingQuestionsInCategory.length > 0
+    ? `\n- Existing ${targetCategory ?? ''} questions (do not reuse same moral structure):\n${inventory.existingQuestionsInCategory.map(q => `  · "${q}"`).join('\n')}`
+    : ''
+
   const prompt = `Generate one moral dilemma in ${lang} about: "${topic}"
 ${simWarning}
 Context:
-- Existing categories: ${inventory.categories.join(', ')}
+- Dilemmas per category (${lang}): ${catCountStr}${satWarning}${qInCategory}
 - Keywords already used (avoid duplicating): ${inventory.recentKeywords.slice(0, 15).join(', ')}
 - Total existing dilemmas: ${inventory.totalDilemmas}
 
@@ -57,6 +72,7 @@ Requirements:
 - Both options represent different values, not good vs evil
 - Each option: concise, max 1 sentence
 - Novel angle — different from existing content
+- Do not reproduce the same moral structure with different nouns or setting
 - Preferred category: ${targetCategory ?? 'any of the 8 listed'} (soft preference — use a different category if it fits the topic better)
 - Category must be one of: morality, survival, loyalty, justice, freedom, technology, society, relationships
 

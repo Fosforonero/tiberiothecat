@@ -1,7 +1,13 @@
 import type { ContentItem } from './content-inventory'
 
 function normalize(text: string): string {
-  return text.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim()
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^\w\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function tokenize(text: string): Set<string> {
@@ -122,4 +128,124 @@ export function scoreNovelty(
     similarItems: similarItems.slice(0, 5),
     warnings,
   }
+}
+
+// ── Moral archetype detection ──────────────────────────────────
+
+export const MORAL_ARCHETYPES: Array<{
+  id: string
+  label: string
+  keywords: string[]
+  strongKeywords?: string[]
+}> = [
+  {
+    id: 'sacrifice_minority',
+    label: 'sacrifice one to save many',
+    keywords: [
+      'sacrifice', 'organ', 'parachute', 'lifeboat', 'overboard', 'divert',
+      'sacrificare', 'organi', 'paracadute', 'scialuppa', 'sacrificio', 'deviare',
+    ],
+    strongKeywords: ['trolley', 'organ harvest'],
+  },
+  {
+    id: 'loyalty_vs_justice',
+    label: 'loyalty vs justice — report or protect',
+    keywords: [
+      'report', 'police', 'crime', 'cover', 'betray', 'criminal', 'whistleblower', 'arrest',
+      'denunciare', 'polizia', 'crimine', 'coprire', 'tradire', 'criminale', 'arrestare',
+    ],
+  },
+  {
+    id: 'truth_vs_kindness',
+    label: 'truth vs kindness — white lie or confession',
+    keywords: [
+      'honest', 'deceive', 'cheat', 'affair', 'confess', 'admit',
+      'bugia', 'onesta', 'ingannare', 'tradimento', 'confessare', 'ammettere',
+    ],
+    strongKeywords: ['white lie', 'dire la verita', 'tell the truth'],
+  },
+  {
+    id: 'autonomy_vs_mandate',
+    label: 'individual rights vs collective mandate',
+    keywords: [
+      'mandatory', 'compulsory', 'restrict', 'regulate', 'mandate',
+      'obbligatorio', 'obbligatoria', 'coercitivo', 'vietare', 'regolamentare',
+    ],
+    strongKeywords: ['forced vaccination', 'vaccinazione obbligatoria'],
+  },
+  {
+    id: 'ai_surveillance',
+    label: 'AI surveillance or algorithmic control',
+    keywords: [
+      'algorithm', 'surveillance', 'biometric', 'deepfake', 'automated',
+      'algoritmo', 'sorveglianza', 'biometrico', 'automatizzato',
+    ],
+    strongKeywords: ['facial recognition', 'riconoscimento facciale', 'predictive policing'],
+  },
+  {
+    id: 'end_of_life',
+    label: 'end of life — euthanasia or assisted dying',
+    keywords: [
+      'terminal', 'mercy', 'suffering', 'lethal', 'palliative', 'dying',
+      'terminale', 'sofferenza', 'letale', 'palliativo', 'morente',
+    ],
+    strongKeywords: ['euthanasia', 'eutanasia', 'assisted dying', 'morte assistita'],
+  },
+  {
+    id: 'wealth_inequality',
+    label: 'wealth redistribution or taxation',
+    keywords: [
+      'billionaire', 'wealth', 'inequality', 'redistribute', 'fortune',
+      'miliardario', 'ricchezza', 'disuguaglianza', 'redistribuire', 'fortuna',
+    ],
+    strongKeywords: ['universal basic income', 'reddito universale', 'wealth tax'],
+  },
+  {
+    id: 'love_vs_duty',
+    label: 'love vs career or romantic sacrifice',
+    keywords: [
+      'career', 'relocate', 'relationship', 'caregiver', 'marriage',
+      'carriera', 'relazione', 'badante', 'matrimonio', 'rinunciare',
+    ],
+    strongKeywords: ['give up career', 'rinunciare alla carriera', 'loveless marriage', 'matrimonio senza amore'],
+  },
+  {
+    id: 'identity_modification',
+    label: 'consciousness — memory or identity change',
+    keywords: [
+      'consciousness', 'upload', 'erase', 'simulate', 'clone', 'implant',
+      'coscienza', 'caricare', 'cancellare', 'simulare', 'clonare', 'impianto',
+    ],
+    strongKeywords: ['neural implant', 'chip neurale', 'digital immortality'],
+  },
+  {
+    id: 'resource_scarcity',
+    label: 'medical or resource scarcity allocation',
+    keywords: [
+      'triage', 'transplant', 'allocation', 'shortage',
+      'trapianto', 'allocazione', 'carenza', 'scarsita',
+    ],
+    strongKeywords: ['last vaccine', 'ultimo vaccino', 'organ transplant'],
+  },
+]
+
+export function detectMoralArchetypes(text: string): string[] {
+  const lower = normalize(text)
+  const matched: string[] = []
+  for (const a of MORAL_ARCHETYPES) {
+    const hits = a.keywords.filter(kw => lower.includes(normalize(kw))).length
+    const strongHit = (a.strongKeywords ?? []).some(kw => lower.includes(normalize(kw)))
+    if (strongHit || hits >= 2) matched.push(a.id)
+  }
+  return matched
+}
+
+export function getArchetypeSaturation(inventory: ContentItem[]): Map<string, number> {
+  const counts = new Map<string, number>(MORAL_ARCHETYPES.map(a => [a.id, 0]))
+  for (const item of inventory.filter(i => i.type === 'dilemma')) {
+    for (const id of detectMoralArchetypes(item.searchableText)) {
+      counts.set(id, (counts.get(id) ?? 0) + 1)
+    }
+  }
+  return counts
 }

@@ -22,7 +22,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
-import { scoreNovelty, type NoveltyResult } from '@/lib/content-dedup'
+import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCHETYPES, type NoveltyResult } from '@/lib/content-dedup'
 import { buildDilemmaPrompt } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
 import {
@@ -324,6 +324,12 @@ export async function POST(request: NextRequest) {
   // ── Build content inventory (needed for preflight pre-filter and all novelty checks) ──────────────
   const inventory = await buildContentInventory()
 
+  const ARCHETYPE_THRESHOLD = 3
+  const archetypeSaturation = getArchetypeSaturation(inventory)
+  const saturatedArchetypeLabels = MORAL_ARCHETYPES
+    .filter(a => (archetypeSaturation.get(a.id) ?? 0) >= ARCHETYPE_THRESHOLD)
+    .map(a => a.label)
+
   // ── Build topic list ────────────────────────────────────────────────────────
   const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category }> = []
 
@@ -407,12 +413,25 @@ export async function POST(request: NextRequest) {
       continue
     }
 
+    const targetCat   = topicsToProcess[i].category
+    const localeItems = inventory.filter(x => x.type === 'dilemma' && x.locale === entryLocale)
+    const categoryCounts: Record<string, number> = {}
+    for (const item of localeItems) {
+      if (item.category) categoryCounts[item.category] = (categoryCounts[item.category] ?? 0) + 1
+    }
+    const existingQuestionsInCategory = targetCat
+      ? localeItems.filter(x => x.category === targetCat).map(x => x.title).slice(0, 8)
+      : []
+
     const inventorySummary = {
-      totalDilemmas:     inventory.filter(x => x.type === 'dilemma').length,
-      totalBlogArticles: inventory.filter(x => x.type === 'blog_article').length,
-      categories:        [...new Set(inventory.map(x => x.category).filter(Boolean))] as string[],
-      recentKeywords:    inventory.flatMap(x => x.keywords).slice(0, 30),
-      similarTitles:     preCheck.similarItems.map(x => x.title),
+      totalDilemmas:               inventory.filter(x => x.type === 'dilemma').length,
+      totalBlogArticles:           inventory.filter(x => x.type === 'blog_article').length,
+      categories:                  [...new Set(inventory.map(x => x.category).filter(Boolean))] as string[],
+      recentKeywords:              inventory.flatMap(x => x.keywords).slice(0, 30),
+      similarTitles:               preCheck.similarItems.map(x => x.title),
+      categoryCounts,
+      saturatedArchetypes:         saturatedArchetypeLabels,
+      existingQuestionsInCategory,
     }
 
     const similarWarnings = preCheck.similarItems
@@ -449,6 +468,18 @@ export async function POST(request: NextRequest) {
     }
 
     const candidate = validation.candidate as ValidatedDilemma
+
+    // Archetype saturation penalty — reduces noveltyScore for archetypes already well-covered.
+    // Blocks autoPublish; draft still saved for admin review when noveltyScore passes threshold.
+    const candidateText = `${candidate.question} ${candidate.optionA} ${candidate.optionB}`
+    const matchedArchetypes = detectMoralArchetypes(candidateText)
+    const saturatedMatches = matchedArchetypes.filter(id => (archetypeSaturation.get(id) ?? 0) >= ARCHETYPE_THRESHOLD)
+    const hasArchetypeSaturation = saturatedMatches.length > 0
+    if (hasArchetypeSaturation) {
+      const penalty = Math.min(15, saturatedMatches.length * 8)
+      candidate.noveltyScore = Math.max(0, candidate.noveltyScore - penalty)
+      for (const id of saturatedMatches) candidate.warnings.push(`archetype_saturation:${id}`)
+    }
 
     if (candidate.noveltyScore < NOVELTY_THRESHOLD) {
       results.push({
@@ -504,7 +535,7 @@ export async function POST(request: NextRequest) {
       let publishNote:     string   | undefined
       let gateReasons:    string[] | undefined
 
-      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP) {
+      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP && !hasArchetypeSaturation) {
         const gateResult = runQualityGates({
           locale:            entryLocale,
           question:          candidate.question,

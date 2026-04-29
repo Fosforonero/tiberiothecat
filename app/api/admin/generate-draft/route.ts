@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
-import { scoreNovelty } from '@/lib/content-dedup'
+import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCHETYPES } from '@/lib/content-dedup'
 import { buildDilemmaPrompt, buildBlogArticlePrompt, type GenerationType, type GenerationLocale } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
 import { saveDraftScenarios, type DynamicScenario } from '@/lib/dynamic-scenarios'
@@ -105,12 +105,27 @@ export async function POST(request: NextRequest) {
     inventory,
   )
 
+  const ARCHETYPE_THRESHOLD = 3
+  const archetypeSaturation = getArchetypeSaturation(inventory)
+  const saturatedArchetypeLabels = MORAL_ARCHETYPES
+    .filter(a => (archetypeSaturation.get(a.id) ?? 0) >= ARCHETYPE_THRESHOLD)
+    .map(a => a.label)
+
+  const localeItems = inventory.filter(i => i.type === 'dilemma' && i.locale === (locale as 'en' | 'it'))
+  const categoryCounts: Record<string, number> = {}
+  for (const item of localeItems) {
+    if (item.category) categoryCounts[item.category] = (categoryCounts[item.category] ?? 0) + 1
+  }
+
   const inventorySummary = {
-    totalDilemmas:    inventory.filter(i => i.type === 'dilemma').length,
-    totalBlogArticles: inventory.filter(i => i.type === 'blog_article').length,
-    categories:       [...new Set(inventory.map(i => i.category).filter(Boolean))] as string[],
-    recentKeywords:   inventory.flatMap(i => i.keywords).slice(0, 30),
-    similarTitles:    preCheck.similarItems.map(s => s.title),
+    totalDilemmas:               inventory.filter(i => i.type === 'dilemma').length,
+    totalBlogArticles:           inventory.filter(i => i.type === 'blog_article').length,
+    categories:                  [...new Set(inventory.map(i => i.category).filter(Boolean))] as string[],
+    recentKeywords:              inventory.flatMap(i => i.keywords).slice(0, 30),
+    similarTitles:               preCheck.similarItems.map(s => s.title),
+    categoryCounts,
+    saturatedArchetypes:         saturatedArchetypeLabels,
+    existingQuestionsInCategory: [],
   }
 
   const similarContentWarnings = preCheck.similarItems
@@ -145,6 +160,19 @@ export async function POST(request: NextRequest) {
   }
 
   const candidate = validation.candidate
+
+  // Archetype saturation penalty — dilemmas only; penalizes archetypes already well-covered in inventory.
+  if (type === 'dilemma') {
+    const dc = candidate as ValidatedDilemma
+    const candidateText = `${dc.question} ${dc.optionA} ${dc.optionB}`
+    const matchedArchetypes = detectMoralArchetypes(candidateText)
+    const saturatedMatches = matchedArchetypes.filter(id => (archetypeSaturation.get(id) ?? 0) >= ARCHETYPE_THRESHOLD)
+    if (saturatedMatches.length > 0) {
+      const penalty = Math.min(15, saturatedMatches.length * 8)
+      dc.noveltyScore = Math.max(0, dc.noveltyScore - penalty)
+      for (const id of saturatedMatches) dc.warnings.push(`archetype_saturation:${id}`)
+    }
+  }
 
   // Preview mode — return without saving
   if (cleanMode === 'preview') {
