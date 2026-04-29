@@ -282,7 +282,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
         </div>
 
         {/* Tab navigation */}
-        <div className="flex gap-0.5 flex-wrap border-b border-white/10 overflow-x-auto">
+        <div className="flex gap-0.5 border-b border-white/10 overflow-x-auto">
           {TABS.map(t => (
             <a
               key={t.id}

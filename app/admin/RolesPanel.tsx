@@ -19,6 +19,10 @@ const ROLE_COLORS: Record<UserRole, string> = {
   user:        'text-[var(--muted)] border-white/10 bg-white/5',
 }
 
+const ASSIGN_OPTIONS: UserRole[] = ['user', 'moderator', 'admin']
+
+const SELECT_BASE = 'bg-[#0d0d1f] border border-white/10 text-white rounded-lg focus:outline-none focus:border-blue-500/50 disabled:opacity-50'
+
 export default function RolesPanel() {
   const [users, setUsers] = useState<RoleUser[]>([])
   const [loading, setLoading] = useState(true)
@@ -94,7 +98,47 @@ export default function RolesPanel() {
 
       {!loading && !error && (
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
-          <table className="w-full text-sm">
+
+          {/* ── Mobile card list (below sm) ── */}
+          <div className="sm:hidden divide-y divide-white/5">
+            {users.length === 0 && (
+              <p className="px-4 py-6 text-center text-[var(--muted)] text-xs">No privileged users found.</p>
+            )}
+            {users.map(u => (
+              <div key={u.id} className="px-4 py-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm truncate">{u.display_name ?? '—'}</p>
+                    <p className="text-[var(--muted)] text-xs font-mono truncate">{u.email}</p>
+                  </div>
+                  <span className={`text-xs font-black px-2.5 py-1 rounded-full border flex-shrink-0 ${ROLE_COLORS[u.role]}`}>
+                    {u.role}
+                  </span>
+                </div>
+                {u.role !== 'super_admin' && (
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--muted)]">Assign role</p>
+                    <select
+                      defaultValue={u.role}
+                      disabled={pending === u.id}
+                      onChange={e => assign(u.id, e.target.value as UserRole)}
+                      className={`w-full text-sm px-3 py-2.5 ${SELECT_BASE}`}
+                    >
+                      {ASSIGN_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                    {feedback[u.id] && (
+                      <p className={`text-xs leading-snug break-words ${feedback[u.id].startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>
+                        {feedback[u.id]}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* ── Desktop table (sm+) ── */}
+          <table className="hidden sm:table w-full text-sm">
             <thead>
               <tr className="border-b border-white/5">
                 <th className="text-left text-xs font-black uppercase tracking-widest text-[var(--muted)] px-5 py-3">User</th>
@@ -105,16 +149,14 @@ export default function RolesPanel() {
             <tbody>
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="text-center text-[var(--muted)] text-xs py-6">
-                    No privileged users found.
-                  </td>
+                  <td colSpan={3} className="text-center text-[var(--muted)] text-xs py-6">No privileged users found.</td>
                 </tr>
               )}
               {users.map(u => (
                 <tr key={u.id} className="border-b border-white/5 last:border-0">
                   <td className="px-5 py-3">
-                    <p className="text-white font-semibold text-sm truncate max-w-[180px]">{u.display_name ?? '—'}</p>
-                    <p className="text-[var(--muted)] text-xs font-mono truncate max-w-[180px]">{u.email}</p>
+                    <p className="text-white font-semibold text-sm truncate max-w-[200px]">{u.display_name ?? '—'}</p>
+                    <p className="text-[var(--muted)] text-xs font-mono truncate max-w-[200px]">{u.email}</p>
                   </td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-black px-2.5 py-1 rounded-full border ${ROLE_COLORS[u.role]}`}>
@@ -125,19 +167,17 @@ export default function RolesPanel() {
                     {u.role === 'super_admin' ? (
                       <span className="text-xs text-[var(--muted)]">—</span>
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <select
                           defaultValue={u.role}
                           disabled={pending === u.id}
                           onChange={e => assign(u.id, e.target.value as UserRole)}
-                          className="text-xs bg-[#0d0d1f] border border-white/10 text-white rounded-lg px-2 py-1.5 focus:outline-none focus:border-blue-500/50 disabled:opacity-50"
+                          className={`text-xs px-2 py-1.5 ${SELECT_BASE}`}
                         >
-                          <option value="user">user</option>
-                          <option value="moderator">moderator</option>
-                          <option value="admin">admin</option>
+                          {ASSIGN_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
                         </select>
                         {feedback[u.id] && (
-                          <span className={`text-xs ${feedback[u.id].startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>
+                          <span className={`text-xs break-words ${feedback[u.id].startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>
                             {feedback[u.id]}
                           </span>
                         )}
