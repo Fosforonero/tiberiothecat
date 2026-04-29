@@ -378,6 +378,7 @@ Events are written from `ResultsClientPage.tsx` after successful share actions (
 - **Draft queue cap** — `MAX_DRAFTS = 120`.
 - **Quality gates** — auto-publish requires passing `runQualityGates()` (novelty, finalScore, SEO, no dangerous content). Gate failures fall through to draft (`publishNote: 'quality_gate_failed'`).
 - **seoScore** — computed from real generated metadata via `computeSeoScore(seoTitle, seoDescription, keywords)`. Not a fixed baseline.
+- **Preflight similarity guard** — topics with `similarity ≥ 70` to an approved/static dilemma, or `≥ 80` to an existing draft, are skipped before any OpenRouter call. No API cost incurred for near-duplicate topics.
 - **Novelty guard** — drafts with `noveltyScore < 55` are skipped entirely (not saved).
 - **Fail-closed** — any path that does not explicitly publish falls through to `saveDraftScenarios`. Redis errors on publish also fall through to draft.
 - **Cron independence** — `autoPublish` here does not change the `AUTO_PUBLISH_DILEMMAS` env var or the cron behaviour. They are separate controls.

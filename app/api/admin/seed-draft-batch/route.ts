@@ -184,7 +184,7 @@ export interface SeedResult {
   index:               number
   locale:              'en' | 'it'
   topic:               string
-  status:              'saved' | 'dry_run' | 'auto_published' | 'skipped_novelty' | 'error'
+  status:              'saved' | 'dry_run' | 'auto_published' | 'skipped_novelty' | 'skipped_preflight' | 'error'
   id?:                 string
   category?:           string
   question?:           string
@@ -320,6 +320,8 @@ export async function POST(request: NextRequest) {
   let autoPublishedCount = 0
   let dryRunPassed       = 0
   let skipped            = 0
+  let skippedPreflight   = 0
+  let openRouterCalls    = 0
   let errors             = 0
 
   for (let i = 0; i < topicsToProcess.length; i++) {
@@ -331,6 +333,30 @@ export async function POST(request: NextRequest) {
       { type: 'dilemma', locale: entryLocale, title: topic },
       inventory,
     )
+
+    // Preflight similarity guard — skip OpenRouter call when topic is too close to existing content.
+    // approved/static ≥70: stricter because the content is already public or canonical.
+    // draft ≥80: looser because the draft may yet be rejected.
+    const tooSimilarToPublished = preCheck.similarItems.some(
+      s => (s.status === 'approved' || s.status === 'static') && s.similarity >= 70,
+    )
+    const tooSimilarToDraft = !tooSimilarToPublished && preCheck.similarItems.some(
+      s => s.status === 'draft' && s.similarity >= 80,
+    )
+
+    if (tooSimilarToPublished || tooSimilarToDraft) {
+      results.push({
+        index:             i + 1,
+        locale:            entryLocale,
+        topic,
+        status:            'skipped_preflight',
+        noveltyScore:      preCheck.noveltyScore,
+        similarItemsCount: preCheck.similarItems.length,
+        publishNote:       tooSimilarToPublished ? 'too_similar_to_existing' : 'too_similar_to_draft',
+      })
+      skippedPreflight++
+      continue
+    }
 
     const inventorySummary = {
       totalDilemmas:     inventory.filter(x => x.type === 'dilemma').length,
@@ -352,6 +378,7 @@ export async function POST(request: NextRequest) {
       similarContentWarnings: similarWarnings,
     })
 
+    openRouterCalls++
     const generated = await generateWithOpenRouter({ system, prompt })
 
     if (!generated.ok) {
@@ -513,11 +540,13 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({
     summary: {
-      total:           topicsToProcess.length,
+      total:             topicsToProcess.length,
       savedDrafts,
-      autoPublished:   autoPublishedCount,
+      autoPublished:     autoPublishedCount,
       ...(dryRun ? { dryRunPassed } : {}),
-      skipped_novelty: skipped,
+      skipped_novelty:   skipped,
+      skipped_preflight: skippedPreflight,
+      openRouterCalls,
       errors,
     },
     dryRun,

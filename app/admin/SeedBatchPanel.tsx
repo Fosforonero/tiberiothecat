@@ -6,7 +6,7 @@ interface SeedResult {
   index:               number
   locale:              'en' | 'it'
   topic:               string
-  status:              'saved' | 'dry_run' | 'auto_published' | 'skipped_novelty' | 'error'
+  status:              'saved' | 'dry_run' | 'auto_published' | 'skipped_novelty' | 'skipped_preflight' | 'error'
   id?:                 string
   category?:           string
   question?:           string
@@ -19,12 +19,14 @@ interface SeedResult {
 }
 
 interface SeedSummary {
-  total:           number
-  savedDrafts:     number
-  autoPublished:   number
-  dryRunPassed?:   number
-  skipped_novelty: number
-  errors:          number
+  total:             number
+  savedDrafts:       number
+  autoPublished:     number
+  dryRunPassed?:     number
+  skipped_novelty:   number
+  skipped_preflight: number
+  openRouterCalls:   number
+  errors:            number
 }
 
 interface SeedResponse {
@@ -74,45 +76,54 @@ export default function SeedBatchPanel() {
   }
 
   const statusColor = (s: SeedResult['status']) =>
-    s === 'saved'             ? 'text-green-400'
-    : s === 'dry_run'         ? 'text-blue-400'
-    : s === 'auto_published'  ? 'text-emerald-300'
-    : s === 'skipped_novelty' ? 'text-yellow-400'
+    s === 'saved'               ? 'text-green-400'
+    : s === 'dry_run'           ? 'text-blue-400'
+    : s === 'auto_published'    ? 'text-emerald-300'
+    : s === 'skipped_preflight' ? 'text-amber-400'
+    : s === 'skipped_novelty'   ? 'text-yellow-400'
     : 'text-red-400'
 
   const statusLabel = (r: SeedResult) =>
-    r.status === 'saved'             ? '✓ draft'
-    : r.status === 'dry_run'         ? '~ dry run'
-    : r.status === 'auto_published'  ? '★ published'
-    : r.status === 'skipped_novelty' ? '⚠ novelty'
+    r.status === 'saved'               ? '✓ draft'
+    : r.status === 'dry_run'           ? '~ dry run'
+    : r.status === 'auto_published'    ? '★ published'
+    : r.status === 'skipped_preflight' ? '⚠ similar'
+    : r.status === 'skipped_novelty'   ? '⚠ novelty'
     : `✗ ${r.errorCode ?? 'error'}`
 
-  // Summary cards adapt based on mode
+  // Summary cards adapt based on mode; "Similar" card appended when preflight skips occurred
+  const hasPreflight = result !== null && result.summary.skipped_preflight > 0
+  const similarCard  = { label: 'Similar', value: result?.summary.skipped_preflight ?? 0, color: 'text-amber-400' }
+
   const summaryCards = result
     ? (result.dryRun
         ? [
-            { label: 'Total',          value: result.summary.total,            color: 'text-white' },
+            { label: 'Total',          value: result.summary.total,             color: 'text-white' },
             { label: 'Dry Run Passed', value: result.summary.dryRunPassed ?? 0, color: 'text-blue-400' },
-            { label: 'Skipped',        value: result.summary.skipped_novelty,  color: 'text-yellow-400' },
-            { label: 'Errors',         value: result.summary.errors,           color: 'text-red-400' },
+            ...(hasPreflight ? [similarCard] : []),
+            { label: 'Skipped',        value: result.summary.skipped_novelty,   color: 'text-yellow-400' },
+            { label: 'Errors',         value: result.summary.errors,            color: 'text-red-400' },
           ]
         : result.autoPublish
           ? [
-              { label: 'Total',         value: result.summary.total,          color: 'text-white' },
-              { label: '★ Published',   value: result.summary.autoPublished,  color: 'text-emerald-300' },
-              { label: 'Draft Saved',   value: result.summary.savedDrafts,    color: 'text-green-400' },
-              { label: 'Skipped',       value: result.summary.skipped_novelty, color: 'text-yellow-400' },
-              { label: 'Errors',        value: result.summary.errors,         color: 'text-red-400' },
+              { label: 'Total',       value: result.summary.total,             color: 'text-white' },
+              { label: '★ Published', value: result.summary.autoPublished,     color: 'text-emerald-300' },
+              { label: 'Draft Saved', value: result.summary.savedDrafts,       color: 'text-green-400' },
+              ...(hasPreflight ? [similarCard] : []),
+              { label: 'Skipped',     value: result.summary.skipped_novelty,   color: 'text-yellow-400' },
+              { label: 'Errors',      value: result.summary.errors,            color: 'text-red-400' },
             ]
           : [
               { label: 'Total',   value: result.summary.total,           color: 'text-white' },
               { label: 'Saved',   value: result.summary.savedDrafts,     color: 'text-green-400' },
+              ...(hasPreflight ? [similarCard] : []),
               { label: 'Skipped', value: result.summary.skipped_novelty, color: 'text-yellow-400' },
               { label: 'Errors',  value: result.summary.errors,          color: 'text-red-400' },
             ])
     : []
 
-  const gridCols = summaryCards.length === 5 ? 'grid-cols-5' : 'grid-cols-4'
+  const colCount = summaryCards.length
+  const gridCols = colCount <= 4 ? 'grid-cols-4' : colCount === 5 ? 'grid-cols-5' : 'grid-cols-6'
 
   return (
     <section className="bg-white/5 rounded-xl p-6 space-y-4" aria-label="Seed Draft Batch Panel">
