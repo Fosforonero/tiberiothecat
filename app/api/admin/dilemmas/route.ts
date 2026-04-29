@@ -30,6 +30,19 @@ export async function GET(request: NextRequest) {
       getDraftScenarios(),
     ])
 
+    // Aggregate counts computed from full sets BEFORE any locale filter or limit slice.
+    const approvedByLocale = {
+      en:    approved.filter(s => s.locale === 'en').length,
+      it:    approved.filter(s => s.locale === 'it').length,
+      other: approved.filter(s => s.locale !== 'en' && s.locale !== 'it').length,
+    }
+    const draftsByLocale = {
+      en:    drafts.filter(s => s.locale === 'en').length,
+      it:    drafts.filter(s => s.locale === 'it').length,
+      other: drafts.filter(s => s.locale !== 'en' && s.locale !== 'it').length,
+    }
+    const autoPublishedApproved = approved.filter(s => s.autoPublished === true).length
+
     let scenarios = statusParam === 'draft'
       ? drafts
       : statusParam === 'approved'
@@ -68,11 +81,14 @@ export async function GET(request: NextRequest) {
     }))
 
     return NextResponse.json({
-      total:             scenarios.length,
-      showing:           results.length,
-      approved:          approved.length,
-      drafts:            drafts.length,
-      locale:            locale ?? 'all',
+      total:                scenarios.length,
+      showing:              results.length,
+      approved:             approved.length,
+      drafts:               drafts.length,
+      approvedByLocale,
+      draftsByLocale,
+      autoPublishedApproved,
+      locale:               locale ?? 'all',
       categoryBreakdown,
       results,
     })

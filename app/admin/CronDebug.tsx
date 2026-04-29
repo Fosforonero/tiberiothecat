@@ -25,9 +25,20 @@ interface DilemmaRow {
   generatedBy?: string
 }
 
+interface LocaleBreakdown {
+  en: number
+  it: number
+  other: number
+}
+
 interface ApiResponse {
+  total: number
+  showing: number
   approved: number
   drafts: number
+  approvedByLocale: LocaleBreakdown
+  draftsByLocale: LocaleBreakdown
+  autoPublishedApproved: number
   results: DilemmaRow[]
 }
 
@@ -205,7 +216,7 @@ export default function CronDebug() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/admin/dilemmas?limit=60')
+      const res = await fetch('/api/admin/dilemmas?limit=250')
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const json = await res.json()
       setData(json)
@@ -237,7 +248,7 @@ export default function CronDebug() {
       </div>
     )
   }
-  if (!data || data.results.length === 0) {
+  if (!data || (data.approved === 0 && data.drafts === 0)) {
     return (
       <div className="rounded-xl border border-white/10 bg-[var(--surface2)] p-6 text-center text-[var(--muted)] text-sm">
         Nessun dilemma in Redis. Il cron genera ogni giorno alle 06:00 UTC.
@@ -245,19 +256,23 @@ export default function CronDebug() {
     )
   }
 
-  const drafts        = data.results.filter(s => s.status === 'draft')
-  const approved      = data.results.filter(s => s.status !== 'draft')
-  const enCount       = approved.filter(s => s.locale === 'en').length
-  const itCount       = approved.filter(s => s.locale === 'it').length
-  const autoPublished = approved.filter(s => s.autoPublished).length
+  // Summary counts from full Redis totals — not from the limited results window.
+  const draftCount    = data.drafts
+  const enCount       = data.approvedByLocale.en
+  const itCount       = data.approvedByLocale.it
+  const autoPublished = data.autoPublishedApproved
+
+  // List slices (limited window for rendering performance).
+  const draftRows    = data.results.filter(s => s.status === 'draft')
+  const approvedRows = data.results.filter(s => s.status !== 'draft')
 
   return (
     <div className="space-y-6">
-      {/* Summary */}
+      {/* Summary — uses full Redis totals, not the limited results window */}
       <div className="flex items-center gap-3 flex-wrap text-xs">
-        {drafts.length > 0 && (
+        {draftCount > 0 && (
           <span className="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-full px-3 py-1 font-bold">
-            {drafts.length} DRAFT{drafts.length !== 1 ? 'S' : ''} in coda
+            {draftCount} DRAFT{draftCount !== 1 ? 'S' : ''} in coda
           </span>
         )}
         <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full px-3 py-1 font-bold">
@@ -271,7 +286,12 @@ export default function CronDebug() {
             ⚡ {autoPublished} auto
           </span>
         )}
-        <span className="text-[var(--muted)]">/ {approved.length} totali approvati</span>
+        <span className="text-[var(--muted)]">/ {data.approved} totali approvati</span>
+        {data.showing < data.total && (
+          <span className="text-[var(--muted)] italic">
+            (Showing {data.showing} of {data.total} items)
+          </span>
+        )}
         <button
           onClick={fetchData}
           className="ml-auto flex items-center gap-1 text-xs text-[var(--muted)] hover:text-white transition-colors"
@@ -281,13 +301,13 @@ export default function CronDebug() {
       </div>
 
       {/* Draft queue */}
-      {drafts.length > 0 && (
+      {draftRows.length > 0 && (
         <div>
           <p className="text-xs font-black uppercase tracking-widest text-yellow-400 mb-3">
             ⏳ Draft queue — approva prima di pubblicare
           </p>
           <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-            {drafts.map(s => (
+            {draftRows.map(s => (
               <DilemmaCard key={s.id} s={s} onApprove={approve} onReject={reject} />
             ))}
           </div>
@@ -295,13 +315,13 @@ export default function CronDebug() {
       )}
 
       {/* Approved scenarios */}
-      {approved.length > 0 && (
+      {approvedRows.length > 0 && (
         <div>
           <p className="text-xs font-black uppercase tracking-widest text-green-400 mb-3">
-            ✅ Dilemmi pubblici ({approved.length})
+            ✅ Dilemmi pubblici ({data.approved})
           </p>
           <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-            {approved.map(s => (
+            {approvedRows.map(s => (
               <DilemmaCard key={s.id} s={s} />
             ))}
           </div>

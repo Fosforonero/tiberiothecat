@@ -408,6 +408,8 @@ npm run build
 # /admin → Content Inventory — confirm no drafts leaked into sitemap
 ```
 
+> **Admin panel counts:** Summary badges (EN live, IT live, total approved, auto) use full Redis totals from `approvedByLocale`/`draftsByLocale` fields — not the limited results window. List rows are fetched with `limit=250`; if the corpus exceeds 250, a "Showing N of M" note appears in the panel.
+
 > **Legal note:** No new user data is collected by this feature. Policy remains draft/review-first. Auto-publish is a manual admin action limited by quality gates — it does not change data collection, tracking, or public profile behaviour.
 
 ### Expert Insight (v2)
