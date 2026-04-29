@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Settings, Star, LayoutDashboard, LogOut } from 'lucide-react'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
+import ClaimDot from './ClaimDot'
 
 export default async function AuthButton() {
   const supabase = await createClient()
@@ -70,6 +71,7 @@ export default async function AuthButton() {
       >
         <LayoutDashboard size={12} />
         <span>Dash</span>
+        <ClaimDot />
       </a>
       <form action="/api/auth/signout" method="POST">
         <button

@@ -59,6 +59,7 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
               : m,
           ) ?? null,
         )
+        window.dispatchEvent(new Event('sv:missions-claimed'))
         router.refresh()
       } else {
         const data = await res.json().catch(() => ({}))
@@ -73,15 +74,31 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
 
   const completedCount   = (missions ?? []).filter(m => m.completed).length
   const missionCount     = (missions ?? []).length
+  const claimableCount   = (missions ?? []).filter(m => m.claimable).length
   const totalXpAvailable = (missions ?? []).reduce((s, m) => s + (!m.completed ? m.xp : 0), 0)
+  // Claimable missions float to the top; relative order within each group is preserved
+  const sorted = [...(missions ?? [])].sort((a, b) => {
+    if (a.claimable && !b.claimable) return -1
+    if (!a.claimable && b.claimable) return 1
+    return 0
+  })
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
+    <div className={`rounded-2xl border bg-[#0d0d1a]/60 p-5 mb-8 transition-colors ${
+      claimableCount > 0 ? 'border-orange-500/30' : 'border-[var(--border)]'
+    }`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
-          {IT ? 'Missioni di Oggi' : "Today's Missions"}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
+            {IT ? 'Missioni di Oggi' : "Today's Missions"}
+          </h2>
+          {claimableCount > 0 && (
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black leading-none">
+              {claimableCount}
+            </span>
+          )}
+        </div>
         <span className="text-xs text-[var(--muted)]">
           {completedCount}/{missionCount} {IT ? 'completate' : 'done'}
         </span>
@@ -138,7 +155,7 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
         </div>
       ) : (
         <div className="space-y-2">
-          {(missions ?? []).map(m => {
+          {sorted.map(m => {
             const isClaiming = claiming === m.id
             const displayTitle = IT ? (IT_MISSION_TITLES[m.id] ?? m.title) : m.title
 

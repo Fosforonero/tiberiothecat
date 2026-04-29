@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import ClaimDot from './ClaimDot'
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
@@ -195,6 +196,7 @@ export default function MobileMenu() {
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                     <LayoutDashboard size={15} className="text-indigo-400 flex-shrink-0" />
                     <span style={LABEL}>Dashboard</span>
+                    <ClaimDot />
                   </Link>
 
                   <button
