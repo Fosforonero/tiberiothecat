@@ -11,8 +11,8 @@ import type { Scenario } from './scenarios'
 
 const DYNAMIC_KEY = 'dynamic:scenarios'
 const DRAFTS_KEY  = 'dynamic:drafts'
-const MAX_DYNAMIC = 60
-const MAX_DRAFTS  = 30
+export const MAX_DYNAMIC = 60
+const MAX_DRAFTS  = 120
 
 export type DilemmaStatus = 'draft' | 'approved' | 'rejected'
 export type TrendSource   = 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed' | 'openrouter'

@@ -1,24 +1,39 @@
 /**
  * POST /api/admin/seed-draft-batch
  *
- * One-shot controlled seed: generates 10 EN + 10 IT dilemma drafts using OpenRouter.
+ * Controlled batch seed: generates dilemma drafts using OpenRouter.
  * - Admin-only (Supabase session required)
  * - Novelty guard: skip if noveltyScore < NOVELTY_THRESHOLD
- * - Never approves or publishes anything
- * - Saves passing drafts to dynamic:drafts
- * - Returns a summary table for admin review
+ * - autoPublish: items that pass all quality gates are published directly (max 10 per request)
+ * - All other items land in dynamic:drafts for manual admin review
+ * - Nothing is published without quality gates — fail-closed by design
+ *
+ * Body params:
+ *   locale?       'en' | 'it' | 'all'  — default 'all' (EN + IT)
+ *   count?        number                — default 10, min 1, max 30
+ *   dryRun?       boolean               — default false; validates but does not save to Redis
+ *   topics?       string[]              — topic override (max 60, requires locale='en'|'it')
+ *   autoPublish?  boolean               — default false; publish gate-passing items (max 10, incompatible with dryRun)
  *
  * maxDuration = 300 (Vercel Pro required — ~150-200s for 20 sequential calls)
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
 import { scoreNovelty } from '@/lib/content-dedup'
 import { buildDilemmaPrompt } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
-import { saveDraftScenarios, type DynamicScenario } from '@/lib/dynamic-scenarios'
+import {
+  getDynamicScenarios,
+  saveDraftScenarios,
+  saveDynamicScenarios,
+  MAX_DYNAMIC,
+  type DynamicScenario,
+} from '@/lib/dynamic-scenarios'
+import { runQualityGates } from '@/lib/content-quality-gates'
+import { computeSeoScore } from '@/lib/trend-signals'
 import type { Category } from '@/lib/scenarios'
 
 export const runtime = 'nodejs'
@@ -26,6 +41,8 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
 const NOVELTY_THRESHOLD = 55
+// Hard cap on auto-published items per request, regardless of count.
+const AUTO_PUBLISH_CAP = 10
 
 const CATEGORY_EMOJI: Record<string, string> = {
   morality:      '⚖️',
@@ -129,8 +146,12 @@ function dilemmaToScenario(candidate: ValidatedDilemma, topic: string): DynamicS
   const id = `ai-${candidate.locale}-${slugify(candidate.question).slice(0, 22).replace(/-+$/, '')}-${suffix}`
 
   const noveltyScore  = candidate.noveltyScore
-  const viralScore    = 55
-  const seoScore      = 65
+  // viralScore baseline: topics are admin-curated, expected to be more engaging than cron defaults.
+  // seoScore: computed from actual generated SEO metadata — auto-publish requires genuinely good metadata.
+  // feedbackScore: neutral start (Bayesian prior, no real feedback yet).
+  // auto-publish depends on novelty + real SEO quality passing runQualityGates thresholds.
+  const viralScore    = 65
+  const seoScore      = computeSeoScore(candidate.seoTitle, candidate.seoDescription, candidate.keywords)
   const feedbackScore = 50
   const finalScore    = Math.round(
     viralScore * 0.35 + seoScore * 0.25 + noveltyScore * 0.25 + feedbackScore * 0.15,
@@ -148,6 +169,7 @@ function dilemmaToScenario(candidate: ValidatedDilemma, topic: string): DynamicS
     trendSource:    'openrouter',
     trendUrl:       process.env.OPENROUTER_MODEL_DRAFT ?? 'openrouter',
     generatedAt:    new Date().toISOString(),
+    generatedBy:    'seed_batch',
     status:         'draft',
     seoTitle:       candidate.seoTitle,
     seoDescription: candidate.seoDescription,
@@ -159,20 +181,23 @@ function dilemmaToScenario(candidate: ValidatedDilemma, topic: string): DynamicS
 const delay = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
 
 export interface SeedResult {
-  index: number
-  locale: 'en' | 'it'
-  topic: string
-  status: 'saved' | 'skipped_novelty' | 'error'
-  id?: string
-  category?: string
-  question?: string
-  noveltyScore?: number
-  similarItemsCount?: number
-  topKeyword?: string
-  errorCode?: string
+  index:               number
+  locale:              'en' | 'it'
+  topic:               string
+  status:              'saved' | 'dry_run' | 'auto_published' | 'skipped_novelty' | 'error'
+  id?:                 string
+  category?:           string
+  question?:           string
+  noveltyScore?:       number
+  similarItemsCount?:  number
+  topKeyword?:         string
+  errorCode?:          string
+  // Auto-publish metadata
+  publishNote?:        string    // 'pool_full' | 'quality_gate_failed' | 'publish_redis_error'
+  qualityGateReasons?: string[]  // gate failure reasons (present when autoPublish was attempted)
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const auth = await requireAdmin()
   if (auth instanceof NextResponse) return auth
 
@@ -180,20 +205,130 @@ export async function POST() {
     return NextResponse.json({ error: 'openrouter_not_configured' }, { status: 503 })
   }
 
+  // ── Parse and validate body params ─────────────────────────────────────────
+  const body = await request.json().catch(() => ({}))
+
+  const localeParam = body.locale ?? 'all'
+  if (!['en', 'it', 'all'].includes(localeParam)) {
+    return NextResponse.json({ error: 'invalid_locale' }, { status: 400 })
+  }
+  const locale = localeParam as 'en' | 'it' | 'all'
+
+  const rawCount = typeof body.count === 'number' && Number.isFinite(body.count) ? body.count : 10
+  const count = Math.min(30, Math.max(1, Math.floor(rawCount)))
+
+  const dryRun      = body.dryRun === true
+  const autoPublish = body.autoPublish === true
+
+  if (autoPublish && dryRun) {
+    return NextResponse.json(
+      { error: 'invalid_request', message: 'autoPublish cannot be combined with dryRun.' },
+      { status: 400 },
+    )
+  }
+
+  // ── Validate topics override ────────────────────────────────────────────────
+  const rawTopics: unknown = body.topics
+  let customTopics: string[] | undefined
+
+  if (rawTopics !== undefined) {
+    if (!Array.isArray(rawTopics) || rawTopics.length > 60) {
+      return NextResponse.json({ error: 'invalid_topics' }, { status: 400 })
+    }
+    for (const t of rawTopics) {
+      if (typeof t !== 'string') {
+        return NextResponse.json({ error: 'invalid_topics' }, { status: 400 })
+      }
+      const trimmed = t.trim()
+      if (trimmed.length < 3 || trimmed.length > 200 || /[\x00-\x1F\x7F-\x9F]/.test(trimmed)) {
+        return NextResponse.json({ error: 'invalid_topics' }, { status: 400 })
+      }
+    }
+    if (locale === 'all') {
+      return NextResponse.json(
+        { error: 'invalid_request', message: "Specify locale='en' or 'it' when providing custom topics." },
+        { status: 400 },
+      )
+    }
+    const rawTopicsArr = rawTopics as string[]
+    if (rawTopicsArr.length < count) {
+      return NextResponse.json(
+        {
+          error: 'not_enough_seed_topics',
+          message: `Requested ${count} topics but only ${rawTopicsArr.length} provided.`,
+          available: { [locale]: rawTopicsArr.length },
+          requested: count,
+        },
+        { status: 400 },
+      )
+    }
+    customTopics = rawTopicsArr.map(t => t.trim()).slice(0, count)
+  }
+
+  // ── Build topic list ────────────────────────────────────────────────────────
+  const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string }> = []
+
+  if (customTopics !== undefined) {
+    for (const topic of customTopics) {
+      topicsToProcess.push({ locale: locale as 'en' | 'it', topic })
+    }
+  } else {
+    // Default SEED_TOPICS — fail fast if count exceeds available topics to avoid silent partial runs
+    const availableEN = SEED_TOPICS.filter(t => t.locale === 'en').length
+    const availableIT = SEED_TOPICS.filter(t => t.locale === 'it').length
+
+    if ((locale === 'all' || locale === 'en') && count > availableEN) {
+      return NextResponse.json(
+        {
+          error: 'not_enough_seed_topics',
+          message: `Requested ${count} EN topics but only ${availableEN} available. Lower count or provide a topics override.`,
+          available: { en: availableEN, it: availableIT },
+          requested: count,
+        },
+        { status: 400 },
+      )
+    }
+    if ((locale === 'all' || locale === 'it') && count > availableIT) {
+      return NextResponse.json(
+        {
+          error: 'not_enough_seed_topics',
+          message: `Requested ${count} IT topics but only ${availableIT} available. Lower count or provide a topics override.`,
+          available: { en: availableEN, it: availableIT },
+          requested: count,
+        },
+        { status: 400 },
+      )
+    }
+
+    const defaultEN = SEED_TOPICS.filter(t => t.locale === 'en').slice(0, count)
+    const defaultIT = SEED_TOPICS.filter(t => t.locale === 'it').slice(0, count)
+    if (locale === 'all' || locale === 'en') topicsToProcess.push(...defaultEN)
+    if (locale === 'all' || locale === 'it') topicsToProcess.push(...defaultIT)
+  }
+
+  // ── Pre-fetch approved count (only needed for pool capacity guard) ──────────
+  let approvedAtStart = 0
+  if (autoPublish) {
+    const currentApproved = await getDynamicScenarios()
+    approvedAtStart = currentApproved.length
+  }
+
+  // ── Run generation ──────────────────────────────────────────────────────────
   const inventory = await buildContentInventory()
   const results: SeedResult[] = []
-  let saved = 0
-  let skipped = 0
-  let errors = 0
+  let savedDrafts        = 0
+  let autoPublishedCount = 0
+  let dryRunPassed       = 0
+  let skipped            = 0
+  let errors             = 0
 
-  for (let i = 0; i < SEED_TOPICS.length; i++) {
-    const { locale, topic } = SEED_TOPICS[i]
+  for (let i = 0; i < topicsToProcess.length; i++) {
+    const { locale: entryLocale, topic } = topicsToProcess[i]
 
-    // Small delay between calls to respect rate limits
     if (i > 0) await delay(400)
 
     const preCheck = scoreNovelty(
-      { type: 'dilemma', locale, title: topic },
+      { type: 'dilemma', locale: entryLocale, title: topic },
       inventory,
     )
 
@@ -211,7 +346,7 @@ export async function POST() {
 
     const { system, prompt } = buildDilemmaPrompt({
       type:   'dilemma',
-      locale,
+      locale: entryLocale,
       topic,
       inventory: inventorySummary,
       similarContentWarnings: similarWarnings,
@@ -220,15 +355,15 @@ export async function POST() {
     const generated = await generateWithOpenRouter({ system, prompt })
 
     if (!generated.ok) {
-      results.push({ index: i + 1, locale, topic, status: 'error', errorCode: generated.error })
+      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: generated.error })
       errors++
       continue
     }
 
-    const validation = validateGeneratedOutput(generated.text, 'dilemma', locale, inventory)
+    const validation = validateGeneratedOutput(generated.text, 'dilemma', entryLocale, inventory)
 
     if (!validation.ok) {
-      results.push({ index: i + 1, locale, topic, status: 'error', errorCode: validation.error })
+      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: validation.error })
       errors++
       continue
     }
@@ -238,7 +373,7 @@ export async function POST() {
     if (candidate.noveltyScore < NOVELTY_THRESHOLD) {
       results.push({
         index: i + 1,
-        locale,
+        locale: entryLocale,
         topic,
         status: 'skipped_novelty',
         noveltyScore: candidate.noveltyScore,
@@ -253,26 +388,26 @@ export async function POST() {
 
     const scenario = dilemmaToScenario(candidate, topic)
 
-    try {
-      await saveDraftScenarios([scenario])
-      // Add to local inventory so subsequent novelty checks are aware of it
-      inventory.push({
-        id:             scenario.id,
-        type:           'dilemma',
-        locale,
-        title:          scenario.question,
-        slug:           scenario.id,
-        category:       scenario.category,
-        keywords:       scenario.keywords ?? [],
-        status:         'draft',
-        source:         'ai_generated',
-        searchableText: `${scenario.question} ${scenario.optionA} ${scenario.optionB} ${(scenario.keywords ?? []).join(' ')}`,
-      })
+    // Always update local inventory so subsequent novelty checks within this request are aware
+    inventory.push({
+      id:             scenario.id,
+      type:           'dilemma',
+      locale:         entryLocale,
+      title:          scenario.question,
+      slug:           scenario.id,
+      category:       scenario.category,
+      keywords:       scenario.keywords ?? [],
+      status:         'draft',
+      source:         'ai_generated',
+      searchableText: `${scenario.question} ${scenario.optionA} ${scenario.optionB} ${(scenario.keywords ?? []).join(' ')}`,
+    })
+
+    if (dryRun) {
       results.push({
         index: i + 1,
-        locale,
+        locale: entryLocale,
         topic,
-        status: 'saved',
+        status: 'dry_run',
         id: scenario.id,
         category: candidate.category,
         question: candidate.question,
@@ -280,21 +415,120 @@ export async function POST() {
         similarItemsCount: candidate.similarItems.length,
         topKeyword: candidate.keywords[0],
       })
-      saved++
-    } catch {
-      results.push({ index: i + 1, locale, topic, status: 'error', errorCode: 'redis_save_failed' })
-      errors++
+      dryRunPassed++
+    } else {
+      // ── Attempt auto-publish when requested, cap not reached, pool has room ──
+      let didPublish     = false
+      let publishNote:     string   | undefined
+      let gateReasons:    string[] | undefined
+
+      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP) {
+        if (approvedAtStart + autoPublishedCount >= MAX_DYNAMIC) {
+          publishNote = 'pool_full'
+        } else {
+          const gateResult = runQualityGates({
+            locale:            entryLocale,
+            question:          candidate.question,
+            optionA:           candidate.optionA,
+            optionB:           candidate.optionB,
+            category:          candidate.category,
+            seoTitle:          candidate.seoTitle,
+            seoDescription:    candidate.seoDescription,
+            keywords:          candidate.keywords,
+            scores:            scenario.scores,
+            similarItemsCount: candidate.similarItems.length,
+          })
+
+          if (gateResult.passed) {
+            const approvedScenario: DynamicScenario = {
+              ...scenario,
+              status:             'approved',
+              approvedAt:         new Date().toISOString(),
+              autoPublished:      true,
+              qualityGateScore:   gateResult.score,
+              qualityGateReasons: [],
+              generatedBy:        'seed_batch',
+            }
+            try {
+              await saveDynamicScenarios([approvedScenario])
+              results.push({
+                index: i + 1,
+                locale: entryLocale,
+                topic,
+                status: 'auto_published',
+                id: scenario.id,
+                category: candidate.category,
+                question: candidate.question,
+                noveltyScore: candidate.noveltyScore,
+                similarItemsCount: candidate.similarItems.length,
+                topKeyword: candidate.keywords[0],
+                qualityGateReasons: [],
+              })
+              autoPublishedCount++
+              didPublish = true
+            } catch {
+              publishNote = 'publish_redis_error'
+            }
+          } else {
+            publishNote = 'quality_gate_failed'
+            gateReasons = gateResult.reasons
+          }
+        }
+      }
+
+      if (!didPublish) {
+        // Covers: autoPublish=false, cap reached, pool full, gate failed, redis error fallback
+        try {
+          await saveDraftScenarios([scenario])
+          results.push({
+            index: i + 1,
+            locale: entryLocale,
+            topic,
+            status: 'saved',
+            id: scenario.id,
+            category: candidate.category,
+            question: candidate.question,
+            noveltyScore: candidate.noveltyScore,
+            similarItemsCount: candidate.similarItems.length,
+            topKeyword: candidate.keywords[0],
+            ...(publishNote  ? { publishNote }          : {}),
+            ...(gateReasons  ? { qualityGateReasons: gateReasons } : {}),
+          })
+          savedDrafts++
+        } catch {
+          results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: 'redis_save_failed' })
+          errors++
+        }
+      }
+    }
+  }
+
+  // ── Category breakdown (saved + dry_run + auto_published) ───────────────────
+  const categoryBreakdown: Record<string, number> = {}
+  for (const r of results) {
+    if ((r.status === 'saved' || r.status === 'dry_run' || r.status === 'auto_published') && r.category) {
+      categoryBreakdown[r.category] = (categoryBreakdown[r.category] ?? 0) + 1
     }
   }
 
   return NextResponse.json({
     summary: {
-      total: SEED_TOPICS.length,
-      saved,
+      total:           topicsToProcess.length,
+      savedDrafts,
+      autoPublished:   autoPublishedCount,
+      ...(dryRun ? { dryRunPassed } : {}),
       skipped_novelty: skipped,
       errors,
     },
+    dryRun,
+    autoPublish,
     noveltyThreshold: NOVELTY_THRESHOLD,
+    estimatedCost: {
+      calls:     topicsToProcess.length,
+      modelName: process.env.OPENROUTER_MODEL_DRAFT ?? 'openrouter',
+      note:      `Approx. ${topicsToProcess.length} OpenRouter calls — actual billing depends on provider pricing.`,
+    },
+    categoryBreakdown,
     results,
   })
 }

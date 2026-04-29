@@ -5,7 +5,7 @@
  * Query params:
  *   ?status=approved|draft|all  (default: all)
  *   ?locale=en|it               (default: all)
- *   ?limit=N                    (default: 30, max: 60)
+ *   ?limit=N                    (default: 30, max: 250)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const statusParam = request.nextUrl.searchParams.get('status') ?? 'all'
   const locale      = request.nextUrl.searchParams.get('locale') as 'en' | 'it' | null
   const limitParam  = parseInt(request.nextUrl.searchParams.get('limit') ?? '30', 10)
-  const limit       = Math.min(Math.max(1, isNaN(limitParam) ? 30 : limitParam), 60)
+  const limit       = Math.min(Math.max(1, isNaN(limitParam) ? 30 : limitParam), 250)
 
   try {
     const [approved, drafts] = await Promise.all([
@@ -37,6 +37,13 @@ export async function GET(request: NextRequest) {
         : [...drafts, ...approved]
 
     if (locale) scenarios = scenarios.filter(s => s.locale === locale)
+
+    const categoryBreakdown: Record<string, number> = {}
+    for (const s of scenarios) {
+      if (s.category) {
+        categoryBreakdown[s.category] = (categoryBreakdown[s.category] ?? 0) + 1
+      }
+    }
 
     const results = scenarios.slice(0, limit).map(s => ({
       id:             s.id,
@@ -61,11 +68,12 @@ export async function GET(request: NextRequest) {
     }))
 
     return NextResponse.json({
-      total:    scenarios.length,
-      showing:  results.length,
-      approved: approved.length,
-      drafts:   drafts.length,
-      locale:   locale ?? 'all',
+      total:             scenarios.length,
+      showing:           results.length,
+      approved:          approved.length,
+      drafts:            drafts.length,
+      locale:            locale ?? 'all',
+      categoryBreakdown,
       results,
     })
   } catch (err) {
