@@ -150,8 +150,22 @@ export default async function HomePage() {
             </span>
           </h1>
           <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
-            Impossible moral dilemmas. Millions of real votes. No right answers — just honest ones.
+            Vote anonymously on impossible moral dilemmas — then see the live global split.
           </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href={`/play/${dailyScenario.id}`}
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-black text-sm px-8 py-3.5 transition-all"
+            >
+              Vote on today's dilemma →
+            </Link>
+            <Link
+              href="/trending"
+              className="text-sm text-[var(--muted)] hover:text-white transition-colors"
+            >
+              See what's trending →
+            </Link>
+          </div>
         </div>
 
         {/* ── Trust strip ── */}

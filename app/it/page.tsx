@@ -185,8 +185,22 @@ export default async function ItPage() {
             </span>
           </h1>
           <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
-            Dilemmi morali impossibili. Milioni di voti reali. Nessuna risposta giusta — solo quella onesta.
+            Vota in modo anonimo su dilemmi etici impossibili — poi scopri come si divide il mondo.
           </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href={`/it/play/${dailyIT.id}`}
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-black text-sm px-8 py-3.5 transition-all"
+            >
+              Vota sul dilemma di oggi →
+            </Link>
+            <Link
+              href="/it/trending"
+              className="text-sm text-[var(--muted)] hover:text-white transition-colors"
+            >
+              Vedi le tendenze →
+            </Link>
+          </div>
           <div className="mt-6">
             <LangSwitcher />
           </div>
