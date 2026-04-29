@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
-import { isAdminEmail } from '@/lib/admin-auth'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,8 +25,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Admin never pays for rename — this endpoint should never be reached by admin
-  if (isAdminEmail(user.email)) {
+  // Admin (by email OR DB role) never pays for rename
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_premium, role')
+    .eq('id', user.id)
+    .single()
+
+  const ents = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
+  })
+
+  if (ents.unlimitedNameChanges) {
     return NextResponse.json({ error: 'Admin rename does not require payment' }, { status: 400 })
   }
 

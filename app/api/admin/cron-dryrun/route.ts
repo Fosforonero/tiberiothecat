@@ -7,23 +7,16 @@
  * Returns: JSON with generated dilemmas (not saved to Redis)
  */
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin-guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-import { isAdminEmail } from '@/lib/admin-auth'
-
 export async function GET(request: NextRequest) {
-  // 1. Verify admin session
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
 
-  if (!user || !isAdminEmail(user.email)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  // 2. Read locale param
+  // Read locale param
   const locale = request.nextUrl.searchParams.get('locale') ?? 'en'
   if (!['en', 'it'].includes(locale)) {
     return NextResponse.json({ error: 'locale must be en or it' }, { status: 400 })

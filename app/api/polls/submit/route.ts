@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 const VALID_CATEGORIES = new Set([
   'morality', 'technology', 'society', 'relationships', 'survival', 'philosophy',
@@ -21,11 +22,15 @@ export async function POST(req: NextRequest) {
     // Server-side entitlement check — never trust client
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_premium')
+      .select('is_premium, role')
       .eq('id', user.id)
       .single()
 
-    const ents = getUserEntitlements({ email: user.email, is_premium: profile?.is_premium ?? false })
+    const ents = getUserEntitlements({
+      email: user.email,
+      is_premium: profile?.is_premium ?? false,
+      role: (profile?.role ?? 'user') as UserRole,
+    })
     if (!ents.canSubmitPoll) {
       return NextResponse.json({ error: 'Premium required to submit polls' }, { status: 403 })
     }

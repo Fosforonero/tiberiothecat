@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import BadgeSection from './BadgeSection'
@@ -48,6 +49,7 @@ interface Profile {
   display_name: string | null
   email: string | null
   is_premium: boolean
+  role: string | null
   votes_count: number
   equipped_frame: string | null
   equipped_badge: string | null
@@ -84,7 +86,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_badge, onboarding_done, xp, streak_days, companion_species')
+      .select('display_name, email, is_premium, role, votes_count, equipped_frame, equipped_badge, onboarding_done, xp, streak_days, companion_species')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -113,7 +115,11 @@ export default async function DashboardPage() {
   const userBadges = ((badgesRes.data ?? []) as unknown as UserBadge[])
     .filter(b => b.badges != null)
 
-  const ents = getUserEntitlements({ email: user.email, is_premium: profile?.is_premium ?? false })
+  const ents = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
+  })
 
   const votesCount = profile?.votes_count ?? 0
   const xp = profile?.xp ?? 0

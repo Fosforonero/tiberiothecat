@@ -1,18 +1,14 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { isAdminEmail } from '@/lib/admin-auth'
 import { buildContentInventory, type ContentItem } from '@/lib/content-inventory'
 import { scoreNovelty } from '@/lib/content-dedup'
+import { requireAdmin } from '@/lib/admin-guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email || !isAdminEmail(user.email)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
 
   const inventory = await buildContentInventory()
 

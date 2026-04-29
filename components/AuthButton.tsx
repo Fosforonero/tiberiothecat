@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Settings, Star, LayoutDashboard, LogOut } from 'lucide-react'
-import { isAdminEmail } from '@/lib/admin-auth'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export default async function AuthButton() {
   const supabase = await createClient()
@@ -13,12 +14,16 @@ export default async function AuthButton() {
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_premium, avatar_emoji')
+      .select('is_premium, avatar_emoji, role')
       .eq('id', user.id)
       .single()
     isPremium = profile?.is_premium ?? false
     avatarEmoji = profile?.avatar_emoji ?? '🌍'
-    isAdmin = isAdminEmail(user.email)
+    isAdmin = getUserEntitlements({
+      email: user.email,
+      is_premium: isPremium,
+      role: (profile?.role ?? 'user') as UserRole,
+    }).isAdmin
   }
 
   if (!user) {

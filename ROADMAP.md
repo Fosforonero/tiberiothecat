@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 29 Aprile 2026 — Stripe Production env var fix (`STRIPE_PRICE_ID_PREMIUM` corretta, recurring monthly €4.99/mese)
+Ultimo aggiornamento: 29 Aprile 2026 — Role Management MVP security correction pass
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -34,6 +34,38 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 
 Agente da usare: `.claude/agents/mobile-app-readiness-reviewer.md`
 Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
+
+---
+
+## Sprint completati — Role Management MVP (29 Apr 2026)
+
+**Obiettivo**: sostituire il modello `ADMIN_EMAILS` flat con ruoli DB espliciti (Phase 1). Zero lockout: dual-check durante la migrazione.
+
+**Modifiche**:
+- `supabase/migration_v15_role_management.sql`: colonna `role` su `profiles` (CHECK constraint, default 'user'), tabella `role_audit_log` (RLS no-client), trigger BEFORE UPDATE anti-escalation, bootstrap mat.pizzi → super_admin e genghi77 → admin
+- `lib/admin-auth.ts`: aggiunto `UserRole`, `ROLE_HIERARCHY`, `isRoleAtLeast()`, `ASSIGNABLE_ROLES`
+- `lib/entitlements.ts`: `UserEntitlements` estesa con `isSuperAdmin`, `role`, `canManageRoles`; dual-check in `getUserEntitlements()` (ADMIN_EMAILS fallback temporaneo Phase 1 + DB role)
+- `app/api/me/entitlements/route.ts`: fetch `role` da profiles, passa a `getUserEntitlements()`
+- `lib/admin-guard.ts` (nuovo): helper centrale `requireAdmin()` — dual-check ADMIN_EMAILS fallback + DB role; tutti gli endpoint admin lo usano
+- `app/api/admin/roles/route.ts` (nuovo): GET lista utenti privilegiati (super_admin only)
+- `app/api/admin/roles/assign/route.ts` (nuovo): POST assegna role (super_admin only, audit non best-effort: warning in risposta se fallisce, blocca assegnazione di super_admin via API)
+- `app/admin/RolesPanel.tsx` (nuovo): client component per la gestione ruoli (mostra audit warning se presente)
+- `app/admin/page.tsx`: gate usa `canAccessAdmin` (dual-check); fetch DB role prima del gate; tab "Roles" visibile solo a super_admin
+- Tutti gli 11 endpoint `app/api/admin/**` aggiornati: `isAdminEmail` sostituito con `requireAdmin()` — accettano DB role admin/super_admin oltre ad ADMIN_EMAILS
+- `LEGAL.md`: sprint trigger "security controls / admin access" documentato
+- `ROADMAP.md`: aggiornato
+
+**Verifiche**: typecheck ✅ build ✅ diff --check ✅
+
+**Note architetturali — Phase 1**:
+- `ADMIN_EMAILS` resta attivo come fallback: `isAdmin = isAdminEmail(email) OR isRoleAtLeast(role, 'admin')`. È il safety net contro lockout se il bootstrap DB fallisce.
+- `isSuperAdmin` è esclusivamente DB-derivato: nessuna email può dare super_admin senza il DB role.
+- `components/AuthButton.tsx` mostra il link admin solo se `isAdminEmail` — un admin DB-only senza email in ADMIN_EMAILS vede il pannello navigando direttamente, ma non vede il link nav. Da gestire in Phase 2.
+
+**Residui (Phase 2)**:
+- Rimozione di `ADMIN_EMAILS` dalla logica isAdmin (dopo bootstrap verificato in prod)
+- Aggiornamento `AuthButton.tsx` per usare DB role via `/api/me/entitlements`
+- Badge visivo super_admin su profilo pubblico (sprint separato)
 
 ---
 

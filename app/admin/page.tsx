@@ -6,20 +6,22 @@ import {
   Users, Vote, Trophy, ClipboardList, Flame, UserPlus,
   Clock, CheckCircle, XCircle, Flag, Star, Settings,
   LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
-  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap, Search,
+  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap, Search, ShieldCheck,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
 import GenerateDraftPanel from './GenerateDraftPanel'
 import SeedBatchPanel from './SeedBatchPanel'
 import ScenarioQAEditor from './ScenarioQAEditor'
-import { isAdminEmail } from '@/lib/admin-auth'
+import type { UserRole } from '@/lib/admin-auth'
+import { getUserEntitlements } from '@/lib/entitlements'
+import RolesPanel from './RolesPanel'
 
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
 
-type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'blog' | 'monetization'
-const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'blog', 'monetization']
+type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'blog' | 'monetization' | 'roles'
+const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'blog', 'monetization', 'roles']
 
 interface AdminProps {
   searchParams: { preview?: string; tab?: string }
@@ -42,31 +44,6 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   if (!user) {
     redirect('/login?redirect=/admin')
   }
-
-  if (!isAdminEmail(user.email)) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16">
-        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-8">
-          <h1 className="text-2xl font-black text-yellow-400 mb-3">Admin access not configured</h1>
-          <p className="text-white/80 text-sm mb-4">
-            You are signed in as <span className="font-mono text-white">{user.email}</span>, but this email is not enabled in the server-side admin allowlist.
-          </p>
-          <div className="rounded-xl bg-[#0a0a1f] border border-white/10 p-4 font-mono text-xs text-white/60 space-y-1">
-            <p className="text-white/40 mb-2">Required Vercel env var:</p>
-            <p>ADMIN_EMAILS=&lt;your-admin-email&gt;</p>
-          </div>
-          <p className="text-white/40 text-xs mt-4">
-            After updating Vercel environment variables, redeploy the latest production build.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' : 'en'
-
-  const rawTab = searchParams.tab as AdminTab | undefined
-  const activeTab: AdminTab = rawTab && VALID_TABS.includes(rawTab) ? rawTab : 'overview'
 
   // Defensive: show diagnostic rather than crashing if service role key is missing
   let admin: ReturnType<typeof createAdminClient>
@@ -92,6 +69,43 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       </div>
     )
   }
+
+  // Phase-1 dual-check: ADMIN_EMAILS fallback OR DB role >= admin
+  // Use admin client so the gate is never blocked by RLS SELECT policies on profiles
+  const { data: selfProfile } = await admin
+    .from('profiles')
+    .select('is_premium, role')
+    .eq('id', user.id)
+    .single()
+
+  const currentEntitlements = getUserEntitlements({
+    email: user.email,
+    is_premium: selfProfile?.is_premium ?? false,
+    role: (selfProfile?.role ?? 'user') as UserRole,
+  })
+
+  if (!currentEntitlements.canAccessAdmin) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-8">
+          <h1 className="text-2xl font-black text-yellow-400 mb-3">Admin access required</h1>
+          <p className="text-white/80 text-sm mb-4">
+            You are signed in as <span className="font-mono text-white">{user.email}</span>, but this account does not have admin access.
+          </p>
+          <p className="text-white/40 text-xs mt-4">
+            Admin access is granted via the ADMIN_EMAILS env var or a DB role assignment (admin/super_admin).
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  const isSuperAdmin = currentEntitlements.isSuperAdmin
+
+  const locale = cookies().get('lang-pref')?.value === 'it' ? 'it' : 'en'
+
+  const rawTab = searchParams.tab as AdminTab | undefined
+  const activeTab: AdminTab = rawTab && VALID_TABS.includes(rawTab) ? rawTab : 'overview'
 
   const now = new Date()
   const since14 = new Date(now)
@@ -212,7 +226,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { label: 'Polls Submitted',      value: polls.length.toLocaleString(),      Icon: ClipboardList, glow: 'neon-glow-cyan',   iconColor: 'text-cyan-400',   bg: 'from-cyan-500/10 to-cyan-500/5',     border: 'border-cyan-500/25'   },
   ]
 
-  const TABS = locale === 'it' ? [
+  const baseTabs = locale === 'it' ? [
     { id: 'overview'     as AdminTab, label: 'Panoramica',     Icon: LayoutDashboard },
     { id: 'voting'       as AdminTab, label: 'Voti',           Icon: Vote            },
     { id: 'content'      as AdminTab, label: 'Contenuti',      Icon: ClipboardList   },
@@ -221,14 +235,17 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { id: 'blog'         as AdminTab, label: 'Blog',           Icon: BookOpen        },
     { id: 'monetization' as AdminTab, label: 'Monetizzazione', Icon: Star            },
   ] : [
-    { id: 'overview'     as AdminTab, label: 'Overview',     Icon: LayoutDashboard },
-    { id: 'voting'       as AdminTab, label: 'Voting',        Icon: Vote            },
-    { id: 'content'      as AdminTab, label: 'Content',       Icon: ClipboardList   },
-    { id: 'content-qa'   as AdminTab, label: 'Content QA',    Icon: Search          },
-    { id: 'ai-drafts'    as AdminTab, label: 'AI Drafts',     Icon: Zap             },
-    { id: 'blog'         as AdminTab, label: 'Blog',          Icon: BookOpen        },
-    { id: 'monetization' as AdminTab, label: 'Monetization',  Icon: Star            },
+    { id: 'overview'     as AdminTab, label: 'Overview',      Icon: LayoutDashboard },
+    { id: 'voting'       as AdminTab, label: 'Voting',         Icon: Vote            },
+    { id: 'content'      as AdminTab, label: 'Content',        Icon: ClipboardList   },
+    { id: 'content-qa'   as AdminTab, label: 'Content QA',     Icon: Search          },
+    { id: 'ai-drafts'    as AdminTab, label: 'AI Drafts',      Icon: Zap             },
+    { id: 'blog'         as AdminTab, label: 'Blog',           Icon: BookOpen        },
+    { id: 'monetization' as AdminTab, label: 'Monetization',   Icon: Star            },
   ]
+  const TABS = isSuperAdmin
+    ? [...baseTabs, { id: 'roles' as AdminTab, label: 'Roles', Icon: ShieldCheck }]
+    : baseTabs
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 sm:py-12">
@@ -617,6 +634,13 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
           <GenerateDraftPanel defaultType="blog_article" />
         </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          TAB: Roles (super_admin only)
+      ══════════════════════════════════════════════ */}
+      {activeTab === 'roles' && isSuperAdmin && (
+        <RolesPanel />
       )}
 
       {/* ══════════════════════════════════════════════

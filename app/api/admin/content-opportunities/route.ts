@@ -10,8 +10,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { isAdminEmail } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-guard'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { scenarios } from '@/lib/scenarios'
 import { getVotesBatch } from '@/lib/redis'
@@ -79,11 +78,8 @@ export interface ContentOpportunitiesResponse {
 }
 
 export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email || !isAdminEmail(user.email)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
 
   // Load approved dynamic scenarios + static scenarios
   let dynamicApproved = await getDynamicScenarios().catch(() => [])

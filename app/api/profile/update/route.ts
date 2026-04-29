@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -30,13 +31,14 @@ export async function POST(req: NextRequest) {
 
   const { data: currentProfile } = await supabase
     .from('profiles')
-    .select('display_name, name_changes, is_premium')
+    .select('display_name, name_changes, is_premium, role')
     .eq('id', user.id)
     .single()
 
   const ents = getUserEntitlements({
     email: user.email,
     is_premium: currentProfile?.is_premium ?? false,
+    role: (currentProfile?.role ?? 'user') as UserRole,
   })
 
   const currentChanges = currentProfile?.name_changes ?? 0

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements, ANON_ENTITLEMENTS } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,12 +20,16 @@ export async function GET() {
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_premium')
+      .select('is_premium, role')
       .eq('id', user.id)
       .single()
 
     return NextResponse.json(
-      getUserEntitlements({ email: user.email, is_premium: profile?.is_premium ?? false })
+      getUserEntitlements({
+        email: user.email,
+        is_premium: profile?.is_premium ?? false,
+        role: (profile?.role ?? 'user') as UserRole,
+      })
     )
   } catch {
     return NextResponse.json(ANON_ENTITLEMENTS)

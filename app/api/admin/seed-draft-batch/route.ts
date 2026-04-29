@@ -12,8 +12,7 @@
  */
 
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { isAdminEmail } from '@/lib/admin-auth'
+import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
 import { scoreNovelty } from '@/lib/content-dedup'
@@ -174,11 +173,8 @@ export interface SeedResult {
 }
 
 export async function POST() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user?.email || !isAdminEmail(user.email)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
 
   if (!isOpenRouterConfigured()) {
     return NextResponse.json({ error: 'openrouter_not_configured' }, { status: 503 })

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 import ProfileClient from './ProfileClient'
 
 export const metadata = { title: 'Profile Settings | SplitVote' }
@@ -17,7 +18,7 @@ export default async function ProfilePage() {
   const [profileRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, birth_year, gender, country_code, avatar_emoji, name_changes, is_premium, votes_count, streak_days, created_at')
+      .select('display_name, birth_year, gender, country_code, avatar_emoji, name_changes, is_premium, role, votes_count, streak_days, created_at')
       .eq('id', user.id)
       .single(),
     supabase
@@ -35,6 +36,7 @@ export default async function ProfilePage() {
   const ents = getUserEntitlements({
     email: user.email,
     is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
   })
 
   return (
