@@ -26,10 +26,8 @@ import { scoreNovelty } from '@/lib/content-dedup'
 import { buildDilemmaPrompt } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
 import {
-  getDynamicScenarios,
   saveDraftScenarios,
   saveDynamicScenarios,
-  MAX_DYNAMIC,
   type DynamicScenario,
 } from '@/lib/dynamic-scenarios'
 import { runQualityGates } from '@/lib/content-quality-gates'
@@ -193,7 +191,7 @@ export interface SeedResult {
   topKeyword?:         string
   errorCode?:          string
   // Auto-publish metadata
-  publishNote?:        string    // 'pool_full' | 'quality_gate_failed' | 'publish_redis_error'
+  publishNote?:        string    // 'quality_gate_failed' | 'publish_redis_error'
   qualityGateReasons?: string[]  // gate failure reasons (present when autoPublish was attempted)
 }
 
@@ -304,13 +302,6 @@ export async function POST(request: NextRequest) {
     const defaultIT = SEED_TOPICS.filter(t => t.locale === 'it').slice(0, count)
     if (locale === 'all' || locale === 'en') topicsToProcess.push(...defaultEN)
     if (locale === 'all' || locale === 'it') topicsToProcess.push(...defaultIT)
-  }
-
-  // ── Pre-fetch approved count (only needed for pool capacity guard) ──────────
-  let approvedAtStart = 0
-  if (autoPublish) {
-    const currentApproved = await getDynamicScenarios()
-    approvedAtStart = currentApproved.length
   }
 
   // ── Run generation ──────────────────────────────────────────────────────────
@@ -444,67 +435,63 @@ export async function POST(request: NextRequest) {
       })
       dryRunPassed++
     } else {
-      // ── Attempt auto-publish when requested, cap not reached, pool has room ──
+      // ── Attempt auto-publish when requested and cap not reached ────────────
       let didPublish     = false
       let publishNote:     string   | undefined
       let gateReasons:    string[] | undefined
 
       if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP) {
-        if (approvedAtStart + autoPublishedCount >= MAX_DYNAMIC) {
-          publishNote = 'pool_full'
-        } else {
-          const gateResult = runQualityGates({
-            locale:            entryLocale,
-            question:          candidate.question,
-            optionA:           candidate.optionA,
-            optionB:           candidate.optionB,
-            category:          candidate.category,
-            seoTitle:          candidate.seoTitle,
-            seoDescription:    candidate.seoDescription,
-            keywords:          candidate.keywords,
-            scores:            scenario.scores,
-            similarItemsCount: candidate.similarItems.length,
-          })
+        const gateResult = runQualityGates({
+          locale:            entryLocale,
+          question:          candidate.question,
+          optionA:           candidate.optionA,
+          optionB:           candidate.optionB,
+          category:          candidate.category,
+          seoTitle:          candidate.seoTitle,
+          seoDescription:    candidate.seoDescription,
+          keywords:          candidate.keywords,
+          scores:            scenario.scores,
+          similarItemsCount: candidate.similarItems.length,
+        })
 
-          if (gateResult.passed) {
-            const approvedScenario: DynamicScenario = {
-              ...scenario,
-              status:             'approved',
-              approvedAt:         new Date().toISOString(),
-              autoPublished:      true,
-              qualityGateScore:   gateResult.score,
-              qualityGateReasons: [],
-              generatedBy:        'seed_batch',
-            }
-            try {
-              await saveDynamicScenarios([approvedScenario])
-              results.push({
-                index: i + 1,
-                locale: entryLocale,
-                topic,
-                status: 'auto_published',
-                id: scenario.id,
-                category: candidate.category,
-                question: candidate.question,
-                noveltyScore: candidate.noveltyScore,
-                similarItemsCount: candidate.similarItems.length,
-                topKeyword: candidate.keywords[0],
-                qualityGateReasons: [],
-              })
-              autoPublishedCount++
-              didPublish = true
-            } catch {
-              publishNote = 'publish_redis_error'
-            }
-          } else {
-            publishNote = 'quality_gate_failed'
-            gateReasons = gateResult.reasons
+        if (gateResult.passed) {
+          const approvedScenario: DynamicScenario = {
+            ...scenario,
+            status:             'approved',
+            approvedAt:         new Date().toISOString(),
+            autoPublished:      true,
+            qualityGateScore:   gateResult.score,
+            qualityGateReasons: [],
+            generatedBy:        'seed_batch',
           }
+          try {
+            await saveDynamicScenarios([approvedScenario])
+            results.push({
+              index: i + 1,
+              locale: entryLocale,
+              topic,
+              status: 'auto_published',
+              id: scenario.id,
+              category: candidate.category,
+              question: candidate.question,
+              noveltyScore: candidate.noveltyScore,
+              similarItemsCount: candidate.similarItems.length,
+              topKeyword: candidate.keywords[0],
+              qualityGateReasons: [],
+            })
+            autoPublishedCount++
+            didPublish = true
+          } catch {
+            publishNote = 'publish_redis_error'
+          }
+        } else {
+          publishNote = 'quality_gate_failed'
+          gateReasons = gateResult.reasons
         }
       }
 
       if (!didPublish) {
-        // Covers: autoPublish=false, cap reached, pool full, gate failed, redis error fallback
+        // Covers: autoPublish=false, cap reached, gate failed, redis error fallback
         try {
           await saveDraftScenarios([scenario])
           results.push({

@@ -11,7 +11,6 @@ import type { Scenario } from './scenarios'
 
 const DYNAMIC_KEY = 'dynamic:scenarios'
 const DRAFTS_KEY  = 'dynamic:drafts'
-export const MAX_DYNAMIC = 60
 const MAX_DRAFTS  = 120
 
 export type DilemmaStatus = 'draft' | 'approved' | 'rejected'
@@ -78,7 +77,7 @@ export async function saveDynamicScenarios(newOnes: DynamicScenario[]): Promise<
   const toAdd = newOnes
     .filter(s => !existingIds.has(s.id))
     .map(s => ({ ...s, status: 'approved' as DilemmaStatus }))
-  const merged = [...toAdd, ...existing].slice(0, MAX_DYNAMIC)
+  const merged = [...toAdd, ...existing]
   await redis.set(DYNAMIC_KEY, merged)
 }
 

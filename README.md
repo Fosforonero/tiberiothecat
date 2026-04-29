@@ -373,9 +373,8 @@ Events are written from `ResultsClientPage.tsx` after successful share actions (
 #### Safety guards
 
 - **Topic availability** — fails fast with `400 not_enough_seed_topics` if `count` exceeds available seed topics before any OpenRouter call starts. No silent partial runs.
-- **autoPublish cap** — max 10 items auto-published per request regardless of `count`.
-- **Pool capacity** — `MAX_DYNAMIC = 60` (public approved pool). If the pool is full, auto-publish skips to draft (`publishNote: 'pool_full'`). `MAX_DYNAMIC` is imported from `lib/dynamic-scenarios.ts` — no duplicated constant.
-- **Draft queue cap** — `MAX_DRAFTS = 120`.
+- **autoPublish cap** — max 10 items auto-published per request regardless of `count`. All others fall to draft.
+- **Draft queue cap** — `MAX_DRAFTS = 120`. The approved pool has no hard applicative cap — approved dilemmas accumulate without eviction. Monitor Redis key size in Upstash if the corpus grows significantly (target: keep `dynamic:scenarios` well below 1 MB).
 - **Quality gates** — auto-publish requires passing `runQualityGates()` (novelty, finalScore, SEO, no dangerous content). Gate failures fall through to draft (`publishNote: 'quality_gate_failed'`).
 - **seoScore** — computed from real generated metadata via `computeSeoScore(seoTitle, seoDescription, keywords)`. Not a fixed baseline.
 - **Preflight similarity guard** — topics with `similarity ≥ 70` to an approved/static dilemma, or `≥ 80` to an existing draft, are skipped before any OpenRouter call. No API cost incurred for near-duplicate topics.
@@ -396,7 +395,7 @@ Events are written from `ResultsClientPage.tsx` after successful share actions (
 
 - Do not generate 500 dilemmas in a single run — sequential OpenRouter calls take 2–4 min for 20 items; larger batches time out or cost significantly more.
 - Do not use `autoPublish` to skip human review — it is a convenience for unambiguously strong content, not a bypass.
-- Do not raise `MAX_DYNAMIC` without a dedicated sprint — it affects the public approved pool, sitemap, and Redis public read performance.
+- Do not bulk-publish hundreds of dilemmas without monitoring `dynamic:scenarios` Redis key size — the pool is now uncapped and grows without eviction.
 - Do not bulk-approve drafts without editorial control — each dilemma is public-facing and EN/IT localized.
 
 #### Verification commands

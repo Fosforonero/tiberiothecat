@@ -271,7 +271,7 @@ export default function CronDebug() {
             ⚡ {autoPublished} auto
           </span>
         )}
-        <span className="text-[var(--muted)]">/ {approved.length} totali approvati (max 60)</span>
+        <span className="text-[var(--muted)]">/ {approved.length} totali approvati</span>
         <button
           onClick={fetchData}
           className="ml-auto flex items-center gap-1 text-xs text-[var(--muted)] hover:text-white transition-colors"
