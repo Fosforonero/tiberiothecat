@@ -30,7 +30,7 @@ export default function NavLinks() {
   const links = isIT ? IT_LINKS : EN_LINKS
 
   return (
-    <div className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
+    <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
       {links.map(({ href, label, icon: Icon, color }) => (
         <Link
           key={href}

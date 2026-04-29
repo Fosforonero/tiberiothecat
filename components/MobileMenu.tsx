@@ -266,7 +266,7 @@ export default function MobileMenu() {
   return (
     <>
       {/* Hamburger button — stays inside the nav */}
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? (isIT ? 'Chiudi menu' : 'Close menu') : (isIT ? 'Apri menu' : 'Open menu')}
