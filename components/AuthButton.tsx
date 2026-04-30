@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Settings, Star, LayoutDashboard, LogOut } from 'lucide-react'
+import { Settings, Star, LayoutDashboard, LogOut, User } from 'lucide-react'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import ClaimDot from './ClaimDot'
@@ -34,6 +34,7 @@ export default async function AuthButton() {
         className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all btn-neon-blue"
         aria-label="Join SplitVote free or sign in"
       >
+        <User size={13} aria-hidden="true" />
         Join free →
       </a>
     )

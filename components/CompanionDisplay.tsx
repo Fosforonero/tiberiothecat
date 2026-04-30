@@ -90,8 +90,11 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
         {/* Info */}
         <div className="flex-1 min-w-0">
           <p className="text-lg font-black text-white leading-none mb-0.5">{companion.name}</p>
-          <p className={`text-xs font-bold mb-3 ${companion.color}`}>
+          <p className={`text-xs font-bold mb-1 ${companion.color}`}>
             {IT ? 'Stadio' : 'Stage'} {stage} · {stageLabel}
+          </p>
+          <p className="text-xs text-[var(--muted)] mb-3 opacity-70">
+            {IT ? 'Cresce con ogni voto e missione.' : 'Grows with every vote and mission.'}
           </p>
 
           {/* Progress to next stage */}

@@ -79,6 +79,7 @@ const EN_COPY = {
   graceConfirm:        'Confirm now',
   shareQuestion:       'Share this dilemma',
   shareQuestionCopied: '✅ Link copied!',
+  revealHint:          'Vote to reveal how the world splits.',
 }
 
 const IT_COPY = {
@@ -106,6 +107,7 @@ const IT_COPY = {
   graceConfirm:        'Conferma subito',
   shareQuestion:       'Condividi questo dilemma',
   shareQuestionCopied: '✅ Link copiato!',
+  revealHint:          'Vota per scoprire come si divide il mondo.',
 }
 
 export default function VoteClientPage({
@@ -360,6 +362,13 @@ export default function VoteClientPage({
           {totalVotes > 0 && (
             <p className="text-sm text-[var(--muted)] mt-4">
               {copy.joinVoted(totalVotes)}
+            </p>
+          )}
+
+          {/* Reveal motivation — only shown before voting */}
+          {!existingVote && (
+            <p className="text-xs text-[var(--muted)] mt-3 opacity-60">
+              {copy.revealHint}
             </p>
           )}
         </div>

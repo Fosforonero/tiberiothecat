@@ -169,10 +169,25 @@ export default async function HomePage() {
         </div>
 
         {/* ── Trust strip ── */}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Anonymous voting</span>
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> See what the world chooses</span>
+        </div>
+
+        {/* ── Game loop ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+          <span className="flex items-center gap-1.5">
+            <span className="text-blue-400 font-black">1.</span> Vote on a dilemma
+          </span>
+          <span className="text-white/15 hidden sm:inline">→</span>
+          <span className="flex items-center gap-1.5">
+            <span className="text-purple-400 font-black">2.</span> See how the world splits
+          </span>
+          <span className="text-white/15 hidden sm:inline">→</span>
+          <span className="flex items-center gap-1.5">
+            <span className="text-yellow-400 font-black">3.</span> Grow your moral companion
+          </span>
         </div>
 
         {/* ── Dilemma of the Day ── */}
