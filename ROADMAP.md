@@ -67,6 +67,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 3. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
 4. **Generate 15 high-quality IT dilemmas** — only after semantic review dry-run validation on IT content
 5. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality
+6. **Segmented result comparison** *(DEFERRED)* — locale-only first ("Chi vota in italiano"), deferred until enough IT traffic (≥ 500 votes on a popular dilemma); country/demographic segments require `LEGAL.md` review before implementation. Full spec in `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
 ### PM Priority Queue — Field Feedback 30 Apr 2026
 

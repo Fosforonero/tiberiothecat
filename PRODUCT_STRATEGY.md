@@ -1324,3 +1324,117 @@ Before implementing the public card endpoint, confirm in `LEGAL.md` which profil
 #### 5. Implementation Note
 
 Share card MVP (Phase 3) arrives after base assets and before selector/shop — it maximizes viral return on the asset investment before monetization complexity is added. Unlock-moment sharing (copy + share button on unlock toast) is a Phase 4+ feature that depends on the variant selector being live.
+
+---
+
+## Segmented Result Comparison Direction
+
+**Status: DEFERRED** — spec approved 30 Apr 2026; implementation waiting for sufficient IT traffic and core-loop stability.
+
+### Feature Summary
+
+A secondary card on the results page showing how a sub-segment of users voted on the same dilemma, compared with the global result. The public-facing name is never "People Like You" — that label implies personal profiling. Phase 1 uses only the UI locale derived from the URL prefix.
+
+The card appears only post-vote, only in the Italian locale, and only when the segment sample meets the minimum threshold.
+
+### Decision: DEFER
+
+Do not build until:
+
+- At least one popular dilemma has ≥ 500 votes in the IT locale (verify via admin panel or Redis).
+- Core Loop Clarity (ROADMAP PM Priority #2) and Pre-vote sharing (#3) are shipped.
+- A `LEGAL.md` pre-deploy confirmation has cleared: adding `locale` to the vote route body and creating Redis keys `votes:locale:it:*` does not require a Privacy Policy update.
+
+### Phase 1 — Locale Segment Only
+
+**Segment**: users who voted via the Italian UI (`/it/...` URL prefix). Not country, not declared language, not IP location.
+
+**Public label**:
+
+| Context | IT | EN |
+|---|---|---|
+| Card title | `Chi vota in italiano` | `People voting in Italian` |
+| Vote count | `{n} voti` | `{n} votes` |
+| Compare global | `Risultato globale: {pctA}% / {pctB}%` | `Global result: {pctA}% / {pctB}%` |
+| Footnote | `Solo voti registrati nell'interfaccia italiana. Non rappresenta l'Italia come paese.` | `Based only on votes from the Italian interface. Does not represent Italy as a country.` |
+
+Never use: "People Like You", "Il tuo gruppo", or any label that implies personal attribute matching.
+
+**Integration point**: Results page, post-vote only, inline below global result bars and above Expert Insight block. Hidden when `voted === null`, when segment total < 50, or when Redis is unavailable.
+
+**UI rules**:
+- Always show `n` votes in the card header.
+- Footnote is mandatory — prevents misreading as a country-level result.
+- Card is absent below threshold — no placeholder, no "not enough votes yet" message.
+- No fake representativeness claims — no ± or margin-of-error language.
+- Bar colors follow global bars (red for A, blue for B).
+- Delayed reveal follows global `revealed` state — card stays hidden while bars are hidden.
+
+### Data Model (Redis)
+
+New key pattern, written fire-and-forget alongside the global key at vote time:
+
+```
+votes:locale:it:{scenarioId}  →  HASH { a: number, b: number }
+```
+
+Same pattern as `trackDailyVote`: non-blocking, errors swallowed, never fails the vote response.
+
+Read at results page server-render in parallel with `getVotes()`, with try/catch fallback (card absent on error).
+
+### Minimum Threshold
+
+```typescript
+const MIN_LOCALE_THRESHOLD = 50  // segment total votes required to show the card
+```
+
+### Not in Phase 1
+
+| What | Why deferred |
+|---|---|
+| Country segment (`country_code`) | Optional field, likely sparse early; explicit LEGAL trigger (geo/country breakdowns) |
+| IP-derived location | Prohibited without explicit consent and legal review — see `PRODUCT_STRATEGY.md → Geo Quests` |
+| Demographic segments | Requires data not currently collected; high legal risk |
+| "People Like You" label | Implies personal profiling — use precise segment label |
+| EN locale card | "People voting in English" ≈ global result — not informative in Phase 1 |
+
+### Privacy and Bias Rules
+
+- URL locale prefix is not personal data — user chose the Italian interface voluntarily.
+- The card never exposes an individual vote choice.
+- Aggregate only: percentages + total count.
+- No cross-segment comparisons visible to users.
+- Country segment (Phase 2) requires: `LEGAL.md` update, Privacy Policy EN/IT review, `country_code` adoption rate check before building.
+- IP-derived location: never use for this feature without explicit consent flow and legal review.
+
+### LEGAL.md Triggers
+
+`LEGAL.md` review is **mandatory** before implementing any of the following — do not start without it:
+
+- Country/declared-country segment
+- Demographic segments of any kind
+- IP-derived location segments
+- Any label that implies personal profiling
+- Public-facing country breakdowns or rankings
+
+Phase 1 (locale URL only) requires only a pre-deploy confirmation in `LEGAL.md` — not a full Privacy or Terms update. Confirm that the new Redis keys and optional `locale` body param do not constitute new personal data collection.
+
+### Implementation Phases
+
+| Phase | Scope | DB | LEGAL | Prerequisite |
+|---|---|---|---|---|
+| **Phase 1** — Locale (IT only) | Redis `votes:locale:it:{id}`; `incrementLocaleVote` + `getLocaleVotes` in `lib/redis.ts`; optional `locale` in vote POST body (fire-and-forget); card UI on IT results post-vote; 50-vote threshold | None | Pre-deploy confirmation only | 500+ IT votes on one popular dilemma; Core Loop + Pre-vote sharing shipped |
+| **Phase 2** — Country segment | `country_code` join on `dilemma_votes`; card "People in Italy"; logged-in only; 100-vote threshold | Migration or JOIN | **Required** — geo/country is explicit LEGAL trigger | Phase 1 stable; LEGAL review complete; country_code adoption > 5% of profiles |
+| **Phase 3** — Multi-locale | Extend to ES, PT-BR etc. as locales are added | None | None (same Phase 1 pattern) | Phase 1 stable; new locales shipped |
+
+### Files Likely Touched in Future Implementation
+
+| File | Change |
+|---|---|
+| `lib/redis.ts` | Add `incrementLocaleVote`, `replaceLocaleVote`, `getLocaleVotes` |
+| `app/api/vote/route.ts` | Read optional `locale` from body; fire-and-forget locale increment |
+| `app/results/[id]/page.tsx` | Fetch `localeVotes` in parallel with global votes; pass as prop |
+| `app/it/results/[id]/page.tsx` | Same — if the IT results route is a separate file |
+| `app/results/[id]/ResultsClientPage.tsx` | New `localeVotes` prop; inline card UI; EN/IT copy |
+| `app/play/[id]/VoteClientPage.tsx` | Pass `locale: 'it'` in POST body when `isIT` |
+| `LEGAL.md` | Pre-deploy confirmation for Phase 1; full update required for Phase 2+ |

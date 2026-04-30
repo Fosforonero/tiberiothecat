@@ -151,6 +151,7 @@ Do not lose these follow-ups:
 10. **Pixie Phase 3 — Share card MVP** — shareable Pixie profile card; `/api/pixie-card/[userId]` server-only endpoint; share CTA on dashboard. No DB migration. Prerequisite: Phase 2 assets. Confirm public fields in `LEGAL.md` before shipping.
 11. **Pixie Phase 4 — Variant selector / earned variants** — server-side unlock + `pixie_variant_equipped` column. DB migration required.
 12. **Pixie Phase 5–6 — VIP + Purchased Pixies** — Phase 5 via entitlements; Phase 6 requires Stripe + LEGAL + Terms review. Do not start Phase 6 without explicit gate clearance.
+13. **Segmented result comparison** *(DEFERRED)* — "Chi vota in italiano" card on IT results page, post-vote only, Redis-backed, 50-vote threshold. Do not build until ≥ 500 IT votes on a popular dilemma and Core Loop (#2) + Pre-vote sharing (#3) are shipped. Country/demographic segments require LEGAL.md review. Full spec: `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
 ---
 
