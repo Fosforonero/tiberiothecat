@@ -246,9 +246,11 @@ export interface SeedResult {
   question?:           string
   noveltyScore?:       number
   similarItemsCount?:  number
-  similarItems?:       { title: string; similarity: number }[]  // top 3 for admin review
+  similarItems?:       { title: string; similarity: number; source?: string; locale?: string }[]
   topKeyword?:         string
   errorCode?:          string
+  // Human-readable rejection reason (skipped_preflight / skipped_novelty only)
+  rejectionReason?:    string
   // Auto-publish metadata
   publishNote?:        string    // 'quality_gate_failed' | 'publish_redis_error'
   qualityGateReasons?: string[]  // gate failure reasons (present when autoPublish was attempted)
@@ -457,6 +459,10 @@ export async function POST(request: NextRequest) {
     // and for state changes that occurred since the pre-filter ran (e.g. new drafts mid-batch).
     const preflightBlock = getPreflightBlock(preCheck)
     if (preflightBlock !== null) {
+      const closestPre = preCheck.similarItems[0]
+      const rejectionReason = closestPre
+        ? `Too similar to ${preflightBlock === 'too_similar_to_draft' ? 'draft' : closestPre.status} [${closestPre.locale?.toUpperCase() ?? '?'}]: "${closestPre.title.slice(0, 48)}" (${closestPre.similarity}%)`
+        : preflightBlock === 'too_similar_to_draft' ? 'Too similar to existing draft' : 'Too similar to existing content'
       results.push({
         index:             i + 1,
         locale:            entryLocale,
@@ -464,7 +470,8 @@ export async function POST(request: NextRequest) {
         status:            'skipped_preflight',
         noveltyScore:      preCheck.noveltyScore,
         similarItemsCount: preCheck.similarItems.length,
-        similarItems:      preCheck.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
+        similarItems:      preCheck.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
+        rejectionReason,
         publishNote:       preflightBlock,
       })
       skippedPreflight++
@@ -542,6 +549,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (candidate.noveltyScore < NOVELTY_THRESHOLD) {
+      const closestNov = candidate.similarItems[0]
+      const rejectionReason = closestNov
+        ? `Novelty ${candidate.noveltyScore}/100 — similar to ${closestNov.status} [${(closestNov.locale ?? '?').toUpperCase()}]: "${closestNov.title.slice(0, 40)}" (${closestNov.similarity}%)`
+        : `Novelty score ${candidate.noveltyScore}/100 below threshold ${NOVELTY_THRESHOLD}`
       results.push({
         index:             i + 1,
         locale:            entryLocale,
@@ -549,7 +560,8 @@ export async function POST(request: NextRequest) {
         status:            'skipped_novelty',
         noveltyScore:      candidate.noveltyScore,
         similarItemsCount: candidate.similarItems.length,
-        similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
+        similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
+        rejectionReason,
         category:          candidate.category,
         question:          candidate.question,
         topKeyword:        candidate.keywords[0],
@@ -626,7 +638,7 @@ export async function POST(request: NextRequest) {
         question:          candidate.question,
         noveltyScore:      candidate.noveltyScore,
         similarItemsCount: candidate.similarItems.length,
-        similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
+        similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
         topKeyword:        candidate.keywords[0],
         ...(semanticResult ? {
           semanticVerdict:           semanticResult.verdict,
@@ -677,7 +689,7 @@ export async function POST(request: NextRequest) {
               question:          candidate.question,
               noveltyScore:      candidate.noveltyScore,
               similarItemsCount: candidate.similarItems.length,
-              similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
+              similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
               topKeyword:        candidate.keywords[0],
               qualityGateReasons: [],
               ...(semanticResult ? {
@@ -711,7 +723,7 @@ export async function POST(request: NextRequest) {
             question:          candidate.question,
             noveltyScore:      candidate.noveltyScore,
             similarItemsCount: candidate.similarItems.length,
-            similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity })),
+            similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
             topKeyword:        candidate.keywords[0],
             ...(publishNote  ? { publishNote }          : {}),
             ...(gateReasons  ? { qualityGateReasons: gateReasons } : {}),

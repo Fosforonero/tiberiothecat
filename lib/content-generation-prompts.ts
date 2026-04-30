@@ -53,6 +53,9 @@ Safety and quality rules (strictly enforced — output will be rejected if viola
 - Content must be suitable for a general audience aged 16+
 - No unverified factual claims about specific recent or ongoing events
 - If based on a current events topic: abstract it into a universal moral dilemma — do not name specific people, cities, or incidents; mark as "inspired by topic", never "based on specific event"
+- Avoid overused AI/automation framings like "AI will eliminate all X jobs" — transform into a specific, personal moral conflict about a concrete decision instead
+- Avoid near-duplicate variations of well-known dilemma templates (trolley problem, organ harvest, lifeboat, last vaccine dose) unless the moral structure is demonstrably different from all existing content
+- Do not generate the same moral question with different surface nouns, nationalities, numbers, or settings — that is too_similar, not novel
 - Output ONLY valid JSON — no markdown fences, no explanation text
 `
 

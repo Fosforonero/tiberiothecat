@@ -27,11 +27,14 @@ Your task: compare a candidate dilemma against a list of existing dilemmas and d
 Verdict definitions:
 - novel: clearly distinct moral tension and choice structure from all comparison items
 - related_but_distinct: overlapping theme or setting, but different core ethical trade-off
-- too_similar: same fundamental moral choice and tension axis — only vocabulary, setting, numbers, or nationality differs
+- too_similar: same fundamental moral choice and tension axis — only vocabulary, setting, numbers, nationality, or LANGUAGE differs
 - duplicate: nearly identical question and options — effective restatement with minimal change
 
-Evaluation rule: same ethical tension counts as too_similar even if vocabulary, numbers, nationality, or setting differ.
-Example: "sacrifice one to save five" and "let five die to spare one" are too_similar despite different framing.
+Evaluation rules:
+- Same ethical tension counts as too_similar even if vocabulary, numbers, nationality, setting, or LANGUAGE differ.
+- Items prefixed with [EN] or [IT] are in a different language — evaluate moral equivalence across languages.
+- Example: "sacrifice one to save five" and "sacrifica uno per salvarne cinque" are duplicate regardless of language.
+- Example: "sacrifice one to save five" and "let five die to spare one" are too_similar despite different framing.
 
 Output ONLY valid JSON — no markdown, no code fences, no explanation text.`
 
@@ -113,6 +116,7 @@ export function buildComparisonItems(
   const seen = new Set<string>()
   const inventoryById = new Map(inventory.map(i => [i.id, i]))
 
+  // First pass: Jaccard top hits (any locale/status — cross-locale visible here via shared tokens)
   for (const item of jaccardTopItems.slice(0, 5)) {
     if (!seen.has(item.id)) {
       const inv = inventoryById.get(item.id)
@@ -125,15 +129,38 @@ export function buildComparisonItems(
     }
   }
 
+  // Second pass: same-locale, same-category, all statuses (drafts included for intra-batch dedup)
   for (const item of inventory) {
     if (selected.length >= maxItems) break
     if (item.type !== 'dilemma') continue
     if (item.locale !== candidateLocale) continue
     if (item.category !== candidateCategory) continue
-    if (item.status !== 'approved' && item.status !== 'static') continue
     if (seen.has(item.id)) continue
     selected.push({ id: item.id, title: item.title, text: item.searchableText.slice(0, 500) })
     seen.add(item.id)
+  }
+
+  // Third pass: cross-locale items — detects EN/IT semantic equivalence that Jaccard misses.
+  // Includes same-category approved/static content AND any intra-batch generated items (ai_generated).
+  // Items are prefixed with [EN]/[IT] so the LLM reviewer can apply cross-language evaluation.
+  const CROSS_LOCALE_MAX = 4
+  let crossLocaleAdded = 0
+  for (const item of inventory) {
+    if (crossLocaleAdded >= CROSS_LOCALE_MAX) break
+    if (item.type !== 'dilemma') continue
+    if (item.locale === candidateLocale) continue
+    if (seen.has(item.id)) continue
+    const isSameCategoryPublished =
+      (item.status === 'approved' || item.status === 'static') && item.category === candidateCategory
+    const isCurrentBatch = item.source === 'ai_generated'
+    if (!isSameCategoryPublished && !isCurrentBatch) continue
+    selected.push({
+      id: item.id,
+      title: `[${item.locale.toUpperCase()}] ${item.title}`,
+      text: item.searchableText.slice(0, 300),
+    })
+    seen.add(item.id)
+    crossLocaleAdded++
   }
 
   return selected

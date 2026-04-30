@@ -12,9 +12,10 @@ interface SeedResult {
   question?:           string
   noveltyScore?:       number
   similarItemsCount?:  number
-  similarItems?:       { title: string; similarity: number }[]
+  similarItems?:       { title: string; similarity: number; source?: string; locale?: string }[]
   topKeyword?:         string
   errorCode?:          string
+  rejectionReason?:    string
   publishNote?:        string
   qualityGateReasons?: string[]
   semanticVerdict?:           string
@@ -495,7 +496,7 @@ export default function SeedBatchPanel() {
                       {r.similarItems?.[0] && (
                         <span
                           className="block text-[9px] text-[var(--muted)] truncate max-w-[110px] mt-0.5 cursor-help"
-                          title={r.similarItems.map(s => `${s.similarity}% — ${s.title}`).join('\n')}
+                          title={r.similarItems.map(s => `${s.similarity}% [${(s.locale ?? '?').toUpperCase()} ${s.source ?? ''}] — ${s.title}`).join('\n')}
                         >
                           ≈ {r.similarItems[0].title.slice(0, 40)}{r.similarItems[0].title.length > 40 ? '…' : ''}
                         </span>
@@ -507,10 +508,12 @@ export default function SeedBatchPanel() {
                         {r.question ? r.question.slice(0, 80) + (r.question.length > 80 ? '…' : '') : '—'}
                       </span>
                     </td>
-                    <td className="px-3 py-2 font-mono text-[10px] max-w-[120px] truncate">
-                      {r.publishNote
-                        ? <span className="text-orange-400/70">{r.publishNote}</span>
-                        : <span className="text-white/30">{r.id ?? '—'}</span>}
+                    <td className="px-3 py-2 font-mono text-[10px] max-w-[150px]">
+                      {r.rejectionReason
+                        ? <span className="text-amber-400/70 truncate block" title={r.rejectionReason}>{r.rejectionReason.slice(0, 55)}{r.rejectionReason.length > 55 ? '…' : ''}</span>
+                        : r.publishNote
+                          ? <span className="text-orange-400/70">{r.publishNote}</span>
+                          : <span className="text-white/30 truncate block">{r.id ?? '—'}</span>}
                     </td>
                   </tr>
                 ))}
