@@ -583,10 +583,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
       ══════════════════════════════════════════════ */}
       {activeTab === 'ai-drafts' && (
         <div className="space-y-6">
-          {/* Generate single draft */}
-          <GenerateDraftPanel defaultType="dilemma" />
-
-          {/* Seed batch */}
+          {/* Seed batch — includes manual seed for controlled dilemma generation */}
           <SeedBatchPanel />
 
           {/* Cron debug / dilemma list */}
@@ -632,7 +629,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             </div>
           </div>
 
-          <GenerateDraftPanel defaultType="blog_article" />
+          <GenerateDraftPanel />
         </div>
       )}
 

@@ -44,27 +44,50 @@ interface SeedResponse {
 }
 
 type LocaleParam = 'all' | 'en' | 'it'
+type SeedMode    = 'default' | 'manual'
 
 export default function SeedBatchPanel() {
-  const [locale, setLocale]       = useState<LocaleParam>('all')
-  const [count, setCount]         = useState(10)
-  const [dryRun, setDryRun]       = useState(false)
+  const [seedMode, setSeedMode]       = useState<SeedMode>('default')
+  const [locale, setLocale]           = useState<LocaleParam>('all')
+  const [count, setCount]             = useState(10)
+  const [dryRun, setDryRun]           = useState(false)
   const [autoPublish, setAutoPublish] = useState(false)
-  const [loading, setLoading]     = useState(false)
-  const [result, setResult]       = useState<SeedResponse | null>(null)
-  const [error, setError]         = useState<string | null>(null)
+  const [loading, setLoading]         = useState(false)
+  const [result, setResult]           = useState<SeedResponse | null>(null)
+  const [error, setError]             = useState<string | null>(null)
+
+  // Manual seed fields
+  const [manualTopic, setManualTopic] = useState('')
+  const [manualTitle, setManualTitle] = useState('')
+  const [manualAngle, setManualAngle] = useState('')
+  const [manualNotes, setManualNotes] = useState('')
 
   const estimatedCalls = locale === 'all' ? count * 2 : count
+  const canRun = !loading && (seedMode === 'default' || manualTopic.trim().length >= 3)
+
+  function resetResults() {
+    setResult(null)
+    setError(null)
+  }
 
   async function runBatch() {
     setLoading(true)
     setResult(null)
     setError(null)
     try {
+      const body: Record<string, unknown> = { locale, count, dryRun, autoPublish }
+      if (seedMode === 'manual') {
+        body.manualSeed = {
+          topic: manualTopic.trim(),
+          ...(manualTitle.trim() ? { title: manualTitle.trim() } : {}),
+          ...(manualAngle.trim() ? { angle: manualAngle.trim() } : {}),
+          ...(manualNotes.trim() ? { notes: manualNotes.trim() } : {}),
+        }
+      }
       const res = await fetch('/api/admin/seed-draft-batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ locale, count, dryRun, autoPublish }),
+        body: JSON.stringify(body),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -117,7 +140,6 @@ export default function SeedBatchPanel() {
     : r.status === 'skipped_novelty'   ? '⚠ novelty'
     : `✗ ${r.errorCode ?? 'error'}`
 
-  // Summary cards adapt based on mode; "Similar" card appended when preflight skips occurred
   const hasPreflight = result !== null && result.summary.skipped_preflight > 0
   const similarCard  = { label: 'Similar', value: result?.summary.skipped_preflight ?? 0, color: 'text-amber-400' }
 
@@ -165,6 +187,90 @@ export default function SeedBatchPanel() {
         Novelty guard: skips drafts scoring below 55. All results land in{' '}
         <code className="font-mono">dynamic:drafts</code> — approve manually from Dynamic Dilemmas below.
       </p>
+
+      {/* Seed mode toggle */}
+      <div className="flex flex-col gap-1.5">
+        <span className="text-[10px] text-white/40 font-semibold uppercase tracking-wide">Seed mode</span>
+        <div className="flex gap-1">
+          {(['default', 'manual'] as SeedMode[]).map(m => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => { setSeedMode(m); resetResults() }}
+              disabled={loading}
+              className={`px-3 py-1.5 rounded text-xs font-bold transition-colors disabled:opacity-40 ${
+                seedMode === m
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              {m === 'default' ? 'Default seed topics' : 'Manual seed'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Manual seed fields */}
+      {seedMode === 'manual' && (
+        <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-purple-500/20">
+          <p className="text-[11px] text-purple-300/70">
+            Use manual seed to generate multiple dilemma drafts from one controlled topic.
+            For articles, use Generate Article Draft above.
+          </p>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-white/60">
+              Topic <span className="text-red-400">*</span>
+            </label>
+            <textarea
+              value={manualTopic}
+              onChange={e => setManualTopic(e.target.value)}
+              placeholder="e.g. new global business hubs"
+              rows={2}
+              disabled={loading}
+              className="bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/10 resize-none placeholder:text-white/30 disabled:opacity-40"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-1 flex-1 min-w-[180px]">
+              <label className="text-xs text-white/60">Title (optional)</label>
+              <input
+                type="text"
+                value={manualTitle}
+                onChange={e => setManualTitle(e.target.value)}
+                placeholder="e.g. Shifting Economic Power"
+                disabled={loading}
+                className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30 disabled:opacity-40"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1 flex-1 min-w-[180px]">
+              <label className="text-xs text-white/60">Angle (optional)</label>
+              <input
+                type="text"
+                value={manualAngle}
+                onChange={e => setManualAngle(e.target.value)}
+                placeholder="e.g. young workers vs established cities"
+                disabled={loading}
+                className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30 disabled:opacity-40"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-white/60">Context / notes (optional)</label>
+            <input
+              type="text"
+              value={manualNotes}
+              onChange={e => setManualNotes(e.target.value)}
+              placeholder="e.g. Abstract from current trends; no real city names"
+              disabled={loading}
+              className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30 disabled:opacity-40"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Controls row */}
       <div className="flex flex-wrap gap-4 items-end">
@@ -248,6 +354,9 @@ export default function SeedBatchPanel() {
       <p className="text-[11px] text-white/40">
         ~{estimatedCalls} OpenRouter call{estimatedCalls !== 1 ? 's' : ''}{' '}
         ({locale === 'all' ? `${count} EN + ${count} IT` : `${count} ${locale.toUpperCase()}`})
+        {seedMode === 'manual' && (
+          <span className="text-purple-400/70 font-semibold ml-1">— manual seed topic</span>
+        )}
         {dryRun && <span className="text-blue-400 font-semibold ml-1">— preview only, no Redis writes</span>}
         {autoPublish && !dryRun && (
           <span className="text-emerald-400/80 font-semibold ml-1">
@@ -258,7 +367,7 @@ export default function SeedBatchPanel() {
 
       <button
         onClick={runBatch}
-        disabled={loading}
+        disabled={!canRun}
         aria-busy={loading}
         className={`font-semibold rounded px-5 py-2 text-sm transition-colors text-white disabled:opacity-40 ${
           dryRun

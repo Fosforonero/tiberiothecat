@@ -287,6 +287,35 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // ── Validate manualSeed ────────────────────────────────────────────────────
+  const rawManualSeed: unknown = body.manualSeed
+  let manualSeed: { topic: string; title?: string; angle?: string; notes?: string } | undefined
+
+  if (rawManualSeed !== undefined) {
+    if (typeof rawManualSeed !== 'object' || rawManualSeed === null) {
+      return NextResponse.json({ error: 'invalid_manual_seed' }, { status: 400 })
+    }
+    const ms = rawManualSeed as Record<string, unknown>
+    if (typeof ms.topic !== 'string' || ms.topic.trim().length < 3 || ms.topic.trim().length > 200) {
+      return NextResponse.json({ error: 'invalid_manual_seed_topic' }, { status: 400 })
+    }
+    if (ms.title !== undefined && (typeof ms.title !== 'string' || ms.title.trim().length > 120)) {
+      return NextResponse.json({ error: 'invalid_manual_seed_title' }, { status: 400 })
+    }
+    if (ms.angle !== undefined && (typeof ms.angle !== 'string' || ms.angle.trim().length > 240)) {
+      return NextResponse.json({ error: 'invalid_manual_seed_angle' }, { status: 400 })
+    }
+    if (ms.notes !== undefined && (typeof ms.notes !== 'string' || ms.notes.trim().length > 600)) {
+      return NextResponse.json({ error: 'invalid_manual_seed_notes' }, { status: 400 })
+    }
+    manualSeed = {
+      topic: (ms.topic as string).trim(),
+      ...(ms.title ? { title: (ms.title as string).trim() } : {}),
+      ...(ms.angle ? { angle: (ms.angle as string).trim() } : {}),
+      ...(ms.notes ? { notes: (ms.notes as string).trim() } : {}),
+    }
+  }
+
   // ── Validate topics override ────────────────────────────────────────────────
   const rawTopics: unknown = body.topics
   let customTopics: string[] | undefined
@@ -334,10 +363,35 @@ export async function POST(request: NextRequest) {
     .filter(a => (archetypeSaturation.get(a.id) ?? 0) >= ARCHETYPE_THRESHOLD)
     .map(a => a.label)
 
-  // ── Build topic list ────────────────────────────────────────────────────────
-  const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category }> = []
+  // manualSeed and customTopics are mutually exclusive
+  if (manualSeed !== undefined && customTopics !== undefined) {
+    return NextResponse.json(
+      { error: 'invalid_request', message: 'Cannot combine manualSeed with topics override.' },
+      { status: 400 },
+    )
+  }
 
-  if (customTopics !== undefined) {
+  // ── Build topic list ────────────────────────────────────────────────────────
+  const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category; angle?: string; notes?: string }> = []
+
+  if (manualSeed !== undefined) {
+    // Manual seed: same topic repeated `count` times per locale, with optional angle/notes hint.
+    // Preflight and novelty guards still run per-entry.
+    const effectiveTopic = manualSeed.title
+      ? `${manualSeed.title} — ${manualSeed.topic}`
+      : manualSeed.topic
+    const locales: Array<'en' | 'it'> = locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']
+    for (const l of locales) {
+      for (let j = 0; j < count; j++) {
+        topicsToProcess.push({
+          locale:  l,
+          topic:   effectiveTopic,
+          angle:   manualSeed.angle,
+          notes:   manualSeed.notes,
+        })
+      }
+    }
+  } else if (customTopics !== undefined) {
     // Custom topics have no category annotation — targetCategory will be undefined (no hint)
     for (const topic of customTopics) {
       topicsToProcess.push({ locale: locale as 'en' | 'it', topic })
@@ -452,6 +506,8 @@ export async function POST(request: NextRequest) {
       targetCategory: topicsToProcess[i].category,
       inventory:      inventorySummary,
       similarContentWarnings: similarWarnings,
+      angle:          topicsToProcess[i].angle,
+      notes:          topicsToProcess[i].notes,
     })
 
     openRouterCalls++

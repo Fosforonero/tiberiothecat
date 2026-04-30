@@ -3,35 +3,16 @@
 import { useState } from 'react'
 import type { ValidatedCandidate, ValidatedBlogArticle } from '@/lib/content-generation-validate'
 
-type GenType      = 'dilemma' | 'blog_article'
-type GenLocale    = 'en' | 'it'
-type ArticleKind  = 'standard' | 'cornerstone'
-type PanelMode    = 'preview' | 'save'
+type GenLocale   = 'en' | 'it'
+type ArticleKind = 'standard' | 'cornerstone'
 
 interface PreviewResult {
   ok: true
   mode: 'preview'
   candidate: ValidatedCandidate
-  // Blog article bilingual
   translation?: ValidatedBlogArticle | null
   translationFailed?: boolean
   translationError?: string
-}
-
-interface SaveResult {
-  ok: true
-  mode: 'save'
-  savedId: string
-  noveltyScore: number
-  candidate: ValidatedCandidate
-}
-
-interface LowNoveltyResult {
-  ok: false
-  error: 'low_novelty'
-  noveltyScore: number
-  threshold: number
-  candidate: ValidatedCandidate
 }
 
 interface ErrorResult {
@@ -39,13 +20,13 @@ interface ErrorResult {
   raw?: string
 }
 
-type ApiResult = PreviewResult | SaveResult | LowNoveltyResult | ErrorResult
+type ApiResult = PreviewResult | ErrorResult
 
 // Human-readable error messages — raw codes shown as subtitle only
 const ERROR_MESSAGES: Record<string, string> = {
   'field_too_long:body':            'Article body too long for Standard article. Retry as Cornerstone or ask for a shorter draft.',
   'field_too_short:body':           'Article body too short. Try a more specific topic.',
-  'field_missing:question':         'Dilemma question missing in model output. Retry.',
+  'field_missing:question':         'Required field missing from model output. Retry.',
   'parse_failed':                   'Model output was not valid JSON. Retry or try a different topic.',
   'parse_not_object':               'Model output was malformed. Retry.',
   'openrouter_timeout':             'OpenRouter timed out. Try a shorter topic or retry.',
@@ -56,21 +37,16 @@ const ERROR_MESSAGES: Record<string, string> = {
   'openrouter_http_503':            'OpenRouter service unavailable. Retry later.',
   'openrouter_api_error':           'OpenRouter returned an API error. Retry.',
   'openrouter_fetch_failed':        'Network error reaching OpenRouter. Check connectivity.',
-  'low_novelty':                    'Content too similar to existing dilemmas.',
-  'blog_article_save_not_supported':'Blog articles must be manually reviewed — save not available.',
   'invalid_topic':                  'Topic must be 3–200 characters.',
-  'draft_save_failed':              'Failed to save draft to Redis. Retry.',
   'slug_too_short_after_normalize': 'Generated slug too short after normalization. Try a more descriptive topic.',
 }
 
 function friendlyError(code: string): string {
   if (code in ERROR_MESSAGES) return ERROR_MESSAGES[code]
-  // Pattern prefixes
   if (code.startsWith('field_too_long:'))  return `Field too long: "${code.slice('field_too_long:'.length)}". Retry with a shorter topic or switch to Cornerstone.`
   if (code.startsWith('field_too_short:')) return `Field too short: "${code.slice('field_too_short:'.length)}". Topic may be too vague.`
   if (code.startsWith('field_missing:'))   return `Required field missing from model output: "${code.slice('field_missing:'.length)}". Retry.`
   if (code.startsWith('invalid_category:')) return `Invalid category: "${code.slice('invalid_category:'.length)}". Retry.`
-  if (code.startsWith('semantic_review:')) return `Semantic review: ${code.slice('semantic_review:'.length).replace(/_/g, ' ')}.`
   if (code.startsWith('openrouter_http_')) return `OpenRouter HTTP ${code.slice('openrouter_http_'.length)} error. Retry.`
   return code
 }
@@ -122,137 +98,96 @@ function CandidatePreview({ candidate, label, color = 'green' }: { candidate: Va
   )
 }
 
-export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaultType?: GenType }) {
-  const [type, setType]               = useState<GenType>(defaultType)
+export default function GenerateDraftPanel() {
   const [locale, setLocale]           = useState<GenLocale>('en')
   const [topic, setTopic]             = useState('')
   const [articleKind, setArticleKind] = useState<ArticleKind>('standard')
-  const [angle, setAngle]             = useState('')
-  const [notes, setNotes]             = useState('')
-  const [loading, setLoading]         = useState<PanelMode | null>(null)
+  const [loading, setLoading]         = useState(false)
   const [preview, setPreview]         = useState<ValidatedCandidate | null>(null)
   const [translation, setTranslation] = useState<ValidatedBlogArticle | null>(null)
   const [translationFailed, setTranslationFailed] = useState(false)
   const [translationError, setTranslationError]   = useState<string | null>(null)
-  const [savedId, setSavedId]         = useState<string | null>(null)
-  const [lowNovelty, setLowNovelty]   = useState<{ score: number; threshold: number; candidate: ValidatedCandidate } | null>(null)
   const [error, setError]             = useState<string | null>(null)
 
   function reset() {
     setPreview(null)
-    setSavedId(null)
-    setLowNovelty(null)
     setError(null)
     setTranslation(null)
     setTranslationFailed(false)
     setTranslationError(null)
   }
 
-  async function callApi(mode: PanelMode, allowLowNovelty = false) {
-    setLoading(mode)
-    if (mode === 'save') { setLowNovelty(null) }
+  async function callApi() {
+    setLoading(true)
     setError(null)
-    setSavedId(null)
 
     try {
       const res = await fetch('/api/admin/generate-draft', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type,
+          type: 'blog_article',
           locale,
           topic,
-          mode,
-          allowLowNovelty,
-          articleKind: type === 'blog_article' ? articleKind : undefined,
-          angle:  angle.trim()  || undefined,
-          notes:  notes.trim()  || undefined,
+          mode: 'preview',
+          articleKind,
         }),
       })
       const data: ApiResult = await res.json()
 
       if (!res.ok) {
-        if ((data as LowNoveltyResult).error === 'low_novelty') {
-          const lr = data as LowNoveltyResult
-          setLowNovelty({ score: lr.noveltyScore, threshold: lr.threshold, candidate: lr.candidate })
-          setPreview(lr.candidate)
-        } else {
-          setError((data as ErrorResult).error ?? 'unknown_error')
-        }
+        setError((data as ErrorResult).error ?? 'unknown_error')
         return
       }
 
-      const ok = data as PreviewResult | SaveResult
+      const ok = data as PreviewResult
       setPreview(ok.candidate)
-
-      if ('translation' in ok) {
-        const pr = ok as PreviewResult
-        setTranslation(pr.translation ?? null)
-        setTranslationFailed(pr.translationFailed ?? false)
-        setTranslationError(pr.translationError ?? null)
-      }
-
-      if (ok.mode === 'save') {
-        setSavedId((ok as SaveResult).savedId)
-      }
+      setTranslation(ok.translation ?? null)
+      setTranslationFailed(ok.translationFailed ?? false)
+      setTranslationError(ok.translationError ?? null)
     } catch {
       setError('openrouter_fetch_failed')
     } finally {
-      setLoading(null)
+      setLoading(false)
     }
   }
 
-  const canSave = type === 'dilemma'
   const topicOk = topic.trim().length >= 3
-
   const targetLocaleLabel = locale === 'en' ? '🇮🇹 IT' : '🇺🇸 EN'
 
   return (
-    <section className="bg-white/5 rounded-xl p-6 space-y-4" aria-label="Generate Draft Panel">
+    <section className="bg-white/5 rounded-xl p-6 space-y-4" aria-label="Generate Article Draft Panel">
       <div className="flex items-center gap-3 flex-wrap">
-        <h2 className="text-lg font-bold text-white">Generate Draft</h2>
+        <h2 className="text-lg font-bold text-white">Generate Article Draft</h2>
         <span className="text-xs text-yellow-400 border border-yellow-400/40 rounded px-2 py-0.5">
           🔒 admin-only — never auto-published
         </span>
       </div>
 
+      <p className="text-white/50 text-xs">
+        Articles are preview-only and generated bilingually. Copy the output to{' '}
+        <code className="font-mono">lib/blog.ts</code> after editorial review. For dilemma drafts, use Seed Draft Batch below.
+      </p>
+
       {/* Controls */}
       <div className="flex flex-wrap gap-3">
-        {/* Type */}
+        {/* Article kind */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="gen-type" className="text-xs text-white/60">Type</label>
+          <label htmlFor="gen-article-kind" className="text-xs text-white/60">Article kind</label>
           <select
-            id="gen-type"
-            value={type}
-            onChange={e => { setType(e.target.value as GenType); reset() }}
+            id="gen-article-kind"
+            value={articleKind}
+            onChange={e => { setArticleKind(e.target.value as ArticleKind); reset() }}
             className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10"
           >
-            <option value="dilemma">Dilemma</option>
-            <option value="blog_article">Blog Article (preview only)</option>
+            <option value="standard">Standard (500–750 words)</option>
+            <option value="cornerstone">Cornerstone (1200–1500 words)</option>
           </select>
         </div>
 
-        {/* Article kind — only for blog_article */}
-        {type === 'blog_article' && (
-          <div className="flex flex-col gap-1">
-            <label htmlFor="gen-article-kind" className="text-xs text-white/60">Article kind</label>
-            <select
-              id="gen-article-kind"
-              value={articleKind}
-              onChange={e => { setArticleKind(e.target.value as ArticleKind); reset() }}
-              className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10"
-            >
-              <option value="standard">Standard (500–750 words)</option>
-              <option value="cornerstone">Cornerstone (1200–1500 words)</option>
-            </select>
-          </div>
-        )}
-
-        {/* Locale */}
+        {/* Source locale */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="gen-locale" className="text-xs text-white/60">
-            {type === 'blog_article' ? 'Source locale' : 'Locale'}
-          </label>
+          <label htmlFor="gen-locale" className="text-xs text-white/60">Source locale</label>
           <select
             id="gen-locale"
             value={locale}
@@ -265,11 +200,9 @@ export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaul
         </div>
       </div>
 
-      {type === 'blog_article' && (
-        <p className="text-[11px] text-purple-300/60">
-          ✨ Both {locale === 'en' ? '🇺🇸 EN' : '🇮🇹 IT'} source and {targetLocaleLabel} translation will be generated automatically.
-        </p>
-      )}
+      <p className="text-[11px] text-purple-300/60">
+        ✨ Both {locale === 'en' ? '🇺🇸 EN' : '🇮🇹 IT'} source and {targetLocaleLabel} translation will be generated automatically.
+      </p>
 
       {/* Topic */}
       <div className="flex flex-col gap-1">
@@ -278,72 +211,28 @@ export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaul
           id="gen-topic"
           value={topic}
           onChange={e => { setTopic(e.target.value); reset() }}
-          placeholder="e.g. AI replacing doctors, climate sacrifice, privacy vs security…"
+          placeholder="e.g. Why people disagree on AI ethics, The psychology of moral dilemmas…"
           rows={2}
           className="bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/10 resize-none placeholder:text-white/30"
         />
       </div>
 
-      {/* Dilemma-specific: angle + notes */}
-      {type === 'dilemma' && (
-        <div className="flex flex-wrap gap-3">
-          <div className="flex flex-col gap-1 flex-1 min-w-[180px]">
-            <label htmlFor="gen-angle" className="text-xs text-white/60">Angle (optional)</label>
-            <input
-              id="gen-angle"
-              type="text"
-              value={angle}
-              onChange={e => { setAngle(e.target.value); reset() }}
-              placeholder="e.g. young workers vs established cities"
-              className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30"
-            />
-          </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-[180px]">
-            <label htmlFor="gen-notes" className="text-xs text-white/60">Context / notes (optional)</label>
-            <input
-              id="gen-notes"
-              type="text"
-              value={notes}
-              onChange={e => { setNotes(e.target.value); reset() }}
-              placeholder="e.g. inspired by report on remote work, abstract only"
-              className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Action buttons */}
-      <div className="flex gap-3 flex-wrap">
+      {/* Action button */}
+      <div className="flex gap-3 flex-wrap items-center">
         <button
-          onClick={() => callApi('preview')}
-          disabled={!topicOk || loading !== null}
-          aria-busy={loading === 'preview'}
+          onClick={callApi}
+          disabled={!topicOk || loading}
+          aria-busy={loading}
           className="bg-white/10 hover:bg-white/20 disabled:opacity-40 text-white font-semibold rounded px-5 py-2 text-sm transition-colors border border-white/10"
         >
-          {loading === 'preview'
-            ? (type === 'blog_article' ? 'Generating + translating…' : 'Generating…')
-            : 'Preview'}
+          {loading ? 'Generating + translating…' : 'Preview'}
         </button>
-
-        {canSave && (
-          <button
-            onClick={() => callApi('save')}
-            disabled={!topicOk || loading !== null}
-            aria-busy={loading === 'save'}
-            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-semibold rounded px-5 py-2 text-sm transition-colors"
-          >
-            {loading === 'save' ? 'Saving…' : 'Save as draft'}
-          </button>
-        )}
-
-        {!canSave && (
-          <span className="text-xs text-white/40 self-center">
-            Blog articles require manual review — save not available
-          </span>
-        )}
+        <span className="text-xs text-white/40">
+          Blog articles require manual review — save not available
+        </span>
       </div>
 
-      {loading === 'preview' && type === 'blog_article' && (
+      {loading && (
         <p role="status" className="text-purple-300/60 text-xs animate-pulse">
           Step 1: generating {locale.toUpperCase()} article… Step 2: translating to {targetLocaleLabel} — please wait, do not close this tab.
         </p>
@@ -357,44 +246,17 @@ export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaul
         </div>
       )}
 
-      {/* Save success */}
-      {savedId && (
-        <div role="status" className="text-green-400 text-sm bg-green-900/20 rounded p-3 border border-green-500/20 flex items-center gap-2">
-          ✓ Saved to draft queue — ID: <code className="font-mono text-xs">{savedId}</code>
-          <span className="text-green-300/60 text-xs ml-1">visible in Dynamic Dilemmas ↓</span>
-        </div>
-      )}
-
-      {/* Low novelty blocker */}
-      {lowNovelty && !savedId && (
-        <div role="alert" className="bg-orange-900/20 rounded p-3 border border-orange-500/20 space-y-2">
-          <p className="text-orange-300 text-sm font-semibold">
-            ⚠ Novelty too low ({lowNovelty.score}/100 — threshold: {lowNovelty.threshold})
-          </p>
-          <p className="text-orange-200/70 text-xs">
-            This content is too similar to existing dilemmas. Preview is shown below.
-          </p>
-          <button
-            onClick={() => callApi('save', true)}
-            disabled={loading !== null}
-            className="text-xs font-bold px-3 py-1.5 rounded bg-orange-500/20 border border-orange-500/30 text-orange-300 hover:bg-orange-500/30 disabled:opacity-40 transition-colors"
-          >
-            {loading === 'save' ? 'Saving…' : 'Save anyway (override dedup guard)'}
-          </button>
-        </div>
-      )}
-
       {/* Preview — source article */}
       {preview && (
         <div className="space-y-4 pt-2 border-t border-white/10">
           <CandidatePreview
             candidate={preview}
-            label={type === 'blog_article' ? `${locale === 'en' ? '🇺🇸' : '🇮🇹'} Source (${locale.toUpperCase()})` : 'Preview'}
+            label={`${locale === 'en' ? '🇺🇸' : '🇮🇹'} Source (${locale.toUpperCase()})`}
             color="green"
           />
 
           {/* Translation */}
-          {type === 'blog_article' && translation && (
+          {translation && (
             <CandidatePreview
               candidate={translation}
               label={`${targetLocaleLabel} Translation`}
@@ -402,7 +264,7 @@ export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaul
             />
           )}
 
-          {type === 'blog_article' && translationFailed && (
+          {translationFailed && (
             <div className="text-orange-400 text-xs bg-orange-900/20 rounded p-2 border border-orange-500/20 space-y-1">
               <p>⚠ Translation to {targetLocaleLabel} failed — source preview above is valid.</p>
               {translationError && (
