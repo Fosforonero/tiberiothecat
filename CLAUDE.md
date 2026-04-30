@@ -12,7 +12,7 @@ SplitVote is a real-time moral dilemma voting platform:
 
 Current phase: soft launch -> pre-scaling.
 
-Known blocker (external, requires manual action): Stripe live `STRIPE_PRICE_ID_PREMIUM` is a one-time price; code uses `mode: 'subscription'` — Premium checkout blocked in production until Matteo creates a recurring price in Stripe dashboard and updates the Vercel env var. Remediation documented in `LAUNCH_AUDIT.md`.
+Stripe status (29 Apr 2026): `STRIPE_PRICE_ID_PREMIUM` in Vercel Production was corrected — env var previously contained a Stripe Secret Key instead of a Price ID. Now set to the recurring monthly Price ID (`price_1TQZuO6MLlYKqmclQm57kmvI`, €4.99/month). Code was already correct (`mode: 'subscription'`). No runtime changes required. Manual live checkout QA still pending before promoting Premium to real users. See `LAUNCH_AUDIT.md` for QA runbook.
 
 ## Stack
 
@@ -35,6 +35,7 @@ Before planning or editing, read:
 - `PRODUCT_STRATEGY.md` — staged product direction and non-goals
 - `LEGAL.md` — legal/compliance triggers and gaps
 - `LAUNCH_AUDIT.md` — launch blockers and production readiness
+- `CURRENT_HANDOFF.md` — latest PM handoff for the next Claude session, if present
 
 For sprint-specific work, also read the files named in the user prompt.
 

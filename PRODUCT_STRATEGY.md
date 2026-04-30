@@ -4,7 +4,7 @@ Working PM notes for premium, user-generated polls, learning paths, social growt
 
 This file is intentionally strategic. Implementation prompts must still be scoped as small production-safe sprints.
 
-Last reviewed: 28 Apr 2026 (Social Share + Insight + Content QA Polish sprint)
+Last reviewed: 30 Apr 2026 (field feedback intake — core loop clarity and roadmap reprioritization)
 
 ---
 
@@ -37,10 +37,145 @@ Current priority override:
 - Fix the core loop before adding more monetization or personality complexity.
 - "Next dilemma" must avoid questions the user already answered whenever possible.
 - Vote changes must be obvious and low-friction.
+- New field feedback priority (30 Apr 2026): users must immediately understand that SplitVote is a social voting game, why answering matters, what reward they get after answering, and why sharing a question is useful before any heavier feature work.
 - Add gamified paths only after the basic fresh-question loop is reliable.
 - Share should focus on questions and live aggregate results, not exposing a user's own vote by default.
 - Post-vote insights are a strong retention feature; keep improving quality, specificity, and localization.
 - Content QA/refuso checks are production polish, especially for AI-generated approved dilemmas.
+
+---
+
+## Field Feedback Intake — 30 Apr 2026
+
+People shown the live product understood the concept only partially. The most important signal is not "add more features" yet; it is that the core loop needs clearer motivation and a sharper audience promise.
+
+### Product Diagnosis
+
+- The product does not yet communicate a clear enough vocation: who it is for, why people should answer dilemmas, and what emotional/social reward comes next.
+- The current loop can feel like a utility poll instead of a game. Users asked for more dopamine, clearer progression, and a reason to keep answering.
+- The companion/pet concept exists but is not self-explanatory enough. It should feel like a visible progress/reward mechanic, not a decorative unknown.
+- Login affordance should use a conventional user/profile icon. The current door-style icon is ambiguous.
+- Sharing should not wait until after the vote only. Users should be able to share a question before answering, especially from home/play/card surfaces.
+- Topic discovery should move from generic categories toward audience-relevant macro areas and paths.
+- Current-events dilemmas are a major content opportunity, but require editorial and legal guardrails.
+
+### Roadmap Interpretation
+
+Do not treat all feedback as immediate implementation. Sequence it as:
+
+1. Close pending technical work and QA.
+2. Run a read-only analytics audit so product decisions can be measured.
+3. Clarify the core loop and visual language.
+4. Add pre-vote question sharing.
+5. Add aggregate public leaderboards.
+6. Add macro-area paths for clear audiences.
+7. Add current-events dilemma workflow with admin review.
+
+### Core Loop Clarity Sprint
+
+Goal: make the first session understandable without explanation.
+
+Scope:
+
+- Replace ambiguous login icon with a standard user/profile icon.
+- Explain the game loop in one tight line near the primary CTA: answer dilemmas, compare with the world, grow your moral profile.
+- Make XP/streak/archetype/companion rewards visible before users invest time.
+- Reframe the companion as a progress companion or moral companion with clear labels and unlock logic.
+- Improve home/play copy so answering feels consequential and game-like.
+- Keep anonymous voting frictionless.
+
+Out of scope:
+
+- New DB schema.
+- New reward economy.
+- Paid features.
+- Leaderboards.
+- News automation.
+
+### Share Question Before Vote Sprint
+
+Goal: let users create top-of-funnel social traffic without exposing a personal vote.
+
+Scope:
+
+- Add a standard share icon/action on home, dilemma cards, and play page where appropriate.
+- Share the question with neutral copy: "What would you choose?" / "Tu cosa sceglieresti?"
+- Use Web Share API with clipboard fallback.
+- Preserve EN/IT parity.
+- Track only existing consent-safe analytics if already available; any new analytics event requires `LEGAL.md` check.
+
+Out of scope:
+
+- Auto-posting.
+- Sharing the user's selected vote by default.
+- New social API integrations.
+
+### Leaderboards Direction
+
+Leaderboards are useful, but order matters:
+
+1. Most-voted dilemmas/topics: safest first, aggregate-only, strong discovery value.
+2. Archetype leaderboard: aggregate distribution of moral archetypes, no personal ranking.
+3. Voter leaderboard: later only, account-based, opt-in or privacy-reviewed, no pressure to reveal private voting behavior.
+
+Do not launch personal voter rankings without reviewing public profile visibility, privacy controls, and legal copy.
+
+### Macro Areas / Audience Paths
+
+Macro areas should clarify "who this is for" and improve session intent. Start editorially before adding heavy taxonomy.
+
+Candidate macro areas:
+
+- Parents: children, adolescence, school, smartphones, discipline, family boundaries.
+- Couples: jealousy, money, cohabitation, betrayal, family pressure.
+- Work: career, colleagues, burnout, leadership, salary fairness.
+- Technology: AI, privacy, automation, social platforms, surveillance.
+- Society: justice, taxes, safety, immigration, public services.
+- Young adults: friendship, school/university, future, social pressure, independence.
+
+Implementation preference:
+
+- Start with curated landing/path pages using existing category/path mechanics where possible.
+- Avoid a taxonomy migration until the editorial paths prove useful.
+
+### Current-Events Dilemmas
+
+Recent-news dilemmas can make SplitVote feel alive, especially for Italy, Europe, USA, and world events.
+
+Rules:
+
+- Every current-events draft needs a source or source summary in admin context.
+- Dilemmas must frame a moral/social choice, not ask users to adjudicate facts or accuse named people.
+- Avoid defamatory claims, medical/legal advice, and active misinformation.
+- Admin review remains mandatory before publication.
+- Prefer time-bounded tags such as Italy, Europe, USA, World, and date/week labels.
+- Autopublish should remain off for current-events content until quality and legal review are proven.
+
+### AI-Assisted Localization
+
+AI translation tooling can help, but live automatic translation should not drive public pages.
+
+Preferred model:
+
+- Keep public copy committed as reviewed source text.
+- Use AI or a localization tool to draft translations.
+- Human-review and commit approved strings.
+- Consider Lokalise/Loco-style tooling only after copy is centralized enough that another locale will not multiply fragile client logic.
+
+Do not add Spanish, PT-BR, or French until the core loop, share flow, macro paths, and analytics are stable.
+
+### Picoclaw / External Agent Sidecar
+
+Picoclaw-style automation is interesting as an operational sidecar, not as a user-facing dependency in the core app.
+
+Potential uses:
+
+- Daily news/topic monitoring for admin-reviewed dilemma ideas.
+- Reminder bot for QA, deploy checks, stale docs, and content queue health.
+- Daily report on votes, top dilemmas, weak categories, and draft inventory.
+- Lightweight orchestration outside Vercel runtime for research or admin workflows.
+
+Do not integrate it into the product runtime before the core loop and content workflow are stable.
 
 ---
 

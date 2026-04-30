@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 29 Aprile 2026 — Role Management MVP security correction pass
+Ultimo aggiornamento: 30 Aprile 2026 — Field feedback priority queue + session handoff
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -34,6 +34,52 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 
 Agente da usare: `.claude/agents/mobile-app-readiness-reviewer.md`
 Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
+
+---
+
+## Next Session / 30 Apr 2026
+
+**Shipped today (29 Apr 2026, 17 commits):**
+✅ Role management MVP · Category editorial SEO · Stripe env fix (docs) · Mission claim reminders · Feedback scoring hardening · Homepage CTA · Viral share copy · Mobile nav landscape fix · Admin roles mobile fix · Governed seed batch · Preflight similarity guard · Dynamic pool uncapped · Admin totals fix · Seed topic diversity · Novelty-first generation · Semantic novelty review
+
+**Shipped (30 Apr 2026):**
+✅ Post-vote delayed social comparison reveal — committed `8a5dbad`, pending deploy + QA
+
+### Needs QA
+
+- [ ] Stripe Premium checkout live UI — recurring monthly plan shown, end-to-end payment with real card
+- [ ] Name-change live checkout
+- [ ] Delayed reveal mobile portrait/landscape — after deploy
+- [ ] Delayed reveal prefers-reduced-motion — DevTools emulation after deploy
+- [ ] Semantic review behavior — 5–10 IT dilemmas via admin seed batch dry run
+
+### Started / Partially Implemented
+
+- **Social comparison layer** — Phase 1 (500ms reveal) shipped; analytics events + reconsideration prompt not started
+- **AI generation at scale** — governed batch + semantic review done; IT quality run not yet validated; progress bar UX not started
+- **Blog generation pipeline** — static articles done; generation quality audit not started
+- **Stripe live QA** — config fixed, Preview QA done; end-to-end live payment not done
+
+### Candidate Sprints
+
+1. **AI generation progress bar** — progress indicator for seed batch; reduces timeout UX risk at 15–20 items
+2. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
+3. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
+4. **Generate 15 high-quality IT dilemmas** — only after semantic review dry-run validation on IT content
+5. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality
+
+### PM Priority Queue — Field Feedback 30 Apr 2026
+
+Feedback from real viewers changed the near-term product priority. After Sprint 1 closes the delayed reveal/docs pending work, do not jump directly into heavier monetization or AI UX. First make the product easier to understand, share, and measure.
+
+1. **Google Analytics audit (read-only)** — verify GA4/env/proxy/consent/events before judging product changes. No code fixes in the audit unless explicitly promoted to a separate sprint.
+2. **Core loop clarity** — make it obvious that SplitVote is a social voting game: why answer, what happens after voting, what XP/streak/archetype/companion mean, and who the product is for. Include login icon clarity and companion copy/visual clarity.
+3. **Pre-vote question sharing** — standard share icon on home/play/dilemma cards; share the question with neutral copy before a user votes; keep selected vote private by default.
+4. **Aggregate leaderboards MVP** — start with most-voted dilemmas/topics, then archetype distribution. Personal voter leaderboard comes later only with privacy controls and legal review.
+5. **Macro-area paths** — curated paths for audiences such as parents, couples, work, technology, society, and young adults, using existing category/path mechanics before schema changes.
+6. **Current-events dilemma workflow** — Italy/Europe/USA/World news-inspired dilemmas with source context, admin review, no autopublish, and legal/editorial guardrails.
+7. **AI-assisted localization workflow** — use AI/tooling for draft translations only; public copy remains reviewed and committed. Do not add new locales until the core loop/share/analytics base is stable.
+8. **Picoclaw sidecar evaluation** — consider only as an ops/research assistant for topic monitoring, QA reminders, and daily reports; not a product-runtime dependency.
 
 ---
 
@@ -160,7 +206,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 - ✅ Audit statico completo: webhook lifecycle, idempotency, AdSlot, entitlements, log safety
 - ✅ Bug fix: try/catch su chiamate Stripe API (checkout, subscription, portal)
 - ✅ QA Vercel Preview eseguito (28 Apr 2026) — backend/webhook/entitlements verified — vedi sprint "Stripe Preview QA" sopra
-- ⛔ Blocker produzione: live Premium price è one-time, non ricorrente — richiede fix prima del go-live
+- ✅ Blocker produzione risolto (29 Apr 2026): `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key invece di un Price ID — corretta il 29 Apr con il Price ID del prodotto SplitVote Premium (recurring monthly, €4.99/mese). QA checkout live ancora pending.
 
 **Nessuna modifica a**: codice runtime, Stripe env in produzione, pricing, Supabase schema, Redis, vote flow, analytics, i18n.
 
