@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPostsByLocale } from '@/lib/blog'
+import BlogShareButton from '@/components/BlogShareButton'
 
 export const revalidate = 86400
 
@@ -32,13 +33,13 @@ export default function ITBlogIndexPage() {
   const posts = getPostsByLocale('it')
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
+    <div className="max-w-4xl mx-auto px-4 py-16">
       <div className="mb-12">
         <Link href="/it" className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-6 inline-block">
           ← Home
         </Link>
         <h1 className="text-3xl md:text-4xl font-black text-[var(--text)] mb-3">Blog</h1>
-        <p className="text-[var(--muted)] text-base leading-relaxed">
+        <p className="text-[var(--muted)] text-base leading-relaxed max-w-2xl">
           Letture brevi su filosofia morale, etica e la psicologia dietro le scelte impossibili.
           Ogni articolo è collegato a dilemmi reali su cui puoi votare.
         </p>
@@ -46,30 +47,37 @@ export default function ITBlogIndexPage() {
 
       <div className="neon-divider mb-10 max-w-xs" />
 
-      <div className="grid gap-6">
+      <div className="grid gap-6 md:grid-cols-2">
         {posts.map((post) => (
-          <Link
+          <article
             key={post.slug}
-            href={`/it/blog/${post.slug}`}
-            className="group block rounded-2xl border border-[var(--border)] p-6 hover:border-[var(--border-hi)] hover:bg-white/5 transition-all"
+            className="group flex flex-col rounded-2xl border border-[var(--border)] hover:border-[var(--border-hi)] hover:bg-white/5 transition-all"
           >
-            <div className="flex flex-wrap gap-2 mb-3">
-              {post.tags.slice(0, 2).map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <h2 className="text-lg font-black text-[var(--text)] group-hover:text-white transition-colors mb-2 leading-snug">
-              {post.title}
-            </h2>
-            <p className="text-[var(--muted)] text-sm leading-relaxed mb-4">
-              {post.description}
-            </p>
-            <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+            {/* Clickable upper area: tags + title + description */}
+            <Link
+              href={`/it/blog/${post.slug}`}
+              className="block p-6 pb-3 flex-1"
+            >
+              <div className="flex flex-wrap gap-2 mb-3">
+                {post.tags.slice(0, 2).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h2 className="text-lg font-black text-[var(--text)] group-hover:text-white transition-colors mb-2 leading-snug">
+                {post.title}
+              </h2>
+              <p className="text-[var(--muted)] text-sm leading-relaxed">
+                {post.description}
+              </p>
+            </Link>
+
+            {/* Footer: date · read time · share · read CTA */}
+            <div className="px-6 pb-5 flex items-center gap-2 text-xs text-[var(--muted)] flex-wrap">
               <time dateTime={post.date}>
                 {new Date(post.date).toLocaleDateString('it-IT', {
                   year: 'numeric',
@@ -79,11 +87,25 @@ export default function ITBlogIndexPage() {
               </time>
               <span>·</span>
               <span>{post.readingTime} min di lettura</span>
-              <span className="ml-auto text-violet-400 font-semibold group-hover:translate-x-0.5 transition-transform">
-                Leggi →
-              </span>
+              <div className="ml-auto flex items-center gap-2">
+                <BlogShareButton
+                  title={post.title}
+                  text={post.description}
+                  url={`${BASE}/it/blog/${post.slug}`}
+                  locale="it"
+                  slug={post.slug}
+                  target="blog_card"
+                />
+                <Link
+                  href={`/it/blog/${post.slug}`}
+                  aria-label={`Leggi ${post.title}`}
+                  className="text-violet-400 font-semibold hover:translate-x-0.5 transition-transform inline-block"
+                >
+                  Leggi →
+                </Link>
+              </div>
             </div>
-          </Link>
+          </article>
         ))}
       </div>
 

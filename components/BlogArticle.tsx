@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import type { BlogPost } from '@/lib/blog'
+import { postUrl } from '@/lib/blog'
 import { scenarios } from '@/lib/scenarios'
+import { translateScenarioToItalian } from '@/lib/scenarios-it'
+import BlogShareButton from '@/components/BlogShareButton'
 
 interface Props {
   post: BlogPost
@@ -8,7 +11,9 @@ interface Props {
 }
 
 export default function BlogArticle({ post, localePrefix = '' }: Props) {
-  const relatedScenarios = scenarios.filter((s) => post.relatedDilemmaIds.includes(s.id))
+  const relatedScenarios = scenarios
+    .filter((s) => post.relatedDilemmaIds.includes(s.id))
+    .map((s) => post.locale === 'it' ? translateScenarioToItalian(s) : s)
   const blogIndexHref = localePrefix ? `${localePrefix}/blog` : '/blog'
   const backLabel = localePrefix === '/it' ? '← Blog' : '← Blog'
 
@@ -40,7 +45,7 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
         <p className="text-[var(--muted)] text-base leading-relaxed mb-4">
           {post.description}
         </p>
-        <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+        <div className="flex items-center gap-3 text-xs text-[var(--muted)] flex-wrap">
           <time dateTime={post.date}>
             {new Date(post.date).toLocaleDateString(
               post.locale === 'it' ? 'it-IT' : 'en-US',
@@ -49,6 +54,14 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
           </time>
           <span>·</span>
           <span>{post.readingTime} {post.locale === 'it' ? 'min di lettura' : 'min read'}</span>
+          <BlogShareButton
+            title={post.seoTitle}
+            text={post.seoDescription}
+            url={postUrl(post)}
+            locale={post.locale}
+            slug={post.slug}
+            target="blog_article"
+          />
         </div>
       </header>
 
