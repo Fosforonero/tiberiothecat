@@ -1,8 +1,7 @@
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { getCachedDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Scenario } from '@/lib/scenarios'
-import { getVotesBatchDetail } from '@/lib/redis'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
@@ -31,7 +30,7 @@ export default async function TrendingPage() {
   // ── All scenarios (static + dynamic approved) ─────────────────
   let dynamicScenarios: DynamicScenario[] = []
   try {
-    const all = await getDynamicScenarios()
+    const all = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
     dynamicScenarios = all.filter((d) => !staticIds.has(d.id))
   } catch { /* Redis unavailable */ }
@@ -41,7 +40,8 @@ export default async function TrendingPage() {
   // ── Vote detail for leaderboard (one pipeline round-trip) ─────
   let voteDetail = new Map<string, { a: number; b: number }>()
   try {
-    voteDetail = await getVotesBatchDetail(allScenarios.slice(0, 100).map(s => s.id))
+    const obj = await getCachedVotesBatchDetail(allScenarios.slice(0, 100).map(s => s.id))
+    voteDetail = new Map(Object.entries(obj))
   } catch { /* Redis unavailable */ }
 
   // ── Top dilemmas (all-time most voted) ────────────────────────

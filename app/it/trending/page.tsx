@@ -1,11 +1,10 @@
 /**
  * /it/trending — Classifiche aggregate e dilemmi di tendenza italiani.
  */
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { getCachedDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Scenario } from '@/lib/scenarios'
-import { getVotesBatchDetail } from '@/lib/redis'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
@@ -45,7 +44,7 @@ export default async function ItTrendingPage() {
   let allDynamic: DynamicScenario[] = []
   let itDynamic: DynamicScenario[] = []
   try {
-    const all = await getDynamicScenarios()
+    const all = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
     allDynamic = all.filter((d) => !staticIds.has(d.id))
     itDynamic = allDynamic.filter(s => s.locale === 'it')
@@ -56,7 +55,8 @@ export default async function ItTrendingPage() {
   // ── Vote detail for leaderboard (one pipeline round-trip) ─────
   let voteDetail = new Map<string, { a: number; b: number }>()
   try {
-    voteDetail = await getVotesBatchDetail(allScenarios.slice(0, 100).map(s => s.id))
+    const obj = await getCachedVotesBatchDetail(allScenarios.slice(0, 100).map(s => s.id))
+    voteDetail = new Map(Object.entries(obj))
   } catch { /* Redis unavailable */ }
 
   // ── Top dilemmas (all-time most voted) ────────────────────────

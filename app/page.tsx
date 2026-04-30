@@ -1,8 +1,6 @@
 import { scenarios } from '@/lib/scenarios'
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getVotesBatch } from '@/lib/redis'
-import { getTrendingScenarioIds24h } from '@/lib/trending'
+import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
 import AdSlot from '@/components/AdSlot'
@@ -25,7 +23,7 @@ function getDailyScenario(all: Scenario[]): Scenario {
 export default async function HomePage() {
   let dynamicScenarios: DynamicScenario[] = []
   try {
-    dynamicScenarios = await getDynamicScenarios()
+    dynamicScenarios = await getCachedDynamicScenarios()
   } catch {
     // Redis unavailable
   }
@@ -42,8 +40,8 @@ export default async function HomePage() {
   let voteMap = new Map<string, number>()
   let trendingIds: string[] = []
   const [voteMapResult, trendingResult] = await Promise.allSettled([
-    getVotesBatch(batchIds),
-    getTrendingScenarioIds24h(allScenarios.map(s => s.id), 6),
+    getCachedVotesBatch(batchIds).then(obj => new Map(Object.entries(obj))),
+    getCachedTrendingIds(allScenarios.map(s => s.id), 6),
   ])
   if (voteMapResult.status === 'fulfilled') voteMap = voteMapResult.value
   if (trendingResult.status === 'fulfilled') trendingIds = trendingResult.value

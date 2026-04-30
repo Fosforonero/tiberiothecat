@@ -1,9 +1,7 @@
 import Link from 'next/link'
 import { scenarios } from '@/lib/scenarios'
-import { getDynamicScenariosByLocale } from '@/lib/dynamic-scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getVotesBatch } from '@/lib/redis'
-import { getTrendingScenarioIds24h } from '@/lib/trending'
+import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaCard from '@/components/DilemmaCard'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
@@ -135,7 +133,7 @@ export default async function ItPage() {
   // Dynamic IT dilemmas from Redis
   let dynamicIT: DynamicScenario[] = []
   try {
-    dynamicIT = await getDynamicScenariosByLocale('it')
+    dynamicIT = await getCachedDynamicScenariosByLocale('it')
   } catch { /* Redis unavailable */ }
 
   // Daily dilemma for IT — prefers dynamic IT, falls back to translated static pool
@@ -153,10 +151,11 @@ export default async function ItPage() {
       ...featured.map((s) => s.id),
       ...dynamicIT.slice(0, 12).map((s) => s.id),
     ])
-    voteMap = await getVotesBatch([...ids])
+    const obj = await getCachedVotesBatch([...ids])
+    voteMap = new Map(Object.entries(obj))
   } catch { /* Non-blocking */ }
 
-  const trendingITIds = await getTrendingScenarioIds24h(allITPool.map(s => s.id), 6)
+  const trendingITIds = await getCachedTrendingIds(allITPool.map(s => s.id), 6)
   const itScenarioById = new Map(allITPool.map(s => [s.id, s]))
   const trendingIT = trendingITIds.map(id => itScenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
 
