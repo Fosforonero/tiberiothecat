@@ -81,11 +81,19 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
   }
 
   return (
-    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow"
+    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow relative"
       style={{
         border: '1px solid rgba(255,215,0,0.25)',
         background: 'linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,140,0,0.04) 50%, rgba(255,51,102,0.04) 100%)'
       }}>
+
+      {/* Full-card overlay link — covers non-interactive areas, sits behind CTAs and share button */}
+      <Link
+        href={`${prefix}/play/${scenario.id}`}
+        className="absolute inset-0 z-0"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
       {/* Header bar */}
       <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b"
@@ -126,8 +134,8 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="mt-5 flex items-center gap-3">
+        {/* CTA — relative z-10 so these links are above the full-card overlay */}
+        <div className="relative z-10 mt-5 flex items-center gap-3">
           <Link
             href={`${prefix}/play/${scenario.id}`}
             className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
@@ -143,8 +151,8 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
           </Link>
         </div>
 
-        {/* Pre-vote share — secondary, below primary CTA */}
-        <div className="mt-3 text-center">
+        {/* Pre-vote share — relative z-10 so button is above the full-card overlay */}
+        <div className="relative z-10 mt-3 text-center">
           <button
             onClick={handleShare}
             aria-label={copy.shareQuestion}

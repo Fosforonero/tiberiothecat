@@ -2,13 +2,30 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { getLevelInfo, type MissionId, type MissionState } from '@/lib/missions'
+import { track } from '@/lib/gtag'
 
 interface Props {
   userId: string
   xp: number
   streakDays: number
   locale?: string
+}
+
+const MISSION_TARGETS: Partial<Record<MissionId, string>> = {
+  vote_3:            '/',
+  vote_2_categories: '/',
+  challenge_friend:  '/trending',
+  share_result:      '/trending',
+  daily_dilemma:     '/',
+}
+
+function getMissionTarget(id: MissionId, locale: string): string | undefined {
+  const base = MISSION_TARGETS[id]
+  if (!base) return undefined
+  if (locale === 'it') return base === '/' ? '/it' : `/it${base}`
+  return base
 }
 
 const IT_MISSION_TITLES: Record<string, string> = {
@@ -201,20 +218,25 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
           {sorted.map(m => {
             const isClaiming = claiming === m.id
             const displayTitle = IT ? (IT_MISSION_TITLES[m.id] ?? m.title) : m.title
+            // Only in-progress missions (not claimable, not completed, not comingSoon) get a deep link
+            const target = (!m.completed && !m.claimable && !m.comingSoon)
+              ? getMissionTarget(m.id, locale)
+              : undefined
 
-            return (
-              <div
-                key={m.id}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all ${
-                  m.completed
-                    ? 'border-green-500/30 bg-green-500/10 opacity-75'
-                    : m.comingSoon
-                      ? 'border-white/5 bg-white/3 opacity-50'
-                      : m.claimable
-                        ? 'border-blue-500/40 bg-blue-500/5'
-                        : 'border-[var(--border)] bg-[#0a0a1a]/40'
-                }`}
-              >
+            const cardClassName = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all ${
+              m.completed
+                ? 'border-green-500/30 bg-green-500/10 opacity-75'
+                : m.comingSoon
+                  ? 'border-white/5 bg-white/3 opacity-50'
+                  : m.claimable
+                    ? 'border-blue-500/40 bg-blue-500/5'
+                    : target
+                      ? 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5 min-h-[44px]'
+                      : 'border-[var(--border)] bg-[#0a0a1a]/40'
+            }`
+
+            const cardContent = (
+              <>
                 <span className="text-xl flex-shrink-0">
                   {m.completed ? '✅' : m.comingSoon ? '🔒' : m.icon}
                 </span>
@@ -251,7 +273,7 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
                   <span className="text-xs flex-shrink-0 text-white/20">+{m.xp} XP</span>
                 ) : m.claimable ? (
                   <button
-                    onClick={() => claimMission(m.id)}
+                    onClick={e => { e.stopPropagation(); claimMission(m.id) }}
                     disabled={isClaiming || claiming !== null}
                     aria-busy={isClaiming}
                     className="flex-shrink-0 text-xs font-bold px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white transition-colors"
@@ -263,6 +285,21 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
                     {m.progress}/{m.required}
                   </span>
                 )}
+              </>
+            )
+
+            return target ? (
+              <Link
+                key={m.id}
+                href={target}
+                className={cardClassName}
+                onClick={() => track('mission_target_clicked', { mission_id: m.id, target, locale })}
+              >
+                {cardContent}
+              </Link>
+            ) : (
+              <div key={m.id} className={cardClassName}>
+                {cardContent}
               </div>
             )
           })}
