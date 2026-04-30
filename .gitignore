@@ -35,3 +35,6 @@ next-env.d.ts
 
 # social content factory output — local only, never commit
 /content-output/
+
+# Pixie asset working files — local reference only, never commit
+/public/pixie/**/*-preview-sheet.png
