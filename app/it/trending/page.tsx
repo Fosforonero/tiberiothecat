@@ -1,8 +1,11 @@
 /**
- * /it/trending — Italian trending dilemmas page.
- * Shows AI-generated dilemmas with locale='it' from Redis.
+ * /it/trending — Classifiche aggregate e dilemmi di tendenza italiani.
  */
-import { getDynamicScenariosByLocale } from '@/lib/dynamic-scenarios'
+import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import type { DynamicScenario } from '@/lib/dynamic-scenarios'
+import { scenarios, CATEGORIES } from '@/lib/scenarios'
+import type { Scenario } from '@/lib/scenarios'
+import { getVotesBatchDetail } from '@/lib/redis'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
@@ -10,8 +13,8 @@ import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Dilemmi di Tendenza Oggi | SplitVote',
-  description: 'Dilemmi morali freschi generati ogni giorno dalle notizie più discusse in Italia. Vota e scopri come si divide il mondo in tempo reale.',
+  title: 'Classifiche & Tendenze | SplitVote',
+  description: 'I dilemmi morali più votati di sempre, le categorie top e i nuovi dilemmi AI generati oggi.',
   alternates: {
     canonical: `${BASE_URL}/it/trending`,
     languages: {
@@ -21,8 +24,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Dilemmi di Tendenza Oggi — SplitVote',
-    description: 'Dilemmi morali freschi generati ogni giorno dalle notizie italiane. Aggiornati ogni mattina alle 6:00 UTC.',
+    title: 'Classifiche & Tendenze — SplitVote',
+    description: 'I dilemmi più votati di sempre e i nuovi AI di oggi. Scopri come si divide il mondo.',
     url: `${BASE_URL}/it/trending`,
     locale: 'it_IT',
   },
@@ -30,78 +33,216 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
+function rankIcon(i: number): string {
+  if (i === 0) return '🥇'
+  if (i === 1) return '🥈'
+  if (i === 2) return '🥉'
+  return `#${i + 1}`
+}
+
 export default async function ItTrendingPage() {
-  let dilemmi: Awaited<ReturnType<typeof getDynamicScenariosByLocale>> = []
+  // ── All scenarios (static + dynamic approved, all locales) ────
+  let allDynamic: DynamicScenario[] = []
+  let itDynamic: DynamicScenario[] = []
   try {
-    dilemmi = await getDynamicScenariosByLocale('it')
+    const all = await getDynamicScenarios()
+    const staticIds = new Set(scenarios.map((s) => s.id))
+    allDynamic = all.filter((d) => !staticIds.has(d.id))
+    itDynamic = allDynamic.filter(s => s.locale === 'it')
   } catch { /* Redis unavailable */ }
+
+  const allScenarios: Scenario[] = [...allDynamic, ...scenarios]
+
+  // ── Vote detail for leaderboard (one pipeline round-trip) ─────
+  let voteDetail = new Map<string, { a: number; b: number }>()
+  try {
+    voteDetail = await getVotesBatchDetail(allScenarios.slice(0, 100).map(s => s.id))
+  } catch { /* Redis unavailable */ }
+
+  // ── Top dilemmas (all-time most voted) ────────────────────────
+  const topDilemmas = allScenarios
+    .map(s => {
+      const v = voteDetail.get(s.id) ?? { a: 0, b: 0 }
+      return { ...s, a: v.a, b: v.b, total: v.a + v.b }
+    })
+    .filter(s => s.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10)
+
+  // ── Top categories (aggregate vote count per category) ────────
+  const catMeta = new Map(
+    CATEGORIES.filter(c => c.value !== 'all').map(c => [c.value, { emoji: c.emoji, label: c.label }])
+  )
+  const categoryMap = new Map<string, { count: number; total: number; emoji: string; label: string }>()
+  for (const s of allScenarios) {
+    const v = voteDetail.get(s.id) ?? { a: 0, b: 0 }
+    const meta = catMeta.get(s.category) ?? { emoji: '', label: s.category }
+    const existing = categoryMap.get(s.category) ?? { count: 0, total: 0, ...meta }
+    categoryMap.set(s.category, { ...existing, count: existing.count + 1, total: existing.total + v.a + v.b })
+  }
+  const topCategories = [...categoryMap.entries()]
+    .map(([category, data]) => ({ category, ...data }))
+    .filter(c => c.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8)
+
+  const hasItDynamic = itDynamic.length > 0
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
+
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="inline-block bg-purple-500/10 text-purple-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-purple-500/20">
-          {dilemmi.length > 0 ? '✨ Aggiornato ogni giorno' : '🔥 In evidenza'}
+        <div className="inline-block bg-yellow-500/10 text-yellow-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-yellow-500/20">
+          🏆 Classifiche live
         </div>
         <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
-          Tendenze{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
-            Oggi
+          Top Dilemmi &amp;{' '}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
+            Tendenze
           </span>
         </h1>
         <p className="text-lg text-[var(--muted)] max-w-md mx-auto">
-          {dilemmi.length > 0
-            ? 'Dilemmi morali ispirati alle notizie e ai trend più caldi in Italia. Freschi ogni mattina alle 6:00 UTC.'
-            : 'I dilemmi AI dal feed italiano appaiono alle 6:00 UTC. Riprova domani mattina!'}
+          I più votati di sempre, le categorie top e i nuovi dilemmi AI di oggi.
         </p>
       </div>
 
-      {dilemmi.length > 0 ? (
-        <div className="space-y-4">
-          {dilemmi.map((scenario) => (
-            <Link
-              key={scenario.id}
-              href={`/it/play/${scenario.id}`}
-              className="group block rounded-2xl border border-purple-500/20 bg-[var(--surface)] p-6 hover:border-purple-500/50 hover:bg-[#1a1025] transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <div className="flex items-start gap-4">
-                <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold uppercase tracking-wide">
-                      ✨ tendenza
-                    </span>
-                    <span className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold">
-                      {scenario.category}
-                    </span>
-                    {scenario.trend && (
-                      <span className="text-xs text-[var(--muted)] opacity-60 italic truncate max-w-[200px]">
-                        ispirato da: {scenario.trend}
-                      </span>
-                    )}
-                    <span className="text-xs text-[var(--muted)] opacity-50 ml-auto">
-                      {new Date(scenario.generatedAt).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}
+      {/* ── Più Votati di Sempre ── */}
+      {topDilemmas.length > 0 && (
+        <section className="mb-14">
+          <h2 className="text-xl font-black tracking-tight mb-5 flex items-center gap-2">
+            <span>🏆</span> Più Votati di Sempre
+          </h2>
+          <div className="space-y-3">
+            {topDilemmas.map((s, i) => {
+              const splitA = s.total > 0 ? Math.round((s.a / s.total) * 100) : 0
+              const splitB = 100 - splitA
+              return (
+                <div key={s.id} className="flex items-start gap-3 rounded-2xl bg-[var(--surface)] border border-white/5 p-4 hover:border-white/10 transition-colors">
+                  <span className={`text-sm font-black w-8 flex-shrink-0 text-center pt-1 ${i < 3 ? '' : 'text-white/30'}`}>
+                    {rankIcon(i)}
+                  </span>
+                  <span className="text-2xl flex-shrink-0">{s.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold">{s.category}</span>
+                      <span className="text-xs text-white/30">·</span>
+                      <span className="text-xs text-white/60 font-bold">{s.total.toLocaleString()} voti</span>
+                      {s.total >= 10 && (
+                        <span className="text-xs text-white/30">{splitA}% / {splitB}%</span>
+                      )}
+                    </div>
+                    <p className="text-sm font-semibold text-[var(--text)] leading-snug mb-2">{s.question}</p>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/it/play/${s.id}`}
+                        className="text-xs bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-full transition-colors"
+                      >
+                        Vota
+                      </Link>
+                      <Link
+                        href={`/it/results/${s.id}`}
+                        className="text-xs text-[var(--muted)] hover:text-white transition-colors"
+                      >
+                        Vedi risultati →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Categorie Top ── */}
+      {topCategories.length > 0 && (
+        <section className="mb-14">
+          <h2 className="text-xl font-black tracking-tight mb-5 flex items-center gap-2">
+            <span>📊</span> Categorie Top
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {topCategories.map(({ category, count, total, emoji, label }, i) => (
+              <Link
+                key={category}
+                href={`/it/category/${category}`}
+                className="rounded-2xl bg-[var(--surface)] border border-white/5 p-4 hover:border-white/15 transition-all text-left"
+              >
+                <div className="text-xs text-[var(--muted)] font-bold mb-2">#{i + 1}</div>
+                <div className="text-2xl mb-1">{emoji}</div>
+                <div className="font-black text-white text-sm mb-1">{label}</div>
+                <div className="text-xs text-[var(--muted)]">{count} dilemmi</div>
+                <div className="text-xs text-white/60 font-bold">{total.toLocaleString()} voti</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Tendenze Oggi (dilemmi IT) ── */}
+      <section className="mb-12">
+        <div className="flex items-center gap-3 mb-5">
+          <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
+            {hasItDynamic ? <><span>✨</span> Tendenze Oggi</> : <><span>🌙</span> Dilemmi in Evidenza</>}
+          </h2>
+          {hasItDynamic && (
+            <span className="text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
+              Aggiornato ogni giorno
+            </span>
+          )}
+        </div>
+        {hasItDynamic ? (
+          <>
+            <p className="text-sm text-[var(--muted)] mb-5">
+              Dilemmi morali ispirati alle notizie e ai trend più caldi in Italia. Freschi ogni mattina alle 6:00 UTC.
+            </p>
+            <div className="space-y-4">
+              {itDynamic.map((scenario) => (
+                <Link
+                  key={scenario.id}
+                  href={`/it/play/${scenario.id}`}
+                  className="group block rounded-2xl border border-purple-500/20 bg-[var(--surface)] p-6 hover:border-purple-500/50 hover:bg-[#1a1025] transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  <div className="flex items-start gap-4">
+                    <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold uppercase tracking-wide">
+                          ✨ tendenza
+                        </span>
+                        <span className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold">
+                          {scenario.category}
+                        </span>
+                        {scenario.trend && (
+                          <span className="text-xs text-[var(--muted)] opacity-60 italic truncate max-w-[200px]">
+                            ispirato da: {scenario.trend}
+                          </span>
+                        )}
+                        <span className="text-xs text-[var(--muted)] opacity-50 ml-auto">
+                          {new Date(scenario.generatedAt).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}
+                        </span>
+                      </div>
+                      <p className="font-semibold text-[var(--text)] leading-snug mb-4">
+                        {scenario.question}
+                      </p>
+                      <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
+                    </div>
+                    <span className="hidden sm:inline text-[var(--muted)] text-xs group-hover:text-purple-400 transition-colors flex-shrink-0">
+                      Vota →
                     </span>
                   </div>
-                  <p className="font-semibold text-[var(--text)] leading-snug mb-4">
-                    {scenario.question}
-                  </p>
-                  <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-                </div>
-                <span className="hidden sm:inline text-[var(--muted)] text-xs group-hover:text-purple-400 transition-colors flex-shrink-0">
-                  Vota →
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-16 text-[var(--muted)]">
-          <p className="text-4xl mb-4">🌙</p>
-          <p className="text-lg font-semibold text-white mb-2">Nessun dilemma italiano ancora</p>
-          <p className="text-sm">Il cron genera nuovi dilemmi ogni giorno alle 6:00 UTC. Torna domani!</p>
-        </div>
-      )}
+                </Link>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-16 text-[var(--muted)]">
+            <p className="text-4xl mb-4">🌙</p>
+            <p className="text-lg font-semibold text-white mb-2">Nessun dilemma italiano ancora</p>
+            <p className="text-sm">Il cron genera nuovi dilemmi ogni giorno alle 6:00 UTC. Torna domani!</p>
+          </div>
+        )}
+      </section>
 
       {/* Links */}
       <div className="mt-12 flex justify-center gap-6 text-sm text-[var(--muted)]">

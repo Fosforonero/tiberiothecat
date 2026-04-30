@@ -59,3 +59,25 @@ export async function getVotesBatch(
   })
   return map
 }
+
+/**
+ * Batch-fetch per-option vote counts in a single HTTP round-trip.
+ * Returns a map: dilemmaId → { a, b } — used for leaderboard split display.
+ */
+export async function getVotesBatchDetail(
+  ids: string[],
+): Promise<Map<string, { a: number; b: number }>> {
+  if (ids.length === 0) return new Map()
+  const p = redis.pipeline()
+  for (const id of ids) p.hgetall(`votes:${id}`)
+  const results = await p.exec() as Array<Record<string, string> | null>
+  const map = new Map<string, { a: number; b: number }>()
+  ids.forEach((id, i) => {
+    const r = results[i]
+    map.set(id, {
+      a: Math.max(0, Number(r?.a ?? 0)),
+      b: Math.max(0, Number(r?.b ?? 0)),
+    })
+  })
+  return map
+}
