@@ -137,7 +137,7 @@ export default async function HomePage() {
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
 
         {/* ── Hero ── */}
-        <div className="text-center mb-6 sm:mb-10">
+        <div className="text-center mb-4 sm:mb-10">
           <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-blue-500/20 neon-glow-blue">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-glow" />
             Real-time global votes
@@ -162,6 +162,9 @@ export default async function HomePage() {
           </div>
         </div>
 
+        {/* ── Dilemma of the Day ── */}
+        <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
+
         {/* ── Trust strip ── */}
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
@@ -183,9 +186,6 @@ export default async function HomePage() {
             <span className="text-yellow-400 font-black">3.</span> Grow your moral companion
           </span>
         </div>
-
-        {/* ── Dilemma of the Day ── */}
-        <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
         {/* ── Trending Now (ranked by recent votes: today + yesterday) ── */}
         {trendingNow.length > 0 && (
