@@ -81,7 +81,11 @@ EMAIL_FROM=SplitVote <hello@splitvote.io>  # optional — this is the default
 
 # OpenRouter (content engine — server-side only, NEVER expose to client)
 OPENROUTER_API_KEY=sk-or-...              # from openrouter.ai — used by POST /api/admin/generate-draft
-OPENROUTER_MODEL_DRAFT=deepseek/deepseek-chat-v3.1          # required — no hardcoded fallback
+OPENROUTER_MODEL_DRAFT=deepseek/deepseek-chat-v3.1          # required — base fallback for all use-cases; isOpenRouterConfigured() checks this
+OPENROUTER_MODEL_DILEMMA_DRAFT=deepseek/deepseek-chat-v3.1  # optional — dilemma generation; falls back to OPENROUTER_MODEL_DRAFT
+OPENROUTER_MODEL_ARTICLE_DRAFT=deepseek/deepseek-chat-v3.1  # optional — standard blog article generation; falls back to OPENROUTER_MODEL_DRAFT
+OPENROUTER_MODEL_CORNERSTONE_DRAFT=deepseek/deepseek-chat-v3.1 # optional — cornerstone (1200-1500w) blog article; falls back to OPENROUTER_MODEL_ARTICLE_DRAFT then OPENROUTER_MODEL_DRAFT
+OPENROUTER_MODEL_TRANSLATION=deepseek/deepseek-chat-v3.1    # optional — bilingual article translation; falls back to OPENROUTER_MODEL_ARTICLE_DRAFT then OPENROUTER_MODEL_DRAFT
 OPENROUTER_MODEL_CLASSIFIER=google/gemini-flash-1.5-8b      # for future scoring/classification
 OPENROUTER_MODEL_REVIEW=google/gemini-pro-latest             # semantic novelty review for generated dilemmas (falls back to OPENROUTER_MODEL_DRAFT if unset)
 

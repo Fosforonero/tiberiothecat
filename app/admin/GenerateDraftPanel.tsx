@@ -389,7 +389,7 @@ export default function GenerateDraftPanel({ defaultType = 'dilemma' }: { defaul
         <div className="space-y-4 pt-2 border-t border-white/10">
           <CandidatePreview
             candidate={preview}
-            label={type === 'blog_article' ? `🇺🇸 Source (${locale.toUpperCase()})` : 'Preview'}
+            label={type === 'blog_article' ? `${locale === 'en' ? '🇺🇸' : '🇮🇹'} Source (${locale.toUpperCase()})` : 'Preview'}
             color="green"
           />
 
