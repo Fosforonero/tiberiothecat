@@ -114,7 +114,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
     }
   }
 
-  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
+  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool)
 
   // Parse guided path params (use IT labels)
   const rawPath = searchParams.path
@@ -125,7 +125,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
   const pathStep = pathCategory ? Math.max(1, parseInt(searchParams.step ?? '1', 10) || 1) : undefined
   const pathTarget = pathCategory ? Math.max(1, parseInt(searchParams.target ?? '3', 10) || 3) : undefined
   const nextPathId = pathCategory !== undefined
-    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
+    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, itPool)
     : undefined
 
   const isChallenge = searchParams.challenge === '1'

@@ -99,8 +99,8 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
     }
   }
 
-  // Prefer IT-locale dynamic scenarios; fall back to any dynamic, then static
-  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
+  // Use only IT-locale dynamic scenarios; static scenarios are the fallback inside the function
+  const nextId = getFreshNextScenarioId(params.id, votedIds, itPool)
 
   // Guided path — parse params and compute next path question (IT locale)
   const rawPath = searchParams.path
@@ -111,7 +111,7 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
   const pathStep = pathCategory ? Math.max(1, parseInt(searchParams.step ?? '1', 10) || 1) : undefined
   const pathTarget = pathCategory ? Math.max(1, parseInt(searchParams.target ?? '3', 10) || 3) : undefined
   const nextPathId = pathCategory !== undefined && pathStep !== undefined && pathTarget !== undefined && pathStep < pathTarget
-    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, itPool.length ? itPool : dynamicScenarios)
+    ? getFreshNextScenarioIdByCategory(pathCategory, params.id, votedIds, itPool)
     : undefined
 
   const breadcrumbSchema = {
