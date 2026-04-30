@@ -172,7 +172,7 @@ export default async function ItPage() {
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
 
         {/* Hero */}
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-10">
           <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-blue-500/20 neon-glow-blue">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-glow" />
             Voti in tempo reale
@@ -187,13 +187,7 @@ export default async function ItPage() {
           <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
             Vota in modo anonimo su dilemmi etici impossibili — poi scopri come si divide il mondo.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href={`/it/play/${dailyIT.id}`}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-black text-sm px-8 py-3.5 transition-all"
-            >
-              Vota sul dilemma di oggi →
-            </Link>
+          <div className="mt-6 flex items-center justify-center">
             <Link
               href="/it/trending"
               className="text-sm text-[var(--muted)] hover:text-white transition-colors"

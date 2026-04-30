@@ -26,16 +26,16 @@ const IT_COPY = {
   label:      'Dilemma del Giorno',
   resetsIn:   'Cambia tra',
   votesToday: 'voti oggi',
-  voteNow:    'Vota ora',
-  results:    'Risultati',
+  voteNow:    'Vota e scopri il risultato',
+  results:    'Vedi risultati',
 }
 
 const EN_COPY = {
   label:      'Dilemma of the Day',
   resetsIn:   'Resets in',
   votesToday: 'votes today',
-  voteNow:    'Vote now',
-  results:    'Results',
+  voteNow:    'Vote and reveal the split',
+  results:    'See results',
 }
 
 export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Props) {
