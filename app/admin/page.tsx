@@ -348,7 +348,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
                 </div>
               </div>
               <p className="text-2xl sm:text-3xl font-black text-orange-400 mb-1">{fireFeedbackPct}%</p>
-              <p className="text-[var(--muted)] text-xs">🔥 Feedback ({totalFeedback.toLocaleString()} total)</p>
+              <p className="text-[var(--muted)] text-xs">🔥 Feedback ({totalFeedback.toLocaleString()} logged-in only)</p>
             </div>
           </div>
 
@@ -551,7 +551,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             </div>
           ) : (
             <div className="rounded-2xl border border-white/10 bg-[var(--surface)] p-6 text-center text-[var(--muted)] text-sm">
-              No feedback data yet — ratings from users will appear here.
+              No logged-in user feedback yet — anonymous ratings are tracked in Redis only.
             </div>
           )}
         </div>
