@@ -73,13 +73,17 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 Feedback from real viewers changed the near-term product priority. After Sprint 1 closes the delayed reveal/docs pending work, do not jump directly into heavier monetization or AI UX. First make the product easier to understand, share, and measure.
 
 1. **Google Analytics audit (read-only)** — verify GA4/env/proxy/consent/events before judging product changes. No code fixes in the audit unless explicitly promoted to a separate sprint.
-2. **Core loop clarity** — make it obvious that SplitVote is a social voting game: why answer, what happens after voting, what XP/streak/archetype/companion mean, and who the product is for. Include login icon clarity and companion copy/visual clarity.
+2. **Core loop clarity + Pixie Phase 1** — make it obvious that SplitVote is a social voting game: why answer, what happens after voting, what XP/streak/archetype/Pixie mean, and who the product is for. Include login icon clarity and Pixie rename (copy-only, no DB, no assets — full strategy in `PRODUCT_STRATEGY.md → Pixie Digital Avatar Direction`).
 3. **Pre-vote question sharing** — standard share icon on home/play/dilemma cards; share the question with neutral copy before a user votes; keep selected vote private by default.
 4. **Aggregate leaderboards MVP** — start with most-voted dilemmas/topics, then archetype distribution. Personal voter leaderboard comes later only with privacy controls and legal review.
 5. **Macro-area paths** — curated paths for audiences such as parents, couples, work, technology, society, and young adults, using existing category/path mechanics before schema changes.
 6. **Current-events dilemma workflow** — Italy/Europe/USA/World news-inspired dilemmas with source context, admin review, no autopublish, and legal/editorial guardrails.
 7. **AI-assisted localization workflow** — use AI/tooling for draft translations only; public copy remains reviewed and committed. Do not add new locales until the core loop/share/analytics base is stable.
 8. **Picoclaw sidecar evaluation** — consider only as an ops/research assistant for topic monitoring, QA reminders, and daily reports; not a product-runtime dependency.
+9. **Pixie Phase 2 — Base assets** — add Pixie Spark PNG stage 1–5 to `public/pixie/`; update `CompanionDisplay` with `<Image>` + emoji fallback; no DB. Prerequisite: assets generated and PM-approved.
+10. **Pixie Phase 3 — Variant selector / earned variants** — variant picker UI; server-side unlock verification; `pixie_variant_equipped` column on `profiles`; earned criteria: Cloud (5 categories), Ember (7-day streak), Moonlight (mission streak), Champion (100 votes), Wisp (500 votes).
+11. **Pixie Phase 4 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
+12. **Pixie Phase 5 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
 
 ---
 
@@ -1737,7 +1741,7 @@ Non fare insieme a feature/product sprint.
 - [ ] API read-only per ricercatori
 - [ ] Video share cards animate
 - [ ] Referral system
-- [ ] Companion store / cosmetic unlocks — `equipped_frame`, `equipped_badge` già in DB; serve UI store + unlock logic
+- [ ] **Pixie cosmetic system (Phases 3–5)** — strategy documented in `PRODUCT_STRATEGY.md → Pixie Digital Avatar Direction`; `equipped_frame`, `equipped_badge` già in DB; Phase 3 adds `pixie_variant_equipped`; Phase 5 adds `user_pixie_skins` table + Stripe + LEGAL review
 - [ ] Moral profile compatibility tra amici
 - [ ] Zodiac/ascendant overlay opzionale sul moral profile
 - [ ] Idempotenza webhook Stripe: storico `session_id` già processati in DB per evitare doppio increment `name_changes`

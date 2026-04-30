@@ -1068,3 +1068,186 @@ Update `LEGAL.md`, Privacy, and Terms before implementing:
 - Public profile visibility changes
 - New social data providers
 - Marketing emails or creator/community campaigns
+- Pixie cosmetic sales (Phase 5): requires `LEGAL.md` update, Terms EN/IT update with digital goods section, Stripe Price IDs per variant, and refund policy definition before any sprint touching cosmetic sales
+
+---
+
+## Pixie Digital Avatar Direction
+
+Approved: 30 Apr 2026. Originated from Sprint 7 Pixie Identity Spec.
+
+### Diagnosis: Old Companion System
+
+The previous system used the label "Your Companion" / "Il tuo Compagno" with five named species (Spark, Blip, Momo, Shade, Orbit), all emoji-based. Field feedback confirmed users did not understand what the companion was. Key gaps:
+
+- Generic label did not communicate personal avatar or identity
+- Emoji-only visuals are not brand-identifiable
+- Species names not linked to a clear system concept
+- System invisible before users invest time
+- "famiglio" not used in code (good); "compagno" survived as primary label; "companion" left untranslated in some IT surfaces
+
+### Naming
+
+| Context | IT | EN |
+|---|---|---|
+| System name (full form) | `Pixie, il tuo avatar digitale` | `Pixie, your digital avatar` |
+| Short form in UI | `Il tuo Pixie` | `Your Pixie` |
+| Dashboard / profile header | `Il tuo Pixie` | `Your Pixie` |
+| Onboarding future title | `Crea il tuo Pixie` | `Create your Pixie` |
+
+Rules:
+- Never use "famiglio" as primary label
+- Avoid "compagno" as primary name; temporary fallback only if needed
+- Avoid "abilità" until real gameplay abilities exist; prefer: varianti, look, forme, accessori, evoluzioni
+- "Pixie" is the brand name of the avatar system, not a random nickname
+
+### Storytelling
+
+IT: `Pixie è una creatura pixel-art originale che rappresenta l'utente e cresce con XP, voti e missioni completate.`
+
+EN: `Pixie is an original pixel-art creature that represents the user and grows with XP, votes, and completed missions.`
+
+Main tagline:
+
+IT: `Pixie, il tuo avatar digitale che cresce con te.`
+
+EN: `Pixie, your digital avatar that grows with you.`
+
+Pixie is not a pet or decoration — it is the visual projection of the user's progression inside SplitVote. Each vote, mission, and streak directly evolves Pixie. The connection is personal, not decorative.
+
+### Micro-copy (EN/IT)
+
+| Event | IT | EN |
+|---|---|---|
+| XP gained / level up | `Pixie ha guadagnato XP: sei salito di livello!` | `Pixie gained XP: you leveled up!` |
+| Mission reminder | `Completa missioni per far crescere Pixie più velocemente.` | `Complete missions to help Pixie grow faster.` |
+| Near next level | `Pixie è vicino al prossimo livello: continua a votare.` | `Pixie is close to the next level: keep voting.` |
+| Variant unlock | `Nuovo look sbloccato: Pixie Glitch.` | `New look unlocked: Pixie Glitch.` |
+| Profile helper | `Il tuo Pixie mostra i progressi che fai su SplitVote.` | `Your Pixie shows the progress you make on SplitVote.` |
+| Legendary stage | `✨ Forma leggendaria sbloccata!` | `✨ Legendary form unlocked!` |
+| Mission footer (non-max) | `Completa le missioni di oggi per far crescere il tuo Pixie più velocemente.` | `Complete today's missions to grow your Pixie faster.` |
+
+### Variant Taxonomy
+
+#### Free / Starter Pixies
+
+Available to all users from day one, no action required. Goal: legible system without a paywall.
+
+| Variant | Notes |
+|---|---|
+| Pixie Spark | Default — already assigned to all users (`companion_species = 'spark'`) |
+| Pixie Neon | Common — energetic, neon outline, large expressive eyes |
+| Pixie Leaf | Common — nature-inspired, soft green palette |
+
+#### Earned-Only Pixies
+
+Unlocked exclusively through real gameplay actions. Not purchasable at any price. Most socially prestigious tier — a user with Pixie Wisp has demonstrated commitment that no purchase can replicate.
+
+| Variant | Unlock condition | Difficulty |
+|---|---|---|
+| Pixie Cloud | Explore 5 different categories | Low — encourages content discovery |
+| Pixie Ember | 7-day streak | Medium — achievable in one week |
+| Pixie Moonlight | Complete missions on multiple consecutive days | Medium — mission streak |
+| Pixie Champion | 100 total votes | High — sustained engagement |
+| Pixie Wisp | 500 votes or Legendary stage | Very high — maximum dedication |
+
+Rule: unlock criteria must be verified server-side. No client-only unlock logic.
+
+#### VIP / Premium Pixies
+
+Included with Premium subscription, no separate purchase. Active while subscription is active. Cancellation behavior to be defined in implementation sprint and reviewed with `LEGAL.md` before deploy.
+
+| Variant | Vibe |
+|---|---|
+| Pixie Hologram | Semi-transparent outline, holographic, sky-blue shadows |
+| Pixie Circuit | Minimal circuit pattern, luminous wire details |
+| Pixie Aurora | Multi-color gradient aura, aurora borealis effect |
+| Pixie Goldline | Golden outline, premium line-art details |
+| Pixie Prism | Chromatic refraction, pixel prism effect |
+
+Premium Pixies have more visual polish than free variants but not more game power. An earned Pixie Wisp at 500 votes must feel rarer than a Premium Hologram: social rarity is earned, not bought.
+
+#### Purchasable Pixies (Phase 5 only)
+
+Do not implement until Phase 5 prerequisites are met (LEGAL, Stripe QA, Terms review).
+
+| Variant | Style |
+|---|---|
+| Pixie Rocket | Jet tail / flame, speed vibe, red/black palette |
+| Pixie Glitch Deluxe | Enhanced Glitch, more chromatic and displacement effects |
+| Pixie Marshmallow | Soft, round body, light palette, round eyes |
+| Pixie Kawaii | Small accessory (bow/cap), sweet expression, cute style |
+| Pixie Cyber | Cyberpunk minimal, neon green accents, circuit graphics |
+
+Shop rules (Phase 5): single price per variant or thematic bundles; clear visual preview always shown before payment; no loot boxes; no random paid unlock; access is continuative, barring refund, abuse, chargeback, or removal for legal/technical reasons; final policy to be defined before launch.
+
+### Product Rules
+
+1. **No pay-to-win.** Variants do not modify votes, results, leaderboards, XP, stage progression, or any gameplay mechanic. Cosmetic only.
+2. **Earned-only is the most prestigious tier.** Never invert this hierarchy. A purchased variant must never appear rarer than a hard-earned one.
+3. **No loot boxes.** No random paid unlock. Every purchase has a guaranteed, clearly previewed outcome.
+4. **No retroactive paywalls.** A variant given for free (starter or earned) can never be moved to paid for existing holders.
+5. **Phase 5 gate.** No cosmetic sales in production without: `LEGAL.md` updated, Terms EN/IT updated with digital goods section, Stripe QA complete (including existing Premium QA open), and refund policy defined.
+
+### Existing Species → Pixie Mapping
+
+`companion_species` DB column values remain unchanged. Only display names change in `lib/companion.ts`:
+
+| DB value (unchanged) | Old display name | New Pixie name |
+|---|---|---|
+| `spark` | Spark | Pixie Spark |
+| `blip` | Blip | Pixie Glitch |
+| `momo` | Momo | Pixie Leaf |
+| `shade` | Shade | Pixie Moonlight |
+| `orbit` | Orbit | Pixie Hologram |
+
+### Asset Direction
+
+- Style: original pixel-art digital avatar creature
+- Format: PNG or WebP with alpha channel (transparent background)
+- Master size: 256×256 px; readable at 48×48 (compact dashboard) and 80×80 (full dashboard)
+- No embedded text or watermarks; @2x (512×512) recommended for retina
+- Palette: SplitVote dark theme — blue, purple, yellow energy, neon accents
+- Every asset reviewed by PM before commit; reject anything visually similar to known IP
+- Document which generation tool was used for copyright audit trail
+
+Stage visual evolution per species:
+
+| Stage | Votes | Visual change |
+|---|---|---|
+| 1 | 0–9 | Base form, no accessories |
+| 2 | 10–49 | Slightly more saturated color |
+| 3 | 50–99 | Light aura or minimal accessory |
+| 4 | 100–499 | Pronounced glow, luminous outline |
+| 5 | 500+ | Special effect (particles, neon glitch, pulsing aura) |
+
+Generation priority: Pixie Spark stage 1–5 first (default species, maximum visibility), then Pixie Glitch and Pixie Leaf.
+
+### Future Data Model (do not implement now)
+
+```sql
+-- On profiles table (Phase 3):
+pixie_variant_equipped  text  -- active variant, default 'spark'
+
+-- New table (Phase 3+):
+CREATE TABLE user_pixie_skins (
+  id             uuid primary key default gen_random_uuid(),
+  user_id        uuid references auth.users on delete cascade,
+  variant_id     text not null,   -- e.g. 'pixie-champion', 'pixie-hologram'
+  source         text not null,   -- 'earned' | 'premium' | 'purchased' | 'admin_granted'
+  unlocked_at    timestamptz not null default now(),
+  stripe_charge  text            -- purchase audit / refund reference
+);
+```
+
+Anti-spoofing: `variant_id → accessible` mapping must always be computed server-side (RSC or API route), combining entitlements + `user_pixie_skins` rows + earned criteria (votesCount, streakDays, etc.). Client must not receive an "unlocked" flag without server verification.
+
+### Implementation Sequencing
+
+| Phase | Scope | DB | Stripe | LEGAL |
+|---|---|---|---|---|
+| **Phase 1** — Rename/copy | All "Companion" → "Pixie" copy in UI and lib; EN/IT strings; species display names | None | None | None |
+| **Phase 2** — Base assets | Pixie Spark PNG stage 1–5 in `public/pixie/`; `CompanionDisplay` uses `<Image>` with emoji fallback | None | None | None |
+| **Phase 3** — Selector / earned variants | Variant picker; server-side unlock verification; `pixie_variant_equipped` on profiles | Column on profiles | None | None |
+| **Phase 4** — VIP cosmetics | Premium variants via entitlements; cancellation behavior defined | No new migration if Phase 3 done | None | Verify if Premium perks wording changes |
+| **Phase 5** — Purchased Pixies | Shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant | New table + migration | New Price IDs | **Required before launch** |

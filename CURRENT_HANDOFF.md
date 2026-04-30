@@ -146,6 +146,10 @@ Do not lose these follow-ups:
 5. **AI generation progress bar** — seed batch progress bar or chunked polling to avoid timeout UX on 15–20 item batches. No DB migration.
 6. **Current-events dilemma workflow** — news-inspired drafts for Italy/Europe/USA/World with source context and admin review.
 7. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`. No DB migration unless necessary. **Requires LEGAL.md check.**
+8. **Pixie Phase 1 — Rename/copy** — rename "Companion" → "Pixie" across UI and lib; update EN/IT copy; zero DB, zero assets. Can ship inside Core Loop Clarity sprint. Full strategy in `PRODUCT_STRATEGY.md → Pixie Digital Avatar Direction`.
+9. **Pixie Phase 2 — Base assets** — Pixie Spark PNG stage 1–5; `CompanionDisplay` image with emoji fallback. Prerequisite: assets generated and PM-approved.
+10. **Pixie Phase 3 — Variant selector / earned variants** — server-side unlock + `pixie_variant_equipped` column. DB migration required.
+11. **Pixie Phase 4–5 — VIP + Purchased Pixies** — Phase 4 via entitlements; Phase 5 requires Stripe + LEGAL + Terms review. Do not start Phase 5 without explicit gate clearance.
 
 ---
 
