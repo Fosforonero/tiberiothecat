@@ -55,6 +55,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 }
 
 // Curated seed topics — 32 per locale (4 per category × 8 categories), diverse and non-overlapping with static dilemmas.
+// EN and IT topics cover different moral angles within each category — no direct translations between locales.
 // Category annotation drives the diversity shuffle in selectDiverseTopics().
 const SEED_TOPICS: Array<{ locale: 'en' | 'it'; topic: string; category: Category }> = [
   // ── EN — morality (4) ─────────────────────────────────────────────────────
@@ -96,48 +97,48 @@ const SEED_TOPICS: Array<{ locale: 'en' | 'it'; topic: string; category: Categor
   { locale: 'en', category: 'relationships', topic: 'Would you give up your career to become the sole caregiver for an aging parent?' },
   { locale: 'en', category: 'relationships', topic: 'Is it ethical to stay in a loveless marriage for the sake of young children?' },
   { locale: 'en', category: 'relationships', topic: 'Should you forgive a close friend who betrayed your deepest secret, even if they apologized sincerely?' },
-  { locale: 'en', category: 'relationships', topic: 'Would you choose to save your partner or five strangers in an emergency where only one group can survive?' },
+  { locale: 'en', category: 'relationships', topic: 'Would you agree to have a child with a partner you deeply love, if you genuinely do not want to be a parent?' },
 
   // ── IT — morality (4) ─────────────────────────────────────────────────────
-  { locale: 'it', category: 'morality', topic: 'È accettabile mentire a un malato di demenza per risparmiargli il dolore quotidiano della perdita?' },
+  { locale: 'it', category: 'morality', topic: 'Un artista riceve una commissione molto remunerativa da un committente con valori etici opposti ai suoi: accetta il lavoro o lo rifiuta?' },
   { locale: 'it', category: 'morality', topic: 'È eticamente accettabile clonare esseri umani esclusivamente per scopi medici?' },
   { locale: 'it', category: 'morality', topic: 'Confessi un crimine di cui ti sei pentito, sapendo che rovinerai la tua vita e quella della tua famiglia?' },
-  { locale: 'it', category: 'morality', topic: "È giusto usare l'immagine di una persona deceduta in un film generato dall'AI senza il consenso dei familiari?" },
+  { locale: 'it', category: 'morality', topic: 'Scopri che un collega ha falsificato i dati di una ricerca che ha già salvato migliaia di vite: lo denunci rischiando di invalidare i trattamenti in corso?' },
   // ── IT — survival (4) ────────────────────────────────────────────────────
   { locale: 'it', category: 'survival', topic: 'Preferiresti vivere 60 anni in perfetta salute oppure 90 anni con qualità di vita ridotta?' },
   { locale: 'it', category: 'survival', topic: 'In guerra, è giustificabile sacrificare civili nemici per salvare i propri soldati?' },
-  { locale: 'it', category: 'survival', topic: 'Accetteresti di vivere in una simulazione perfetta sapendo che il mondo reale fuori sta collassando?' },
-  { locale: 'it', category: 'survival', topic: "In una pandemia con una sola dose di vaccino rimasta, la daresti al giovane sano o all'anziano vulnerabile?" },
+  { locale: 'it', category: 'survival', topic: "Sei l'unico medico in una zona isolata con farmaci sufficienti per 20 dei 35 feriti gravi: decidi tu chi curare o aspetti istruzioni che non arriveranno?" },
+  { locale: 'it', category: 'survival', topic: 'Nel tuo rifugio con altri 8 sopravvissuti le riserve di cibo bastano per sei mesi: decidi di razionare e aspettare i soccorsi, o rischi di uscire a cercarne altri?' },
   // ── IT — loyalty (4) ─────────────────────────────────────────────────────
-  { locale: 'it', category: 'loyalty', topic: 'Dovresti rivelare a qualcuno che il suo partner lo tradisce, anche se non te lo ha chiesto?' },
-  { locale: 'it', category: 'loyalty', topic: 'Copriresti un fratello che ha causato un incidente stradale con un ferito, per proteggerlo dalla giustizia?' },
-  { locale: 'it', category: 'loyalty', topic: 'Rinunceresti alla carriera dei tuoi sogni per restare vicino a un familiare con una malattia terminale?' },
-  { locale: 'it', category: 'loyalty', topic: 'Denunceresti un tuo caro amico se scoprissi che ha commesso un grave crimine?' },
+  { locale: 'it', category: 'loyalty', topic: "Il tuo migliore amico ti confida di evadere le tasse da anni: lo incoraggi a smettere, taci per non rovinare l'amicizia, o lo segnali?" },
+  { locale: 'it', category: 'loyalty', topic: 'Il tuo capo si prende pubblicamente il merito del tuo progetto migliore e in cambio ti promette una promozione: protesti o accetti il compromesso?' },
+  { locale: 'it', category: 'loyalty', topic: 'Il tuo partner ti chiede di mantenere segreto ai suoi familiari un grave problema di salute: rispetti il segreto anche se sei convinto che dovrebbero saperlo?' },
+  { locale: 'it', category: 'loyalty', topic: "La tua squadra ha vinto un torneo grazie a un errore arbitrale che nessuno ha contestato: chiedi tu l'annullamento del risultato, rovinando la festa a tutti?" },
   // ── IT — justice (4) ─────────────────────────────────────────────────────
   { locale: 'it', category: 'justice', topic: 'Denunceresti un medico che pratica eutanasia su pazienti terminali senza consenso esplicito?' },
-  { locale: 'it', category: 'justice', topic: 'È giusto che un imputato ricco possa comprare una difesa legale migliore di quella di un povero?' },
-  { locale: 'it', category: 'justice', topic: 'Una persona dovrebbe essere punita per un crimine commesso da adolescente e da cui si è dissociata?' },
-  { locale: 'it', category: 'justice', topic: 'È etico pagare persone senza fissa dimora per partecipare a sperimentazioni mediche?' },
+  { locale: 'it', category: 'justice', topic: "Un giudice è convinto della colpevolezza dell'imputato, ma la condanna prevista dalla legge gli sembra sproporzionata: segue la legge o la sua coscienza?" },
+  { locale: 'it', category: 'justice', topic: 'Una piccola comunità vuole vietare il ritorno di un ex detenuto che ha scontato interamente la pena: è una difesa legittima o una punizione aggiuntiva?' },
+  { locale: 'it', category: 'justice', topic: 'Denunci un\'azienda che inquina illegalmente sapendo che la tua segnalazione farà perdere il lavoro a 200 lavoratori locali?' },
   // ── IT — freedom (4) ─────────────────────────────────────────────────────
   { locale: 'it', category: 'freedom', topic: 'È giusto limitare la libertà di parola online per prevenire la radicalizzazione?' },
   { locale: 'it', category: 'freedom', topic: "È giusto che le forze dell'ordine usino il riconoscimento facciale in tempo reale negli spazi pubblici per individuare sospettati ricercati?" },
-  { locale: 'it', category: 'freedom', topic: 'Le aziende social dovrebbero essere obbligate per legge a rimuovere i post con disinformazione medica?' },
-  { locale: 'it', category: 'freedom', topic: "La vaccinazione obbligatoria per l'accesso scolastico è un limite accettabile ai diritti dei genitori?" },
+  { locale: 'it', category: 'freedom', topic: 'Un governo ha il diritto di bloccare internet durante una grande protesta di piazza per prevenire la diffusione di notizie false?' },
+  { locale: 'it', category: 'freedom', topic: 'È giusto imporre un coprifuoco notturno ai minorenni per ridurre la criminalità giovanile, anche se penalizza chi non ha mai commesso reati?' },
   // ── IT — technology (4) ──────────────────────────────────────────────────
   { locale: 'it', category: 'technology', topic: 'È etico usare dati di sorveglianza delle città per prevenire crimini prima che accadano?' },
-  { locale: 'it', category: 'technology', topic: 'Accetteresti un chip neurale che migliora le tue capacità cognitive del 30% se il produttore potesse leggere — ma non modificare — i tuoi pensieri in qualsiasi momento?' },
+  { locale: 'it', category: 'technology', topic: 'Useresti un\'app in grado di analizzare la voce del tuo partner per capire quando mente, senza dirglielo?' },
   { locale: 'it', category: 'technology', topic: 'Le aziende di intelligenza artificiale dovrebbero essere legalmente responsabili per i danni causati dalle decisioni autonome dei loro algoritmi?' },
-  { locale: 'it', category: 'technology', topic: "Affideresti la tua diagnosi medica a un'AI se fosse statisticamente più accurata dei medici umani?" },
+  { locale: 'it', category: 'technology', topic: "La tua azienda offre ai lavoratori più anziani un bonus per formarsi sull'AI o uscire con una buona liquidazione: è adattamento pragmatico o discriminazione?" },
   // ── IT — society (4) ─────────────────────────────────────────────────────
   { locale: 'it', category: 'society', topic: "Un'azienda può licenziare un dipendente per i suoi post privati sui social che danneggiano il brand?" },
-  { locale: 'it', category: 'society', topic: 'Le droghe ricreative dovrebbero essere completamente legalizzate e regolamentate come l\'alcol?' },
-  { locale: 'it', category: 'society', topic: 'I miliardari dovrebbero essere tassati al 90% oltre una certa soglia per finanziare un reddito universale?' },
-  { locale: 'it', category: 'society', topic: "L'abolizione del carcere è perseguibile moralmente anche sapendo che alcuni individui pericolosi resterebbero liberi?" },
+  { locale: 'it', category: 'society', topic: "Una scuola pubblica ha il diritto di vietare i simboli religiosi nell'abbigliamento per garantire la neutralità laica, anche se esclude alcune famiglie?" },
+  { locale: 'it', category: 'society', topic: 'È giusto che i cittadini di un paese ricco paghino tasse più alte per accogliere un numero elevato di rifugiati, anche se la maggioranza degli elettori si oppone?' },
+  { locale: 'it', category: 'society', topic: 'È etico visitare paesi governati da regimi autoritari se la tua spesa turistica contribuisce economicamente alla popolazione locale?' },
   // ── IT — relationships (4) ───────────────────────────────────────────────
   { locale: 'it', category: 'relationships', topic: 'Adotteresti un figlio con gravi disabilità cognitive sapendo che cambierà completamente la tua vita?' },
-  { locale: 'it', category: 'relationships', topic: 'È etico restare in un matrimonio senza amore per il bene dei figli piccoli?' },
-  { locale: 'it', category: 'relationships', topic: 'Perdoneresti un amico intimo che ha tradito il tuo segreto più profondo, anche se si è scusato sinceramente?' },
-  { locale: 'it', category: 'relationships', topic: "In un'emergenza in cui puoi salvare solo il tuo partner o cinque sconosciuti, cosa scegli?" },
+  { locale: 'it', category: 'relationships', topic: 'Scopri che il tuo genitore anziano vuole spendere tutti i risparmi per un viaggio rischioso che è il suo sogno di una vita: lo assecondo o mi oppongo per proteggerlo?' },
+  { locale: 'it', category: 'relationships', topic: "Il tuo partner di lunga data ti chiede di lasciare il tuo paese per seguirlo definitivamente all'estero: scegli l'amore o le tue radici e la tua famiglia?" },
+  { locale: 'it', category: 'relationships', topic: 'Stai per sposarti e scopri che il tuo partner ti ha tenuto nascosto di avere figli da una relazione precedente: continui il percorso verso il matrimonio o ti fermi?' },
 ]
 
 // Selects `count` topics for the given locale with category diversity.
