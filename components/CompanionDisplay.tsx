@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import {
   COMPANION_MAP,
   STAGE_LABELS,
@@ -9,6 +10,7 @@ import {
   RARITY_STYLES,
   type CompanionSpecies,
 } from '@/lib/companion'
+import { getPixieImagePath } from '@/lib/pixie'
 
 interface Props {
   species: CompanionSpecies
@@ -30,6 +32,9 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
   const IT = locale === 'it'
   const companion = COMPANION_MAP[species] ?? COMPANION_MAP['spark']
   const stage = getCompanionStage(votesCount)
+
+  const [imgError, setImgError] = useState(false)
+  useEffect(() => { setImgError(false) }, [species, stage])
   const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
   const emoji = companion.stageEmoji[stage - 1]
   const toNext = votesToNextStage(votesCount)
@@ -46,7 +51,17 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
   if (compact) {
     return (
       <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${rarityStyle}`}>
-        <span className="text-2xl">{emoji}</span>
+        {!imgError ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={getPixieImagePath(species, stage)}
+            alt=""
+            className="w-8 h-8 object-contain flex-shrink-0"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <span className="text-2xl">{emoji}</span>
+        )}
         <div>
           <p className="text-xs font-bold leading-none">{companion.name}</p>
           <p className="text-xs opacity-70 mt-0.5">
@@ -72,14 +87,24 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
         {/* Companion visual */}
         <div className="relative flex-shrink-0">
           <div
-            className="w-20 h-20 rounded-2xl flex items-center justify-center text-5xl"
+            className="w-20 h-20 rounded-2xl flex items-center justify-center text-5xl overflow-hidden"
             style={{
               background: 'rgba(255,255,255,0.03)',
               border: '1px solid rgba(255,255,255,0.06)',
               boxShadow: stage >= 4 ? '0 0 24px rgba(99,102,241,0.25)' : undefined,
             }}
           >
-            {emoji}
+            {!imgError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={getPixieImagePath(species, stage)}
+                alt=""
+                className="w-full h-full object-contain"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              emoji
+            )}
           </div>
           {/* Stage badge */}
           <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-black text-white border-2 border-[#0d0d1a]">
