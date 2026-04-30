@@ -13,6 +13,8 @@ export interface GenerateInput {
   system: string
   prompt: string
   model?: string
+  maxTokens?: number
+  temperature?: number
 }
 
 export type GenerateResult =
@@ -48,8 +50,8 @@ export async function generateWithOpenRouter(
           { role: 'system', content: input.system },
           { role: 'user',   content: input.prompt  },
         ],
-        temperature: 0.85,
-        max_tokens: 1400,
+        temperature: input.temperature ?? 0.85,
+        max_tokens: input.maxTokens ?? 1400,
       }),
     })
 

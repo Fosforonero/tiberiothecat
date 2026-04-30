@@ -39,6 +39,10 @@ export interface ValidatedBlogArticle {
   noveltyScore: number
   similarItems: SimilarItem[]
   warnings: string[]
+  articleKind: 'standard' | 'cornerstone'
+  faq?: Array<{ q: string; a: string }>
+  conclusion?: string
+  internalLinks?: string[]
 }
 
 export type ValidatedCandidate = ValidatedDilemma | ValidatedBlogArticle
@@ -101,6 +105,7 @@ export function validateGeneratedOutput(
   type: 'dilemma' | 'blog_article',
   locale: 'en' | 'it',
   inventory: ContentItem[],
+  articleKind: 'standard' | 'cornerstone' = 'standard',
 ): ValidationResult {
   let parsed: unknown
   try {
@@ -162,15 +167,18 @@ export function validateGeneratedOutput(
       return { ok: true, candidate: result }
     }
 
-    // blog_article
+    // blog_article — body limit depends on article kind
+    const bodyMax = articleKind === 'cornerstone' ? 18000 : 6500
+    const keywordsMax = articleKind === 'cornerstone' ? 8 : 6
+
     const rawSlug        = str(v.slug,           'slug',            3,  80)
     const slug           = slugify(rawSlug)
     const title          = str(v.title,          'title',           5,  200)
     const seoTitle       = str(v.seoTitle,       'seoTitle',        10, 120)
     const seoDesc        = str(v.seoDescription, 'seoDescription',  20, 320)
-    const body           = str(v.body,           'body',            300, 4000)
+    const body           = str(v.body,           'body',            300, bodyMax)
     const rationale      = str(v.rationale,      'rationale',       10, 400)
-    const keywords       = strArr(v.keywords,    'keywords',        6)
+    const keywords       = strArr(v.keywords,    'keywords',        keywordsMax)
     const outline        = strArr(v.outline,     'outline',         10)
     const relatedIds     = strArr(v.relatedDilemmaIds, 'relatedDilemmaIds', 8)
     const safetyNotes    = Array.isArray(v.safetyNotes)
@@ -179,6 +187,37 @@ export function validateGeneratedOutput(
 
     if (slug.length < 3) {
       return { ok: false, error: 'slug_too_short_after_normalize' }
+    }
+
+    // Optional cornerstone fields — parsed leniently, never reject on missing
+    let faq: Array<{ q: string; a: string }> | undefined
+    let conclusion: string | undefined
+    let internalLinks: string[] | undefined
+
+    if (articleKind === 'cornerstone') {
+      if (Array.isArray(v.faq)) {
+        faq = (v.faq as unknown[])
+          .filter(item => typeof item === 'object' && item !== null
+            && typeof (item as Record<string, unknown>).q === 'string'
+            && typeof (item as Record<string, unknown>).a === 'string')
+          .map(item => {
+            const i = item as Record<string, unknown>
+            return {
+              q: (i.q as string).trim().slice(0, 400),
+              a: (i.a as string).trim().slice(0, 1200),
+            }
+          })
+          .slice(0, 8)
+      }
+      if (typeof v.conclusion === 'string' && v.conclusion.trim().length > 0) {
+        conclusion = v.conclusion.trim().slice(0, 3000)
+      }
+      if (Array.isArray(v.internalLinks)) {
+        internalLinks = (v.internalLinks as unknown[])
+          .filter(l => typeof l === 'string')
+          .map(l => (l as string).trim())
+          .slice(0, 8)
+      }
     }
 
     const candidate: ContentCandidate = {
@@ -206,6 +245,10 @@ export function validateGeneratedOutput(
       noveltyScore,
       similarItems,
       warnings,
+      articleKind,
+      ...(faq          ? { faq }          : {}),
+      ...(conclusion   ? { conclusion }   : {}),
+      ...(internalLinks ? { internalLinks } : {}),
     }
     return { ok: true, candidate: result }
   } catch (err) {

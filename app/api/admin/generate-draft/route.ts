@@ -3,14 +3,27 @@ import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
 import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCHETYPES } from '@/lib/content-dedup'
-import { buildDilemmaPrompt, buildBlogArticlePrompt, type GenerationType, type GenerationLocale } from '@/lib/content-generation-prompts'
-import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
+import {
+  buildDilemmaPrompt,
+  buildBlogArticlePrompt,
+  buildTranslationPrompt,
+  type GenerationType,
+  type GenerationLocale,
+  type ArticleKind,
+} from '@/lib/content-generation-prompts'
+import {
+  validateGeneratedOutput,
+  slugify,
+  type ValidatedDilemma,
+  type ValidatedBlogArticle,
+} from '@/lib/content-generation-validate'
 import { saveDraftScenarios, type DynamicScenario } from '@/lib/dynamic-scenarios'
 import { buildComparisonItems, runSemanticReview, isBlockingVerdict } from '@/lib/content-semantic-review'
 import type { Category } from '@/lib/scenarios'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 const NOVELTY_THRESHOLD = 55
 
@@ -23,6 +36,50 @@ const CATEGORY_EMOJI: Record<string, string> = {
   technology:    '🤖',
   society:       '🏙️',
   relationships: '❤️',
+}
+
+/** Per-use-case model + token + temperature config. All model env vars fall back to OPENROUTER_MODEL_DRAFT. */
+function getModelConfig(type: string, articleKind: ArticleKind): {
+  model: string | undefined
+  maxTokens: number
+  temperature: number
+  timeoutMs: number
+} {
+  if (type === 'dilemma') return {
+    model:       process.env.OPENROUTER_MODEL_DILEMMA_DRAFT ?? process.env.OPENROUTER_MODEL_DRAFT,
+    maxTokens:   1400,
+    temperature: 0.9,
+    timeoutMs:   45_000,
+  }
+  if (articleKind === 'cornerstone') return {
+    model:       process.env.OPENROUTER_MODEL_CORNERSTONE_DRAFT
+                 ?? process.env.OPENROUTER_MODEL_ARTICLE_DRAFT
+                 ?? process.env.OPENROUTER_MODEL_DRAFT,
+    maxTokens:   5500,
+    temperature: 0.75,
+    timeoutMs:   120_000,
+  }
+  // standard article
+  return {
+    model:       process.env.OPENROUTER_MODEL_ARTICLE_DRAFT ?? process.env.OPENROUTER_MODEL_DRAFT,
+    maxTokens:   2500,
+    temperature: 0.80,
+    timeoutMs:   60_000,
+  }
+}
+
+function getTranslationConfig(articleKind: ArticleKind): {
+  model: string | undefined
+  maxTokens: number
+  timeoutMs: number
+} {
+  return {
+    model:     process.env.OPENROUTER_MODEL_TRANSLATION
+               ?? process.env.OPENROUTER_MODEL_ARTICLE_DRAFT
+               ?? process.env.OPENROUTER_MODEL_DRAFT,
+    maxTokens: articleKind === 'cornerstone' ? 5500 : 2500,
+    timeoutMs: articleKind === 'cornerstone' ? 120_000 : 60_000,
+  }
 }
 
 function dilemmaToScenario(
@@ -79,7 +136,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
   }
 
-  const { type, locale, topic, mode, allowLowNovelty } = body as Record<string, unknown>
+  const { type, locale, topic, mode, allowLowNovelty, articleKind, angle, notes } = body as Record<string, unknown>
 
   if (type !== 'dilemma' && type !== 'blog_article') {
     return NextResponse.json({ error: 'invalid_type' }, { status: 400 })
@@ -92,13 +149,17 @@ export async function POST(request: NextRequest) {
   }
 
   const cleanMode = mode === 'save' ? 'save' : 'preview'
+  const cleanArticleKind: ArticleKind =
+    (type === 'blog_article' && articleKind === 'cornerstone') ? 'cornerstone' : 'standard'
+  const cleanAngle = typeof angle === 'string' ? angle.trim().slice(0, 200) : undefined
+  const cleanNotes = typeof notes === 'string' ? notes.trim().slice(0, 400) : undefined
 
   // Blog articles: save not supported — they require manual editing into lib/blog.ts
   if (cleanMode === 'save' && type === 'blog_article') {
     return NextResponse.json({ error: 'blog_article_save_not_supported' }, { status: 400 })
   }
 
-  const cleanTopic = topic.trim()
+  const cleanTopic = (topic as string).trim()
   const inventory = await buildContentInventory()
 
   const preCheck = scoreNovelty(
@@ -134,24 +195,34 @@ export async function POST(request: NextRequest) {
     .map(s => `"${s.title}" (${s.similarity}% similar)`)
 
   const promptInput = {
-    type:    type as GenerationType,
-    locale:  locale as GenerationLocale,
-    topic:   cleanTopic,
+    type:     type as GenerationType,
+    locale:   locale as GenerationLocale,
+    topic:    cleanTopic,
     inventory: inventorySummary,
     similarContentWarnings,
+    articleKind: cleanArticleKind,
+    angle:    cleanAngle,
+    notes:    cleanNotes,
   }
 
   const { system, prompt } = type === 'dilemma'
     ? buildDilemmaPrompt(promptInput)
     : buildBlogArticlePrompt(promptInput)
 
-  const generated = await generateWithOpenRouter({ system, prompt })
+  const { model, maxTokens, temperature, timeoutMs } = getModelConfig(type as string, cleanArticleKind)
+  const generated = await generateWithOpenRouter({ system, prompt, model, maxTokens, temperature }, timeoutMs)
 
   if (!generated.ok) {
     return NextResponse.json({ error: generated.error }, { status: 502 })
   }
 
-  const validation = validateGeneratedOutput(generated.text, type, locale, inventory)
+  const validation = validateGeneratedOutput(
+    generated.text,
+    type as 'dilemma' | 'blog_article',
+    locale as 'en' | 'it',
+    inventory,
+    cleanArticleKind,
+  )
 
   if (!validation.ok) {
     return NextResponse.json(
@@ -162,7 +233,7 @@ export async function POST(request: NextRequest) {
 
   const candidate = validation.candidate
 
-  // Archetype saturation penalty — dilemmas only; penalizes archetypes already well-covered in inventory.
+  // Archetype saturation penalty — dilemmas only
   if (type === 'dilemma') {
     const dc = candidate as ValidatedDilemma
     const candidateText = `${dc.question} ${dc.optionA} ${dc.optionB}`
@@ -175,7 +246,63 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Preview mode — return without saving
+  // ── Blog article preview → generate bilingual translation ─────────────────
+  if (type === 'blog_article' && cleanMode === 'preview') {
+    const sourceArticle = candidate as ValidatedBlogArticle
+    const targetLocale: 'en' | 'it' = (locale as string) === 'en' ? 'it' : 'en'
+    const { model: tModel, maxTokens: tMaxTokens, timeoutMs: tTimeout } = getTranslationConfig(cleanArticleKind)
+
+    const { system: tSystem, prompt: tPrompt } = buildTranslationPrompt(
+      sourceArticle,
+      targetLocale,
+      cleanArticleKind,
+    )
+
+    const translationGenerated = await generateWithOpenRouter(
+      { system: tSystem, prompt: tPrompt, model: tModel, maxTokens: tMaxTokens, temperature: 0.65 },
+      tTimeout,
+    )
+
+    if (!translationGenerated.ok) {
+      return NextResponse.json({
+        ok: true,
+        mode: 'preview',
+        candidate: sourceArticle,
+        translation: null,
+        translationFailed: true,
+        translationError: translationGenerated.error,
+      })
+    }
+
+    const translationValidation = validateGeneratedOutput(
+      translationGenerated.text,
+      'blog_article',
+      targetLocale,
+      inventory,
+      cleanArticleKind,
+    )
+
+    if (!translationValidation.ok) {
+      return NextResponse.json({
+        ok: true,
+        mode: 'preview',
+        candidate: sourceArticle,
+        translation: null,
+        translationFailed: true,
+        translationError: translationValidation.error,
+      })
+    }
+
+    return NextResponse.json({
+      ok: true,
+      mode: 'preview',
+      candidate: sourceArticle,
+      translation: translationValidation.candidate,
+      translationFailed: false,
+    })
+  }
+
+  // Preview mode (dilemma)
   if (cleanMode === 'preview') {
     return NextResponse.json({ ok: true, mode: 'preview', candidate })
   }
@@ -213,7 +340,7 @@ export async function POST(request: NextRequest) {
       },
       comparisonItems,
     },
-    10_000,
+    15_000,
   )
 
   if (!reviewOutcome.ok) {

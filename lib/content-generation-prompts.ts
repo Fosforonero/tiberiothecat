@@ -1,5 +1,6 @@
 export type GenerationType = 'dilemma' | 'blog_article'
 export type GenerationLocale = 'en' | 'it'
+export type ArticleKind = 'standard' | 'cornerstone'
 
 export interface InventorySummary {
   totalDilemmas: number
@@ -19,24 +20,44 @@ export interface PromptInput {
   targetCategory?: string
   inventory: InventorySummary
   similarContentWarnings: string[]
+  articleKind?: ArticleKind
+  angle?: string
+  notes?: string
+}
+
+/** Minimal article shape needed to build a translation prompt — avoids cross-file import. */
+export interface ArticleSourceForTranslation {
+  locale: 'en' | 'it'
+  title: string
+  seoTitle: string
+  seoDescription: string
+  keywords: string[]
+  outline: string[]
+  body: string
+  relatedDilemmaIds: string[]
+  faq?: Array<{ q: string; a: string }>
+  conclusion?: string
+  internalLinks?: string[]
 }
 
 const SAFETY_RULES = `
 Safety and quality rules (strictly enforced — output will be rejected if violated):
 - No medical, legal, financial, or psychological advice
 - No hate speech, explicit sexual content, or content involving minors
-- No real people names (living or dead), no personal data
+- No real people names (living or dead), no personal data, no company names as villains
 - No dangerous instructions (weapons, drugs, self-harm triggers)
 - No extreme clickbait or sensationalism
 - No keyword stuffing — max 6 keywords, all topically relevant
 - Both dilemma options must be morally nuanced — never "good vs evil"
 - If topic touches psychology, ethics, or health: add a brief disclaimer in safetyNotes
 - Content must be suitable for a general audience aged 16+
+- No unverified factual claims about specific recent or ongoing events
+- If based on a current events topic: abstract it into a universal moral dilemma — do not name specific people, cities, or incidents; mark as "inspired by topic", never "based on specific event"
 - Output ONLY valid JSON — no markdown fences, no explanation text
 `
 
 export function buildDilemmaPrompt(input: PromptInput): { system: string; prompt: string } {
-  const { locale, topic, targetCategory, inventory, similarContentWarnings } = input
+  const { locale, topic, targetCategory, inventory, similarContentWarnings, angle, notes } = input
   const lang = locale === 'it' ? 'Italian' : 'English'
 
   const system = `You are a creative writer for SplitVote, a global platform for moral dilemma voting. \
@@ -60,7 +81,10 @@ ${SAFETY_RULES}`
     ? `\n- Existing ${targetCategory ?? ''} questions (do not reuse same moral structure):\n${inventory.existingQuestionsInCategory.map(q => `  · "${q}"`).join('\n')}`
     : ''
 
-  const prompt = `Generate one moral dilemma in ${lang} about: "${topic}"
+  const angleHint = angle ? `\n- Preferred angle / perspective: ${angle}` : ''
+  const notesHint = notes ? `\n- Context / notes: ${notes}` : ''
+
+  const prompt = `Generate one moral dilemma in ${lang} about: "${topic}"${angleHint}${notesHint}
 ${simWarning}
 Context:
 - Dilemmas per category (${lang}): ${catCountStr}${satWarning}${qInCategory}
@@ -95,14 +119,18 @@ Output this exact JSON object (no other text):
 }
 
 export function buildBlogArticlePrompt(input: PromptInput): { system: string; prompt: string } {
-  const { locale, topic, inventory, similarContentWarnings } = input
+  const { locale, topic, inventory, similarContentWarnings, articleKind = 'standard' } = input
+  const isCornerstone = articleKind === 'cornerstone'
   const lang = locale === 'it' ? 'Italian' : 'English'
   const disclaimer = locale === 'it'
     ? 'Contenuto educativo, non consulenza professionale.'
     : 'Educational content, not professional advice.'
 
+  const wordRange = isCornerstone ? '1200–1500 words' : '500–750 words'
+  const kindLabel = isCornerstone ? 'comprehensive pillar' : 'concise SEO'
+
   const system = `You are a content writer for SplitVote, a global platform for moral dilemma voting. \
-Write a short SEO blog article in ${lang} about the given topic. \
+Write a ${kindLabel} blog article in ${lang} about the given topic. \
 The article must be educational, engaging, and reference playable moral dilemmas. \
 Output ONLY valid JSON — no markdown, no code fences, no extra text.
 ${SAFETY_RULES}`
@@ -113,7 +141,23 @@ ${SAFETY_RULES}`
 
   const commonDilemmaIds = 'trolley, organ-harvest, cure-secret, memory-erase, steal-medicine, mercy-kill, whistleblower, robot-judge, self-driving-crash, brain-upload'
 
-  const prompt = `Write a short SEO blog article in ${lang} about: "${topic}"
+  const outlineSpec = isCornerstone ? '5–8 section headings' : '3–5 section headings'
+  const relatedSpec = isCornerstone ? '4–8 IDs' : '2–4 IDs'
+
+  const cornerstoneFields = isCornerstone
+    ? `  "faq": [{"q": "...", "a": "..."}, ...],
+  "conclusion": "...",
+  "internalLinks": ["/category/morality", "/play/trolley", ...],`
+    : ''
+
+  const cornerstoneReqs = isCornerstone
+    ? `- Include a FAQ section with 3–5 questions and answers (faq field)
+- Include a strong standalone conclusion paragraph (conclusion field)
+- Suggest 2–4 internal links to SplitVote category/dilemma pages (internalLinks field, e.g. "/category/morality")
+- keywords: up to 8 topically relevant terms`
+    : `- keywords: max 6 topically relevant terms`
+
+  const prompt = `Write a ${wordRange} ${isCornerstone ? 'cornerstone (pillar SEO, evergreen)' : 'standard (topic-specific, agile)'} blog article in ${lang} about: "${topic}"
 ${simWarning}
 Context:
 - Existing blog articles (do not duplicate): ${inventory.similarTitles.slice(0, 8).join('; ')}
@@ -121,11 +165,13 @@ Context:
 - Common playable dilemma IDs to reference: ${commonDilemmaIds}
 
 Requirements:
-- 400–700 words, educational tone
+- ${wordRange}, educational tone
 - Must include this disclaimer verbatim: "${disclaimer}"
 - No first-person ("I"), no generic filler, no AI-generated feel
 - Slug: URL-safe kebab-case, descriptive, max 60 chars
-- Reference 2–4 related dilemma IDs from the list above
+- outline: ${outlineSpec}
+- relatedDilemmaIds: ${relatedSpec} from the list above
+${cornerstoneReqs}
 
 Output this exact JSON object (no other text):
 {
@@ -136,10 +182,80 @@ Output this exact JSON object (no other text):
   "seoTitle": "...",
   "seoDescription": "...",
   "keywords": ["...", "..."],
-  "outline": ["Section heading 1", "..."],
+  "outline": [...],
   "body": "Full article text here...",
+${cornerstoneFields}
   "relatedDilemmaIds": ["trolley", "..."],
   "rationale": "One sentence: why this article is useful and novel",
+  "safetyNotes": []
+}`
+
+  return { system, prompt }
+}
+
+export function buildTranslationPrompt(
+  source: ArticleSourceForTranslation,
+  targetLocale: 'en' | 'it',
+  articleKind: ArticleKind = 'standard',
+): { system: string; prompt: string } {
+  const lang = targetLocale === 'it' ? 'Italian' : 'English'
+  const disclaimer = targetLocale === 'it'
+    ? 'Contenuto educativo, non consulenza professionale.'
+    : 'Educational content, not professional advice.'
+  const isCornerstone = articleKind === 'cornerstone'
+
+  const system = `You are a bilingual localization editor for SplitVote, a global moral dilemma platform. \
+Translate and culturally adapt a blog article into ${lang}. \
+Preserve SEO intent, educational tone, and structural outline. \
+Keep relatedDilemmaIds unchanged — they are locale-independent. \
+The disclaimer must match the target locale exactly. \
+Output ONLY valid JSON — no markdown, no code fences, no extra text.`
+
+  const sourceJson = JSON.stringify({
+    title:             source.title,
+    seoTitle:          source.seoTitle,
+    seoDescription:    source.seoDescription,
+    keywords:          source.keywords,
+    outline:           source.outline,
+    body:              source.body,
+    relatedDilemmaIds: source.relatedDilemmaIds,
+    ...(source.faq          ? { faq:           source.faq }          : {}),
+    ...(source.conclusion   ? { conclusion:    source.conclusion }   : {}),
+    ...(source.internalLinks ? { internalLinks: source.internalLinks } : {}),
+  }, null, 2)
+
+  const cornerstoneFields = isCornerstone
+    ? `  "faq": [{"q": "...", "a": "..."}, ...],
+  "conclusion": "...",
+  "internalLinks": [...],`
+    : ''
+
+  const prompt = `Translate and adapt the following blog article into ${lang}.
+
+Source article (${source.locale.toUpperCase()}):
+${sourceJson}
+
+Requirements:
+- Translate meaning-equivalently and fluently — not word-for-word
+- New slug: URL-safe kebab-case appropriate for ${lang} content (max 60 chars)
+- Must include this disclaimer verbatim: "${disclaimer}"
+- keywords: translate/adapt to ${lang} SEO equivalents
+- relatedDilemmaIds and internalLinks: keep exactly as-is
+
+Output this exact JSON object (no other text):
+{
+  "type": "blog_article",
+  "locale": "${targetLocale}",
+  "slug": "...",
+  "title": "...",
+  "seoTitle": "...",
+  "seoDescription": "...",
+  "keywords": ["...", "..."],
+  "outline": [...],
+  "body": "Full translated article text here...",
+${cornerstoneFields}
+  "relatedDilemmaIds": [...],
+  "rationale": "One sentence: why this translation serves the ${lang} audience",
   "safetyNotes": []
 }`
 
