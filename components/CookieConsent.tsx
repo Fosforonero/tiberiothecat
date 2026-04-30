@@ -77,10 +77,19 @@ export default function CookieConsent() {
     return () => window.removeEventListener('sv:openCookieSettings', handleOpen)
   }, [])
 
+  function sendConsentPageView() {
+    window.gtag?.('event', 'page_view', {
+      page_path: window.location.pathname + window.location.search,
+      page_location: window.location.href,
+      page_title: document.title,
+    })
+  }
+
   function acceptAll() {
     const p: CookiePrefs = { analytics: true, ads: true }
     savePrefs(p)
     updateConsentMode(p)
+    sendConsentPageView()
     setVisible(false)
     setCustomizing(false)
   }
@@ -96,6 +105,7 @@ export default function CookieConsent() {
   function saveCustom() {
     savePrefs(prefs)
     updateConsentMode(prefs)
+    if (prefs.analytics) sendConsentPageView()
     setVisible(false)
     setCustomizing(false)
   }

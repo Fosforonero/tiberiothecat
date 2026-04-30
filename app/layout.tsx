@@ -11,6 +11,7 @@ import NavLinks from '@/components/NavLinks'
 import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
+import GAPageView from '@/components/GAPageView'
 import { SOCIAL_LINKS } from '@/lib/social-links'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -100,6 +101,7 @@ export const viewport: Viewport = {
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-5MPQ8PW0CE'
   return (
     <html lang="en" className={inter.variable}>
       <head>
@@ -118,15 +120,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('set', 'url_passthrough', true);
           `}
         </Script>
-        <Script src="/api/_g/script?id=G-5MPQ8PW0CE" strategy="afterInteractive" />
+        <Script src={`/api/_g/script?id=${GA_ID}`} strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-5MPQ8PW0CE', {
+            gtag('config', '${GA_ID}', {
               transport_url: 'https://splitvote.io/api/_g',
-              first_party_collection: true
+              first_party_collection: true,
+              send_page_view: false
             });
           `}
         </Script>
@@ -195,6 +198,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <main>{children}</main>
         <Analytics />
+        <GAPageView />
         <CookieConsent />
         <AdBlockBanner />
         <Footer />
