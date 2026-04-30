@@ -184,6 +184,8 @@ export default async function DashboardPage() {
         votesCount={votesCount}
         xp={xp}
         locale={locale}
+        userId={user.id}
+        enableLevelUpModal
       />
 
       {/* ── Daily Missions ── */}

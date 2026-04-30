@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   COMPANION_MAP,
   STAGE_LABELS,
@@ -11,6 +11,7 @@ import {
   type CompanionSpecies,
 } from '@/lib/companion'
 import { getPixieImagePath } from '@/lib/pixie'
+import PixieLevelUpModal from './PixieLevelUpModal'
 
 interface Props {
   species: CompanionSpecies
@@ -18,6 +19,8 @@ interface Props {
   xp?: number
   compact?: boolean
   locale?: string
+  userId?: string
+  enableLevelUpModal?: boolean
 }
 
 const IT_STAGE_LABELS: Record<number, string> = {
@@ -28,13 +31,46 @@ const IT_STAGE_LABELS: Record<number, string> = {
   5: 'Leggendario',
 }
 
-export default function CompanionDisplay({ species, votesCount, xp = 0, compact = false, locale = 'en' }: Props) {
+export default function CompanionDisplay({
+  species, votesCount, xp = 0, compact = false,
+  locale = 'en', userId, enableLevelUpModal = false,
+}: Props) {
   const IT = locale === 'it'
   const companion = COMPANION_MAP[species] ?? COMPANION_MAP['spark']
   const stage = getCompanionStage(votesCount)
 
   const [imgError, setImgError] = useState(false)
+  const [xpPulse, setXpPulse] = useState(false)
+  const [showLevelUp, setShowLevelUp] = useState(false)
+  const prefersReducedMotion = useRef(false)
+
   useEffect(() => { setImgError(false) }, [species, stage])
+
+  useEffect(() => {
+    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }, [])
+
+  // Glow pulse triggered by sv:pixie-xp event dispatched from DailyMissions
+  useEffect(() => {
+    const handler = () => {
+      if (prefersReducedMotion.current || compact) return
+      setXpPulse(true)
+      setTimeout(() => setXpPulse(false), 1000)
+    }
+    window.addEventListener('sv:pixie-xp', handler)
+    return () => window.removeEventListener('sv:pixie-xp', handler)
+  }, [compact])
+
+  // Level-up detection: compare current stage against sessionStorage last-seen stage
+  useEffect(() => {
+    if (!enableLevelUpModal || !userId) return
+    const key = `pixie-stage-${userId}`
+    const stored = parseInt(sessionStorage.getItem(key) ?? '0', 10) || 0
+    if (stored > 0 && stage > stored) {
+      setShowLevelUp(true)
+    }
+    sessionStorage.setItem(key, String(stage))
+  }, [stage, userId, enableLevelUpModal])
   const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
   const emoji = companion.stageEmoji[stage - 1]
   const toNext = votesToNextStage(votesCount)
@@ -73,6 +109,14 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
   }
 
   return (
+    <>
+    <style>{`
+      @keyframes pixie-xp-pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(250,204,21,0.55); }
+        50%  { box-shadow: 0 0 20px 8px rgba(250,204,21,0.28); }
+        100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
+      }
+    `}</style>
     <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
@@ -91,7 +135,9 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
             style={{
               background: 'rgba(255,255,255,0.03)',
               border: '1px solid rgba(255,255,255,0.06)',
-              boxShadow: stage >= 4 ? '0 0 24px rgba(99,102,241,0.25)' : undefined,
+              animation: xpPulse ? 'pixie-xp-pulse 1s ease-out forwards' : undefined,
+              boxShadow: xpPulse ? undefined : stage >= 4 ? '0 0 24px rgba(99,102,241,0.25)' : undefined,
+              transition: xpPulse ? undefined : 'box-shadow 0.3s ease',
             }}
           >
             {!imgError ? (
@@ -159,5 +205,17 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
         </p>
       )}
     </div>
+
+    {showLevelUp && enableLevelUpModal && userId && (
+      <PixieLevelUpModal
+        species={species}
+        stage={stage}
+        xp={xp}
+        locale={locale}
+        userId={userId}
+        onClose={() => setShowLevelUp(false)}
+      />
+    )}
+    </>
   )
 }

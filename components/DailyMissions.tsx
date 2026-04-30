@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getLevelInfo, type MissionId, type MissionState } from '@/lib/missions'
 
@@ -27,6 +27,12 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
   const [claiming, setClaiming] = useState<MissionId | null>(null)
   const [claimError, setClaimError] = useState<string | null>(null)
   const [currentXp, setCurrentXp] = useState(xp)
+  const [xpToast, setXpToast] = useState<{ amount: number; key: number } | null>(null)
+  const prefersReducedMotion = useRef(false)
+
+  useEffect(() => {
+    prefersReducedMotion.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }, [])
 
   const levelInfo = getLevelInfo(currentXp)
 
@@ -51,7 +57,17 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
       if (res.ok) {
         const json = await res.json().catch(() => ({}))
         const awarded: number = json.xpAwarded ?? 0
-        if (awarded > 0) setCurrentXp(prev => prev + awarded)
+        if (awarded > 0) {
+          setCurrentXp(prev => prev + awarded)
+          // Fire Pixie XP event (CompanionDisplay listens for glow pulse)
+          window.dispatchEvent(new CustomEvent('sv:pixie-xp', { detail: { amount: awarded } }))
+          // XP toast — skip motion if user prefers reduced motion
+          if (!prefersReducedMotion.current) {
+            const key = Date.now()
+            setXpToast({ amount: awarded, key })
+            setTimeout(() => setXpToast(t => t?.key === key ? null : t), 1400)
+          }
+        }
         setMissions(prev =>
           prev?.map(m =>
             m.id === id
@@ -84,9 +100,36 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
   })
 
   return (
-    <div className={`rounded-2xl border bg-[#0d0d1a]/60 p-5 mb-8 transition-colors ${
+    <div className={`rounded-2xl border bg-[#0d0d1a]/60 p-5 mb-8 transition-colors relative overflow-visible ${
       claimableCount > 0 ? 'border-orange-500/30' : 'border-[var(--border)]'
     }`}>
+      <style>{`
+        @keyframes xp-float {
+          0%   { opacity: 1; transform: translateY(0) scale(1); }
+          60%  { opacity: 1; transform: translateY(-20px) scale(1.08); }
+          100% { opacity: 0; transform: translateY(-32px) scale(0.95); }
+        }
+      `}</style>
+      {/* XP Toast — floats up on successful mission claim */}
+      {xpToast && (
+        <div
+          key={xpToast.key}
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            position: 'absolute', top: '12px', right: '16px',
+            animation: 'xp-float 1.4s ease-out forwards',
+            pointerEvents: 'none', zIndex: 10,
+          }}
+          className="text-sm font-black text-yellow-400 whitespace-nowrap"
+        >
+          +{xpToast.amount} XP ⚡{' '}
+          <span className="text-xs font-semibold text-yellow-300/80">
+            {IT ? 'Pixie ha guadagnato XP' : 'Pixie gained XP'}
+          </span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
