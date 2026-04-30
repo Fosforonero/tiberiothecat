@@ -3,9 +3,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Share2 } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 import Script from 'next/script'
 import { track } from '@/lib/gtag'
+import { shareQuestion as execShare } from '@/lib/share-question'
 
 interface ExistingVote {
   choice: 'A' | 'B'
@@ -77,8 +79,8 @@ const EN_COPY = {
   graceHint:           'Changed your mind? You have a short window to switch before it\'s recorded.',
   graceUndo:           'Undo',
   graceConfirm:        'Confirm now',
-  shareQuestion:       'Share this dilemma',
-  shareQuestionCopied: '✅ Link copied!',
+  shareQuestion:       'Share question',
+  shareQuestionCopied: 'Link copied',
   revealHint:          'Vote to reveal how the world splits.',
 }
 
@@ -105,8 +107,8 @@ const IT_COPY = {
   graceHint:           'Hai cambiato idea? Hai qualche secondo per correggere prima che venga registrato.',
   graceUndo:           'Annulla',
   graceConfirm:        'Conferma subito',
-  shareQuestion:       'Condividi questo dilemma',
-  shareQuestionCopied: '✅ Link copiato!',
+  shareQuestion:       'Condividi domanda',
+  shareQuestionCopied: 'Link copiato',
   revealHint:          'Vota per scoprire come si divide il mondo.',
 }
 
@@ -267,16 +269,18 @@ export default function VoteClientPage({
   }
 
   async function handleShareQuestion() {
-    const shareUrl = `${BASE_URL}${localePrefix}/play/${scenario.id}`
-    const shareText = locale === 'it'
-      ? `"${scenario.question}" — cosa sceglieresti?`
-      : `"${scenario.question}" — what would you choose?`
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({ title: scenario.question, text: shareText, url: shareUrl })
-      } catch { /* user cancelled */ }
-    } else {
-      await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
+    const url = `${BASE_URL}${localePrefix}/play/${scenario.id}`
+    const text = locale === 'it'
+      ? `"${scenario.question}" — Tu cosa sceglieresti?`
+      : `"${scenario.question}" — What would you choose?`
+    track('share_clicked', {
+      target: 'question_pre_vote',
+      scenario_id: scenario.id,
+      locale,
+      source: 'play',
+    })
+    const result = await execShare({ title: scenario.question, text, url })
+    if (result === 'copied') {
       setQuestionLinkCopied(true)
       setTimeout(() => setQuestionLinkCopied(false), 2000)
     }
@@ -565,9 +569,10 @@ export default function VoteClientPage({
               <div className="mt-6 text-center">
                 <button
                   onClick={handleShareQuestion}
+                  aria-label={copy.shareQuestion}
                   className="text-xs text-[var(--muted)] hover:text-white transition-colors inline-flex items-center gap-1.5"
                 >
-                  <span aria-hidden>📤</span>
+                  <Share2 size={12} aria-hidden />
                   {questionLinkCopied ? copy.shareQuestionCopied : copy.shareQuestion}
                 </button>
               </div>

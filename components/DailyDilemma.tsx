@@ -2,8 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Zap, Globe, ChevronRight } from 'lucide-react'
+import { Zap, Globe, ChevronRight, Share2 } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
+import { track } from '@/lib/gtag'
+import { shareQuestion } from '@/lib/share-question'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
 interface Props {
   scenario: Scenario
@@ -23,24 +27,29 @@ function getMidnightCountdown(): string {
 }
 
 const IT_COPY = {
-  label:      'Dilemma del Giorno',
-  resetsIn:   'Cambia tra',
-  votesToday: 'voti oggi',
-  voteNow:    'Vota e scopri il risultato',
-  results:    'Vedi risultati',
+  label:         'Dilemma del Giorno',
+  resetsIn:      'Cambia tra',
+  votesToday:    'voti oggi',
+  voteNow:       'Vota e scopri il risultato',
+  results:       'Vedi risultati',
+  shareQuestion: 'Condividi domanda',
+  shareCopied:   'Link copiato',
 }
 
 const EN_COPY = {
-  label:      'Dilemma of the Day',
-  resetsIn:   'Resets in',
-  votesToday: 'votes today',
-  voteNow:    'Vote and reveal the split',
-  results:    'See results',
+  label:         'Dilemma of the Day',
+  resetsIn:      'Resets in',
+  votesToday:    'votes today',
+  voteNow:       'Vote and reveal the split',
+  results:       'See results',
+  shareQuestion: 'Share question',
+  shareCopied:   'Link copied',
 }
 
 export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Props) {
   const [countdown, setCountdown] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   const copy = locale === 'it' ? IT_COPY : EN_COPY
   const prefix = locale === 'it' ? '/it' : ''
 
@@ -52,6 +61,24 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
     }, 1000)
     return () => clearInterval(interval)
   }, [])
+
+  async function handleShare() {
+    const url = `${BASE_URL}${prefix}/play/${scenario.id}`
+    const text = locale === 'it'
+      ? `"${scenario.question}" — Tu cosa sceglieresti?`
+      : `"${scenario.question}" — What would you choose?`
+    track('share_clicked', {
+      target: 'question_pre_vote',
+      scenario_id: scenario.id,
+      locale,
+      source: 'daily_dilemma',
+    })
+    const result = await shareQuestion({ title: scenario.question, text, url })
+    if (result === 'copied') {
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 2000)
+    }
+  }
 
   return (
     <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow"
@@ -114,6 +141,18 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
           >
             {copy.results}
           </Link>
+        </div>
+
+        {/* Pre-vote share — secondary, below primary CTA */}
+        <div className="mt-3 text-center">
+          <button
+            onClick={handleShare}
+            aria-label={copy.shareQuestion}
+            className="text-xs text-[var(--muted)] hover:text-white transition-colors inline-flex items-center gap-1.5"
+          >
+            <Share2 size={12} aria-hidden />
+            {linkCopied ? copy.shareCopied : copy.shareQuestion}
+          </button>
         </div>
       </div>
     </div>
