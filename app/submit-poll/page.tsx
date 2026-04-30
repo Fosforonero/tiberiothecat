@@ -16,7 +16,6 @@ const CATEGORIES = [
 
 export default function SubmitPollPage() {
   const router = useRouter()
-  const supabase = createClient()
 
   const [canSubmit, setCanSubmit] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(false)
@@ -33,6 +32,7 @@ export default function SubmitPollPage() {
   })
 
   useEffect(() => {
+    const supabase = createClient()
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) { router.push('/login?redirect=/submit-poll'); return }
       try {
