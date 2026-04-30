@@ -71,8 +71,8 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
 
   const votes = await getVotes(params.id)
   const total = votes.a + votes.b
-  const pctA = total > 0 ? Math.round((votes.a / total) * 100) : 50
-  const pctB = total > 0 ? Math.round((votes.b / total) * 100) : 50
+  const pctA = total > 0 ? Math.round((votes.a / total) * 100) : 0
+  const pctB = total > 0 ? Math.round((votes.b / total) * 100) : 0
   const voted = (searchParams.voted === 'a' || searchParams.voted === 'b')
     ? searchParams.voted
     : null

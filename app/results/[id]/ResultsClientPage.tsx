@@ -100,6 +100,7 @@ const EN_COPY = {
   pathExhausted:     'No fresh dilemmas left in this path',
   pathOtherCats:     'Browse categories',
   comparing:         'Comparing your answer with the world…',
+  noVotesYet:        'Not enough votes yet to show a result.',
 }
 
 const IT_COPY = {
@@ -168,6 +169,7 @@ const IT_COPY = {
   pathExhausted:     'Non ci sono altri dilemmi nuovi in questo percorso',
   pathOtherCats:     'Sfoglia categorie',
   comparing:         'Confrontiamo la tua risposta con il mondo…',
+  noVotesYet:        'Non ci sono ancora abbastanza voti per mostrare un risultato.',
 }
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '', pathCategory, pathStep, pathTarget, nextPathId, pathCategoryLabel, pathCategoryEmoji }: Props) {
@@ -263,13 +265,17 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   // Minority / majority reveal
   const pctVoted = voted === 'a' ? pctA : voted === 'b' ? pctB : null
   const isMinority = pctVoted !== null && pctVoted < 50
-  const isTie = pctA === pctB
-  const isClose              = !isTie && Math.abs(pctA - pctB) <= 10
-  const isAggregateLandslide = !isTie && majorityPct >= 70
+  const isTie = total > 0 && pctA === pctB
+  const isClose              = total > 0 && !isTie && Math.abs(pctA - pctB) <= 10
+  const isAggregateLandslide = total > 0 && !isTie && majorityPct >= 70
   const isUserOnLandslideSide = isAggregateLandslide && pctVoted === majorityPct
 
   // Aggregate share text — always uses majority stats, never reveals user's own vote
-  const webShareText = isTie
+  const webShareText = total === 0
+    ? (isIT
+        ? `Cosa faresti?\n"${scenario.question}"`
+        : `What would you choose?\n"${scenario.question}"`)
+    : isTie
     ? (isIT
         ? `Questo divide il mondo esattamente 50/50. Tu cosa sceglieresti?\n"${scenario.question}"`
         : `This one splits the world exactly 50/50. What would you choose?\n"${scenario.question}"`)
@@ -286,7 +292,11 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         : `${majorityPct}% chose "${majorityLabel}". What would you do?\n"${scenario.question}"`)
 
   // Platform share texts
-  const twitterText = isTie
+  const twitterText = total === 0
+    ? (isIT
+        ? `Cosa faresti? 🌍`
+        : `What would YOU choose? 🌍`)
+    : isTie
     ? (isIT
         ? `Questo divide il mondo 50/50 🤝 Tu da che parte stai?`
         : `This one splits the world 50/50 🤝 Which side are you on?`)
@@ -302,17 +312,29 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa sceglieresti? 🌍`
         : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`)
   const tiktokCaption = isIT
-    ? `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
-    : `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+    ? (total === 0
+        ? `E tu cosa faresti? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
+        : `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`)
+    : (total === 0
+        ? `What would you do? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
+        : `${pctA}% of the world would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`)
   const instagramCaption = isIT
-    ? `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
-    : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
+    ? (total === 0
+        ? `"${scenario.question}"\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
+        : `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`)
+    : (total === 0
+        ? `"${scenario.question}"\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
+        : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`)
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`
   const discordText = isIT
-    ? `${scenario.emoji} **"${scenario.question}"**\nIl mondo è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`
-    : `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`
+    ? (total === 0
+        ? `${scenario.emoji} **"${scenario.question}"**\nNessun voto ancora — tu cosa sceglieresti?\n🔗 ${shareUrl}`
+        : `${scenario.emoji} **"${scenario.question}"**\nIl mondo è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`)
+    : (total === 0
+        ? `${scenario.emoji} **"${scenario.question}"**\nNo votes yet — what would YOU choose?\n🔗 ${shareUrl}`
+        : `${scenario.emoji} **"${scenario.question}"**\nThe world is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`)
 
   // Fire-and-forget server-side event tracking for mission verification.
   // Silently ignored if user is not authenticated (server returns 401).
@@ -558,21 +580,32 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       </div>
 
       {/* Winner label */}
-      <div className={`text-center mb-3 text-[var(--muted)] text-sm${!revealed ? ' invisible' : ''}`}>
-        {pctA === pctB ? (
-          <span>{copy.tie}</span>
-        ) : (
-          <span>
-            {copy.majority(majorityPct, majorityLabel)}
-            <em className="not-italic text-white">{majorityLabel}</em>
-          </span>
-        )}
-      </div>
+      {total > 0 && (
+        <div className={`text-center mb-3 text-[var(--muted)] text-sm${!revealed ? ' invisible' : ''}`}>
+          {pctA === pctB ? (
+            <span>{copy.tie}</span>
+          ) : (
+            <span>
+              {copy.majority(majorityPct, majorityLabel)}
+              <em className="not-italic text-white">{majorityLabel}</em>
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Aggregate attribution */}
-      <p className={`text-center text-xs text-[var(--muted)] mb-8 opacity-60${!revealed ? ' invisible' : ''}`}>
-        {copy.aggregateNote}
-      </p>
+      {total > 0 && (
+        <p className={`text-center text-xs text-[var(--muted)] mb-8 opacity-60${!revealed ? ' invisible' : ''}`}>
+          {copy.aggregateNote}
+        </p>
+      )}
+
+      {/* No votes yet placeholder */}
+      {total === 0 && (
+        <p className="text-center text-sm text-[var(--muted)] mb-8">
+          {copy.noVotesYet}
+        </p>
+      )}
 
       {/* ── Expert Insight ── */}
       <div className="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5">
