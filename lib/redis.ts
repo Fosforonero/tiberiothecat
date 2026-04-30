@@ -81,3 +81,29 @@ export async function getVotesBatchDetail(
   })
   return map
 }
+
+/**
+ * Batch-fetch feedback counts (🔥 fire / 👎 down) for multiple dilemmas.
+ * Covers both anonymous and authenticated feedback — Redis is the complete store.
+ * Returns a map: dilemmaId → { up, down, total }. Never throws; returns empty Map on error.
+ */
+export async function getFeedbackBatchDetail(
+  ids: string[],
+): Promise<Map<string, { up: number; down: number; total: number }>> {
+  if (ids.length === 0) return new Map()
+  try {
+    const p = redis.pipeline()
+    for (const id of ids) p.hgetall(`feedback:${id}`)
+    const results = await p.exec() as Array<Record<string, string> | null>
+    const map = new Map<string, { up: number; down: number; total: number }>()
+    ids.forEach((id, i) => {
+      const r = results[i]
+      const up   = Math.max(0, Number(r?.fire ?? 0))
+      const down = Math.max(0, Number(r?.down ?? 0))
+      map.set(id, { up, down, total: up + down })
+    })
+    return map
+  } catch {
+    return new Map()
+  }
+}

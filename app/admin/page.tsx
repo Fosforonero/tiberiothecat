@@ -16,6 +16,9 @@ import ScenarioQAEditor from './ScenarioQAEditor'
 import type { UserRole } from '@/lib/admin-auth'
 import { getUserEntitlements } from '@/lib/entitlements'
 import RolesPanel from './RolesPanel'
+import { scenarios } from '@/lib/scenarios'
+import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { getFeedbackBatchDetail } from '@/lib/redis'
 
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
@@ -129,6 +132,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     premiumUsersRes,
     votes7dRes,
     feedbackStatsRes,
+    dynamicScenariosData,
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('dilemma_votes').select('*', { count: 'exact', head: true }),
@@ -145,11 +149,12 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     admin.from('vote_daily_stats').select('anonymous_count, logged_in_count, total_count'),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('is_premium', true),
     admin.from('vote_daily_stats').select('total_count').gte('date', since7.toISOString().slice(0, 10)),
-    // Per-dilemma feedback stats via the aggregate view
+    // Per-dilemma feedback stats via the aggregate view (logged-in users only — used as fallback)
     admin.from('dilemma_feedback_stats')
       .select('dilemma_id, fire_count, down_count, total_count, fire_pct')
       .order('total_count', { ascending: false })
       .limit(100),
+    getDynamicScenarios(),
   ])
 
   const totalUsers        = profilesRes.count ?? 0
@@ -202,7 +207,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   }
   const signupsChartData = Object.entries(signupBuckets).map(([date, count]) => ({ date, count }))
 
-  // Per-dilemma feedback stats
+  // Per-dilemma feedback stats (Supabase — logged-in users only, used as fallback)
   type FeedbackStat = { dilemma_id: string; fire_count: number; down_count: number; total_count: number; fire_pct: number }
   const feedbackStats = ((feedbackStatsRes.data ?? []) as FeedbackStat[]).filter(d => d.total_count >= 3)
   const topFireDilemmas    = [...feedbackStats].sort((a, b) => b.fire_pct - a.fire_pct).slice(0, 5)
@@ -210,6 +215,28 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   const totalFeedback = feedbackStats.reduce((s, r) => s + r.total_count, 0)
   const totalFire     = feedbackStats.reduce((s, r) => s + r.fire_count, 0)
   const fireFeedbackPct = totalFeedback > 0 ? Math.round((totalFire / totalFeedback) * 100) : 0
+
+  // Redis feedback — source of truth (anonymous + authenticated)
+  const allScenarioIds = [...new Set([
+    ...scenarios.map(s => s.id),
+    ...dynamicScenariosData.map(s => s.id),
+  ])]
+  const redisFeedback = await getFeedbackBatchDetail(allScenarioIds)
+
+  let redisTotalFeedback = 0
+  let redisTotalUp = 0
+  redisFeedback.forEach(({ up, total }) => { redisTotalFeedback += total; redisTotalUp += up })
+  const redisFirePct = redisTotalFeedback > 0
+    ? Math.round((redisTotalUp / redisTotalFeedback) * 100)
+    : fireFeedbackPct
+
+  // Per-dilemma Redis breakdown — min 3 ratings to appear
+  const redisWithFeedback = allScenarioIds
+    .map(id => { const d = redisFeedback.get(id); return { id, up: d?.up ?? 0, down: d?.down ?? 0, total: d?.total ?? 0 } })
+    .filter(d => d.total >= 3)
+  const topRedisFireDilemmas    = [...redisWithFeedback].sort((a, b) => (b.up / b.total) - (a.up / a.total)).slice(0, 5)
+  const bottomRedisFireDilemmas = [...redisWithFeedback].sort((a, b) => (a.up / a.total) - (b.up / b.total)).slice(0, 5)
+  const redisHasFeedback = redisWithFeedback.length > 0
 
   type TopVoter    = { display_name: string | null; votes_count: number; is_premium: boolean; created_at: string }
   type RecentSignup = { display_name: string | null; votes_count: number; created_at: string }
@@ -347,8 +374,12 @@ export default async function AdminPage({ searchParams }: AdminProps) {
                   <ThumbsUp size={20} className="text-orange-400" />
                 </div>
               </div>
-              <p className="text-2xl sm:text-3xl font-black text-orange-400 mb-1">{fireFeedbackPct}%</p>
-              <p className="text-[var(--muted)] text-xs">🔥 Feedback ({totalFeedback.toLocaleString()} logged-in only)</p>
+              <p className="text-2xl sm:text-3xl font-black text-orange-400 mb-1">
+                {redisTotalFeedback > 0 ? redisFirePct : fireFeedbackPct}%
+              </p>
+              <p className="text-[var(--muted)] text-xs">
+                🔥 Feedback ({(redisTotalFeedback > 0 ? redisTotalFeedback : totalFeedback).toLocaleString()} {redisTotalFeedback > 0 ? 'total' : 'logged-in only'})
+              </p>
             </div>
           </div>
 
@@ -503,8 +534,8 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             </div>
           )}
 
-          {/* Feedback stats per dilemma */}
-          {feedbackStats.length > 0 ? (
+          {/* Feedback stats per dilemma — Redis primary, Supabase fallback */}
+          {redisHasFeedback ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Top by 🔥 */}
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
@@ -512,11 +543,63 @@ export default async function AdminPage({ searchParams }: AdminProps) {
                   <ThumbsUp size={13} /> Top 🔥 dilemmas
                 </h3>
                 <div className="space-y-2">
+                  {topRedisFireDilemmas.map(d => {
+                    const firePct = Math.round((d.up / d.total) * 100)
+                    return (
+                      <div key={d.id} className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-white/80 font-mono truncate">{d.id}</p>
+                          <p className="text-[10px] text-[var(--muted)]">🔥 {d.up} · 👎 {d.down} · {d.total} total</p>
+                        </div>
+                        <span className={`text-xs font-black px-2 py-0.5 rounded-full border ${
+                          firePct >= 70 ? 'text-green-300 border-green-500/30 bg-green-500/10'
+                          : 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10'
+                        }`}>
+                          🔥 {firePct}%
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Bottom (most 👎) */}
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+                <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-red-400 mb-4">
+                  <MessageSquare size={13} /> Lowest rated
+                </h3>
+                <div className="space-y-2">
+                  {bottomRedisFireDilemmas.map(d => {
+                    const downPct = Math.round((d.down / d.total) * 100)
+                    return (
+                      <div key={d.id} className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-white/80 font-mono truncate">{d.id}</p>
+                          <p className="text-[10px] text-[var(--muted)]">🔥 {d.up} · 👎 {d.down} · {d.total} total</p>
+                        </div>
+                        <span className="text-xs font-black px-2 py-0.5 rounded-full border text-red-300 border-red-500/30 bg-red-500/10">
+                          👎 {downPct}%
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : feedbackStats.length > 0 ? (
+            // Fallback: Supabase logged-in data only (Redis empty)
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
+                <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-green-400 mb-4">
+                  <ThumbsUp size={13} /> Top 🔥 dilemmas
+                  <span className="text-[var(--muted)] font-normal normal-case tracking-normal">(logged-in only)</span>
+                </h3>
+                <div className="space-y-2">
                   {topFireDilemmas.map(d => (
                     <div key={d.dilemma_id} className="flex items-center gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-white/80 font-mono truncate">{d.dilemma_id}</p>
-                        <p className="text-[10px] text-[var(--muted)]">{d.total_count} total</p>
+                        <p className="text-[10px] text-[var(--muted)]">{d.total_count} logged-in total</p>
                       </div>
                       <span className={`text-xs font-black px-2 py-0.5 rounded-full border ${
                         d.fire_pct >= 70 ? 'text-green-300 border-green-500/30 bg-green-500/10'
@@ -528,18 +611,17 @@ export default async function AdminPage({ searchParams }: AdminProps) {
                   ))}
                 </div>
               </div>
-
-              {/* Bottom (most 👎) */}
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5">
                 <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-red-400 mb-4">
                   <MessageSquare size={13} /> Lowest rated
+                  <span className="text-[var(--muted)] font-normal normal-case tracking-normal">(logged-in only)</span>
                 </h3>
                 <div className="space-y-2">
                   {bottomFireDilemmas.map(d => (
                     <div key={d.dilemma_id} className="flex items-center gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-white/80 font-mono truncate">{d.dilemma_id}</p>
-                        <p className="text-[10px] text-[var(--muted)]">{d.total_count} total</p>
+                        <p className="text-[10px] text-[var(--muted)]">{d.total_count} logged-in total</p>
                       </div>
                       <span className="text-xs font-black px-2 py-0.5 rounded-full border text-red-300 border-red-500/30 bg-red-500/10">
                         👎 {100 - d.fire_pct}%
@@ -551,7 +633,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
             </div>
           ) : (
             <div className="rounded-2xl border border-white/10 bg-[var(--surface)] p-6 text-center text-[var(--muted)] text-sm">
-              No logged-in user feedback yet — anonymous ratings are tracked in Redis only.
+              No feedback yet — 🔥/👎 ratings from users will appear here.
             </div>
           )}
         </div>
