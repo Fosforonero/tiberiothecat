@@ -1438,3 +1438,172 @@ Phase 1 (locale URL only) requires only a pre-deploy confirmation in `LEGAL.md` 
 | `app/results/[id]/ResultsClientPage.tsx` | New `localeVotes` prop; inline card UI; EN/IT copy |
 | `app/play/[id]/VoteClientPage.tsx` | Pass `locale: 'it'` in POST body when `isIT` |
 | `LEGAL.md` | Pre-deploy confirmation for Phase 1; full update required for Phase 2+ |
+
+---
+
+## PM Field Observations — UX, Growth, Admin, AI Quality (30 Apr 2026)
+
+Direct product observations captured after soft launch. None of these are implemented. Do not implement without an explicit sprint prompt. Each item includes problem statement, future sprint name, and risk level.
+
+### 1 — Mission deep links
+
+**Problem:** In the dashboard missions tab, tapping an incomplete mission does nothing. It should navigate directly to the action required to complete it (e.g., `vote_3` → play page; `challenge_friend` → referral share; `share_result` → most recent result share CTA).
+
+**Sprint:** Mission UX polish.
+
+**Risk:** Medium. Each mission needs a clearly defined target action and route. `share_result` and `challenge_friend` require share-target context not currently stored.
+
+---
+
+### 2 — Daily Dilemma full-card click (home)
+
+**Problem:** On the home page, the "Dilemma del Giorno" card has only a small CTA button as the clickable target. The entire card area should navigate to the dilemma.
+
+**Important constraint:** The share icon/button inside the card must NOT be caught by the card-level click handler. Use `e.stopPropagation()` on the share CTA.
+
+**Sprint:** Home interaction polish.
+
+**Risk:** Low/medium. Event propagation and keyboard accessibility must be tested. Screen readers need the card itself to be a proper link or button, not a `div` with an `onClick`.
+
+---
+
+### 3 — Vote reconsideration via long press
+
+**Problem:** On already-answered dilemmas (within the `can_change_until` window), there is no obvious UX affordance to reconsider. A long press on the user's selected answer could surface a "Change your vote?" prompt.
+
+**Sprint:** Vote reconsideration UX.
+
+**Risk:** High. Touches the vote flow, the `can_change_until` timing policy, mobile long-press event reliability, and accidental-change risk. Must not silently change a vote — must require explicit confirmation. Never implement without a dedicated sprint review.
+
+---
+
+### 4 — Dashboard navigation IA
+
+**Problem:** Profile, missions, rewards, and settings are fragmented across the dashboard in a way that makes the information architecture unclear for new users. Standard UX patterns (tab bar, settings vs. social vs. progress separation) are not applied.
+
+**Sprint:** Account UX restructure.
+
+**Risk:** Medium/high given the breadth of UI surface. Requires a full wireframe/IA review before implementation. Do not ship incrementally without a clear overall structure defined first.
+
+---
+
+### 5 — VIP display name colors
+
+**Problem:** Premium and VIP users have no visual identity distinguishing them from regular users. A cosmetic display name color palette would add status differentiation without affecting gameplay.
+
+**Proposed palette (10 shades):**
+- Silver shade
+- Gold shade
+- Steel shade
+- Diamond shade
+- Ruby shade
+- Emerald shade
+- Sapphire shade
+- Amethyst shade
+- Neon blue
+- Cosmic purple
+
+**Rules:**
+- Purely cosmetic — no gameplay advantage.
+- Visible in leaderboards, profile cards, and admin/super-admin views.
+- Eligibility: Premium entitlement or admin/super-admin role.
+- No free-tier access without purchase/upgrade.
+
+**Sprint:** VIP profile cosmetics.
+
+**Risk:** Medium. Must verify entitlement gating on both server (profile endpoint) and client (display component). If colors are sold as an explicit Premium perk, `LEGAL.md` and Terms EN/IT may require update to describe the cosmetic benefit.
+
+---
+
+### 6 — Feedback counter bug
+
+**Problem:** The feedback counter visible in dashboard/admin view appears to not update correctly or shows stale/zero data even when feedback events have been submitted.
+
+**Sprint:** Feedback analytics bugfix.
+
+**Priority:** Bug — should be investigated before relying on feedback metrics for any product decision.
+
+**Risk:** Medium. Requires audit of the event source (where feedback is written), the aggregation query or Redis key, and the dashboard display component. If the bug causes silent double-writes or data loss, risk rises to high.
+
+---
+
+### 7 — Blog layout + sharing
+
+**Problem:** On desktop and tablet the blog article listing uses a single-column layout that underutilizes horizontal space. Blog cards and article pages also lack a share affordance.
+
+**Required changes:**
+- Blog listing: 2-column grid on `md:` and above breakpoints.
+- Blog card: share icon using Web Share API with clipboard fallback.
+- Article page: share icon at top and/or bottom of article.
+
+**Sprint:** Blog growth polish.
+
+**Risk:** Low/medium. Web Share API is not available on all desktop browsers — clipboard fallback is mandatory. Accessibility: share button must be keyboard-operable and have an aria-label.
+
+---
+
+### 8 — AI seed draft network_error
+
+**Problem:** When the admin triggers a seed batch generation, the drafts are created and saved successfully, but the UI shows a `network_error` response at the end of the batch. After a manual page refresh, all drafts appear correctly in the queue.
+
+**Hypothesis:** Vercel function timeout is reached before the batch completes. The generation pipeline finishes its work (drafts saved to Redis/Supabase) but the HTTP response is never sent — the client gets a connection reset and shows `network_error`.
+
+**Risk:** High if admins interpret the error as a failed batch and retry, causing duplicate drafts. The fix likely requires either:
+1. Splitting generation into smaller confirmed chunks with per-item progress feedback.
+2. Converting to a fire-and-forget async endpoint with polling for status.
+
+**Sprint:** Admin AI generation reliability.
+
+**Priority:** Bug — address before any large-scale batch generation runs.
+
+---
+
+### 9 — AI generation novelty problem
+
+**Problem:** The current generation pipeline produces dilemmas that are semantically too similar to each other and too similar to already-published dilemmas, despite the semantic novelty review step.
+
+**Required improvements:**
+- Compare new drafts against published, approved, AND recent draft pools (not just a recent-window snapshot).
+- Raise the novelty threshold or tighten the `too_similar`/`related_but_distinct` boundary.
+- Diversify prompting: vary topic framing, context type (personal vs. societal vs. survival), and scenario specificity.
+- Consider pre-clustering existing content so the generator can be steered away from over-represented clusters.
+
+**Sprint:** AI content quality (novelty sub-sprint).
+
+**Risk:** Medium. Changing novelty thresholds can cause over-rejection (all new drafts rejected as duplicates). Must tune incrementally and validate with dry runs.
+
+---
+
+### 10 — Current-events dilemma generation
+
+**Problem:** News-inspired dilemmas would dramatically improve content freshness and social relevance. The current pipeline generates from static topic lists with no connection to current events.
+
+**Required guardrails (non-negotiable):**
+- No real names of living people.
+- No specific city/location if not needed for the dilemma abstraction.
+- Transform the news event into a generalized moral/ethical question — do not reproduce the news story directly.
+- Avoid exploiting tragedies, disasters, or deaths for engagement without principled framing.
+- Avoid unverified claims about real events.
+- Use recent news sources only as thematic inspiration, not as primary copy.
+- All generated drafts go through admin review; no autopublish for current-events content.
+
+**Sprint:** Current-events content engine.
+
+**Risk:** High. Requires editorial review capacity, safety prompt design, and a clear content policy. Any mistake here is a reputational and potentially legal risk. Do not implement without explicit PM sign-off and `LEGAL.md` review.
+
+---
+
+### Summary Table
+
+| # | Item | Sprint label | Priority | Risk |
+|---|---|---|---|---|
+| 1 | Mission deep links | Mission UX polish | P1 | Medium |
+| 2 | Daily Dilemma full-card click | Home interaction polish | P1 | Low/medium |
+| 3 | Vote reconsideration (long press) | Vote reconsideration UX | P2 | High |
+| 4 | Dashboard navigation IA | Account UX restructure | P2 | Medium/high |
+| 5 | VIP display name colors | VIP profile cosmetics | P3 | Medium |
+| 6 | Feedback counter bug | Feedback analytics bugfix | P0 | Medium |
+| 7 | Blog 2-column + share | Blog growth polish | P1 | Low/medium |
+| 8 | AI seed draft network_error | Admin AI generation reliability | P0 | High |
+| 9 | AI generation novelty | AI content quality | P3 | Medium |
+| 10 | Current-events content engine | Current-events content engine | P3 | High |

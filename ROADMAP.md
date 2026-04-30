@@ -87,6 +87,31 @@ Feedback from real viewers changed the near-term product priority. After Sprint 
 12. **Pixie Phase 5 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
 13. **Pixie Phase 6 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
 
+### PM Field Observations — UX, Growth, Admin, AI Quality (30 Apr 2026)
+
+Backlog of issues and ideas surfaced via direct product observation. None implemented yet. Full detail in `PRODUCT_STRATEGY.md → PM Field Observations`.
+
+**P0 — Bugs (fix soon):**
+
+- **Feedback counter bug** — dashboard/admin feedback counter appears broken; needs data-source audit before any analytics trust. Sprint: _Feedback analytics bugfix_.
+- **AI seed draft network_error** — UI shows `network_error` after batch seed generation even when drafts save successfully; after refresh drafts appear. Likely timeout/client-response mismatch. Risk: may cause double generation if admin retries. Sprint: _Admin AI generation reliability_.
+
+**P1 — Near-term UX/Growth:**
+
+- **Mission deep links** — tapping an incomplete mission should navigate directly to the action needed to complete it (e.g., vote page for `vote_3`). Sprint: _Mission UX polish_.
+- **Daily Dilemma full-card click** — the entire "Dilemma del Giorno" home card should be clickable; share CTA must not propagate the card click. Sprint: _Home interaction polish_.
+- **Blog 2-column layout + share** — desktop/tablet blog should use 2 columns; share icon on card and article page (Web Share API + clipboard fallback). Sprint: _Blog growth polish_.
+
+**P2 — Medium-term:**
+
+- **Dashboard navigation IA** — profile, missions, rewards, and settings are too fragmented; restructure account navigation. Sprint: _Account UX restructure_.
+- **Vote reconsideration via long press** — long-press on an already-chosen answer (within `can_change_until` window) triggers reconsider flow. High risk: touches vote flow, timing policy, mobile long-press, accidental changes. Sprint: _Vote reconsideration UX_.
+
+**P3 — Longer-term / Gated:**
+
+- **VIP display name colors** — premium cosmetic: palette of 10 named shades (Silver, Gold, Steel, Diamond, Ruby, Emerald, Sapphire, Amethyst, Neon Blue, Cosmic Purple) visible to other users and in admin/super-admin view. No gameplay advantage. Gate: entitlements review + Terms check if sold as Premium perk. Sprint: _VIP profile cosmetics_.
+- **AI novelty + current-events engine** — improve draft generation to compare against published/approved/recent drafts, raise novelty threshold, reduce semantic duplicates. Current-events variant: news-inspired abstractions with no real names, no city specifics, no unverified claims, editorial review gate, no autopublish. Sprint: _AI content quality_ + _Current-events content engine_.
+
 ---
 
 ## Sprint completati — Role Management MVP (29 Apr 2026)

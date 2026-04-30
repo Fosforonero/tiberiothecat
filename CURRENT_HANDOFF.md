@@ -137,6 +137,27 @@ Do not lose these follow-ups:
 - Blog generation pipeline — static articles done; generation quality/UX not audited
 - Stripe live QA — config fixed, end-to-end payment not done
 
+### PM Field Observations — UX, Growth, Admin, AI Quality (30 Apr 2026)
+
+Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.md → PM Field Observations` and prioritized in `ROADMAP.md → PM Field Observations`.
+
+**P0 bugs:**
+- Feedback counter bug — dashboard/admin counter broken; audit data source before trusting analytics.
+- AI seed draft network_error — UI shows error after batch seed even when drafts saved; risk of admin double-generation.
+
+**P1 UX/Growth:**
+- Mission deep links — tap incomplete mission → navigate to required action.
+- Daily Dilemma full-card click (home) — whole card clickable; share CTA must not propagate.
+- Blog 2-column + share — desktop layout + Web Share API on card + article.
+
+**P2:**
+- Dashboard navigation IA — restructure profile/missions/rewards/settings navigation.
+- Vote reconsideration via long press — within `can_change_until` window; high risk, touches vote flow.
+
+**P3:**
+- VIP display name colors — 10-shade cosmetic palette; Premium entitlements + Terms gate required.
+- AI novelty + current-events engine — compare drafts against published pool, raise novelty threshold, news-inspired abstractions with editorial review.
+
 ### Next Candidate Sprints
 
 1. **Google Analytics audit (read-only)** — verify GA4/env/proxy/consent/events before product changes are judged.
