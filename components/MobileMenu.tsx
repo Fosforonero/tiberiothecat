@@ -233,7 +233,7 @@ export default function MobileMenu() {
                       {isIT ? 'Crea profilo gratis' : 'Join free →'}
                     </span>
                     <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.2 }}>
-                      {isIT ? 'Salva voti, badge, companion' : 'Save votes, earn badges'}
+                      {isIT ? 'Salva voti, badge, Pixie' : 'Save votes, earn badges'}
                     </span>
                   </div>
                 </Link>

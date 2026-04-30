@@ -61,7 +61,7 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
     <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
-          {IT ? 'Il tuo Compagno' : 'Your Companion'}
+          {IT ? 'Il tuo Pixie' : 'Your Pixie'}
         </h2>
         <span className={`text-xs font-bold px-2 py-0.5 rounded-lg border ${rarityStyle}`}>
           {companion.rarity}
@@ -94,7 +94,7 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
             {IT ? 'Stadio' : 'Stage'} {stage} · {stageLabel}
           </p>
           <p className="text-xs text-[var(--muted)] mb-3 opacity-70">
-            {IT ? 'Cresce con ogni voto e missione.' : 'Grows with every vote and mission.'}
+            {IT ? 'Pixie, il tuo avatar digitale che cresce con te.' : 'Pixie, your digital avatar that grows with you.'}
           </p>
 
           {/* Progress to next stage */}
@@ -129,8 +129,8 @@ export default function CompanionDisplay({ species, votesCount, xp = 0, compact 
       {!isMaxStage && (
         <p className="mt-3 text-xs text-[var(--muted)] italic">
           {IT
-            ? 'Completa le missioni di oggi per far crescere il tuo compagno più velocemente.'
-            : "Complete today's missions to grow your companion faster."}
+            ? 'Completa le missioni di oggi per far crescere il tuo Pixie più velocemente.'
+            : "Complete today's missions to grow your Pixie faster."}
         </p>
       )}
     </div>

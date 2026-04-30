@@ -183,7 +183,7 @@ export default async function HomePage() {
           </span>
           <span className="text-white/15 hidden sm:inline">→</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-yellow-400 font-black">3.</span> Grow your moral companion
+            <span className="text-yellow-400 font-black">3.</span> Grow your Pixie
           </span>
         </div>
 

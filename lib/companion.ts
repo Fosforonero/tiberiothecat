@@ -15,7 +15,7 @@ export interface CompanionDef {
 export const COMPANIONS: CompanionDef[] = [
   {
     id: 'spark',
-    name: 'Spark',
+    name: 'Pixie Spark',
     description: 'A curious little energy being who loves bold choices.',
     rarity: 'common',
     unlockCondition: 'Available to all users',
@@ -24,7 +24,7 @@ export const COMPANIONS: CompanionDef[] = [
   },
   {
     id: 'blip',
-    name: 'Blip',
+    name: 'Pixie Glitch',
     description: 'A glitchy digital creature that feeds on data and dilemmas.',
     rarity: 'common',
     unlockCondition: 'Available to all users',
@@ -33,7 +33,7 @@ export const COMPANIONS: CompanionDef[] = [
   },
   {
     id: 'momo',
-    name: 'Momo',
+    name: 'Pixie Leaf',
     description: 'A cheerful forest spirit who weighs every decision carefully.',
     rarity: 'rare',
     unlockCondition: 'Earn the 10 Votes badge',
@@ -42,7 +42,7 @@ export const COMPANIONS: CompanionDef[] = [
   },
   {
     id: 'shade',
-    name: 'Shade',
+    name: 'Pixie Moonlight',
     description: 'A mysterious lunar entity who thrives in moral ambiguity.',
     rarity: 'epic',
     unlockCondition: 'Maintain a 7-day streak',
@@ -51,7 +51,7 @@ export const COMPANIONS: CompanionDef[] = [
   },
   {
     id: 'orbit',
-    name: 'Orbit',
+    name: 'Pixie Hologram',
     description: 'A cosmic wanderer who has seen every dilemma in the universe.',
     rarity: 'legendary',
     unlockCondition: 'Reach 100 votes',

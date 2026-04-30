@@ -12,7 +12,7 @@ const EN_COPY = {
   benefits: [
     { icon: Vote,   text: 'Save your votes and see how you compare' },
     { icon: Trophy, text: 'Earn badges as you vote' },
-    { icon: Heart,  text: 'Grow your companion with every dilemma' },
+    { icon: Heart,  text: 'Grow your Pixie with every dilemma' },
   ],
   google:      'Continue with Google',
   discord:     'Continue with Discord',
@@ -37,7 +37,7 @@ const IT_COPY = {
   benefits: [
     { icon: Vote,   text: 'Salva i tuoi voti e confrontati con il mondo' },
     { icon: Trophy, text: 'Ottieni badge votando i dilemmi' },
-    { icon: Heart,  text: 'Fai crescere il tuo companion' },
+    { icon: Heart,  text: 'Fai crescere il tuo Pixie' },
   ],
   google:      'Continua con Google',
   discord:     'Continua con Discord',
