@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
 import AdSlot from '@/components/AdSlot'
@@ -99,6 +99,7 @@ const EN_COPY = {
   pathDoneDesc:      (label: string) => `You finished the ${label} path. Try another category.`,
   pathExhausted:     'No fresh dilemmas left in this path',
   pathOtherCats:     'Browse categories',
+  comparing:         'Comparing your answer with the world…',
 }
 
 const IT_COPY = {
@@ -166,10 +167,12 @@ const IT_COPY = {
   pathDoneDesc:      (label: string) => `Hai completato il percorso di ${label}. Prova un'altra categoria.`,
   pathExhausted:     'Non ci sono altri dilemmi nuovi in questo percorso',
   pathOtherCats:     'Sfoglia categorie',
+  comparing:         'Confrontiamo la tua risposta con il mondo…',
 }
 
 export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '', pathCategory, pathStep, pathTarget, nextPathId, pathCategoryLabel, pathCategoryEmoji }: Props) {
   const [mounted, setMounted] = useState(false)
+  const [revealed, setRevealed] = useState(!voted || total < 10)
   const [copied, setCopied] = useState(false)
   const [webShareCopied, setWebShareCopied] = useState(false)
   const [feedbackGiven, setFeedbackGiven] = useState<'fire' | 'down' | null>(null)
@@ -231,6 +234,20 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario.id])
+
+  useLayoutEffect(() => {
+    if (!voted || total < 10) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setRevealed(true)
+    }
+  }, [voted, total])
+
+  useEffect(() => {
+    if (!voted || total < 10) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t = setTimeout(() => setRevealed(true), 500)
+    return () => clearTimeout(t)
+  }, [voted, total])
 
   const shareUrl = `${BASE_URL}${sharePrefix}/play/${scenario.id}`
   const challengeUrl = referralCode
@@ -436,6 +453,11 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
 
       {/* ── Minority / Majority reveal ── */}
       {voted && pctVoted !== null && total >= 10 && (
+        !revealed ? (
+          <div className="text-center mb-6 rounded-2xl py-5 px-6 border border-white/10 bg-white/5">
+            <p className="text-sm text-[var(--muted)] animate-pulse">{copy.comparing}</p>
+          </div>
+        ) : (
         <div className={`text-center mb-6 rounded-2xl py-5 px-6 border ${
           isTie || isClose
             ? 'border-purple-500/30 bg-purple-500/10'
@@ -486,6 +508,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             </>
           )}
         </div>
+        )
       )}
 
       {/* Your vote badge */}
@@ -505,14 +528,14 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <div>
           <div className="flex justify-between items-center mb-1">
             <span className="text-sm font-semibold text-[var(--text)]">{scenario.optionA}</span>
-            <span className={`text-lg font-black ${winnerOption === 'a' ? 'text-red-400' : 'text-[var(--muted)]'}`}>
+            <span className={`text-lg font-black ${winnerOption === 'a' ? 'text-red-400' : 'text-[var(--muted)]'}${!revealed ? ' invisible' : ''}`}>
               {pctA}%
             </span>
           </div>
           <div className="h-6 bg-[var(--border)] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-1000 ease-out ${winnerOption === 'a' ? 'bg-red-500' : 'bg-red-500/50'}`}
-              style={{ width: mounted ? `${pctA}%` : '0%' }}
+              style={{ width: mounted && revealed ? `${pctA}%` : '0%' }}
             />
           </div>
         </div>
@@ -521,21 +544,21 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <div>
           <div className="flex justify-between items-center mb-1">
             <span className="text-sm font-semibold text-[var(--text)]">{scenario.optionB}</span>
-            <span className={`text-lg font-black ${winnerOption === 'b' ? 'text-blue-400' : 'text-[var(--muted)]'}`}>
+            <span className={`text-lg font-black ${winnerOption === 'b' ? 'text-blue-400' : 'text-[var(--muted)]'}${!revealed ? ' invisible' : ''}`}>
               {pctB}%
             </span>
           </div>
           <div className="h-6 bg-[var(--border)] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-1000 ease-out ${winnerOption === 'b' ? 'bg-blue-500' : 'bg-blue-500/50'}`}
-              style={{ width: mounted ? `${pctB}%` : '0%' }}
+              style={{ width: mounted && revealed ? `${pctB}%` : '0%' }}
             />
           </div>
         </div>
       </div>
 
       {/* Winner label */}
-      <div className="text-center mb-3 text-[var(--muted)] text-sm">
+      <div className={`text-center mb-3 text-[var(--muted)] text-sm${!revealed ? ' invisible' : ''}`}>
         {pctA === pctB ? (
           <span>{copy.tie}</span>
         ) : (
@@ -547,7 +570,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       </div>
 
       {/* Aggregate attribution */}
-      <p className="text-center text-xs text-[var(--muted)] mb-8 opacity-60">
+      <p className={`text-center text-xs text-[var(--muted)] mb-8 opacity-60${!revealed ? ' invisible' : ''}`}>
         {copy.aggregateNote}
       </p>
 
