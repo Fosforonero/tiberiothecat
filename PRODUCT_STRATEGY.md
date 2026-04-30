@@ -1607,3 +1607,124 @@ Direct product observations captured after soft launch. None of these are implem
 | 8 | AI seed draft network_error | Admin AI generation reliability | P0 | High |
 | 9 | AI generation novelty | AI content quality | P3 | Medium |
 | 10 | Current-events content engine | Current-events content engine | P3 | High |
+
+---
+
+## Picoclaw Content Intelligence Direction
+
+**Status: DEFERRED — Phase 0 only (docs). No runtime code.**
+
+Last reviewed: 30 Apr 2026.
+
+### 1. Role Definition
+
+Picoclaw is an external trend-scouting and content-intelligence agent. SplitVote is the publishing, review, voting, and editorial platform.
+
+- **Picoclaw** — discovers topics, monitors trends, flags duplicates, proposes seeds.
+- **SplitVote** — generates drafts, runs quality gates, manages approval, controls publish status, enforces legal/editorial guardrails.
+
+Picoclaw must never bypass SplitVote's review pipeline. SplitVote is the single authoritative system for draft queue, quality gates, semantic review, admin approval, publish status, and legal guardrails.
+
+### 2. Candidate Capabilities
+
+- Scan trending news and topics every 2 hours.
+- Maintain regional buckets: World / Europe / USA / Italy.
+- Produce localized topic suggestions without naming private individuals.
+- Abstract current events into moral dilemma seeds (no direct news reproduction).
+- Suggest standard article topics.
+- Suggest cornerstone article topics.
+- Detect duplicate or semantically similar dilemmas against the published pool.
+- Flag stale, low-quality, or low-engagement dilemmas.
+- Propose replacement drafts for weak content.
+- Feed structured seed payloads into SplitVote's existing batch generator (`manualSeed` API param).
+
+### 3. Guardrails (Non-Negotiable)
+
+- No automatic publishing — all content enters draft/review queue.
+- No automatic deletion — all removal/replacement proposals go to admin review.
+- No real names of living private individuals unless explicitly approved by PM.
+- No city-specific or person-specific accusations.
+- No exploitation of tragedies, disasters, or deaths without principled framing.
+- No legal, medical, or financial advice framing.
+- No unverified claims about real events.
+- Human admin approval required before any content goes live.
+- Quality gates and semantic review remain mandatory — Picoclaw seeds are not exempt.
+
+### 4. Integration Architecture — Future Only
+
+```
+Picoclaw scans trends
+→ creates topic candidates (region, freshness, riskLevel, sourceUrls)
+→ sends structured seed payload to SplitVote admin-only endpoint
+→ SplitVote generates dilemma or article draft via existing pipeline
+→ SplitVote runs novelty + preflight similarity + semantic review + safety checks
+→ admin approves or rejects in admin panel
+→ optional: replacement proposal shown alongside closest existing match
+```
+
+Picoclaw does not write directly to the draft queue — it submits seeds that SplitVote generates from. This preserves the existing quality pipeline unchanged.
+
+### 5. Possible API Contract — Future Only
+
+Example payload Picoclaw would send to a future SplitVote endpoint:
+
+```json
+{
+  "source": "picoclaw",
+  "kind": "dilemma_seed | article_seed | duplicate_report | replacement_suggestion",
+  "locale": "en | it | all",
+  "topic": "...",
+  "title": "...",
+  "angle": "...",
+  "context": "...",
+  "region": "world | europe | usa | italy",
+  "freshness": "breaking | recent | evergreen",
+  "riskLevel": "low | medium | high",
+  "sourceUrls": [],
+  "notes": "..."
+}
+```
+
+This maps directly to the existing `manualSeed` shape already supported by `app/api/admin/seed-draft-batch/route.ts`.
+
+### 6. Duplicate and Replacement Workflow
+
+Picoclaw may flag:
+
+- Duplicate moral structure (same dilemma framed differently).
+- Low novelty score against current draft pool.
+- Low engagement (few votes, low share rate).
+- Stale topical framing (event no longer relevant).
+- Weak SEO signal.
+- Redundant category coverage.
+
+SplitVote must:
+
+- Never delete content automatically.
+- Create an admin review item showing the flagged content.
+- Show the closest existing match and the reason for flagging.
+- Propose a replacement draft if applicable.
+- Require admin approval before any action is taken.
+
+### 7. Roadmap Phases
+
+| Phase | Scope | Status |
+|---|---|---|
+| **Phase 0** — Docs only | Document integration direction in PRODUCT_STRATEGY.md and ROADMAP.md | ✅ Done (30 Apr 2026) |
+| **Phase 1** — Manual import | Admin copies Picoclaw topic into Seed Batch manual seed | Available now — no code needed |
+| **Phase 2** — Structured import endpoint | Picoclaw sends seed payloads to a new SplitVote admin-only endpoint | Not started — requires auth, API key, LEGAL.md review |
+| **Phase 3** — Content intelligence dashboard | Admin sees Picoclaw suggestions, duplicates, replacement proposals in admin panel | Not started — requires Phase 2 |
+| **Phase 4** — Scheduled assisted generation | Every 2 hours Picoclaw proposes candidates; SplitVote generates drafts with all gates active | Not started — requires Phase 3 |
+| **Phase 5** — Closed-loop optimization | SplitVote analytics feed Picoclaw: which topics/categories perform best | Not started — requires Phase 4 + analytics baseline |
+
+### 8. Legal and Safety Triggers
+
+Before Phase 2 or later phases, the following must be reviewed and updated in `LEGAL.md`:
+
+- **Source URL storage** — if Picoclaw payloads include source URLs or external trend metadata, Privacy Policy must cover this.
+- **AI/provider disclosure** — if Picoclaw uses a third-party AI provider, Terms/Privacy must disclose the chain.
+- **Editorial policy** — define explicit policy for news-inspired dilemmas (no defamation, no tragedy exploitation, no unverified claims).
+- **Automated political content** — no automated publishing of politically sensitive dilemmas without editorial review.
+- **Sensitive profiling** — Picoclaw must not use SplitVote vote data for profile-building or audience targeting.
+
+Phase 1 (manual copy/paste into admin panel) requires no legal update — it uses the existing admin seed flow.

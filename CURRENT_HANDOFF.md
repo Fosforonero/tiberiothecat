@@ -123,7 +123,7 @@ Do not lose these follow-ups:
 - Macro-area paths — parents, couples, work, technology, society, young adults.
 - Current-events dilemmas — Italy/Europe/USA/World news-inspired drafts with source context and admin review.
 - AI-assisted localization — draft translations are fine, but public copy stays reviewed and committed.
-- Picoclaw-style automation — possible ops sidecar for topic monitoring, QA reminders, and daily reports; not product runtime now.
+- Picoclaw Content Intelligence — integration direction documented (30 Apr 2026) in `PRODUCT_STRATEGY.md → Picoclaw Content Intelligence Direction` and `ROADMAP.md`. No runtime code. Phase 1 manual import is already possible via Seed Batch manual seed. Phase 2+ require API/auth/LEGAL.md review before starting.
 
 ### Needs QA
 - Stripe Premium live checkout + payment (manual, no code needed)
