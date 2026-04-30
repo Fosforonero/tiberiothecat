@@ -1248,6 +1248,79 @@ Anti-spoofing: `variant_id → accessible` mapping must always be computed serve
 |---|---|---|---|---|
 | **Phase 1** — Rename/copy | All "Companion" → "Pixie" copy in UI and lib; EN/IT strings; species display names | None | None | None |
 | **Phase 2** — Base assets | Pixie Spark PNG stage 1–5 in `public/pixie/`; `CompanionDisplay` uses `<Image>` with emoji fallback | None | None | None |
-| **Phase 3** — Selector / earned variants | Variant picker; server-side unlock verification; `pixie_variant_equipped` on profiles | Column on profiles | None | None |
-| **Phase 4** — VIP cosmetics | Premium variants via entitlements; cancellation behavior defined | No new migration if Phase 3 done | None | Verify if Premium perks wording changes |
-| **Phase 5** — Purchased Pixies | Shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant | New table + migration | New Price IDs | **Required before launch** |
+| **Phase 3** — Share card MVP | Shareable Pixie profile card (OG + story format); `/api/pixie-card` server-only endpoint; share CTA on dashboard | None | None | Confirm which profile fields are already public |
+| **Phase 4** — Selector / earned variants | Variant picker; server-side unlock verification; `pixie_variant_equipped` on profiles | Column on profiles | None | None |
+| **Phase 5** — VIP cosmetics | Premium variants via entitlements; cancellation behavior defined | No new migration if Phase 4 done | None | Verify if Premium perks wording changes |
+| **Phase 6** — Purchased Pixies | Shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant | New table + migration | New Price IDs | **Required before launch** |
+
+### Pixie Shareability Direction
+
+Approved: 30 Apr 2026. Addendum to Pixie Digital Avatar Direction.
+
+Pixie must not be confined to the dashboard — it is a shareable status signal and a viral loop accelerator. When a user's Pixie reaches a milestone or unlocks a rare form, that moment should be worth sharing publicly.
+
+#### 1. Shareable Pixie Profile Card
+
+A dedicated shareable card, generated server-side, containing:
+
+- Pixie image (current variant + stage)
+- Variant name (e.g. "Pixie Wisp — Legendary")
+- User level / stage label
+- XP or total votes count (already public or user-consented)
+- Earned badge or streak if already publicly visible on profile
+- SplitVote branding
+- CTA/link: `Create your Pixie` (EN) / `Crea il tuo Pixie` (IT)
+
+Target formats:
+- 1080×1920 story card (Instagram / Snapchat / WhatsApp)
+- 1200×630 OG card (Twitter/X, Facebook, iMessage)
+
+Implementation: server-rendered image (e.g. `@vercel/og`) or static PNG export. No client-side canvas. Card endpoint: `/api/pixie-card/[userId]` — server-only, no raw personal data in URL.
+
+#### 2. Unlock Moment Sharing
+
+Triggered when a user reaches a new stage or unlocks a new look. The share is always user-initiated (share button on unlock toast), never auto-posted.
+
+| Event | IT | EN |
+|---|---|---|
+| New look unlocked | `Ho sbloccato Pixie Glitch su SplitVote` | `I unlocked Pixie Glitch on SplitVote` |
+| Level milestone | `Il mio Pixie ha raggiunto il Livello 10` | `My Pixie reached Level 10` |
+| Legendary stage | `Il mio Pixie è diventato Leggendario su SplitVote` | `My Pixie reached Legendary on SplitVote` |
+
+Implement only after unlock/selector logic exists (Phase 4+). Share card MVP (Phase 3) shows current state; unlock-moment triggers come later.
+
+#### 3. Earned Status Comes First
+
+Earned-only Pixies must be the most share-worthy, visually and contextually. The card communicates how the variant was earned:
+
+| Variant | Label on card |
+|---|---|
+| Pixie Wisp | `Earned: 500 votes` |
+| Pixie Champion | `Earned: 100 votes` |
+| Pixie Ember | `Earned: 7-day streak` |
+| Pixie Cloud | `Earned: 5 categories explored` |
+| Pixie Moonlight | `Earned: mission streak` |
+
+VIP and Purchasable Pixies do not show an earned label. A user with Pixie Wisp must feel rarer on the share card than a user with Pixie Hologram (Premium).
+
+#### 4. Privacy and Safety Rules
+
+Never include on the share card:
+- Personal vote choices or vote history
+- Email, user ID, or internal identifiers
+- Demographic data
+- Personal leaderboard rankings without opt-in
+- Premium subscription status as a visible status signal
+- Any field not already public or explicitly user-consented
+
+Allowed:
+- Display name (if already public in the user's profile)
+- Pixie variant name and current stage
+- XP or total vote count if already visible on the public profile
+- Earned unlock reason — only if it does not reveal vote direction or personal choices
+
+Before implementing the public card endpoint, confirm in `LEGAL.md` which profile fields are treated as public and whether any new user consent is required.
+
+#### 5. Implementation Note
+
+Share card MVP (Phase 3) arrives after base assets and before selector/shop — it maximizes viral return on the asset investment before monetization complexity is added. Unlock-moment sharing (copy + share button on unlock toast) is a Phase 4+ feature that depends on the variant selector being live.

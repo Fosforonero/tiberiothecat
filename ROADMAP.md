@@ -81,9 +81,10 @@ Feedback from real viewers changed the near-term product priority. After Sprint 
 7. **AI-assisted localization workflow** — use AI/tooling for draft translations only; public copy remains reviewed and committed. Do not add new locales until the core loop/share/analytics base is stable.
 8. **Picoclaw sidecar evaluation** — consider only as an ops/research assistant for topic monitoring, QA reminders, and daily reports; not a product-runtime dependency.
 9. **Pixie Phase 2 — Base assets** — add Pixie Spark PNG stage 1–5 to `public/pixie/`; update `CompanionDisplay` with `<Image>` + emoji fallback; no DB. Prerequisite: assets generated and PM-approved.
-10. **Pixie Phase 3 — Variant selector / earned variants** — variant picker UI; server-side unlock verification; `pixie_variant_equipped` column on `profiles`; earned criteria: Cloud (5 categories), Ember (7-day streak), Moonlight (mission streak), Champion (100 votes), Wisp (500 votes).
-11. **Pixie Phase 4 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
-12. **Pixie Phase 5 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
+10. **Pixie Phase 3 — Share card MVP** — shareable Pixie profile card (OG 1200×630 + story 1080×1920); `/api/pixie-card/[userId]` server-only endpoint; share CTA on dashboard. No DB migration. Prerequisite: Phase 2 assets. Privacy rules in `PRODUCT_STRATEGY.md → Pixie Shareability Direction`; confirm public fields in `LEGAL.md` before shipping.
+11. **Pixie Phase 4 — Variant selector / earned variants** — variant picker UI; server-side unlock verification; `pixie_variant_equipped` column on `profiles`; earned criteria: Cloud (5 categories), Ember (7-day streak), Moonlight (mission streak), Champion (100 votes), Wisp (500 votes).
+12. **Pixie Phase 5 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
+13. **Pixie Phase 6 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
 
 ---
 
