@@ -15,6 +15,9 @@ Implementer: Claude Code
 - Dynamic dilemma approved pool uncapped — `dynamic:scenarios` grows without eviction; monitor Redis key size
 - Governed seed batch + controlled autoPublish shipped — novelty guard, preflight similarity guard, quality gates, semantic novelty review
 - Semantic novelty review shipped — LLM-based verdict (`novel | related_but_distinct | too_similar | duplicate`); blocks autoPublish on `too_similar`/`duplicate`
+- Feedback counters fixed (30 Apr): Redis now source of truth for admin KPI (real anonymous + logged-in totals); Supabase `dilemma_feedback_stats` is logged-in-only fallback — commits f1a0e95 · 3d258f5
+- AI generation hardening shipped (30 Apr, session 2): cross-locale semantic dedup (EN↔IT parity in reviewer via [EN]/[IT] prefixed items), intra-batch draft visibility in semantic review, human-readable `rejectionReason` with source/locale/similarity in admin table, SEED_TOPICS cleanup (21 IT mirror topics + 1 EN trolley variant replaced — 64 topics now cover distinct moral angles per locale-category pair), anti-template prompt guardrails (3 new SAFETY_RULES) — commits ebab0b1 · b3ef8df
+- Production AI dry-run QA: **NOT YET DONE** — required before save mode or any controlled batch generation
 - Mission claim reminders shipped — nudge UX for non-claimable daily missions
 - Homepage CTA improved, post-vote viral share copy sharpened
 - Expert Insight V2 shipped — sharper copy, insight shown before share CTA
@@ -47,7 +50,13 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 4c5498d 2026-04-29 09:56 +0200  docs: reconcile Stripe production env fix
 ```
 
-**Committed 30 Apr 2026:**
+**Committed 30 Apr 2026 (session 2 — AI hardening + docs):**
+`b3ef8df` chore: clean up seed topics and validate novelty QA
+`ebab0b1` fix: harden dilemma novelty and draft dedup
+`3d258f5` fix: show real dilemma feedback counters in admin
+`f1a0e95` fix: clarify dilemma feedback counters
+
+**Committed 30 Apr 2026 (session 1):**
 `8a5dbad` feat: add post-vote delayed results reveal
 
 ---
@@ -71,6 +80,9 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - ✅ Seed topic diversity + preselection improvements
 - ✅ Novelty-first dilemma generation improvements
 - ✅ Semantic novelty review — LLM-based post-threshold verdict, integrated into both generate-draft and seed-draft-batch
+- ✅ Feedback counter audit + Redis fix — admin KPI now reads Redis for real totals (anonymous + logged-in); Supabase `dilemma_feedback_stats` is logged-in only; commits f1a0e95 + 3d258f5
+- ✅ AI generation novelty hardening — cross-locale semantic dedup (EN↔IT parity via [EN]/[IT] prefixed items), intra-batch draft visibility in semantic review, human-readable `rejectionReason` with source/locale/similarity, anti-template prompt guardrails (3 new SAFETY_RULES); commit ebab0b1
+- ✅ SEED_TOPICS cleanup — 21 IT mirror topics + 1 EN trolley variant replaced; 64 topics now cover distinct moral angles per locale-category pair; commit b3ef8df
 - ✅ Post-vote delayed reveal — committed `8a5dbad` (30 Apr 2026), pending deploy + QA
 
 ---
@@ -84,7 +96,10 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 
 ### AI dilemma generation pipeline
 - Governed batch + controlled autoPublish + semantic review — **done and shipped**.
-- Large-scale IT generation run (15+ quality dilemmas) — **not started**. Dry run recommended first to validate semantic review behavior on IT content.
+- Novelty hardening (30 Apr 2026, session 2): cross-locale dedup, intra-batch visibility, rejectionReason display, SEED_TOPICS cleanup, prompt guardrails — **done and shipped**.
+- **Production dry-run QA — NOT DONE.** Required before save mode. Four test scenarios documented in Open Manual QA below.
+- Save mode controlled usage — **blocked by dry-run QA result**.
+- Large-scale IT generation run (15+ quality dilemmas) — **not started**. Blocked by dry-run QA.
 - Seed batch progress bar / polling UX — **not started** (Vercel timeout risk at 30+ items).
 
 ### Blog generation
@@ -105,8 +120,17 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — `/results/[id]?voted=a` and `/it/results/[id]?voted=b` after commit + deploy
 - [ ] Delayed reveal `prefers-reduced-motion` — DevTools → Emulate CSS media → confirm immediate reveal
-- [ ] Seed batch dry run after any new OpenRouter model configuration
-- [ ] Semantic review behavior on 5–10 generated IT dilemmas before bulk generation
+- [ ] **AI generation production dry-run (4 scenarios, ~12 min, browser admin required — gates save mode)**:
+  1. Locale: EN · Count: 5 · Default topics · Dry run ✓ → record: accepted, skipped_preflight, skipped_novelty, noveltyScore distribution
+  2. Locale: IT · Count: 5 · Default topics · Dry run ✓ → same; verify EN≠IT moral angles in accepted items
+  3. Locale: ALL · Count: 3/locale · Default topics · Dry run ✓ → check cross-locale semantic blocking in Review column
+  4. Locale: ALL · Count: 3 · Manual seed · Dry run ✓:
+     - topic: `mandatory vaccination during a public health crisis`
+     - angle: `individual freedom vs collective protection`
+     - notes: `avoid real people, countries, cities, and factual claims`
+     - Expected: IT result shows `⚠ too similar` / `✗ duplicate` semantic verdict vs EN intra-batch item
+  **Decision matrix**: ≥60% accepted + no template repeats → **save mode OK** · recurring trolley/organ-harvest/AI-job-loss → prompt tweak sprint · IT mirror passes (Test 4 IT not blocked) → translation preflight sprint · `review_failed` frequent → deterministic dedup sprint
+- [ ] Seed batch dry run after any OpenRouter model config change
 
 ---
 
@@ -129,11 +153,11 @@ Do not lose these follow-ups:
 - Stripe Premium live checkout + payment (manual, no code needed)
 - Name-change live checkout (manual)
 - Delayed reveal on mobile after deploy (manual)
-- Semantic review IT quality validation (admin panel dry run)
+- **AI generation production dry-run** (4 scenarios — gates save mode; see Open Manual QA for full protocol)
 
 ### Started / Partially Implemented
 - Social comparison layer — Phase 1 pending commit; Phases 2–3 not started
-- AI generation at scale — governed batch done; IT-only quality run not yet validated
+- AI generation at scale — hardening shipped (30 Apr session 2); production dry-run QA pending; save mode gated by dry-run result
 - Blog generation pipeline — static articles done; generation quality/UX not audited
 - Stripe live QA — config fixed, end-to-end payment not done
 
@@ -142,8 +166,8 @@ Do not lose these follow-ups:
 Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.md → PM Field Observations` and prioritized in `ROADMAP.md → PM Field Observations`.
 
 **P0 bugs:**
-- Feedback counter bug — dashboard/admin counter broken; audit data source before trusting analytics.
-- AI seed draft network_error — UI shows error after batch seed even when drafts saved; risk of admin double-generation.
+- ~~Feedback counter bug~~ — **Fixed (30 Apr 2026)**: Redis now source of truth for admin counters (anonymous feedback was Redis-only; Supabase `dilemma_feedback_stats` view is logged-in only). Commits f1a0e95 + 3d258f5.
+- AI seed draft network_error — UI shows error after batch seed even when drafts saved; risk of admin double-generation. **Still open.** Likely Vercel function timeout. Sprint: _Admin AI generation reliability_.
 
 **P1 UX/Growth:**
 - Mission deep links — tap incomplete mission → navigate to required action.
@@ -178,7 +202,7 @@ Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.m
 
 ## Known Risks
 
-- AI generation can still produce thematic near-duplicates despite semantic review; human editorial review required before auto-publish.
+- AI generation near-duplicate risk reduced (cross-locale dedup, intra-batch visibility, anti-template guardrails shipped 30 Apr session 2); production dry-run QA still pending — do not use save mode until dry-run decision matrix passes.
 - OpenRouter model aliases may change behavior; verify after any model config change.
 - Long seed batches (>20 items) approach Vercel function timeout; generate in batches ≤ 15–20.
 - Analytics/reconsideration sprint requires LEGAL.md check before implementing.
@@ -210,8 +234,9 @@ Task:
 2. Esegui git log --oneline -12.
 3. Ricostruisci lo stato reale del progetto.
 4. Distingui shipped/pushato, implementato non committato, QA manuale aperto, docs stale.
-5. Conferma stato di Stripe, roles, mobile admin, post-vote copy, homepage CTA, mission reminders, governed seed batch/autopublish, uncapped dynamic pool, semantic review, delayed reveal.
-6. Proponi i 3 sprint migliori per oggi.
+5. Conferma stato di Stripe, roles, mobile admin, post-vote copy, homepage CTA, mission reminders, governed seed batch/autopublish, uncapped dynamic pool, cross-locale semantic dedup, SEED_TOPICS cleanup, feedback counters (Redis), delayed reveal.
+6. Verifica stato AI generation dry-run: se non ancora eseguito, proponilo come primo sprint della sessione (~12 min, browser admin, 4 scenari dry run). Il dry-run sblocca save mode e bulk generation.
+7. Proponi i 3 sprint migliori per oggi.
 
 Output:
 - Stato attuale in 10 righe

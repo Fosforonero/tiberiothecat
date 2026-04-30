@@ -164,6 +164,43 @@ Preferred model:
 
 Do not add Spanish, PT-BR, or French until the core loop, share flow, macro paths, and analytics are stable.
 
+### AI Generation Quality Gate
+
+AI-generated dilemmas must pass manual admin dry-run QA before save mode is used or any batch generates drafts for the live pool.
+
+**Required QA scenarios (run once before first save-mode batch):**
+
+1. EN default dry run — Locale: EN, Count: 5, Mode: Default topics, Dry run ON
+2. IT default dry run — Locale: IT, Count: 5, Mode: Default topics, Dry run ON
+3. ALL default dry run — Locale: ALL, Count: 3/locale, Mode: Default topics, Dry run ON
+4. ALL manual seed stress test — Locale: ALL, Count: 3, Mode: Manual seed, Dry run ON:
+   - topic: `mandatory vaccination during a public health crisis`
+   - angle: `individual freedom vs collective protection`
+   - notes: `avoid real people, countries, cities, and factual claims`
+   - Expected: IT result blocked by semantic review as moral mirror of EN intra-batch item
+
+For each run record: accepted count, skipped_preflight, skipped_novelty, noveltyScore distribution, rejectionReason examples, semantic review verdicts (`novel` / `related_but_distinct` / `too_similar` / `duplicate`), and any repeating template patterns.
+
+**Decision matrix:**
+
+| Result | Action |
+|---|---|
+| ≥60% accepted, no template repeats, cross-locale blocking active | Save mode OK — controlled batches ≤ 10 items |
+| Recurring trolley / organ-harvest / AI-job-loss in accepted items | Prompt tweak sprint before save mode |
+| IT mirror of EN passes semantic review (Test 4 IT not blocked) | Translation preflight sprint required |
+| `review_failed` verdict frequent | Deterministic dedup sprint required |
+
+**Picoclaw automation gate:** Picoclaw cannot write drafts directly until:
+
+1. Production dry-run QA passes (above)
+2. Save mode has been used successfully by admin (at least one batch of 5, no quality issues)
+3. Rejection reasons monitored across 2+ save-mode batches
+4. No auto-publish without quality gates remaining active
+
+Picoclaw Phase 1 (admin manually copies a topic into Seed Batch manual seed) requires no QA gate — it uses the existing admin seed flow with all guards active.
+
+---
+
 ### Picoclaw / External Agent Sidecar
 
 Picoclaw-style automation is interesting as an operational sidecar, not as a user-facing dependency in the core app.

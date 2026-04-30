@@ -42,8 +42,13 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 **Shipped today (29 Apr 2026, 17 commits):**
 ✅ Role management MVP · Category editorial SEO · Stripe env fix (docs) · Mission claim reminders · Feedback scoring hardening · Homepage CTA · Viral share copy · Mobile nav landscape fix · Admin roles mobile fix · Governed seed batch · Preflight similarity guard · Dynamic pool uncapped · Admin totals fix · Seed topic diversity · Novelty-first generation · Semantic novelty review
 
-**Shipped (30 Apr 2026):**
+**Shipped (30 Apr 2026, session 1):**
 ✅ Post-vote delayed social comparison reveal — committed `8a5dbad`, pending deploy + QA
+
+**Shipped (30 Apr 2026, session 2 — AI hardening):**
+✅ Feedback counter fix — Redis as source of truth for admin (real anonymous + logged-in totals); Supabase view is logged-in-only fallback — f1a0e95 · 3d258f5
+✅ AI generation hardening — cross-locale semantic dedup (EN↔IT parity via [EN]/[IT] prefixed items in reviewer), intra-batch draft visibility, `rejectionReason` admin display, anti-template prompt guardrails (3 new SAFETY_RULES) — ebab0b1
+✅ SEED_TOPICS cleanup — 21 IT mirror topics + 1 EN trolley variant replaced; 64 topics cover distinct moral angles per locale-category pair — b3ef8df
 
 ### Needs QA
 
@@ -51,12 +56,12 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — after deploy
 - [ ] Delayed reveal prefers-reduced-motion — DevTools emulation after deploy
-- [ ] Semantic review behavior — 5–10 IT dilemmas via admin seed batch dry run
+- [ ] **AI generation production dry-run** — 4 scenarios (EN/5 default · IT/5 default · ALL/3 default · ALL/3 manual stress test); gates save mode and bulk generation. Protocol in CURRENT_HANDOFF.md → Open Manual QA.
 
 ### Started / Partially Implemented
 
 - **Social comparison layer** — Phase 1 (500ms reveal) shipped; analytics events + reconsideration prompt not started
-- **AI generation at scale** — governed batch + semantic review done; IT quality run not yet validated; progress bar UX not started
+- **AI generation at scale** — hardening shipped (cross-locale dedup, intra-batch visibility, rejectionReason, SEED_TOPICS cleanup, prompt guardrails); production dry-run QA pending; save mode gated by dry-run result; progress bar UX not started
 - **Blog generation pipeline** — static articles done; generation quality audit not started
 - **Stripe live QA** — config fixed, Preview QA done; end-to-end live payment not done
 
@@ -65,7 +70,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 1. **AI generation progress bar** — progress indicator for seed batch; reduces timeout UX risk at 15–20 items
 2. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
 3. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
-4. **Generate 15 high-quality IT dilemmas** — only after semantic review dry-run validation on IT content
+4. **Generate 15 high-quality IT dilemmas** — blocked by production dry-run QA (see Open Manual QA); unlocks after dry-run decision matrix passes
 5. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality
 6. **Segmented result comparison** *(DEFERRED)* — locale-only first ("Chi vota in italiano"), deferred until enough IT traffic (≥ 500 votes on a popular dilemma); country/demographic segments require `LEGAL.md` review before implementation. Full spec in `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
