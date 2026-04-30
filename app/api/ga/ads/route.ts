@@ -1,7 +1,7 @@
 /**
  * First-party proxy for adsbygoogle.js
  * Serves the AdSense script from our domain → bypasses URL-based adblock rules
- * Route: /api/_g/ads?client=ca-pub-XXXXXXX
+ * Route: /api/ga/ads?client=ca-pub-XXXXXXX
  */
 import { NextRequest } from 'next/server'
 

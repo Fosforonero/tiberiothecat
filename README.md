@@ -438,9 +438,9 @@ npm run build
 Results pages include a lightweight quality signal (`🔥 Interesting` / `👎 Not for me`). Feedback is deduplicated by user or anonymous cookie, stored in Supabase/Redis, and updates dynamic dilemma scoring.
 
 ### First-party proxies
-`app/api/_g/` proxies GA4 (analytics) to bypass ad blockers. This is a deliberate product choice — see Google's first-party proxy docs.
+`app/api/ga/` proxies GA4 (analytics) to bypass ad blockers. This is a deliberate product choice — see Google's first-party proxy docs.
 
-AdSense loads directly from `pagead2.googlesyndication.com` (official script). The `/api/_g/ads` proxy route is kept but not used — policy-safe for AdSense review. Do not proxy adsbygoogle.js again without re-evaluating AdSense programme policies.
+AdSense loads directly from `pagead2.googlesyndication.com` (official script). The `/api/ga/ads` proxy route exists but is not used in production — policy-safe for AdSense review. Do not proxy adsbygoogle.js again without re-evaluating AdSense programme policies.
 
 ### Stripe webhook
 Webhook endpoint: `POST /api/stripe/webhook`. Must be verified with `STRIPE_WEBHOOK_SECRET`.
@@ -548,9 +548,9 @@ All `@splitvote.io` addresses route via Cloudflare Email Routing → Gmail. No p
 
 **API input bounds**: `POST /api/events/track` caps metadata at 2 KB serialized and validates `scenarioId` format (`^[a-z0-9-]{1,80}$`). `POST /api/profile/update` validates `countryCode` against `^[A-Z]{2}$`, caps `avatarEmoji` at 8 chars, and rejects `displayName` with control characters.
 
-**GA proxy** (`/api/_g/script`): ignores the `id` query param and always uses the configured `NEXT_PUBLIC_GA_ID` / hardcoded `G-5MPQ8PW0CE` — prevents proxying arbitrary GA IDs.
+**GA proxy** (`/api/ga/script`): ignores the `id` query param and always uses the configured `NEXT_PUBLIC_GA_ID` / hardcoded `G-5MPQ8PW0CE` — prevents proxying arbitrary GA IDs.
 
-**GA collect proxy** (`/api/_g/g/collect`): forwards `X-Forwarded-For` to Google intentionally — required for accurate geo and session data in GA4. No raw IPs are stored server-side.
+**GA collect proxy** (`/api/ga/g/collect`): forwards `X-Forwarded-For` to Google intentionally — required for accurate geo and session data in GA4. No raw IPs are stored server-side.
 
 ### Known issues / TODOs
 - Stripe webhook idempotency: implemented in `lib/stripe-webhook-events.ts` + `app/api/stripe/webhook/route.ts`. Requires `migration_v11_stripe_webhook_events.sql` applied in Supabase to be fully active. Until then, the webhook is backward-compatible (processes events without idempotency guard, emits `console.warn`).

@@ -1,7 +1,7 @@
 /**
  * First-party proxy for GA4 measurement endpoint
  * GA4 sends hits to {transport_url}/g/collect — we forward to Google transparently.
- * Route: /api/_g/g/collect
+ * Route: /api/ga/g/collect
  */
 import { NextRequest } from 'next/server'
 

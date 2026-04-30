@@ -1,7 +1,7 @@
 /**
  * First-party proxy for gtag.js
  * Serves the Google Analytics script from our own domain → bypasses adblock URL filters
- * Route: /api/_g/script?id=G-XXXXXXX
+ * Route: /api/ga/script?id=G-XXXXXXX
  */
 import { NextRequest } from 'next/server'
 

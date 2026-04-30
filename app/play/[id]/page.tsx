@@ -9,9 +9,11 @@ import { getVotes } from '@/lib/redis'
 import VoteClientPage from './VoteClientPage'
 import JsonLd from '@/components/JsonLd'
 import RelatedDilemmas from '@/components/RelatedDilemmas'
+import AdSlot from '@/components/AdSlot'
 import type { Metadata } from 'next'
 import type { Scenario } from '@/lib/scenarios'
 
+const SLOT_PLAY = process.env.NEXT_PUBLIC_ADSENSE_SLOT_PLAY ?? 'TODO'
 const BASE_URL = 'https://splitvote.io'
 
 interface Props {
@@ -207,6 +209,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
         nextPathId={nextPathId}
       />
       <RelatedDilemmas current={scenario} all={allScenarios} />
+      <AdSlot slot={SLOT_PLAY} className="max-w-2xl mx-auto px-4 pb-8" />
     </>
   )
 }
