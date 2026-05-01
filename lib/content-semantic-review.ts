@@ -163,12 +163,28 @@ export function buildComparisonItems(
     crossLocaleAdded++
   }
 
+  // Fourth pass: same-locale, any-category, current-batch generated items.
+  // Catches within-batch thematic repeats across category boundaries that Jaccard misses
+  // (different surface vocabulary, same moral structure). Max 3 to stay within prompt budget.
+  const INTRA_BATCH_MAX = 3
+  let intraBatchAdded = 0
+  for (const item of inventory) {
+    if (intraBatchAdded >= INTRA_BATCH_MAX) break
+    if (item.type !== 'dilemma') continue
+    if (item.locale !== candidateLocale) continue
+    if (item.source !== 'ai_generated') continue
+    if (seen.has(item.id)) continue
+    selected.push({ id: item.id, title: item.title, text: item.searchableText.slice(0, 300) })
+    seen.add(item.id)
+    intraBatchAdded++
+  }
+
   return selected
 }
 
 export async function runSemanticReview(
   input: SemanticReviewInput,
-  timeoutMs = 10_000,
+  timeoutMs = 20_000,
 ): Promise<{ ok: true; result: SemanticReviewResult } | { ok: false; error: string }> {
   if (input.comparisonItems.length === 0) {
     return { ok: false, error: 'no_comparison_items' }
