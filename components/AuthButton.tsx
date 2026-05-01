@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { Settings, Star, LayoutDashboard, LogOut, User } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { isRoleAtLeast } from '@/lib/admin-auth'
@@ -15,6 +16,10 @@ interface AuthState {
 }
 
 export default function AuthButton() {
+  const pathname = usePathname()
+  const isIT = pathname?.startsWith('/it') ?? false
+  const loginHref = isIT ? '/login?locale=it' : '/login'
+
   const [auth, setAuth] = useState<AuthState>({
     status: 'loading',
     isPremium: false,
@@ -50,12 +55,12 @@ export default function AuthButton() {
   if (auth.status !== 'user') {
     return (
       <a
-        href="/login"
+        href={loginHref}
         className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all btn-neon-blue"
-        aria-label="Join SplitVote free or sign in"
+        aria-label={isIT ? 'Crea profilo gratis o accedi' : 'Join SplitVote free or sign in'}
       >
         <User size={13} aria-hidden="true" />
-        Join free →
+        {isIT ? 'Unisciti →' : 'Join free →'}
       </a>
     )
   }
