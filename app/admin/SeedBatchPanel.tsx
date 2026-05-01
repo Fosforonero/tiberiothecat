@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 interface SeedResult {
   index:               number
@@ -48,14 +48,15 @@ type LocaleParam = 'all' | 'en' | 'it'
 type SeedMode    = 'default' | 'manual'
 
 export default function SeedBatchPanel() {
-  const [seedMode, setSeedMode]       = useState<SeedMode>('default')
-  const [locale, setLocale]           = useState<LocaleParam>('all')
-  const [count, setCount]             = useState(10)
-  const [dryRun, setDryRun]           = useState(false)
-  const [autoPublish, setAutoPublish] = useState(false)
-  const [loading, setLoading]         = useState(false)
-  const [result, setResult]           = useState<SeedResponse | null>(null)
-  const [error, setError]             = useState<string | null>(null)
+  const [seedMode, setSeedMode] = useState<SeedMode>('default')
+  const [locale, setLocale]     = useState<LocaleParam>('all')
+  const [count, setCount]       = useState(10)
+  const [dryRun, setDryRun]     = useState(false)
+  const [loading, setLoading]   = useState(false)
+  const [result, setResult]     = useState<SeedResponse | null>(null)
+  const [error, setError]       = useState<string | null>(null)
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
+  const abortRef                = useRef(false)
 
   // Manual seed fields
   const [manualTopic, setManualTopic] = useState('')
@@ -75,32 +76,105 @@ export default function SeedBatchPanel() {
     setLoading(true)
     setResult(null)
     setError(null)
-    try {
-      const body: Record<string, unknown> = { locale, count, dryRun, autoPublish }
-      if (seedMode === 'manual') {
-        body.manualSeed = {
-          topic: manualTopic.trim(),
-          ...(manualTitle.trim() ? { title: manualTitle.trim() } : {}),
-          ...(manualAngle.trim() ? { angle: manualAngle.trim() } : {}),
-          ...(manualNotes.trim() ? { notes: manualNotes.trim() } : {}),
+    abortRef.current = false
+
+    const locales: Array<'en' | 'it'> = locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']
+    const totalChunks = estimatedCalls
+    setProgress({ done: 0, total: totalChunks })
+
+    const allResults: SeedResult[] = []
+    const accSummary: SeedSummary = {
+      total: 0, savedDrafts: 0, autoPublished: 0,
+      dryRunPassed: 0, skipped_novelty: 0, skipped_preflight: 0,
+      openRouterCalls: 0, errors: 0,
+    }
+    const accCategoryBreakdown: Record<string, number> = {}
+    let done = 0
+    let noveltyThreshold = 55
+
+    outer: for (const loc of locales) {
+      for (let i = 0; i < count; i++) {
+        if (abortRef.current) break outer
+
+        const chunkNum = done + 1
+
+        try {
+          const body: Record<string, unknown> = {
+            locale: loc,
+            count: 1,
+            dryRun,
+            autoPublish: false,
+          }
+          if (seedMode === 'manual') {
+            body.manualSeed = {
+              topic: manualTopic.trim(),
+              ...(manualTitle.trim() ? { title: manualTitle.trim() } : {}),
+              ...(manualAngle.trim() ? { angle: manualAngle.trim() } : {}),
+              ...(manualNotes.trim() ? { notes: manualNotes.trim() } : {}),
+            }
+          }
+
+          const res = await fetch('/api/admin/seed-draft-batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          })
+          const rawData: unknown = await res.json()
+
+          if (!res.ok) {
+            const errData = rawData as { message?: string; error?: string }
+            const msg = errData.message ?? errData.error ?? `HTTP ${res.status}`
+            setError(
+              `Error at item ${chunkNum}/${totalChunks}: ${msg}` +
+              (done > 0 ? ` — ${done} item${done !== 1 ? 's' : ''} already completed.` : '.')
+            )
+            break outer
+          }
+
+          const data = rawData as SeedResponse
+          const r = data.results[0]
+          if (r) {
+            r.index = allResults.length + 1
+            allResults.push(r)
+          }
+
+          accSummary.total             += data.summary.total
+          accSummary.savedDrafts       += data.summary.savedDrafts
+          accSummary.autoPublished     += data.summary.autoPublished
+          accSummary.dryRunPassed       = (accSummary.dryRunPassed ?? 0) + (data.summary.dryRunPassed ?? 0)
+          accSummary.skipped_novelty   += data.summary.skipped_novelty
+          accSummary.skipped_preflight += data.summary.skipped_preflight
+          accSummary.openRouterCalls   += data.summary.openRouterCalls
+          accSummary.errors            += data.summary.errors
+          noveltyThreshold              = data.noveltyThreshold
+
+          for (const [cat, n] of Object.entries(data.categoryBreakdown ?? {})) {
+            accCategoryBreakdown[cat] = (accCategoryBreakdown[cat] ?? 0) + (n as number)
+          }
+
+          done++
+          setProgress({ done, total: totalChunks })
+          setResult({
+            summary:           { ...accSummary },
+            results:           [...allResults],
+            dryRun,
+            autoPublish:       false,
+            noveltyThreshold,
+            categoryBreakdown: { ...accCategoryBreakdown },
+          })
+
+        } catch {
+          setError(
+            `Network error at item ${chunkNum}/${totalChunks}` +
+            (done > 0 ? ` — ${done} item${done !== 1 ? 's' : ''} already completed.` : '.')
+          )
+          break outer
         }
       }
-      const res = await fetch('/api/admin/seed-draft-batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.message ?? data.error ?? `HTTP ${res.status}`)
-      } else {
-        setResult(data as SeedResponse)
-      }
-    } catch {
-      setError('network_error')
-    } finally {
-      setLoading(false)
     }
+
+    setProgress(null)
+    setLoading(false)
   }
 
   function verdictBadge(r: SeedResult): React.ReactNode {
@@ -153,22 +227,13 @@ export default function SeedBatchPanel() {
             { label: 'Skipped',        value: result.summary.skipped_novelty,   color: 'text-yellow-400' },
             { label: 'Errors',         value: result.summary.errors,            color: 'text-red-400' },
           ]
-        : result.autoPublish
-          ? [
-              { label: 'Total',       value: result.summary.total,             color: 'text-white' },
-              { label: '★ Published', value: result.summary.autoPublished,     color: 'text-emerald-300' },
-              { label: 'Draft Saved', value: result.summary.savedDrafts,       color: 'text-green-400' },
-              ...(hasPreflight ? [similarCard] : []),
-              { label: 'Skipped',     value: result.summary.skipped_novelty,   color: 'text-yellow-400' },
-              { label: 'Errors',      value: result.summary.errors,            color: 'text-red-400' },
-            ]
-          : [
-              { label: 'Total',   value: result.summary.total,           color: 'text-white' },
-              { label: 'Saved',   value: result.summary.savedDrafts,     color: 'text-green-400' },
-              ...(hasPreflight ? [similarCard] : []),
-              { label: 'Skipped', value: result.summary.skipped_novelty, color: 'text-yellow-400' },
-              { label: 'Errors',  value: result.summary.errors,          color: 'text-red-400' },
-            ])
+        : [
+            { label: 'Total',   value: result.summary.total,           color: 'text-white' },
+            { label: 'Saved',   value: result.summary.savedDrafts,     color: 'text-green-400' },
+            ...(hasPreflight ? [similarCard] : []),
+            { label: 'Skipped', value: result.summary.skipped_novelty, color: 'text-yellow-400' },
+            { label: 'Errors',  value: result.summary.errors,          color: 'text-red-400' },
+          ])
     : []
 
   const colCount = summaryCards.length
@@ -187,6 +252,7 @@ export default function SeedBatchPanel() {
         Generates curated dilemma drafts using OpenRouter.
         Novelty guard: skips drafts scoring below 55. All results land in{' '}
         <code className="font-mono">dynamic:drafts</code> — approve manually from Dynamic Dilemmas below.
+        Runs as <span className="text-purple-300 font-semibold">1 item per call</span> to prevent timeouts.
       </p>
 
       {/* Seed mode toggle */}
@@ -321,76 +387,85 @@ export default function SeedBatchPanel() {
               <input
                 type="checkbox"
                 checked={dryRun}
-                onChange={e => {
-                  setDryRun(e.target.checked)
-                  if (e.target.checked) setAutoPublish(false)
-                }}
+                onChange={e => setDryRun(e.target.checked)}
                 disabled={loading}
                 className="accent-blue-500"
               />
               <span className="text-xs text-white/70">Dry run — preview only, do not save</span>
             </label>
-            <label className={`flex items-center gap-2 select-none ${dryRun ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}>
+            {/* Auto-publish disabled in chunked mode */}
+            <label className="flex items-center gap-2 select-none opacity-35 cursor-not-allowed">
               <input
                 type="checkbox"
-                checked={autoPublish}
-                onChange={e => setAutoPublish(e.target.checked)}
-                disabled={loading || dryRun}
+                checked={false}
+                disabled
                 className="accent-emerald-500"
               />
               <span className="text-xs text-white/70">
                 Auto-publish strongest passing drafts (max 10)
               </span>
             </label>
-            {autoPublish && !dryRun && (
-              <p className="text-[10px] text-emerald-400/70 ml-5">
-                Only items passing quality gates. Others remain drafts.
-              </p>
-            )}
+            <p className="text-[10px] text-white/25 ml-5">
+              Disabled — use chunked save mode and approve manually from Dynamic Dilemmas.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Pre-flight cost estimate */}
       <p className="text-[11px] text-white/40">
-        ~{estimatedCalls} OpenRouter call{estimatedCalls !== 1 ? 's' : ''}{' '}
-        ({locale === 'all' ? `${count} EN + ${count} IT` : `${count} ${locale.toUpperCase()}`})
+        {estimatedCalls} chunked call{estimatedCalls !== 1 ? 's' : ''}{' '}
+        ({locale === 'all' ? `${count} EN + ${count} IT` : `${count} ${locale.toUpperCase()}`}
+        {' '}· 1 item per call)
         {seedMode === 'manual' && (
           <span className="text-purple-400/70 font-semibold ml-1">— manual seed topic</span>
         )}
         {dryRun && <span className="text-blue-400 font-semibold ml-1">— preview only, no Redis writes</span>}
-        {autoPublish && !dryRun && (
-          <span className="text-emerald-400/80 font-semibold ml-1">
-            — gate-passing items publish immediately (max 10)
-          </span>
-        )}
       </p>
 
-      <button
-        onClick={runBatch}
-        disabled={!canRun}
-        aria-busy={loading}
-        className={`font-semibold rounded px-5 py-2 text-sm transition-colors text-white disabled:opacity-40 ${
-          dryRun
-            ? 'bg-blue-700 hover:bg-blue-600'
-            : autoPublish
-              ? 'bg-emerald-700 hover:bg-emerald-600'
+      {/* Run button + Cancel */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={runBatch}
+          disabled={!canRun}
+          aria-busy={loading}
+          className={`font-semibold rounded px-5 py-2 text-sm transition-colors text-white disabled:opacity-40 ${
+            dryRun
+              ? 'bg-blue-700 hover:bg-blue-600'
               : 'bg-purple-700 hover:bg-purple-600'
-        }`}
-      >
-        {loading
-          ? 'Running… (may take 2-4 min)'
-          : dryRun
-            ? `Dry Run Preview (${estimatedCalls} call${estimatedCalls !== 1 ? 's' : ''})`
-            : autoPublish
-              ? `Generate & Auto-Publish (${estimatedCalls} call${estimatedCalls !== 1 ? 's' : ''})`
-              : `Generate & Save ${estimatedCalls} Draft${estimatedCalls !== 1 ? 's' : ''}`}
-      </button>
+          }`}
+        >
+          {loading
+            ? `Generating ${progress?.done ?? 0} / ${progress?.total ?? estimatedCalls}…`
+            : dryRun
+              ? `Dry Run — ${estimatedCalls} chunk${estimatedCalls !== 1 ? 's' : ''} · 1 item each`
+              : `Generate Drafts — ${estimatedCalls} chunk${estimatedCalls !== 1 ? 's' : ''} · 1 item each`}
+        </button>
 
-      {loading && (
-        <p role="status" className="text-purple-300/70 text-xs animate-pulse">
-          Calling OpenRouter sequentially — please wait, do not close this tab.
-        </p>
+        {loading && (
+          <button
+            type="button"
+            onClick={() => { abortRef.current = true }}
+            className="px-3 py-2 rounded text-xs font-semibold text-white/60 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+
+      {/* Progress bar */}
+      {progress && (
+        <div className="space-y-1.5">
+          <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+            <div
+              className="bg-purple-500 h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${(progress.done / progress.total) * 100}%` }}
+            />
+          </div>
+          <p role="status" className="text-[11px] text-purple-300/60">
+            {progress.done} / {progress.total} completed — do not close this tab
+          </p>
+        </div>
       )}
 
       {error && (
@@ -401,25 +476,13 @@ export default function SeedBatchPanel() {
 
       {result && (
         <div className="space-y-4">
-          {/* Mode banners */}
+          {/* Mode banner */}
           {result.dryRun && (
             <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-lg px-3 py-2">
               <span className="text-blue-400 text-xs font-bold">
                 ~ Dry run — results previewed, nothing was saved to Redis.
               </span>
             </div>
-          )}
-          {result.autoPublish && !result.dryRun && result.summary.autoPublished > 0 && (
-            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
-              <span className="text-emerald-400 text-xs font-bold">
-                ★ {result.summary.autoPublished} item{result.summary.autoPublished !== 1 ? 's' : ''} published directly — passed all quality gates.
-              </span>
-            </div>
-          )}
-
-          {/* Server cost note */}
-          {result.estimatedCost && (
-            <p className="text-[11px] text-white/30">{result.estimatedCost.note}</p>
           )}
 
           {/* Summary cards */}
@@ -521,16 +584,8 @@ export default function SeedBatchPanel() {
             </table>
           </div>
 
-          {/* Footer warnings */}
-          {result.autoPublish && !result.dryRun && (
-            <div className="flex items-start gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
-              <span className="text-emerald-400 text-xs font-bold shrink-0">★ Auto-published items are live.</span>
-              <span className="text-emerald-300/60 text-xs">
-                All passed content quality gates (novelty, finalScore, SEO, no dangerous content). Others were saved to drafts.
-              </span>
-            </div>
-          )}
-          {!result.dryRun && !result.autoPublish && (
+          {/* Footer note */}
+          {!result.dryRun && (
             <div className="flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2">
               <span className="text-yellow-400 text-xs font-bold">
                 ⚠ Generated drafts are not public until approved.
