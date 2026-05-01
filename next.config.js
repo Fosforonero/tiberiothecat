@@ -7,6 +7,13 @@ const nextConfig = {
   poweredByHeader: false,
   experimental: {},
 
+  async redirects() {
+    return [
+      { source: '/it/login',          destination: '/login?locale=it',          permanent: false },
+      { source: '/it/reset-password', destination: '/reset-password?locale=it', permanent: false },
+    ]
+  },
+
   async headers() {
     return [
       {

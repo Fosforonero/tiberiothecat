@@ -119,7 +119,7 @@ function LoginForm() {
     setLoading(true)
     setMessage(null)
     const resetRedirect = locale === 'it'
-      ? `${window.location.origin}/auth/callback?redirect=${encodeURIComponent('/reset-password?locale=it')}`
+      ? `${window.location.origin}/auth/callback?redirect=${encodeURIComponent('/it/reset-password')}`
       : `${window.location.origin}/auth/callback?redirect=${encodeURIComponent('/reset-password')}`
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
       redirectTo: resetRedirect,
