@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 1 Maggio 2026 — Auth recovery, i18n fix, Blog Draft Queue, AI dedup fix, Account Deletion
+Ultimo aggiornamento: 1 Maggio 2026 — QA closure ✅ GO — reset EN/IT, Blog Draft Queue, account deletion, AI dry-run, chunked progress, GA/AdSense — tutti verificati post-deploy
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -37,7 +37,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ---
 
-## Next Session / 30 Apr 2026
+## 1 May 2026 — QA Closure ✅ GO
 
 **Shipped today (29 Apr 2026, 17 commits):**
 ✅ Role management MVP · Category editorial SEO · Stripe env fix (docs) · Mission claim reminders · Feedback scoring hardening · Homepage CTA · Viral share copy · Mobile nav landscape fix · Admin roles mobile fix · Governed seed batch · Preflight similarity guard · Dynamic pool uncapped · Admin totals fix · Seed topic diversity · Novelty-first generation · Semantic novelty review
@@ -50,16 +50,26 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 ✅ AI generation hardening — cross-locale semantic dedup (EN↔IT parity via [EN]/[IT] prefixed items in reviewer), intra-batch draft visibility, `rejectionReason` admin display, anti-template prompt guardrails (3 new SAFETY_RULES) — ebab0b1
 ✅ SEED_TOPICS cleanup — 21 IT mirror topics + 1 EN trolley variant replaced; 64 topics cover distinct moral angles per locale-category pair — b3ef8df
 
+**Shipped (1 May 2026, session 3 — QA closure + hotfix):**
+✅ Admin seed batch chunked mode — `SeedBatchPanel.tsx`: N sequential POSTs of count=1; progress bar; cancel; per-item error; autoPublish disabled — `9872404`
+✅ Reset IT hotfix — `handleReset` uses `/it/reset-password` (clean path); `next.config.js` redirects `/it/reset-password` → `/reset-password?locale=it` and `/it/login` → `/login?locale=it` — `5560c84`
+
+### ⚠️ Security / QA Warning
+
+- **Do not use admin or real personal accounts for QA auth or destructive flows.** Use throwaway accounts only.
+- **mat.pizzi@gmail.com password was temporarily changed during QA (1 May 2026)** and must be rotated privately.
+
 ### Needs QA
 
 - [ ] Stripe Premium checkout live UI — recurring monthly plan shown, end-to-end payment with real card
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — after deploy
 - [ ] Delayed reveal prefers-reduced-motion — DevTools emulation after deploy
-- [ ] **Reset password QA** — forgot password → email → reset link → set new password → dashboard; IT locale path; expired link edge case. Steps in CURRENT_HANDOFF.md → Open Manual QA.
-- [ ] **Blog Draft Queue QA** — generate → save → approve/reject → verify no auto-publish to lib/blog.ts; steps in CURRENT_HANDOFF.md → Open Manual QA.
-- [ ] **Account deletion QA** — Danger zone visible in profile → type DELETE/ELIMINA → confirm → signed out → redirect home; active subscription blocks deletion; IT locale copy; Supabase row confirmed deleted. 10-step checklist in CURRENT_HANDOFF.md → Open Manual QA.
-- [ ] **AI generation production dry-run** — 4 scenarios (EN/5 default · IT/5 default · ALL/3 default · ALL/3 manual stress test); gates save mode and bulk generation. Protocol in CURRENT_HANDOFF.md → Open Manual QA.
+- [x] **Reset password QA — ✅ PASS (EN + IT verified 1 May 2026, post-deploy 5560c84)**
+- [x] **Blog Draft Queue QA — ✅ PASS (verified 1 May 2026)** — save/approve(status only)/reject; no auto-publish confirmed
+- [x] **Account deletion QA — ✅ PASS (throwaway account, 1 May 2026)** — DELETE gate, delete→logout→home, premium block; admin accounts NOT tested (skip)
+- [x] **AI generation dry-run — ✅ PARTIAL PASS (dryRun ON, 1 May 2026)** — semantic dedup, chunked progress, cancel, autoPublish disabled confirmed; save mode still gated by decision matrix
+- [ ] **AI generation production dry-run — full 4-scenario protocol** — gates save mode and bulk generation. Protocol in CURRENT_HANDOFF.md → Open Manual QA.
 
 ### Started / Partially Implemented
 

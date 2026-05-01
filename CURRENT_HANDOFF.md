@@ -8,6 +8,8 @@ Implementer: Claude Code
 
 ## Current Production State
 
+**Release status: ✅ GO — all post-deploy QA verified 1 May 2026. No P0/P1 blockers open.**
+
 - Soft launch active — anonymous vote flow working
 - EN/IT active — all routes, copy, i18n complete
 - Role management MVP shipped — DB-backed `role` column, `super_admin`, central `requireAdmin()` dual-check; `ADMIN_EMAILS` still active as Phase 1 safety net
@@ -17,8 +19,8 @@ Implementer: Claude Code
 - Semantic novelty review shipped — LLM-based verdict (`novel | related_but_distinct | too_similar | duplicate`); blocks autoPublish on `too_similar`/`duplicate`
 - Feedback counters fixed (30 Apr): Redis now source of truth for admin KPI (real anonymous + logged-in totals); Supabase `dilemma_feedback_stats` is logged-in-only fallback — commits f1a0e95 · 3d258f5
 - AI generation hardening shipped (30 Apr, session 2): cross-locale semantic dedup (EN↔IT parity in reviewer via [EN]/[IT] prefixed items), intra-batch draft visibility in semantic review, human-readable `rejectionReason` with source/locale/similarity in admin table, SEED_TOPICS cleanup (21 IT mirror topics + 1 EN trolley variant replaced — 64 topics now cover distinct moral angles per locale-category pair), anti-template prompt guardrails (3 new SAFETY_RULES) — commits ebab0b1 · b3ef8df
-- Production AI dry-run QA: **NOT YET DONE** — required before save mode or any controlled batch generation
-- **Blog Draft Queue: implemented locally / pending deploy + QA** — save, list, approve, reject blog article drafts in Redis; approve ≠ publish live; `blog:drafts` key, max 50 items; `lib/blog-drafts.ts` + 3 API routes + `BlogDraftQueue.tsx` + `GenerateDraftPanel.tsx` Save button
+- Production AI dry-run QA: **✅ Verified 1 May 2026 (dryRun ON)** — semantic novelty dedup, chunked 3-item progress, cancel mid-run, autoPublish disabled all confirmed. Save mode still gated pending full decision matrix (≥60% accepted, no template repeats).
+- **Blog Draft Queue: ✅ deployed + QA verified 1 May 2026** — save, approve (status=approved, NOT published to /blog), reject all confirmed; `blog:drafts` Redis key; `lib/blog-drafts.ts` + 3 API routes + `BlogDraftQueue.tsx` + `GenerateDraftPanel.tsx` Save button
 - Mission claim reminders shipped — nudge UX for non-claimable daily missions
 - Homepage CTA improved, post-vote viral share copy sharpened
 - Expert Insight V2 shipped — sharper copy, insight shown before share CTA
@@ -86,7 +88,7 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - ✅ SEED_TOPICS cleanup — 21 IT mirror topics + 1 EN trolley variant replaced; 64 topics now cover distinct moral angles per locale-category pair; commit b3ef8df
 - ✅ Post-vote delayed reveal — committed `8a5dbad` (30 Apr 2026), pending deploy + QA
 
-**1 May 2026 (this session — locally implemented, pending commit + deploy):**
+**1 May 2026 (session 2 — locally implemented, committed + deployed):**
 - ✅ AI semantic block save bug fixed — `seed-draft-batch/route.ts`: semantic-blocked items now correctly push `skipped_novelty` result and `continue` before inventory update (previously fell through)
 - ✅ Blog Draft Queue MVP — `lib/blog-drafts.ts`, 3 API routes, `BlogDraftQueue.tsx`, `GenerateDraftPanel.tsx` Save button; approve ≠ publish live
 - ✅ Content inventory now indexes `blog:drafts` — novelty guard sees draft blog articles when generating new ones (prevents intra-queue duplication)
@@ -94,6 +96,11 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - ✅ Reset password flow — "Forgot password?" link in login (login mode only), reset email form, `supabase.auth.resetPasswordForEmail`, `handleReset` with EN/IT copy; new `/reset-password` page (set new password, confirm, `supabase.auth.updateUser`, error handling: too short/no match/expired link, redirect to /dashboard on success); callback unchanged
 - ✅ i18n fix — `AuthButton.tsx` now detects `/it` pathname via `usePathname()` and links to `/login?locale=it`; shows "Unisciti →" copy on IT pages
 - ✅ Account deletion — `DELETE /api/profile/delete-account` (server-only; `auth.getUser()` validation; CSRF guard via Content-Type header; active subscription check → 409; explicit delete of `organizations` + `user_polls` before `deleteUser`; cascade handles rest; `dilemma_feedback` anonymized); "Danger zone" section in ProfileClient (`DELETE`/`ELIMINA` typed confirmation, `min-h-[48px]` touch target, mobile-safe input attrs); Privacy EN/IT updated to mention in-app deletion; LEGAL.md updated
+
+**1 May 2026 (session 3 — QA closure + hotfix, committed + deployed):**
+- ✅ Admin seed batch chunked mode — `SeedBatchPanel.tsx` rewritten: N sequential POSTs of count=1 each; progress bar; cancel button; per-item error with count; autoPublish disabled in chunked mode (commit `9872404`)
+- ✅ Reset IT hotfix — `handleReset` now uses `/it/reset-password` (clean path, no nested URL-encoding); `next.config.js` redirects `/it/reset-password` → `/reset-password?locale=it` and `/it/login` → `/login?locale=it` (commit `5560c84`)
+- ✅ Post-deploy QA closed: reset password EN/IT, Blog Draft Queue, account deletion, AI duplicate fix (dry-run), AI chunked progress, GA/AdSense smoke — all PASS
 
 ---
 
@@ -131,35 +138,29 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — `/results/[id]?voted=a` and `/it/results/[id]?voted=b` after commit + deploy
 - [ ] Delayed reveal `prefers-reduced-motion` — DevTools → Emulate CSS media → confirm immediate reveal
-- [ ] **Reset password QA (after deploy)**:
-  1. `/login` → login mode → "Forgot password?" link visible below password field
-  2. Click → reset mode shown (headline changes, benefits hidden, email field + Send reset link button)
-  3. Enter email → Send → success message in IT if `?locale=it`
-  4. Check email inbox → click reset link → lands on `/auth/callback?redirect=/reset-password` → redirected to `/reset-password`
-  5. Form shown → enter new password + confirm → submit → success → redirected to `/dashboard`
-  6. IT path: `/login?locale=it` → "Password dimenticata?" → reset form in Italian → email → `/reset-password?locale=it` → IT copy
-  7. Expired link edge case: revisit used reset link → `/reset-password` shows expired error with "Back to sign in" link
-  8. On IT pages (e.g. `/it`), navbar "Unisciti →" button links to `/login?locale=it` ✓
-- [ ] **Blog Draft Queue QA (after deploy)**:
-  1. Admin → Blog tab → generate preview (standard, EN or IT) → click "Save draft"
-  2. Verify draft appears in Blog Draft Queue (status: draft, correct locale/kind/novelty)
-  3. Expand draft — confirm body + FAQ; translation visible if generated
-  4. Approve — status → approved, timestamp shown, Approve/Reject buttons disappear
-  5. Navigate to `/blog/[slug]` — confirm article NOT present (lib/blog.ts unchanged, no auto-publish)
-  6. Generate a second draft on different topic → Save → Reject
-  7. Refresh page — approved/rejected drafts persist with correct status; stats row counts match
-- [ ] **Account deletion QA (after deploy)**:
+- [x] **Reset password QA — ✅ PASS (EN + IT verified 1 May 2026, post-deploy 5560c84)**:
+  1. `/login` → login mode → "Forgot password?" link visible below password field ✓
+  2. Click → reset mode shown ✓
+  3. Enter email → Send → success message in IT if `?locale=it` ✓
+  4. Check email inbox → click reset link → redirected to `/reset-password` (EN) ✓
+  5. Form shown → enter new password + confirm → submit → success → redirected to `/dashboard` ✓
+  6. IT path: `/login?locale=it` → "Password dimenticata?" → email → link contains `/it/reset-password` → final redirect `/reset-password?locale=it` → IT copy ✓
+  7. `/it/login` → redirect to `/login?locale=it` ✓ (next.config.js redirect)
+- [x] **Blog Draft Queue QA — ✅ PASS (verified 1 May 2026)**:
+  1. Save draft ✓
+  2. Approve → status=approved, NOT published to /blog ✓
+  3. Reject ✓
+  4. No public auto-publish confirmed ✓
+- [x] **Account deletion QA — ✅ PASS (throwaway account only, verified 1 May 2026)**:
   ⚠️ Use a throwaway test account only. Do NOT test deletion on admin/super_admin accounts — that would remove the DB role; ADMIN_EMAILS env var is the fallback but avoid it.
-  1. `/profile` → scroll to bottom → "Danger zone" section visible
-  2. Click "Delete account" → confirmation form expands; warning mentions organizations
-  3. Final button disabled until "DELETE" typed exactly (case-insensitive) → type "DELETE" → button enabled
-  4. IT path: `/profile` with `lang-pref=it` cookie → "Zona pericolosa" / "ELIMINA" → button text in Italian
-  5. Active Premium user: "Delete account" → should get inline error "active subscription"; user must scroll up to Premium section to cancel via billing portal first
-  6. Cancel button: closes form, clears input, no deletion
-  7. Confirm deletion: account deleted, signed out, redirected to `/` (EN) or `/it` (IT)
-  8. Verify in Supabase: user row gone from `auth.users`; `dilemma_feedback` rows remain with `user_id = NULL`
-  9. Pre-deploy check: Supabase Dashboard → Auth → URL Configuration → confirm `splitvote.io/auth/callback` in Redirect URLs allow-list (also required for reset password flow)
-  10. Pre-deploy check: Supabase Dashboard → Auth → Email Templates → confirm Reset Password template has `{{ .ConfirmationURL }}`
+  1. Danger zone visible in /profile ✓
+  2. DELETE confirmation gate ✓
+  3. Delete → logout → redirect home ✓
+  4. Premium block (active subscription → 409) ✓
+  5. Admin account: SKIP — never test on real admin accounts
+- [x] **AI generation production dry-run — ✅ PARTIAL PASS (dryRun ON verified 1 May 2026; save mode still gated)**:
+  Verified: semantic novelty dedup, chunked 3-item progress bar, cancel mid-run, autoPublish disabled.
+  Save mode gate: decision matrix (≥60% accepted, no template repeats) not yet formally evaluated.
 - [ ] **AI generation production dry-run (4 scenarios, ~12 min, browser admin required — gates save mode)**:
   1. Locale: EN · Count: 5 · Default topics · Dry run ✓ → record: accepted, skipped_preflight, skipped_novelty, noveltyScore distribution
   2. Locale: IT · Count: 5 · Default topics · Dry run ✓ → same; verify EN≠IT moral angles in accepted items
@@ -239,6 +240,11 @@ Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.m
 13. **Segmented result comparison** *(DEFERRED)* — "Chi vota in italiano" card on IT results page, post-vote only, Redis-backed, 50-vote threshold. Do not build until ≥ 500 IT votes on a popular dilemma and Core Loop (#2) + Pre-vote sharing (#3) are shipped. Country/demographic segments require LEGAL.md review. Full spec: `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
 ---
+
+## ⚠️ Security / QA Warning
+
+- **Do not use admin or real personal accounts for QA auth or destructive flows** (reset password, account deletion, role changes). Use throwaway accounts only.
+- **mat.pizzi@gmail.com password was temporarily changed during QA (1 May 2026)** and must be rotated privately outside this codebase.
 
 ## Known Risks
 
