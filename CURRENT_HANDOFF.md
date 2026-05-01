@@ -19,7 +19,9 @@ Implementer: Claude Code
 - Semantic novelty review shipped — LLM-based verdict (`novel | related_but_distinct | too_similar | duplicate`); blocks autoPublish on `too_similar`/`duplicate`
 - Feedback counters fixed (30 Apr): Redis now source of truth for admin KPI (real anonymous + logged-in totals); Supabase `dilemma_feedback_stats` is logged-in-only fallback — commits f1a0e95 · 3d258f5
 - AI generation hardening shipped (30 Apr, session 2): cross-locale semantic dedup (EN↔IT parity in reviewer via [EN]/[IT] prefixed items), intra-batch draft visibility in semantic review, human-readable `rejectionReason` with source/locale/similarity in admin table, SEED_TOPICS cleanup (21 IT mirror topics + 1 EN trolley variant replaced — 64 topics now cover distinct moral angles per locale-category pair), anti-template prompt guardrails (3 new SAFETY_RULES) — commits ebab0b1 · b3ef8df
-- Production AI dry-run QA: **✅ Verified 1 May 2026 (dryRun ON)** — semantic novelty dedup, chunked 3-item progress, cancel mid-run, autoPublish disabled all confirmed. Save mode still gated pending full decision matrix (≥60% accepted, no template repeats).
+- AI dry-run full gate (session 4, 1 May 2026): 4-scenario protocol completed — classified **C/E2**: within-batch cross-category dedup failure + IT semantic `review_err` systemic. Save mode **still blocked**.
+- AI semantic review fix: `c85e55c` deployed 1 May 2026 — `buildComparisonItems` 4th pass (same-locale, any-category, `ai_generated` batch items, max 3); semantic review timeout 10s→20s. Fix in production.
+- **Pending before AI re-QA**: (1) Vercel Production env `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` (set manually — code already reads this var at `lib/content-semantic-review.ts`); (2) manual Vercel redeploy after env update; (3) re-run 4 dry-run scenarios.
 - **Blog Draft Queue: ✅ deployed + QA verified 1 May 2026** — save, approve (status=approved, NOT published to /blog), reject all confirmed; `blog:drafts` Redis key; `lib/blog-drafts.ts` + 3 API routes + `BlogDraftQueue.tsx` + `GenerateDraftPanel.tsx` Save button
 - Mission claim reminders shipped — nudge UX for non-claimable daily missions
 - Homepage CTA improved, post-vote viral share copy sharpened
@@ -102,6 +104,11 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - ✅ Reset IT hotfix — `handleReset` now uses `/it/reset-password` (clean path, no nested URL-encoding); `next.config.js` redirects `/it/reset-password` → `/reset-password?locale=it` and `/it/login` → `/login?locale=it` (commit `5560c84`)
 - ✅ Post-deploy QA closed: reset password EN/IT, Blog Draft Queue, account deletion, AI duplicate fix (dry-run), AI chunked progress, GA/AdSense smoke — all PASS
 
+**1 May 2026 (session 4 — AI dry-run full gate + semantic review fix, committed + deployed):**
+- ✅ AI dry-run 4-scenario gate completed — classification **C/E2**: within-batch cross-category dedup failure (Jaccard misses semantic equivalence across different-category items) + IT semantic review `review_err` systemic (silent pass on all IT items; `no_comparison_items` on item #1; parse/timeout failure on items #2–5)
+- ✅ AI semantic review fix — `buildComparisonItems` 4th pass (same-locale, any-category, `ai_generated`, max 3): within-batch thematic repeats across category boundaries now reach the LLM reviewer even at Jaccard=0; timeout raised 10s→20s — commit `c85e55c`, deployed ● Ready
+- ✅ `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` selected (PM decision) — must be set manually in Vercel Production before re-QA, then redeploy
+
 ---
 
 ## Started / Partially Implemented
@@ -114,9 +121,10 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 ### AI dilemma generation pipeline
 - Governed batch + controlled autoPublish + semantic review — **done and shipped**.
 - Novelty hardening (30 Apr 2026, session 2): cross-locale dedup, intra-batch visibility, rejectionReason display, SEED_TOPICS cleanup, prompt guardrails — **done and shipped**.
-- **Production dry-run QA — NOT DONE.** Required before save mode. Four test scenarios documented in Open Manual QA below.
-- Save mode controlled usage — **blocked by dry-run QA result**.
-- Large-scale IT generation run (15+ quality dilemmas) — **not started**. Blocked by dry-run QA.
+- Semantic review fix (1 May 2026, session 4): `buildComparisonItems` 4th pass + timeout 10s→20s — **done and shipped (`c85e55c`)**.
+- **Production dry-run QA — CLASSIFIED C/E2 (session 4, 1 May 2026).** Gate ran, fix deployed. Re-QA required after env update.
+- **Save mode — blocked.** Pre-conditions: (1) Vercel env `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` + manual redeploy; (2) re-run 4 dry-run scenarios; (3) decision matrix: ≥60% accepted + `review_err` < 20% + no template repeats.
+- Large-scale IT generation run (15+ quality dilemmas) — **not started**. Blocked by save mode gate.
 - Seed batch progress bar / polling UX — **not started** (Vercel timeout risk at 30+ items).
 
 ### Blog generation
@@ -158,19 +166,14 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
   3. Delete → logout → redirect home ✓
   4. Premium block (active subscription → 409) ✓
   5. Admin account: SKIP — never test on real admin accounts
-- [x] **AI generation production dry-run — ✅ PARTIAL PASS (dryRun ON verified 1 May 2026; save mode still gated)**:
+- [x] **AI generation production dry-run — ✅ PARTIAL PASS (session 3, dryRun ON, 1 May 2026)**:
   Verified: semantic novelty dedup, chunked 3-item progress bar, cancel mid-run, autoPublish disabled.
-  Save mode gate: decision matrix (≥60% accepted, no template repeats) not yet formally evaluated.
-- [ ] **AI generation production dry-run (4 scenarios, ~12 min, browser admin required — gates save mode)**:
-  1. Locale: EN · Count: 5 · Default topics · Dry run ✓ → record: accepted, skipped_preflight, skipped_novelty, noveltyScore distribution
-  2. Locale: IT · Count: 5 · Default topics · Dry run ✓ → same; verify EN≠IT moral angles in accepted items
-  3. Locale: ALL · Count: 3/locale · Default topics · Dry run ✓ → check cross-locale semantic blocking in Review column
-  4. Locale: ALL · Count: 3 · Manual seed · Dry run ✓:
-     - topic: `mandatory vaccination during a public health crisis`
-     - angle: `individual freedom vs collective protection`
-     - notes: `avoid real people, countries, cities, and factual claims`
-     - Expected: IT result shows `⚠ too similar` / `✗ duplicate` semantic verdict vs EN intra-batch item
-  **Decision matrix**: ≥60% accepted + no template repeats → **save mode OK** · recurring trolley/organ-harvest/AI-job-loss → prompt tweak sprint · IT mirror passes (Test 4 IT not blocked) → translation preflight sprint · `review_failed` frequent → deterministic dedup sprint
+- [x] **AI generation full gate — COMPLETED (session 4, 4 scenarios, 1 May 2026) — classified C/E2, save mode blocked**:
+  Findings: within-batch cross-category dedup failure (items #2–4 thematic repeats passed through at noveltyScore=100); IT semantic review `review_err` on all 5 IT items (systemic); novelty guard vs Redis inventory and cross-locale dedup working correctly. Fix `c85e55c` deployed.
+- [ ] **AI generation re-QA (4 scenarios) — gates save mode. PRE-CONDITIONS REQUIRED:**
+  1. Vercel Production → env var `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` (set manually — code already reads this var)
+  2. Vercel → manual redeploy after env update
+  3. Re-run same 4 dry-run scenarios. Decision matrix: ≥60% accepted + `review_err` < 20% + no template repeats → **save mode OK**
 - [ ] Seed batch dry run after any OpenRouter model config change
 
 ---
@@ -225,19 +228,26 @@ Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.m
 
 ### Next Candidate Sprints
 
-1. **Google Analytics audit (read-only)** — verify GA4/env/proxy/consent/events before product changes are judged.
-2. **Core loop clarity** — why answer, game framing, login icon clarity, companion clarity, visible reward loop.
-3. **Pre-vote question sharing** — standard share icon and neutral question share from home/play/dilemma surfaces.
-4. **Aggregate leaderboards MVP** — most-voted topics/dilemmas first; archetype aggregate second; personal voter rankings later only with privacy review.
-5. **AI generation progress bar** — seed batch progress bar or chunked polling to avoid timeout UX on 15–20 item batches. No DB migration.
-6. **Current-events dilemma workflow** — news-inspired drafts for Italy/Europe/USA/World with source context and admin review.
-7. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`. No DB migration unless necessary. **Requires LEGAL.md check.**
-8. **Pixie Phase 1 — Rename/copy** — rename "Companion" → "Pixie" across UI and lib; update EN/IT copy; zero DB, zero assets. Can ship inside Core Loop Clarity sprint. Full strategy in `PRODUCT_STRATEGY.md → Pixie Digital Avatar Direction`.
-9. **Pixie Phase 2 — Base assets** — Pixie Spark PNG stage 1–5; `CompanionDisplay` image with emoji fallback. Prerequisite: assets generated and PM-approved.
-10. **Pixie Phase 3 — Share card MVP** — shareable Pixie profile card; `/api/pixie-card/[userId]` server-only endpoint; share CTA on dashboard. No DB migration. Prerequisite: Phase 2 assets. Confirm public fields in `LEGAL.md` before shipping.
-11. **Pixie Phase 4 — Variant selector / earned variants** — server-side unlock + `pixie_variant_equipped` column. DB migration required.
-12. **Pixie Phase 5–6 — VIP + Purchased Pixies** — Phase 5 via entitlements; Phase 6 requires Stripe + LEGAL + Terms review. Do not start Phase 6 without explicit gate clearance.
-13. **Segmented result comparison** *(DEFERRED)* — "Chi vota in italiano" card on IT results page, post-vote only, Redis-backed, 50-vote threshold. Do not build until ≥ 500 IT votes on a popular dilemma and Core Loop (#2) + Pre-vote sharing (#3) are shipped. Country/demographic segments require LEGAL.md review. Full spec: `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
+**PM priority order (updated 1 May 2026, session 4):**
+
+1. **Vote reconsideration within window** — allow changing a vote within `can_change_until`; high risk (vote flow, timing policy, mobile UX, accidental changes); requires focused sprint with LEGAL.md check.
+2. **Home/trending already-voted behavior** — improve UX for dilemmas already voted on appearing in home/trending surfaces.
+3. **Core loop clarity + Pixie Phase 1** — "why answer" copy, game/reward framing, login icon clarity, companion → "Pixie" rename (copy-only, zero DB, zero assets). Full strategy: `PRODUCT_STRATEGY.md → Pixie Digital Avatar Direction`.
+4. **`/it/trending` empty state** — IT trending page shows empty or incorrect state; investigate and fix.
+5. **AI generation re-QA** — after `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` env update + manual redeploy; re-run 4 dry-run scenarios; gates save mode and bulk IT generation.
+
+**Remaining (not reprioritized):**
+6. **Google Analytics audit (read-only)** — verify GA4/env/proxy/consent/events before product changes are judged.
+7. **Pre-vote question sharing** — standard share icon and neutral question share from home/play/dilemma surfaces.
+8. **Aggregate leaderboards MVP** — most-voted topics/dilemmas first; archetype aggregate second; personal voter rankings later only with privacy review.
+9. **AI generation progress bar** — seed batch progress bar or chunked polling to avoid timeout UX on 15–20 item batches. No DB migration.
+10. **Current-events dilemma workflow** — news-inspired drafts for Italy/Europe/USA/World with source context and admin review.
+11. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`. No DB migration unless necessary. **Requires LEGAL.md check.**
+12. **Pixie Phase 2 — Base assets** — Pixie Spark PNG stage 1–5; `CompanionDisplay` image with emoji fallback. Prerequisite: assets generated and PM-approved.
+13. **Pixie Phase 3 — Share card MVP** — shareable Pixie profile card; `/api/pixie-card/[userId]` server-only endpoint; share CTA on dashboard. No DB migration. Prerequisite: Phase 2 assets. Confirm public fields in `LEGAL.md` before shipping.
+14. **Pixie Phase 4 — Variant selector / earned variants** — server-side unlock + `pixie_variant_equipped` column. DB migration required.
+15. **Pixie Phase 5–6 — VIP + Purchased Pixies** — Phase 5 via entitlements; Phase 6 requires Stripe + LEGAL + Terms review. Do not start Phase 6 without explicit gate clearance.
+16. **Segmented result comparison** *(DEFERRED)* — "Chi vota in italiano" card on IT results page, post-vote only, Redis-backed, 50-vote threshold. Do not build until ≥ 500 IT votes on a popular dilemma and Core Loop (#3) + Pre-vote sharing (#7) are shipped. Country/demographic segments require LEGAL.md review. Full spec: `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
 ---
 
@@ -248,7 +258,7 @@ Issues surfaced via direct product observation. Full spec in `PRODUCT_STRATEGY.m
 
 ## Known Risks
 
-- AI generation near-duplicate risk reduced (cross-locale dedup, intra-batch visibility, anti-template guardrails shipped 30 Apr session 2); production dry-run QA still pending — do not use save mode until dry-run decision matrix passes.
+- AI generation near-duplicate risk reduced but not eliminated: cross-locale dedup + intra-batch cross-category pass shipped (`c85e55c`); IT semantic `review_err` likely resolved pending `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` env update + redeploy. Do not use save mode until re-QA decision matrix passes.
 - OpenRouter model aliases may change behavior; verify after any model config change.
 - Long seed batches (>20 items) approach Vercel function timeout; generate in batches ≤ 15–20.
 - Analytics/reconsideration sprint requires LEGAL.md check before implementing.
@@ -281,8 +291,8 @@ Task:
 3. Ricostruisci lo stato reale del progetto.
 4. Distingui shipped/pushato, implementato non committato, QA manuale aperto, docs stale.
 5. Conferma stato di Stripe, roles, mobile admin, post-vote copy, homepage CTA, mission reminders, governed seed batch/autopublish, uncapped dynamic pool, cross-locale semantic dedup, SEED_TOPICS cleanup, feedback counters (Redis), delayed reveal.
-6. Verifica stato AI generation dry-run: se non ancora eseguito, proponilo come primo sprint della sessione (~12 min, browser admin, 4 scenari dry run). Il dry-run sblocca save mode e bulk generation.
-7. Proponi i 3 sprint migliori per oggi.
+6. Verifica stato AI generation re-QA: gate completato (session 4, 1 May, classificato C/E2), fix c85e55c deployato. Prima della re-QA serve: (a) Vercel env OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini confermato e redeploy fatto; se sì, proponi re-QA come primo task.
+7. Proponi i 3 sprint user-facing migliori tra: cambio voto entro finestra, home/trending already-voted, core loop clarity + Pixie Phase 1, /it/trending empty state.
 
 Output:
 - Stato attuale in 10 righe

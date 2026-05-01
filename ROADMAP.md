@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 1 Maggio 2026 — QA closure ✅ GO — reset EN/IT, Blog Draft Queue, account deletion, AI dry-run, chunked progress, GA/AdSense — tutti verificati post-deploy
+Ultimo aggiornamento: 1 Maggio 2026 — AI dry-run gate completato (C/E2), fix c85e55c deployato; env OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini richiesto prima di re-QA; nuove priorità UX: cambio voto, already-voted, core loop, /it/trending
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -54,6 +54,9 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 ✅ Admin seed batch chunked mode — `SeedBatchPanel.tsx`: N sequential POSTs of count=1; progress bar; cancel; per-item error; autoPublish disabled — `9872404`
 ✅ Reset IT hotfix — `handleReset` uses `/it/reset-password` (clean path); `next.config.js` redirects `/it/reset-password` → `/reset-password?locale=it` and `/it/login` → `/login?locale=it` — `5560c84`
 
+**Shipped (1 May 2026, session 4 — AI dry-run gate + semantic review fix):**
+✅ AI semantic review intra-batch dedup fix — `buildComparisonItems` 4th pass (same-locale, any-category, `ai_generated`, max 3) catches within-batch thematic repeats across category boundaries; timeout 10s→20s — `c85e55c`
+
 ### ⚠️ Security / QA Warning
 
 - **Do not use admin or real personal accounts for QA auth or destructive flows.** Use throwaway accounts only.
@@ -68,8 +71,9 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 - [x] **Reset password QA — ✅ PASS (EN + IT verified 1 May 2026, post-deploy 5560c84)**
 - [x] **Blog Draft Queue QA — ✅ PASS (verified 1 May 2026)** — save/approve(status only)/reject; no auto-publish confirmed
 - [x] **Account deletion QA — ✅ PASS (throwaway account, 1 May 2026)** — DELETE gate, delete→logout→home, premium block; admin accounts NOT tested (skip)
-- [x] **AI generation dry-run — ✅ PARTIAL PASS (dryRun ON, 1 May 2026)** — semantic dedup, chunked progress, cancel, autoPublish disabled confirmed; save mode still gated by decision matrix
-- [ ] **AI generation production dry-run — full 4-scenario protocol** — gates save mode and bulk generation. Protocol in CURRENT_HANDOFF.md → Open Manual QA.
+- [x] **AI generation dry-run — ✅ PARTIAL PASS (session 3, dryRun ON, 1 May 2026)** — semantic dedup, chunked progress, cancel, autoPublish disabled confirmed
+- [x] **AI generation full gate — COMPLETED session 4, classified C/E2** — fix `c85e55c` deployed; save mode still blocked
+- [ ] **AI generation re-QA — 4 scenarios** — requires: `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` in Vercel Production + manual redeploy. Gates save mode and bulk IT generation.
 
 ### Started / Partially Implemented
 
@@ -81,12 +85,20 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ### Candidate Sprints
 
-1. **AI generation progress bar** — progress indicator for seed batch; reduces timeout UX risk at 15–20 items
-2. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
-3. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
-4. **Generate 15 high-quality IT dilemmas** — blocked by production dry-run QA (see Open Manual QA); unlocks after dry-run decision matrix passes
-5. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality
-6. **Segmented result comparison** *(DEFERRED)* — locale-only first ("Chi vota in italiano"), deferred until enough IT traffic (≥ 500 votes on a popular dilemma); country/demographic segments require `LEGAL.md` review before implementation. Full spec in `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
+**PM priority order (updated 1 May 2026, session 4):**
+
+1. **Vote reconsideration within window** — allow changing a vote within `can_change_until`; high risk (vote flow, timing policy, mobile); LEGAL.md check required.
+2. **Home/trending already-voted behavior** — improve UX for already-voted dilemmas on home/trending surfaces.
+3. **Core loop clarity + Pixie Phase 1** — "why answer" copy, game framing, login icon, companion → "Pixie" rename (copy-only, zero DB). Full strategy: `PRODUCT_STRATEGY.md`.
+4. **`/it/trending` empty state** — IT trending shows empty or wrong state; investigate and fix.
+5. **AI generation re-QA** — after env update + redeploy; re-run 4 dry-run scenarios; gates save mode.
+
+**Remaining (not reprioritized):**
+6. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
+7. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
+8. **Generate 15 high-quality IT dilemmas** — blocked by save mode gate
+9. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality
+10. **Segmented result comparison** *(DEFERRED)* — locale-only first ("Chi vota in italiano"), deferred until enough IT traffic (≥ 500 votes on a popular dilemma); country/demographic segments require `LEGAL.md` review before implementation. Full spec in `PRODUCT_STRATEGY.md → Segmented Result Comparison Direction`.
 
 ### PM Priority Queue — Field Feedback 30 Apr 2026
 
