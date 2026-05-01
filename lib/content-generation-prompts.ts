@@ -95,9 +95,10 @@ Context:
 - Total existing dilemmas: ${inventory.totalDilemmas}
 
 Requirements:
-- Question: genuine moral conflict, no easy answer, max 2 sentences
+- Question: genuine moral conflict, no easy answer, max 180 characters
+- Question must be directly votable — do not write a long scenario paragraph in the question field
 - Both options represent different values, not good vs evil
-- Each option: concise, max 1 sentence
+- Each option: concise, max 110 characters
 - Novel angle — different from existing content
 - Do not reproduce the same moral structure with different nouns or setting
 - Preferred category: ${targetCategory ?? 'any of the 8 listed'} (soft preference — use a different category if it fits the topic better)

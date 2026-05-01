@@ -11,6 +11,7 @@ import {
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
 import GenerateDraftPanel from './GenerateDraftPanel'
+import BlogDraftQueue from './BlogDraftQueue'
 import SeedBatchPanel from './SeedBatchPanel'
 import ScenarioQAEditor from './ScenarioQAEditor'
 import type { UserRole } from '@/lib/admin-auth'
@@ -702,16 +703,19 @@ export default async function AdminPage({ searchParams }: AdminProps) {
           <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-4 flex items-start gap-3">
             <BookOpen size={16} className="text-purple-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-bold text-purple-300 mb-1">Blog article generator — preview &amp; copy only</p>
+              <p className="text-sm font-bold text-purple-300 mb-1">Blog article generator — draft queue</p>
               <p className="text-xs text-white/50 leading-relaxed">
-                Generates a full blog article draft via OpenRouter. Articles are <strong>not</strong> auto-saved —
-                copy the JSON output and manually insert it into <code className="font-mono text-purple-300">lib/blog.ts</code>.
-                This ensures editorial review before any article goes live.
+                Generates a full bilingual article via OpenRouter. Preview it, then click{' '}
+                <strong className="text-purple-300">Save draft</strong> to add it to the queue below.
+                Approving a draft marks it as ready for editorial integration into{' '}
+                <code className="font-mono text-purple-300">lib/blog.ts</code> —{' '}
+                <strong>it does not publish live automatically</strong>.
               </p>
             </div>
           </div>
 
           <GenerateDraftPanel />
+          <BlogDraftQueue />
         </div>
       )}
 

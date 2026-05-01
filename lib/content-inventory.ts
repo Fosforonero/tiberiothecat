@@ -1,6 +1,7 @@
 import { scenarios } from './scenarios'
 import { IT_SCENARIO_TRANSLATIONS } from './scenarios-it'
 import { getDynamicScenarios, getDraftScenarios } from './dynamic-scenarios'
+import { getBlogDrafts } from './blog-drafts'
 import { allPosts } from './blog'
 
 export type ContentItemType = 'dilemma' | 'blog_article'
@@ -105,6 +106,29 @@ export async function buildContentInventory(): Promise<ContentItem[]> {
       source: `blog:${post.locale}`,
       searchableText: `${post.title} ${post.description} ${post.tags.join(' ')}`.toLowerCase(),
     })
+  }
+
+  try {
+    const blogDrafts = await getBlogDrafts()
+    for (const d of blogDrafts) {
+      for (const article of [d.source, d.translation].filter(Boolean)) {
+        if (!article) continue
+        items.push({
+          id: `blog:draft:${d.id}:${article.locale}`,
+          type: 'blog_article',
+          locale: article.locale,
+          title: article.title,
+          slug: article.locale === 'it' ? `/it/blog/${article.slug}` : `/blog/${article.slug}`,
+          category: 'blog',
+          keywords: article.keywords,
+          status: d.status === 'approved' ? 'approved' : 'draft',
+          source: 'blog:draft',
+          searchableText: `${article.title} ${article.seoDescription} ${article.keywords.join(' ')}`.toLowerCase(),
+        })
+      }
+    }
+  } catch {
+    // Redis unavailable — inventory continues without blog drafts
   }
 
   return items

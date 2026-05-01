@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import type { ValidatedCandidate, ValidatedBlogArticle } from '@/lib/content-generation-validate'
 
+interface SaveDraftResult {
+  ok: boolean
+  id?: string
+  error?: string
+}
+
 type GenLocale   = 'en' | 'it'
 type ArticleKind = 'standard' | 'cornerstone'
 
@@ -108,6 +114,9 @@ export default function GenerateDraftPanel() {
   const [translationFailed, setTranslationFailed] = useState(false)
   const [translationError, setTranslationError]   = useState<string | null>(null)
   const [error, setError]             = useState<string | null>(null)
+  const [saveLoading, setSaveLoading] = useState(false)
+  const [saveError, setSaveError]     = useState<string | null>(null)
+  const [savedId, setSavedId]         = useState<string | null>(null)
 
   function reset() {
     setPreview(null)
@@ -115,6 +124,37 @@ export default function GenerateDraftPanel() {
     setTranslation(null)
     setTranslationFailed(false)
     setTranslationError(null)
+    setSaveError(null)
+    setSavedId(null)
+  }
+
+  async function saveDraft() {
+    if (!preview) return
+    setSaveLoading(true)
+    setSaveError(null)
+    setSavedId(null)
+    try {
+      const res = await fetch('/api/admin/blog-drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: preview,
+          translation,
+          topic,
+          translationFailed,
+        }),
+      })
+      const data = await res.json() as SaveDraftResult
+      if (!res.ok || !data.ok) {
+        setSaveError(data.error ?? 'save_failed')
+        return
+      }
+      setSavedId(data.id ?? null)
+    } catch {
+      setSaveError('network_error')
+    } finally {
+      setSaveLoading(false)
+    }
   }
 
   async function callApi() {
@@ -217,7 +257,7 @@ export default function GenerateDraftPanel() {
         />
       </div>
 
-      {/* Action button */}
+      {/* Action buttons */}
       <div className="flex gap-3 flex-wrap items-center">
         <button
           onClick={callApi}
@@ -227,10 +267,36 @@ export default function GenerateDraftPanel() {
         >
           {loading ? 'Generating + translating…' : 'Preview'}
         </button>
-        <span className="text-xs text-white/40">
-          Blog articles require manual review — save not available
-        </span>
+
+        {preview && !savedId && (
+          <button
+            onClick={saveDraft}
+            disabled={saveLoading}
+            aria-busy={saveLoading}
+            className="bg-purple-700/40 hover:bg-purple-700/70 disabled:opacity-40 text-purple-200 font-semibold rounded px-5 py-2 text-sm transition-colors border border-purple-500/30"
+          >
+            {saveLoading ? 'Saving…' : 'Save draft'}
+          </button>
+        )}
+
+        {savedId && (
+          <span className="text-xs text-green-400 border border-green-500/30 bg-green-900/20 rounded px-3 py-1">
+            ✓ Saved · <code className="font-mono">{savedId}</code> · See Blog Draft Queue below
+          </span>
+        )}
+
+        {!preview && (
+          <span className="text-xs text-white/40">
+            Preview first, then save to the draft queue
+          </span>
+        )}
       </div>
+
+      {saveError && (
+        <div role="alert" className="text-red-400 text-xs bg-red-900/20 rounded p-2 border border-red-500/20">
+          Save failed: {saveError}
+        </div>
+      )}
 
       {loading && (
         <p role="status" className="text-purple-300/60 text-xs animate-pulse">

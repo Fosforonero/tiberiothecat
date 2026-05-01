@@ -614,6 +614,30 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    if (hasSemanticBlock && semanticResult) {
+      const rejectionReason = semanticResult.closestMatch
+        ? `Semantic ${semanticResult.verdict} — closest match: "${semanticResult.closestMatch.title.slice(0, 56)}"`
+        : `Semantic ${semanticResult.verdict} — ${semanticResult.reason}`
+      results.push({
+        index:                     i + 1,
+        locale:                    entryLocale,
+        topic,
+        status:                    'skipped_novelty',
+        category:                  candidate.category,
+        question:                  candidate.question,
+        noveltyScore:              candidate.noveltyScore,
+        similarItemsCount:         candidate.similarItems.length,
+        similarItems:              candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
+        topKeyword:                candidate.keywords[0],
+        rejectionReason,
+        semanticVerdict:           semanticResult.verdict,
+        semanticReason:            semanticResult.reason,
+        semanticClosestMatchTitle: semanticResult.closestMatch?.title,
+      })
+      skipped++
+      continue
+    }
+
     // Always update local inventory so subsequent novelty checks within this request are aware
     inventory.push({
       id:             scenario.id,
