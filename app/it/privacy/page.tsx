@@ -128,10 +128,13 @@ export default function ItPrivacyPage() {
             I conteggi aggregati dei voti sono conservati indefinitamente in quanto dati statistici anonimi.
             I dati di Google Analytics sono conservati per 14 mesi (periodo di conservazione configurato).
             I dati dell&apos;account (email, nome visualizzato, cronologia voti, XP, badge) vengono conservati
-            fino alla cancellazione dell&apos;account. Per richiedere la cancellazione, scrivi a{' '}
+            fino alla cancellazione dell&apos;account. Puoi eliminare il tuo account in qualsiasi momento dalla pagina{' '}
+            <a href="/profile" className="text-blue-400 hover:underline">Impostazioni Profilo</a>{' '}
+            (sezione Zona pericolosa). Puoi anche scrivere a{' '}
             <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
               privacy@splitvote.io
-            </a>.
+            </a>{' '}
+            per la cancellazione assistita.
           </p>
         </div>
 

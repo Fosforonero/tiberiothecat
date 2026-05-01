@@ -1,6 +1,6 @@
 # SplitVote — Current Handoff
 
-Date: 30 Apr 2026
+Date: 1 May 2026
 PM: Codex
 Implementer: Claude Code
 
@@ -18,6 +18,7 @@ Implementer: Claude Code
 - Feedback counters fixed (30 Apr): Redis now source of truth for admin KPI (real anonymous + logged-in totals); Supabase `dilemma_feedback_stats` is logged-in-only fallback — commits f1a0e95 · 3d258f5
 - AI generation hardening shipped (30 Apr, session 2): cross-locale semantic dedup (EN↔IT parity in reviewer via [EN]/[IT] prefixed items), intra-batch draft visibility in semantic review, human-readable `rejectionReason` with source/locale/similarity in admin table, SEED_TOPICS cleanup (21 IT mirror topics + 1 EN trolley variant replaced — 64 topics now cover distinct moral angles per locale-category pair), anti-template prompt guardrails (3 new SAFETY_RULES) — commits ebab0b1 · b3ef8df
 - Production AI dry-run QA: **NOT YET DONE** — required before save mode or any controlled batch generation
+- **Blog Draft Queue: implemented locally / pending deploy + QA** — save, list, approve, reject blog article drafts in Redis; approve ≠ publish live; `blog:drafts` key, max 50 items; `lib/blog-drafts.ts` + 3 API routes + `BlogDraftQueue.tsx` + `GenerateDraftPanel.tsx` Save button
 - Mission claim reminders shipped — nudge UX for non-claimable daily missions
 - Homepage CTA improved, post-vote viral share copy sharpened
 - Expert Insight V2 shipped — sharper copy, insight shown before share CTA
@@ -85,6 +86,15 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - ✅ SEED_TOPICS cleanup — 21 IT mirror topics + 1 EN trolley variant replaced; 64 topics now cover distinct moral angles per locale-category pair; commit b3ef8df
 - ✅ Post-vote delayed reveal — committed `8a5dbad` (30 Apr 2026), pending deploy + QA
 
+**1 May 2026 (this session — locally implemented, pending commit + deploy):**
+- ✅ AI semantic block save bug fixed — `seed-draft-batch/route.ts`: semantic-blocked items now correctly push `skipped_novelty` result and `continue` before inventory update (previously fell through)
+- ✅ Blog Draft Queue MVP — `lib/blog-drafts.ts`, 3 API routes, `BlogDraftQueue.tsx`, `GenerateDraftPanel.tsx` Save button; approve ≠ publish live
+- ✅ Content inventory now indexes `blog:drafts` — novelty guard sees draft blog articles when generating new ones (prevents intra-queue duplication)
+- ✅ `content-generation-prompts.ts` — question max 180 chars, option max 110 chars (more concise, directly votable)
+- ✅ Reset password flow — "Forgot password?" link in login (login mode only), reset email form, `supabase.auth.resetPasswordForEmail`, `handleReset` with EN/IT copy; new `/reset-password` page (set new password, confirm, `supabase.auth.updateUser`, error handling: too short/no match/expired link, redirect to /dashboard on success); callback unchanged
+- ✅ i18n fix — `AuthButton.tsx` now detects `/it` pathname via `usePathname()` and links to `/login?locale=it`; shows "Unisciti →" copy on IT pages
+- ✅ Account deletion — `DELETE /api/profile/delete-account` (server-only; `auth.getUser()` validation; CSRF guard via Content-Type header; active subscription check → 409; explicit delete of `organizations` + `user_polls` before `deleteUser`; cascade handles rest; `dilemma_feedback` anonymized); "Danger zone" section in ProfileClient (`DELETE`/`ELIMINA` typed confirmation, `min-h-[48px]` touch target, mobile-safe input attrs); Privacy EN/IT updated to mention in-app deletion; LEGAL.md updated
+
 ---
 
 ## Started / Partially Implemented
@@ -104,6 +114,7 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 
 ### Blog generation
 - Static blog articles: 6 articles done.
+- **Blog Draft Queue — implemented locally, pending deploy + QA.** New `lib/blog-drafts.ts` Redis CRUD (`blog:drafts` key, max 50 items). Three admin API routes: `GET/POST /api/admin/blog-drafts`, `POST /api/admin/blog-drafts/[id]/approve`, `POST /api/admin/blog-drafts/[id]/reject`. New `BlogDraftQueue.tsx` admin panel (list, expand, approve, reject). `GenerateDraftPanel.tsx` — added "Save draft" button, `savedId`/`saveError`/`saveLoading` states. `lib/content-inventory.ts` — now indexes `blog:drafts` so novelty guard sees draft articles when generating new ones (prevents intra-queue duplication). Approve = `status:approved`, does NOT write to `lib/blog.ts` and does NOT publish live. Editorial workflow: generate → save draft → approve → manually integrate into `lib/blog.ts`.
 - Blog generation quality audit (prompt, model, SEO output quality) — **not started**.
 - Blog generation progress UX — **not started**.
 
@@ -120,6 +131,35 @@ c4661ab 2026-04-29 09:56 +0200  feat: add category editorial SEO content
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — `/results/[id]?voted=a` and `/it/results/[id]?voted=b` after commit + deploy
 - [ ] Delayed reveal `prefers-reduced-motion` — DevTools → Emulate CSS media → confirm immediate reveal
+- [ ] **Reset password QA (after deploy)**:
+  1. `/login` → login mode → "Forgot password?" link visible below password field
+  2. Click → reset mode shown (headline changes, benefits hidden, email field + Send reset link button)
+  3. Enter email → Send → success message in IT if `?locale=it`
+  4. Check email inbox → click reset link → lands on `/auth/callback?redirect=/reset-password` → redirected to `/reset-password`
+  5. Form shown → enter new password + confirm → submit → success → redirected to `/dashboard`
+  6. IT path: `/login?locale=it` → "Password dimenticata?" → reset form in Italian → email → `/reset-password?locale=it` → IT copy
+  7. Expired link edge case: revisit used reset link → `/reset-password` shows expired error with "Back to sign in" link
+  8. On IT pages (e.g. `/it`), navbar "Unisciti →" button links to `/login?locale=it` ✓
+- [ ] **Blog Draft Queue QA (after deploy)**:
+  1. Admin → Blog tab → generate preview (standard, EN or IT) → click "Save draft"
+  2. Verify draft appears in Blog Draft Queue (status: draft, correct locale/kind/novelty)
+  3. Expand draft — confirm body + FAQ; translation visible if generated
+  4. Approve — status → approved, timestamp shown, Approve/Reject buttons disappear
+  5. Navigate to `/blog/[slug]` — confirm article NOT present (lib/blog.ts unchanged, no auto-publish)
+  6. Generate a second draft on different topic → Save → Reject
+  7. Refresh page — approved/rejected drafts persist with correct status; stats row counts match
+- [ ] **Account deletion QA (after deploy)**:
+  ⚠️ Use a throwaway test account only. Do NOT test deletion on admin/super_admin accounts — that would remove the DB role; ADMIN_EMAILS env var is the fallback but avoid it.
+  1. `/profile` → scroll to bottom → "Danger zone" section visible
+  2. Click "Delete account" → confirmation form expands; warning mentions organizations
+  3. Final button disabled until "DELETE" typed exactly (case-insensitive) → type "DELETE" → button enabled
+  4. IT path: `/profile` with `lang-pref=it` cookie → "Zona pericolosa" / "ELIMINA" → button text in Italian
+  5. Active Premium user: "Delete account" → should get inline error "active subscription"; user must scroll up to Premium section to cancel via billing portal first
+  6. Cancel button: closes form, clears input, no deletion
+  7. Confirm deletion: account deleted, signed out, redirected to `/` (EN) or `/it` (IT)
+  8. Verify in Supabase: user row gone from `auth.users`; `dilemma_feedback` rows remain with `user_id = NULL`
+  9. Pre-deploy check: Supabase Dashboard → Auth → URL Configuration → confirm `splitvote.io/auth/callback` in Redirect URLs allow-list (also required for reset password flow)
+  10. Pre-deploy check: Supabase Dashboard → Auth → Email Templates → confirm Reset Password template has `{{ .ConfirmationURL }}`
 - [ ] **AI generation production dry-run (4 scenarios, ~12 min, browser admin required — gates save mode)**:
   1. Locale: EN · Count: 5 · Default topics · Dry run ✓ → record: accepted, skipped_preflight, skipped_novelty, noveltyScore distribution
   2. Locale: IT · Count: 5 · Default topics · Dry run ✓ → same; verify EN≠IT moral angles in accepted items

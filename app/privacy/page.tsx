@@ -136,10 +136,13 @@ export default function PrivacyPage() {
             IP hashes used for rate limiting are automatically deleted after a maximum of 1 hour.
             Google Analytics data is retained for 14 months (our configured retention period).
             Account data (email address, display name, vote history, XP, badges) is retained until
-            you delete your account. To request account deletion, contact{' '}
+            you delete your account. You can delete your account at any time from your{' '}
+            <a href="/profile" className="text-blue-400 hover:underline">Profile Settings</a>{' '}
+            page (Danger zone section). You may also contact{' '}
             <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:underline">
               privacy@splitvote.io
-            </a>.
+            </a>{' '}
+            for assisted deletion.
           </p>
         </div>
 

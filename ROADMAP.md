@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 30 Aprile 2026 — Field feedback priority queue + session handoff
+Ultimo aggiornamento: 1 Maggio 2026 — Auth recovery, i18n fix, Blog Draft Queue, AI dedup fix, Account Deletion
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
@@ -28,7 +28,7 @@ Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli
 | Phase 4 — iOS wrapper (Capacitor) | 🔲 Non iniziato | Phase 3 o decisione PM |
 
 **Blockers critici prima di qualsiasi store submission:**
-- Account deletion in-app flow (richiesta da Apple dal 2022 e da Google dal 2024)
+- ~~Account deletion in-app flow~~ — **✅ Implementato 1 Maggio 2026** (Danger zone in /profile → DELETE/ELIMINA confirmation → auth.admin.deleteUser cascade). Pending deploy + QA.
 - Decisione iOS IAP vs Stripe web checkout (rischio policy Apple — vedi `PRODUCT_STRATEGY.md → Phase 2`)
 - QA su dispositivi reali (non solo DevTools)
 
@@ -56,13 +56,17 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 - [ ] Name-change live checkout
 - [ ] Delayed reveal mobile portrait/landscape — after deploy
 - [ ] Delayed reveal prefers-reduced-motion — DevTools emulation after deploy
+- [ ] **Reset password QA** — forgot password → email → reset link → set new password → dashboard; IT locale path; expired link edge case. Steps in CURRENT_HANDOFF.md → Open Manual QA.
+- [ ] **Blog Draft Queue QA** — generate → save → approve/reject → verify no auto-publish to lib/blog.ts; steps in CURRENT_HANDOFF.md → Open Manual QA.
+- [ ] **Account deletion QA** — Danger zone visible in profile → type DELETE/ELIMINA → confirm → signed out → redirect home; active subscription blocks deletion; IT locale copy; Supabase row confirmed deleted. 10-step checklist in CURRENT_HANDOFF.md → Open Manual QA.
 - [ ] **AI generation production dry-run** — 4 scenarios (EN/5 default · IT/5 default · ALL/3 default · ALL/3 manual stress test); gates save mode and bulk generation. Protocol in CURRENT_HANDOFF.md → Open Manual QA.
 
 ### Started / Partially Implemented
 
+- **Auth recovery** — Reset password flow implemented locally (pending deploy + QA): login → "Forgot password?" → email → `/reset-password` → update password. IT locale path via `?locale=it`. AuthButton locale fix (IT navbar "Unisciti →" links to `/login?locale=it`).
 - **Social comparison layer** — Phase 1 (500ms reveal) shipped; analytics events + reconsideration prompt not started
 - **AI generation at scale** — hardening shipped (cross-locale dedup, intra-batch visibility, rejectionReason, SEED_TOPICS cleanup, prompt guardrails); production dry-run QA pending; save mode gated by dry-run result; progress bar UX not started
-- **Blog generation pipeline** — static articles done; generation quality audit not started
+- **Blog generation pipeline** — static articles done; Blog Draft Queue implemented locally (pending deploy + QA) — save/list/approve/reject in Redis, admin-only, approve ≠ publish live; generation quality audit not started
 - **Stripe live QA** — config fixed, Preview QA done; end-to-end live payment not done
 
 ### Candidate Sprints

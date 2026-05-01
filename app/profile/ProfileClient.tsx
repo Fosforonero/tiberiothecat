@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { CreditCard, Loader2, Check, Star, ExternalLink, ChevronRight } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const AVATARS = ['🌍', '🔥', '⚡', '🧠', '🎭', '👾', '🦁', '🐺', '🦊', '🐉', '🌙', '☀️', '🎯', '🏆', '💎', '🌊', '🎪', '🚀', '🎲', '🧩']
 
@@ -83,6 +84,10 @@ export default function ProfileClient({
   const [managingBilling, setManagingBilling]   = useState(false)
   const [message, setMessage]                   = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [shareCopied, setShareCopied]           = useState(false)
+  const [dangerOpen, setDangerOpen]             = useState(false)
+  const [deleteInput, setDeleteInput]           = useState('')
+  const [deleting, setDeleting]                 = useState(false)
+  const [deleteError, setDeleteError]           = useState<string | null>(null)
 
   const firstFreeAvailable = nameChanges === 0
 
@@ -217,6 +222,50 @@ export default function ProfileClient({
     navigator.clipboard.writeText(profileUrl)
     setShareCopied(true)
     setTimeout(() => setShareCopied(false), 2000)
+  }
+
+  const DANGER = {
+    heading:      IT ? 'Zona pericolosa' : 'Danger zone',
+    deleteBtn:    IT ? 'Elimina account' : 'Delete account',
+    warning:      IT
+      ? 'Questo elimina definitivamente il tuo account, i dati personali associati e le eventuali organizzazioni di cui sei proprietario. I conteggi anonimi aggregati dei voti possono restare.'
+      : 'This permanently deletes your account, personal data, and any organizations you own. Aggregated anonymous vote totals may remain.',
+    irreversible: IT ? 'Questa azione non può essere annullata.' : 'This action cannot be undone.',
+    confirmLabel: IT ? 'Scrivi ELIMINA per confermare' : 'Type DELETE to confirm',
+    confirmWord:  IT ? 'ELIMINA' : 'DELETE',
+    cancel:       IT ? 'Annulla' : 'Cancel',
+    finalBtn:     IT ? 'Elimina definitivamente account' : 'Permanently delete account',
+    deletingMsg:  IT ? 'Eliminazione in corso…' : 'Deleting…',
+    activeSub:    IT
+      ? 'Hai un abbonamento Premium attivo. Cancellalo prima dal portale di fatturazione, poi riprova.'
+      : 'You have an active Premium subscription. Please cancel it first via the billing portal, then try again.',
+    errGeneric:   IT
+      ? 'Si è verificato un errore. Riprova o contatta support@splitvote.io.'
+      : 'An error occurred. Try again or contact support@splitvote.io.',
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    setDeleteError(null)
+    try {
+      const res = await fetch('/api/profile/delete-account', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      if (res.ok) {
+        const supabase = createClient()
+        await supabase.auth.signOut()
+        window.location.href = IT ? '/it' : '/'
+      } else {
+        const data = await res.json()
+        setDeleteError(data.error === 'active_subscription' ? DANGER.activeSub : DANGER.errGeneric)
+        setDeleting(false)
+      }
+    } catch {
+      setDeleteError(DANGER.errGeneric)
+      setDeleting(false)
+    }
   }
 
   return (
@@ -569,6 +618,72 @@ export default function ProfileClient({
           IT ? 'Salva Profilo' : 'Save Profile'
         )}
       </button>
+
+      {/* ── Danger Zone ── */}
+      <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-5 sm:p-6">
+        <h2 className="text-xs font-black uppercase tracking-widest text-red-400 mb-4">
+          ⚠️ {DANGER.heading}
+        </h2>
+
+        {!dangerOpen ? (
+          <button
+            type="button"
+            onClick={() => setDangerOpen(true)}
+            className="text-sm font-bold text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-500/60 px-4 py-2.5 rounded-xl transition-colors min-h-[44px]"
+          >
+            {DANGER.deleteBtn}
+          </button>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-sm text-[var(--muted)]">{DANGER.warning}</p>
+            <p className="text-sm font-bold text-red-400">{DANGER.irreversible}</p>
+
+            <div>
+              <label className="block text-xs font-bold text-[var(--muted)] uppercase tracking-widest mb-2">
+                {DANGER.confirmLabel}
+              </label>
+              <input
+                type="text"
+                value={deleteInput}
+                onChange={e => setDeleteInput(e.target.value)}
+                placeholder={DANGER.confirmWord}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                className="w-full bg-[var(--surface2)] border border-red-500/30 rounded-xl px-4 py-3 text-white placeholder-[var(--muted)] focus:outline-none focus:border-red-500/60 text-sm font-mono"
+              />
+            </div>
+
+            {deleteError && (
+              <div role="alert" className="rounded-xl px-4 py-3 text-sm bg-red-500/10 border border-red-500/30 text-red-400">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => { setDangerOpen(false); setDeleteInput(''); setDeleteError(null) }}
+                disabled={deleting}
+                className="flex-1 py-3 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-white hover:border-[var(--border-hi)] transition-colors text-sm font-bold disabled:opacity-50 min-h-[48px]"
+              >
+                {DANGER.cancel}
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteInput.trim().toUpperCase() !== DANGER.confirmWord}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
+              >
+                {deleting
+                  ? <><Loader2 size={14} className="animate-spin" />{DANGER.deletingMsg}</>
+                  : DANGER.finalBtn}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
     </div>
   )
