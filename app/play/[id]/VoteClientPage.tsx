@@ -61,9 +61,10 @@ const EN_COPY = {
   challengeTitle:      '🔥 Someone challenged you!',
   challengeText:       "A friend wants to know which side you're on. Choose wisely.",
   joinVoted:           (n: number) => `🌍 Join ${n.toLocaleString('en-US')} people who already voted`,
-  alreadyVoted:        '✅ You already voted',
-  canChange:           (t: string) => `🕐 Can change for ${t}`,
-  voteLocked:          '🔒 Vote locked',
+  alreadyVoted:        '✅ You already voted on this dilemma',
+  registeredChoice:    'Your recorded choice',
+  canChange:           (t: string) => `🕐 You can still switch for ${t}`,
+  voteLocked:          '🔒 Your vote is locked',
   yourChoice:          'YOUR CHOICE',
   or:                  'OR',
   yourVote:            '← your vote',
@@ -90,9 +91,10 @@ const IT_COPY = {
   challengeTitle:      '🔥 Ti hanno sfidato!',
   challengeText:       'Un amico vuole sapere da che parte stai. Scegli con cura.',
   joinVoted:           (n: number) => `🌍 Unisciti a ${n.toLocaleString('it-IT')} persone che hanno già votato`,
-  alreadyVoted:        '✅ Hai già votato',
-  canChange:           (t: string) => `🕐 Puoi cambiare per altri ${t}`,
-  voteLocked:          '🔒 Voto bloccato',
+  alreadyVoted:        '✅ Hai già votato per questo dilemma',
+  registeredChoice:    'La tua scelta registrata',
+  canChange:           (t: string) => `🕐 Puoi ancora cambiare per altri ${t}`,
+  voteLocked:          '🔒 Il voto è bloccato',
   yourChoice:          'LA TUA SCELTA',
   or:                  'OPPURE',
   yourVote:            '← il tuo voto',
@@ -394,9 +396,14 @@ export default function VoteClientPage({
         {existingVote ? (
           <div className="space-y-4">
             {/* Voted banner */}
-            <div className="rounded-2xl border border-blue-500/40 bg-blue-500/10 px-6 py-4 text-center">
-              <p className="text-blue-300 font-semibold text-sm mb-1">{copy.alreadyVoted}</p>
-              <p className="text-white font-bold text-lg">&ldquo;{votedOptionText}&rdquo;</p>
+            <div className="rounded-2xl border border-green-500/40 bg-green-500/10 px-5 py-5 text-center">
+              <p className="text-green-400 font-black text-base sm:text-lg leading-snug mb-2">
+                {copy.alreadyVoted}
+              </p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)] mb-2">
+                {copy.registeredChoice}
+              </p>
+              <p className="text-white font-bold text-lg leading-snug">&ldquo;{votedOptionText}&rdquo;</p>
               {canStillChange && timeRemaining ? (
                 <p className="text-[var(--muted)] text-xs mt-2">
                   {copy.canChange(timeRemaining)}
