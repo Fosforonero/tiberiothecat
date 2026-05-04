@@ -24,6 +24,7 @@ Implementer: Claude Code
 ## Today's Commits (4 May 2026)
 
 ```
+[pending] feat: blog pagination, date sort, IT translation fixes
 ce2dcfa chore: add research source registry
 28c3bd1 chore: trigger vercel rebuild for adsense slots
 76a8e27 feat: add product explainer blog cluster
@@ -36,6 +37,7 @@ b535283 fix: address adsense readiness blockers
 
 ## Done Today
 
+- ✅ Blog pagination + IT translation fixes — `components/BlogGrid.tsx` (new client component, 9/page desktop, 4/page mobile, prev/next); `getPostsByLocale` sorts newest-first; "Would You Rather" → "Preferiresti" in 2 IT articles; `app/blog/page.tsx` + `app/it/blog/page.tsx` simplified to use BlogGrid
 - ✅ AdSense readiness blockers — robots.txt, ads.txt, about pages, FAQ self-service deletion copy, Privacy last-updated, sitemap cleanup (`b535283`)
 - ✅ SEO content strengthening — personality SSR block, internal links, SEO landing pages (`9d7c339`)
 - ✅ Research trust layer — `researchNote` + `researchSources` on 3 published topic pages; Expert Lens blocks on EN/IT personality pages; 7 authoritative links (`f13526c`)
@@ -137,7 +139,7 @@ Task di ripartenza:
 2. Verifica se AdSense review è già stata richiesta manualmente (non verificabile dal repo — chiedi al PM).
 3. Se review non ancora richiesta: riportare come step #1 da fare.
 4. Verifica stato AI generation re-QA: pre-conditions soddisfatte? (OPENROUTER_MODEL_REVIEW env + redeploy) — se sì, proponi re-QA come primo sprint tecnico.
-5. Proponi sprint candidati tra: app/it/[topicSlug], blog cluster expansion, Content Intelligence admin MVP, Stripe live QA.
+5. Proponi sprint candidati tra: app/it/[topicSlug], blog cluster expansion, Content Intelligence admin MVP, Stripe live QA, nuovi articoli blog (bioethics, AI accountability, virtue ethics).
 
 Output atteso:
 - Stato repo in 8 righe

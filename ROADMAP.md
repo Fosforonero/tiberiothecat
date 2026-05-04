@@ -3,7 +3,18 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — Research Source Registry: foundation interna (`lib/research-sources.ts`) con 10 fonti autorevoli tipizzate. Non consumer-facing.
+Ultimo aggiornamento: 4 Maggio 2026 — Blog index: ordinamento per data discendente, paginazione responsive (9 desktop/tablet, 4 mobile), fix frasi inglesi negli articoli IT.
+
+---
+
+## 4 May 2026 — Blog index pagination + IT translation fixes
+
+**Obiettivo:** Ordinare gli articoli dal più recente al più vecchio, aggiungere paginazione responsive (9 per pagina desktop/tablet, 4 per pagina mobile), correggere frasi in inglese non tradotte negli articoli IT.
+
+**Shippato:**
+- `lib/blog.ts` — `getPostsByLocale` ora ordina per data discendente; fix "Would You Rather" → "Preferiresti" in 2 articoli IT (`domande-would-you-rather-difficili`, `dilemmi-morali-esempi`): title, seoTitle, tag, CTA labels
+- `components/BlogGrid.tsx` — nuovo client component; paginazione viewport-aware (`ITEMS_DESKTOP=9`, `ITEMS_MOBILE=4`, breakpoint 768px); griglia `md:grid-cols-2 lg:grid-cols-3`; controlli prev/next EN/IT
+- `app/blog/page.tsx` e `app/it/blog/page.tsx` — semplificati: usano `BlogGrid` invece del grid inline
 
 ---
 

@@ -1302,15 +1302,15 @@ const IT_POSTS: BlogPost[] = [
   {
     slug: 'domande-would-you-rather-difficili',
     locale: 'it',
-    title: '35+ Domande Would You Rather Difficili Per Adulti e Gruppi',
-    seoTitle: '35+ Domande Would You Rather Difficili Per Adulti e Gruppi',
+    title: '35+ Domande "Preferiresti" Difficili Per Adulti e Gruppi',
+    seoTitle: '35+ Domande "Preferiresti" Difficili Per Adulti e Gruppi',
     description:
       'Le migliori domande "preferiresti" difficili, divise per tema. Relazioni, soldi, sopravvivenza e moralità — poi scopri come vota il mondo su SplitVote.',
     seoDescription:
       'Le migliori domande "preferiresti" difficili, divise per tema. Relazioni, soldi, sopravvivenza e moralità — poi scopri come vota il mondo su SplitVote.',
     date: '2026-04-27',
     readingTime: 7,
-    tags: ['domande would you rather', 'domande difficili', 'dilemmi morali'],
+    tags: ['domande preferiresti', 'domande difficili', 'dilemmi morali'],
     relatedDilemmaIds: ['trolley', 'lifeboat', 'truth-friend', 'organ-harvest', 'memory-erase', 'cure-secret'],
     alternateSlug: 'hard-would-you-rather-questions',
     content: [
@@ -1329,7 +1329,7 @@ const IT_POSTS: BlogPost[] = [
       },
       {
         type: 'cta',
-        label: 'Tutte le domande would you rather →',
+        label: 'Tutte le domande "Preferiresti" →',
         href: '/it/domande-would-you-rather',
       },
       {
@@ -1505,7 +1505,7 @@ const IT_POSTS: BlogPost[] = [
       },
       {
         type: 'cta',
-        label: 'Domande would you rather difficili →',
+        label: 'Domande "Preferiresti" difficili →',
         href: '/it/domande-would-you-rather',
       },
       {
@@ -2192,7 +2192,9 @@ const IT_POSTS: BlogPost[] = [
 export const allPosts: BlogPost[] = [...EN_POSTS, ...IT_POSTS]
 
 export function getPostsByLocale(locale: 'en' | 'it'): BlogPost[] {
-  return allPosts.filter((p) => p.locale === locale)
+  return allPosts
+    .filter((p) => p.locale === locale)
+    .sort((a, b) => b.date.localeCompare(a.date))
 }
 
 export function getPost(slug: string, locale: 'en' | 'it'): BlogPost | undefined {

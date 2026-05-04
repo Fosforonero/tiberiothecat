@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPostsByLocale } from '@/lib/blog'
-import BlogShareButton from '@/components/BlogShareButton'
+import BlogGrid from '@/components/BlogGrid'
 
 export const revalidate = 86400
 
@@ -46,67 +46,7 @@ export default function BlogIndexPage() {
 
       <div className="neon-divider mb-10 max-w-xs" />
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {posts.map((post) => (
-          <article
-            key={post.slug}
-            className="group flex flex-col rounded-2xl border border-[var(--border)] hover:border-[var(--border-hi)] hover:bg-white/5 transition-all"
-          >
-            {/* Clickable upper area: tags + title + description */}
-            <Link
-              href={`/blog/${post.slug}`}
-              className="block p-6 pb-3 flex-1"
-            >
-              <div className="flex flex-wrap gap-2 mb-3">
-                {post.tags.slice(0, 2).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <h2 className="text-lg font-black text-[var(--text)] group-hover:text-white transition-colors mb-2 leading-snug">
-                {post.title}
-              </h2>
-              <p className="text-[var(--muted)] text-sm leading-relaxed">
-                {post.description}
-              </p>
-            </Link>
-
-            {/* Footer: date · read time · share · read CTA */}
-            <div className="px-6 pb-5 flex items-center gap-2 text-xs text-[var(--muted)] flex-wrap">
-              <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-              <span>·</span>
-              <span>{post.readingTime} min read</span>
-              <div className="ml-auto flex items-center gap-2">
-                <BlogShareButton
-                  title={post.title}
-                  text={post.description}
-                  url={`${BASE}/blog/${post.slug}`}
-                  locale="en"
-                  slug={post.slug}
-                  target="blog_card"
-                />
-                <Link
-                  href={`/blog/${post.slug}`}
-                  aria-label={`Read ${post.title}`}
-                  className="text-violet-400 font-semibold hover:translate-x-0.5 transition-transform inline-block"
-                >
-                  Read →
-                </Link>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+      <BlogGrid posts={posts} locale="en" />
 
       <div className="mt-12 pt-8 border-t border-[var(--border)] text-center">
         <p className="text-xs text-[var(--muted)] mb-3">Prefer to vote instead?</p>
