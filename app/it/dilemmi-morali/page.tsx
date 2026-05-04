@@ -120,22 +120,48 @@ export default function DilemmiMoraliPage() {
         </ol>
       </section>
 
+      {/* Play links */}
+      <section aria-labelledby="play-heading" className="mb-12">
+        <h2 id="play-heading" className="text-base font-bold text-white mb-4">
+          Prova questi su SplitVote — vota e scopri come si divide il mondo
+        </h2>
+        <ul className="space-y-2">
+          {[
+            { href: '/it/play/trolley', label: 'Il Problema del Tram — azioneresti la leva o staresti fermo?' },
+            { href: '/it/play/steal-medicine', label: 'Rubare le Medicine — lo faresti per salvare tuo figlio?' },
+            { href: '/it/play/organ-harvest', label: 'Trapianto di Organi — sacrificheresti uno per salvarne cinque?' },
+            { href: '/it/play/whistleblower', label: 'Whistleblower — denunceresti la verità o resteresti in silenzio?' },
+            { href: '/it/play/report-friend', label: 'Denunciare un Amico — giustizia o lealtà?' },
+          ].map(({ href, label }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[#0d0d1a]/60 px-4 py-3 text-sm text-[var(--muted)] hover:text-white hover:border-red-500/20 transition-colors"
+              >
+                <span className="text-red-400 font-bold flex-shrink-0">→</span>
+                <span>{label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* Cross-links */}
       <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/40 p-5 mb-12">
         <p className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold mb-3">
           Esplora altro
         </p>
         <div className="flex flex-wrap gap-3">
-          <Link
-            href="/it/domande-would-you-rather"
-            className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
-          >
+          <Link href="/it/domande-would-you-rather" className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">
             Domande Would You Rather →
           </Link>
-          <Link
-            href="/moral-dilemmas"
-            className="text-sm text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors"
-          >
+          <Link href="/it/trending" className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">
+            Dilemmi di Tendenza →
+          </Link>
+          <Link href="/it/personality" className="text-sm text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors">
+            Il Tuo Profilo Morale →
+          </Link>
+          <Link href="/moral-dilemmas" className="text-sm text-purple-400 hover:text-purple-300 underline underline-offset-2 transition-colors">
             English version →
           </Link>
         </div>

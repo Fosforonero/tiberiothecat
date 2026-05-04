@@ -3,7 +3,27 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 3 Maggio 2026 — Vote reconsideration UX affordance shippato; P1 already-voted UX shippato: `VotedDilemmaCard` wrapper (cookie-based badge + href swap), game loop strip spostato sopra DailyDilemma, subline/copy sharpened EN/IT; SEO landing pages programmatiche shippate (3 topic seed); micro SEO hardening shippato: title dedup fix (`app/[topicSlug]` + layout template) + IT locale guard (`lib/seo-topics.ts`); DESIGN.md aggiunto; agent usage process + 2 nuovi agenti specialistici. Env OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini ancora richiesto prima di re-QA AI. Commit pendente su tutto il lavoro del 3 Maggio (non ancora pushato).
+Ultimo aggiornamento: 4 Maggio 2026 — SEO/AdSense P2 remediation: personality SSR + internal links. Dettagli nel sprint entry del 4 Maggio.
+
+---
+
+## 4 May 2026 — SEO/AdSense P2: personality SSR + internal links ✅ DONE (pending commit)
+
+**Obiettivo:** ridurre thin-content risk per la revisione AdSense e rafforzare internal linking.
+
+**Shippato:**
+- `app/personality/page.tsx` — SSR intro block (H1, intro, 3-step how-it-works, 5 moral axes, 18-archetype grid emoji+name, CTA → /play/trolley + /trending, disclaimer) sopra `PersonalityClient`; fix hreflang `'it'` → `'it-IT'`
+- `app/it/personality/page.tsx` — stesso SSR block in IT (nameIt, axesIt); CTA → /it/play/trolley + /it/trending
+- `app/personality/PersonalityClient.tsx` — demote semantico `<h1>` → `<h2>` in tutti e tre gli stati (unlock, almost-there, profile); nessun cambio comportamentale
+- `app/moral-dilemmas/page.tsx` — sezione play links (5 link diretti a scenari reali) + cross-links arricchito con /trending e /personality
+- `app/would-you-rather-questions/page.tsx` — stesso trattamento EN
+- `app/it/dilemmi-morali/page.tsx` — play links IT + cross-links con /it/trending e /it/personality
+- `app/it/domande-would-you-rather/page.tsx` — play links IT + cross-links
+
+**Commit proposta:** `fix: strengthen seo content for adsense readiness`
+
+**Residui / next:**
+- AdSense dashboard: creare ad units reali, impostare env vars su Vercel, fare redeploy, poi richiedere revisione AdSense
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 

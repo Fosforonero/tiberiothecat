@@ -153,7 +153,7 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
         <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center mx-auto mb-6">
           <Lock size={28} className="text-purple-400" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">{copy.unlockTitle}</h1>
+        <h2 className="text-2xl font-black text-white mb-3">{copy.unlockTitle}</h2>
         <p className="text-[var(--muted)] mb-8">{copy.unlockDesc}</p>
         <Link href={loginHref}
           className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 text-white font-bold hover:bg-purple-400 transition-colors">
@@ -172,7 +172,7 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
         <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center mx-auto mb-6">
           <Compass size={28} className="text-purple-400" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">{copy.almostTitle}</h1>
+        <h2 className="text-2xl font-black text-white mb-3">{copy.almostTitle}</h2>
         <p className="text-[var(--muted)] mb-6">{data.message}</p>
 
         {/* Progress bar */}
@@ -204,7 +204,7 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
           <Sparkles size={11} className="text-yellow-400" />
           {copy.header}
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">{copy.profileTitle}</h1>
+        <h2 className="text-3xl sm:text-4xl font-black text-white mb-2">{copy.profileTitle}</h2>
         <p className="text-[var(--muted)] text-sm">{copy.basedOn(votesAnalyzed ?? 0)}</p>
       </div>
 
