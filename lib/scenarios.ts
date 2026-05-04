@@ -7,6 +7,7 @@ export type Category =
   | 'technology'
   | 'society'
   | 'relationships'
+  | 'lifestyle'
 
 export interface Scenario {
   id: string

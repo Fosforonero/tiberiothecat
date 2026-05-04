@@ -51,6 +51,8 @@ export interface DynamicScenario extends Scenario {
     closestMatchId?:    string
     closestMatchTitle?: string
   }
+  // 'moral' = ethical dilemma (default); 'lifestyle' = fun preference question
+  dilemmaStyle?: 'moral' | 'lifestyle'
 }
 
 // ── Approved (public) scenarios ───────────────────────────────

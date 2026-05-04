@@ -7,6 +7,7 @@ import {
   buildDilemmaPrompt,
   buildBlogArticlePrompt,
   buildTranslationPrompt,
+  buildLifestyleDilemmaPrompt,
   type GenerationType,
   type GenerationLocale,
   type ArticleKind,
@@ -25,7 +26,8 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const NOVELTY_THRESHOLD = 55
+const MORAL_NOVELTY_THRESHOLD     = 55
+const LIFESTYLE_NOVELTY_THRESHOLD = 10
 
 const CATEGORY_EMOJI: Record<string, string> = {
   morality:      '⚖️',
@@ -36,6 +38,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   technology:    '🤖',
   society:       '🏙️',
   relationships: '❤️',
+  lifestyle:     '🎭',
 }
 
 /** Per-use-case model + token + temperature config. All model env vars fall back to OPENROUTER_MODEL_DRAFT. */
@@ -136,7 +139,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
   }
 
-  const { type, locale, topic, mode, allowLowNovelty, articleKind, angle, notes } = body as Record<string, unknown>
+  const { type, locale, topic, mode, allowLowNovelty, articleKind, angle, notes, style } = body as Record<string, unknown>
+  const dilemmaStyle: 'moral' | 'lifestyle' = style === 'lifestyle' ? 'lifestyle' : 'moral'
+  const NOVELTY_THRESHOLD = dilemmaStyle === 'lifestyle' ? LIFESTYLE_NOVELTY_THRESHOLD : MORAL_NOVELTY_THRESHOLD
 
   if (type !== 'dilemma' && type !== 'blog_article') {
     return NextResponse.json({ error: 'invalid_type' }, { status: 400 })
@@ -205,8 +210,13 @@ export async function POST(request: NextRequest) {
     notes:    cleanNotes,
   }
 
+  const existingLifestyleQs = dilemmaStyle === 'lifestyle'
+    ? inventory.filter(i => i.type === 'dilemma' && i.category === 'lifestyle' && i.locale === (locale as string)).map(i => i.title).slice(0, 6)
+    : []
   const { system, prompt } = type === 'dilemma'
-    ? buildDilemmaPrompt(promptInput)
+    ? (dilemmaStyle === 'lifestyle'
+        ? buildLifestyleDilemmaPrompt(locale as GenerationLocale, cleanTopic, existingLifestyleQs)
+        : buildDilemmaPrompt(promptInput))
     : buildBlogArticlePrompt(promptInput)
 
   const { model, maxTokens, temperature, timeoutMs } = getModelConfig(type as string, cleanArticleKind)
@@ -350,6 +360,7 @@ export async function POST(request: NextRequest) {
   }
 
   const scenario = dilemmaToScenario(dilemmaCandidate, cleanTopic)
+  if (dilemmaStyle === 'lifestyle') scenario.dilemmaStyle = 'lifestyle'
   if (reviewOutcome.ok) {
     scenario.semanticReview = {
       verdict:           reviewOutcome.result.verdict,

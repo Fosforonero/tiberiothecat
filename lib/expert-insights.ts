@@ -218,6 +218,30 @@ const INSIGHTS: InsightMap = {
       disclaimer: 'Contenuto educativo, non consulenza professionale.',
     },
   },
+  lifestyle: {
+    en: {
+      title: 'Preference Insight',
+      expertType: 'Psychology',
+      body: 'Preference questions reveal personality through the lens of choice architecture. There is no right or wrong answer — each option reflects different values, sensory preferences, and life experiences. What makes these choices interesting is not what\'s objectively better, but what your gut reaction says about how you process the world.',
+      whyPeopleSplit: 'People land on different sides because their sensory preferences, childhood associations, and personal histories differ. Neither choice is superior — the split itself is the data.',
+      whatYourAnswerMaySuggest: {
+        a: 'Choosing this option may reflect your natural preferences, energy patterns, or the environments where you feel most like yourself.',
+        b: 'Choosing this option may reflect a different but equally valid set of preferences — there is no correct answer here.',
+      },
+      disclaimer: 'Fun preference data, not a psychological assessment.',
+    },
+    it: {
+      title: 'Curiosità sulle preferenze',
+      expertType: 'Psicologia',
+      body: 'Le domande sulle preferenze rivelano la personalità attraverso la lente delle scelte. Non esiste una risposta giusta o sbagliata — ogni opzione riflette valori diversi, preferenze sensoriali ed esperienze di vita. Ciò che rende queste scelte interessanti non è cosa sia oggettivamente migliore, ma cosa la tua reazione istintiva dica su come percepisci il mondo.',
+      whyPeopleSplit: 'Le persone finiscono su lati diversi perché le loro preferenze sensoriali, le associazioni d\'infanzia e le storie personali differiscono. Nessuna scelta è superiore — la divisione stessa è il dato.',
+      whatYourAnswerMaySuggest: {
+        a: 'Scegliere questa opzione può riflettere le tue preferenze naturali, i tuoi ritmi di energia o gli ambienti in cui ti senti più te stesso.',
+        b: 'Scegliere questa opzione può riflettere un insieme di preferenze diverso ma ugualmente valido — non esiste una risposta corretta qui.',
+      },
+      disclaimer: 'Dati di preferenza per divertimento, non una valutazione psicologica.',
+    },
+  },
 }
 
 export function getExpertInsight(category: Category, locale: 'en' | 'it'): ExpertInsight {

@@ -122,6 +122,54 @@ Output this exact JSON object (no other text):
   return { system, prompt }
 }
 
+export function buildLifestyleDilemmaPrompt(
+  locale: GenerationLocale,
+  topic: string,
+  existingQuestions: string[],
+): { system: string; prompt: string } {
+  const lang = locale === 'it' ? 'Italian' : 'English'
+  const fmtExample = locale === 'it' ? '"Mare o Montagna?"' : '"Beach or Mountains?"'
+
+  const system = `You are a playful content writer for SplitVote, a global preference polling app. \
+Generate one fun, light-hearted "this or that" preference question in ${lang}. \
+No moral framing — pure personal preference. Output ONLY valid JSON — no markdown, no code fences.`
+
+  const dupWarning = existingQuestions.length > 0
+    ? `\nAlready generated on this theme (avoid exact duplicates):\n${existingQuestions.map(q => `- "${q}"`).join('\n')}\n`
+    : ''
+
+  const prompt = `Generate one fun preference question in ${lang} about the theme: "${topic}"
+${dupWarning}
+Format like ${fmtExample} — two clear, equally appealing alternatives. No moral tension required.
+
+Requirements:
+- question: "${locale === 'it' ? 'X o Y?' : 'X or Y?'}" format — 10 to 80 characters
+- optionA: short vivid label — 2 to 50 characters (e.g. "Mare", "Caffè", "Estate")
+- optionB: short vivid label — 2 to 50 characters (the clear alternative)
+- Both options must feel equally appealing — there is no right or wrong answer
+- category: must be exactly "lifestyle"
+- seoTitle: 30 to 70 chars, natural and friendly (e.g. "Mare o Montagna: cosa preferisci?")
+- seoDescription: 60 to 160 chars, light and engaging
+- keywords: 3 to 5 relevant terms
+
+Output this exact JSON (no other text):
+{
+  "type": "dilemma",
+  "locale": "${locale}",
+  "question": "...",
+  "optionA": "...",
+  "optionB": "...",
+  "category": "lifestyle",
+  "seoTitle": "...",
+  "seoDescription": "...",
+  "keywords": ["...", "..."],
+  "rationale": "One sentence: what makes this preference question interesting",
+  "safetyNotes": []
+}`
+
+  return { system, prompt }
+}
+
 export function buildBlogArticlePrompt(input: PromptInput): { system: string; prompt: string } {
   const { locale, topic, inventory, similarContentWarnings, articleKind = 'standard' } = input
   const isCornerstone = articleKind === 'cornerstone'

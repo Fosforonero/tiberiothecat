@@ -4,6 +4,7 @@ import { scoreNovelty, type SimilarItem } from './content-dedup'
 const VALID_CATEGORIES = new Set([
   'morality', 'survival', 'loyalty', 'justice',
   'freedom', 'technology', 'society', 'relationships',
+  'lifestyle',
 ])
 
 export interface ValidatedDilemma {

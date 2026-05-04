@@ -12,6 +12,7 @@
 const VALID_CATEGORIES = new Set([
   'morality', 'survival', 'loyalty', 'justice',
   'freedom', 'technology', 'society', 'relationships',
+  'lifestyle',
 ])
 
 // Hard blocklist — any match in question/options/SEO fields → gate fails.
@@ -29,6 +30,11 @@ const DANGEROUS_PATTERNS: RegExp[] = [
 export const AUTOPUBLISH_NOVELTY_THRESHOLD  = 75
 export const AUTOPUBLISH_FINALSCORE_THRESHOLD = 75
 const MAX_SIMILAR_ITEMS_AUTOPUBLISH = 2
+
+// Relaxed thresholds for lifestyle (preference) dilemmas.
+// Novelty is not meaningful for "coffee vs tea" style questions.
+export const LIFESTYLE_AUTOPUBLISH_NOVELTY_THRESHOLD   = 10
+export const LIFESTYLE_AUTOPUBLISH_FINALSCORE_THRESHOLD = 30
 
 // Minimum Italian-language signals to count text as Italian.
 // Italian accented chars + common short Italian words.
@@ -58,6 +64,7 @@ export interface QualityGateInput {
     feedbackScore?: number
   }
   similarItemsCount?: number
+  dilemmaStyle?: 'moral' | 'lifestyle'
 }
 
 export interface QualityGateResult {
@@ -70,6 +77,7 @@ export interface QualityGateResult {
 export function runQualityGates(input: QualityGateInput): QualityGateResult {
   const reasons:  string[] = []
   const warnings: string[] = []
+  const isLifestyle = input.dilemmaStyle === 'lifestyle'
 
   // ── 1. Locale valid ──────────────────────────────────────────
   if (input.locale !== 'en' && input.locale !== 'it') {
@@ -77,17 +85,19 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
   }
 
   // ── 2. Question length ────────────────────────────────────────
-  const qLen = input.question.length
-  if (qLen < 20)  reasons.push('question_too_short')
-  if (qLen > 300) reasons.push('question_too_long')
+  const qLen    = input.question.length
+  const qMinLen = isLifestyle ? 10 : 20
+  if (qLen < qMinLen) reasons.push('question_too_short')
+  if (qLen > 300)     reasons.push('question_too_long')
 
   // ── 3–4. Option lengths ───────────────────────────────────────
-  const aLen = input.optionA.length
-  const bLen = input.optionB.length
-  if (aLen < 5)   reasons.push('option_a_too_short')
-  if (aLen > 200) reasons.push('option_a_too_long')
-  if (bLen < 5)   reasons.push('option_b_too_short')
-  if (bLen > 200) reasons.push('option_b_too_long')
+  const aLen    = input.optionA.length
+  const bLen    = input.optionB.length
+  const optMin  = isLifestyle ? 2 : 5
+  if (aLen < optMin) reasons.push('option_a_too_short')
+  if (aLen > 200)    reasons.push('option_a_too_long')
+  if (bLen < optMin) reasons.push('option_b_too_short')
+  if (bLen > 200)    reasons.push('option_b_too_long')
 
   // ── 5. Options balanced (max 4:1 length ratio) ────────────────
   if (aLen > 0 && bLen > 0) {
@@ -118,35 +128,39 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
     }
   }
 
-  // ── 9. Language match ─────────────────────────────────────────
-  const contentText = `${input.question} ${input.optionA} ${input.optionB}`
-  const itSignals   = italianSignalCount(contentText)
-  if (input.locale === 'it' && itSignals < 2) {
-    reasons.push('language_mismatch:expected_italian')
-  }
-  if (input.locale === 'en' && itSignals > 5) {
-    reasons.push('language_mismatch:expected_english')
+  // ── 9. Language match (skipped for lifestyle — short labels lack signals) ──
+  if (!isLifestyle) {
+    const contentText = `${input.question} ${input.optionA} ${input.optionB}`
+    const itSignals   = italianSignalCount(contentText)
+    if (input.locale === 'it' && itSignals < 2) {
+      reasons.push('language_mismatch:expected_italian')
+    }
+    if (input.locale === 'en' && itSignals > 5) {
+      reasons.push('language_mismatch:expected_english')
+    }
   }
 
   // ── 10. Novelty sufficient for autopublish ────────────────────
+  const noveltyThreshold = isLifestyle ? LIFESTYLE_AUTOPUBLISH_NOVELTY_THRESHOLD : AUTOPUBLISH_NOVELTY_THRESHOLD
   const noveltyScore = input.scores?.noveltyScore ?? 0
-  if (noveltyScore < AUTOPUBLISH_NOVELTY_THRESHOLD) {
-    reasons.push(`novelty_too_low:${noveltyScore}<${AUTOPUBLISH_NOVELTY_THRESHOLD}`)
+  if (noveltyScore < noveltyThreshold) {
+    reasons.push(`novelty_too_low:${noveltyScore}<${noveltyThreshold}`)
   }
 
   // ── 11. Final score sufficient ────────────────────────────────
+  const scoreThreshold = isLifestyle ? LIFESTYLE_AUTOPUBLISH_FINALSCORE_THRESHOLD : AUTOPUBLISH_FINALSCORE_THRESHOLD
   const finalScore = input.scores?.finalScore ?? 0
-  if (finalScore < AUTOPUBLISH_FINALSCORE_THRESHOLD) {
-    reasons.push(`final_score_too_low:${finalScore}<${AUTOPUBLISH_FINALSCORE_THRESHOLD}`)
+  if (finalScore < scoreThreshold) {
+    reasons.push(`final_score_too_low:${finalScore}<${scoreThreshold}`)
   }
 
-  // ── 12. Similar items count low ───────────────────────────────
-  if (input.similarItemsCount !== undefined && input.similarItemsCount > MAX_SIMILAR_ITEMS_AUTOPUBLISH) {
+  // ── 12. Similar items count low (skipped for lifestyle) ───────
+  if (!isLifestyle && input.similarItemsCount !== undefined && input.similarItemsCount > MAX_SIMILAR_ITEMS_AUTOPUBLISH) {
     reasons.push(`too_many_similar:${input.similarItemsCount}>${MAX_SIMILAR_ITEMS_AUTOPUBLISH}`)
   }
 
   // ── Warnings (non-blocking) ───────────────────────────────────
-  if (aLen < 20 && bLen < 20) warnings.push('options_very_short')
+  if (!isLifestyle && aLen < 20 && bLen < 20) warnings.push('options_very_short')
   if (!input.keywords || input.keywords.length === 0) warnings.push('no_keywords')
   if (titleLen > 0 && titleLen < 40) warnings.push('seo_title_short_for_google')
 

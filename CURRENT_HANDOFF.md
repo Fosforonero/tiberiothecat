@@ -24,6 +24,7 @@ Implementer: Claude Code
 ## Today's Commits (4 May 2026)
 
 ```
+[pending] feat: lifestyle dilemmas + dataset import pipeline
 [pending] feat: blog pagination, date sort, IT translation fixes
 ce2dcfa chore: add research source registry
 28c3bd1 chore: trigger vercel rebuild for adsense slots
@@ -37,6 +38,7 @@ b535283 fix: address adsense readiness blockers
 
 ## Done Today
 
+- ✅ Lifestyle dilemmas + dataset import — new `lifestyle` category; `buildLifestyleDilemmaPrompt`; 40 seed topics per locale; `style=lifestyle` param in `seed-draft-batch` + `generate-draft`; relaxed quality gates (novelty ≥10, no language signal check, short option min); `dataset-batch` endpoint for bulk imports from ETHICS/DailyDilemmas (CC-BY-4.0, MIT); `lib/expert-insights.ts` updated with lifestyle fallback
 - ✅ Blog pagination + IT translation fixes — `components/BlogGrid.tsx` (new client component, 9/page desktop, 4/page mobile, prev/next); `getPostsByLocale` sorts newest-first; "Would You Rather" → "Preferiresti" in 2 IT articles; `app/blog/page.tsx` + `app/it/blog/page.tsx` simplified to use BlogGrid
 - ✅ AdSense readiness blockers — robots.txt, ads.txt, about pages, FAQ self-service deletion copy, Privacy last-updated, sitemap cleanup (`b535283`)
 - ✅ SEO content strengthening — personality SSR block, internal links, SEO landing pages (`9d7c339`)

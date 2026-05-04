@@ -3,7 +3,28 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — Blog index: ordinamento per data discendente, paginazione responsive (9 desktop/tablet, 4 mobile), fix frasi inglesi negli articoli IT.
+Ultimo aggiornamento: 4 Maggio 2026 — Lifestyle dilemmas, dataset import pipeline, blog pagination/sort/IT fixes.
+
+---
+
+## 4 May 2026 — Lifestyle dilemmas + dataset import pipeline
+
+**Obiettivo:** Aggiungere una categoria `lifestyle` per dilemmi giocosi (mare o montagna, estate o inverno, ecc.), pool di 40 seed topic per lingua, quality gate rilassate, e un endpoint di import diretto da dataset pubblici (ETHICS MIT, DailyDilemmas CC-BY-4.0).
+
+**Shippato:**
+- `lib/scenarios.ts` — aggiunto `'lifestyle'` alla union type `Category`
+- `lib/dynamic-scenarios.ts` — campo `dilemmaStyle?: 'moral' | 'lifestyle'` su `DynamicScenario`
+- `lib/content-generation-prompts.ts` — `buildLifestyleDilemmaPrompt()`: prompt giocoso, nessun framing morale, formato "X o Y?", category hardcoded a `lifestyle`
+- `lib/content-quality-gates.ts` — `lifestyle` in `VALID_CATEGORIES`; `LIFESTYLE_AUTOPUBLISH_NOVELTY_THRESHOLD=10`, `LIFESTYLE_AUTOPUBLISH_FINALSCORE_THRESHOLD=30`; quality gate rilassate per lifestyle: question min 10 chars, option min 2 chars, language signal check saltato, similar items check saltato
+- `lib/content-generation-validate.ts` — `lifestyle` in `VALID_CATEGORIES`
+- `lib/expert-insights.ts` — fallback `lifestyle` EN/IT in `INSIGHTS`
+- `app/api/admin/seed-draft-batch/route.ts` — param `style=lifestyle`; `LIFESTYLE_SEED_TOPICS` (40 per lingua); preflight e semantic review saltati per lifestyle; archetype check saltato; `dilemmaStyle` salvato sul scenario; `LIFESTYLE_NOVELTY_THRESHOLD=10`
+- `app/api/admin/generate-draft/route.ts` — param `style=lifestyle`; routing al prompt lifestyle
+- `app/api/admin/dataset-batch/route.ts` — nuovo endpoint bulk import senza AI; max 200 items/call; quality gate + novelty check (threshold=10); aggiornamento inventory intra-batch per dedup; attributable a dataset source; dataset consigliati: ETHICS (MIT), DailyDilemmas (CC-BY-4.0), Scruples (AllenAI)
+
+**Come usare:**
+- Generazione lifestyle: `POST /api/admin/seed-draft-batch` con `{ style: "lifestyle", locale: "it", count: 30 }`
+- Import dataset: `POST /api/admin/dataset-batch` con `{ items: [...], dilemmaStyle: "moral" }`
 
 ---
 

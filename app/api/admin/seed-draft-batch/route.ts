@@ -23,7 +23,7 @@ import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
 import { buildContentInventory } from '@/lib/content-inventory'
 import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCHETYPES, type NoveltyResult } from '@/lib/content-dedup'
-import { buildDilemmaPrompt } from '@/lib/content-generation-prompts'
+import { buildDilemmaPrompt, buildLifestyleDilemmaPrompt } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
 import {
   saveDraftScenarios,
@@ -39,7 +39,8 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300
 
-const NOVELTY_THRESHOLD = 55
+const MORAL_NOVELTY_THRESHOLD     = 55
+const LIFESTYLE_NOVELTY_THRESHOLD = 10
 // Hard cap on auto-published items per request, regardless of count.
 const AUTO_PUBLISH_CAP = 10
 
@@ -52,7 +53,96 @@ const CATEGORY_EMOJI: Record<string, string> = {
   technology:    '🤖',
   society:       '🏙️',
   relationships: '❤️',
+  lifestyle:     '🎭',
 }
+
+// Lifestyle seed themes — one AI-generated preference question per theme.
+// 40 per locale; diverse sub-buckets: nature, food, seasons, daily life,
+// entertainment, aesthetics, travel, sport, tech, social.
+const LIFESTYLE_SEED_TOPICS: Array<{ locale: 'en' | 'it'; topic: string }> = [
+  // ── IT ──────────────────────────────────────────────────────────────────────
+  { locale: 'it', topic: 'mare o montagna' },
+  { locale: 'it', topic: 'estate o inverno' },
+  { locale: 'it', topic: 'caffè o tè' },
+  { locale: 'it', topic: 'mattina o sera' },
+  { locale: 'it', topic: 'film o serie TV' },
+  { locale: 'it', topic: 'cane o gatto' },
+  { locale: 'it', topic: 'pizza o pasta' },
+  { locale: 'it', topic: 'dolce o salato' },
+  { locale: 'it', topic: 'città o campagna' },
+  { locale: 'it', topic: 'chiaro o scuro' },
+  { locale: 'it', topic: 'bianco o nero' },
+  { locale: 'it', topic: 'silenzio o musica di sottofondo' },
+  { locale: 'it', topic: 'libro cartaceo o e-book' },
+  { locale: 'it', topic: 'spiaggia o piscina' },
+  { locale: 'it', topic: 'colazione abbondante o leggera' },
+  { locale: 'it', topic: 'nord o sud Italia' },
+  { locale: 'it', topic: 'pioggia o sole' },
+  { locale: 'it', topic: 'palestra o corsa all\'aperto' },
+  { locale: 'it', topic: 'ricordi in foto o video' },
+  { locale: 'it', topic: 'aereo o treno' },
+  { locale: 'it', topic: 'cinema o divano' },
+  { locale: 'it', topic: 'lago o mare' },
+  { locale: 'it', topic: 'primavera o autunno' },
+  { locale: 'it', topic: 'messaggi o telefonate' },
+  { locale: 'it', topic: 'pesce o carne' },
+  { locale: 'it', topic: 'viaggiare o stare a casa' },
+  { locale: 'it', topic: 'sport di squadra o individuale' },
+  { locale: 'it', topic: 'colori vivaci o toni neutri' },
+  { locale: 'it', topic: 'cena a casa o al ristorante' },
+  { locale: 'it', topic: 'alba o tramonto' },
+  { locale: 'it', topic: 'montagna innevata o deserto' },
+  { locale: 'it', topic: 'smartphone o computer' },
+  { locale: 'it', topic: 'vino o birra' },
+  { locale: 'it', topic: 'formale o casual' },
+  { locale: 'it', topic: 'grande città o piccolo paese' },
+  { locale: 'it', topic: 'nottambulo o mattiniero' },
+  { locale: 'it', topic: 'caldo secco o freschezza umida' },
+  { locale: 'it', topic: 'musica o podcast' },
+  { locale: 'it', topic: 'doccia o bagno' },
+  { locale: 'it', topic: 'minimalismo o massimalismo' },
+  // ── EN ──────────────────────────────────────────────────────────────────────
+  { locale: 'en', topic: 'beach or mountains' },
+  { locale: 'en', topic: 'summer or winter' },
+  { locale: 'en', topic: 'coffee or tea' },
+  { locale: 'en', topic: 'morning or night' },
+  { locale: 'en', topic: 'movies or TV series' },
+  { locale: 'en', topic: 'dogs or cats' },
+  { locale: 'en', topic: 'pizza or pasta' },
+  { locale: 'en', topic: 'sweet or savory' },
+  { locale: 'en', topic: 'city or countryside' },
+  { locale: 'en', topic: 'light or dark' },
+  { locale: 'en', topic: 'silence or background music' },
+  { locale: 'en', topic: 'physical book or e-book' },
+  { locale: 'en', topic: 'ocean or pool' },
+  { locale: 'en', topic: 'big breakfast or light breakfast' },
+  { locale: 'en', topic: 'rain or sunshine' },
+  { locale: 'en', topic: 'gym or outdoor running' },
+  { locale: 'en', topic: 'photos or videos for memories' },
+  { locale: 'en', topic: 'flight or train' },
+  { locale: 'en', topic: 'cinema or couch' },
+  { locale: 'en', topic: 'lake or sea' },
+  { locale: 'en', topic: 'spring or autumn' },
+  { locale: 'en', topic: 'texting or calling' },
+  { locale: 'en', topic: 'fish or meat' },
+  { locale: 'en', topic: 'traveling or staying home' },
+  { locale: 'en', topic: 'team sports or solo sports' },
+  { locale: 'en', topic: 'bold colors or neutral tones' },
+  { locale: 'en', topic: 'dinner at home or restaurant' },
+  { locale: 'en', topic: 'sunrise or sunset' },
+  { locale: 'en', topic: 'snowy mountains or desert' },
+  { locale: 'en', topic: 'smartphone or computer' },
+  { locale: 'en', topic: 'wine or beer' },
+  { locale: 'en', topic: 'formal or casual style' },
+  { locale: 'en', topic: 'big city or small town' },
+  { locale: 'en', topic: 'night owl or early bird' },
+  { locale: 'en', topic: 'dry heat or cool humidity' },
+  { locale: 'en', topic: 'music or podcasts' },
+  { locale: 'en', topic: 'shower or bath' },
+  { locale: 'en', topic: 'minimalism or maximalism' },
+  { locale: 'en', topic: 'cats or birds as pets' },
+  { locale: 'en', topic: 'hiking or swimming' },
+]
 
 // Curated seed topics — 32 per locale (4 per category × 8 categories), diverse and non-overlapping with static dilemmas.
 // EN and IT topics cover different moral angles within each category — no direct translations between locales.
@@ -283,6 +373,9 @@ export async function POST(request: NextRequest) {
   const dryRun      = body.dryRun === true
   const autoPublish = body.autoPublish === true
 
+  const style: 'moral' | 'lifestyle' = body.style === 'lifestyle' ? 'lifestyle' : 'moral'
+  const NOVELTY_THRESHOLD = style === 'lifestyle' ? LIFESTYLE_NOVELTY_THRESHOLD : MORAL_NOVELTY_THRESHOLD
+
   if (autoPublish && dryRun) {
     return NextResponse.json(
       { error: 'invalid_request', message: 'autoPublish cannot be combined with dryRun.' },
@@ -377,7 +470,15 @@ export async function POST(request: NextRequest) {
   // ── Build topic list ────────────────────────────────────────────────────────
   const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category; angle?: string; notes?: string }> = []
 
-  if (manualSeed !== undefined) {
+  if (style === 'lifestyle' && manualSeed === undefined && customTopics === undefined) {
+    // Lifestyle mode: random sample from LIFESTYLE_SEED_TOPICS (no category diversity needed)
+    const lifestylePool = (locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']) as Array<'en' | 'it'>
+    for (const l of lifestylePool) {
+      const pool = LIFESTYLE_SEED_TOPICS.filter(t => t.locale === l).sort(() => Math.random() - 0.5)
+      const selected = pool.slice(0, count)
+      for (const t of selected) topicsToProcess.push({ locale: l, topic: t.topic })
+    }
+  } else if (manualSeed !== undefined) {
     // Manual seed: same topic repeated `count` times per locale, with optional angle/notes hint.
     // Preflight and novelty guards still run per-entry.
     const effectiveTopic = manualSeed.title
@@ -455,10 +556,10 @@ export async function POST(request: NextRequest) {
       inventory,
     )
 
-    // Preflight similarity guard — skip OpenRouter call when topic is too close to existing content.
+    // Preflight similarity guard — skipped for lifestyle (preference topics are inherently similar).
     // Default topics are pre-filtered before selection; this is the safety net for custom topics
     // and for state changes that occurred since the pre-filter ran (e.g. new drafts mid-batch).
-    const preflightBlock = getPreflightBlock(preCheck)
+    const preflightBlock = style === 'lifestyle' ? null : getPreflightBlock(preCheck)
     if (preflightBlock !== null) {
       const closestPre = preCheck.similarItems[0]
       const rejectionReason = closestPre
@@ -507,16 +608,21 @@ export async function POST(request: NextRequest) {
         return `"${x.title}" (${x.similarity}% similar${reasonLabel ? ` — ${reasonLabel}` : ''})`
       })
 
-    const { system, prompt } = buildDilemmaPrompt({
-      type:           'dilemma',
-      locale:         entryLocale,
-      topic,
-      targetCategory: topicsToProcess[i].category,
-      inventory:      inventorySummary,
-      similarContentWarnings: similarWarnings,
-      angle:          topicsToProcess[i].angle,
-      notes:          topicsToProcess[i].notes,
-    })
+    const existingLifestyleQs = style === 'lifestyle'
+      ? inventory.filter(x => x.type === 'dilemma' && x.category === 'lifestyle' && x.locale === entryLocale).map(x => x.title).slice(0, 6)
+      : []
+    const { system, prompt } = style === 'lifestyle'
+      ? buildLifestyleDilemmaPrompt(entryLocale, topic, existingLifestyleQs)
+      : buildDilemmaPrompt({
+          type:           'dilemma',
+          locale:         entryLocale,
+          topic,
+          targetCategory: topicsToProcess[i].category,
+          inventory:      inventorySummary,
+          similarContentWarnings: similarWarnings,
+          angle:          topicsToProcess[i].angle,
+          notes:          topicsToProcess[i].notes,
+        })
 
     openRouterCalls++
     const generated = await generateWithOpenRouter({ system, prompt })
@@ -537,17 +643,18 @@ export async function POST(request: NextRequest) {
 
     const candidate = validation.candidate as ValidatedDilemma
 
-    // Archetype saturation penalty — reduces noveltyScore for archetypes already well-covered.
-    // Blocks autoPublish; draft still saved for admin review when noveltyScore passes threshold.
-    const candidateText = `${candidate.question} ${candidate.optionA} ${candidate.optionB}`
-    const matchedArchetypes = detectMoralArchetypes(candidateText)
-    const saturatedMatches = matchedArchetypes.filter(id => (archetypeSaturation.get(id) ?? 0) >= ARCHETYPE_THRESHOLD)
-    const hasArchetypeSaturation = saturatedMatches.length > 0
-    if (hasArchetypeSaturation) {
-      const penalty = Math.min(15, saturatedMatches.length * 8)
-      candidate.noveltyScore = Math.max(0, candidate.noveltyScore - penalty)
-      for (const id of saturatedMatches) candidate.warnings.push(`archetype_saturation:${id}`)
-    }
+    // Archetype saturation penalty — skipped for lifestyle (no moral archetypes to detect).
+    const hasArchetypeSaturation = style === 'lifestyle' ? false : (() => {
+      const candidateText = `${candidate.question} ${candidate.optionA} ${candidate.optionB}`
+      const matchedArchetypes = detectMoralArchetypes(candidateText)
+      const saturatedMatches = matchedArchetypes.filter(id => (archetypeSaturation.get(id) ?? 0) >= ARCHETYPE_THRESHOLD)
+      if (saturatedMatches.length > 0) {
+        const penalty = Math.min(15, saturatedMatches.length * 8)
+        candidate.noveltyScore = Math.max(0, candidate.noveltyScore - penalty)
+        for (const id of saturatedMatches) candidate.warnings.push(`archetype_saturation:${id}`)
+      }
+      return saturatedMatches.length > 0
+    })()
 
     if (candidate.noveltyScore < NOVELTY_THRESHOLD) {
       const closestNov = candidate.similarItems[0]
@@ -571,40 +678,42 @@ export async function POST(request: NextRequest) {
       continue
     }
 
-    // ── Semantic review ───────────────────────────────────────────────────────
-    const comparisonItems = buildComparisonItems(
-      entryLocale,
-      candidate.category,
-      candidate.similarItems.map(s => ({ id: s.id, title: s.title })),
-      inventory,
-    )
-
+    // ── Semantic review (skipped for lifestyle — preference Q's are inherently similar) ──
     let semanticResult: SemanticReviewResult | undefined
     let hasSemanticBlock = false
+    let reviewOutcome: Awaited<ReturnType<typeof runSemanticReview>> = { ok: false as const, error: 'skipped' }
 
-    const reviewOutcome = await runSemanticReview(
-      {
-        candidate: {
-          question: candidate.question,
-          optionA:  candidate.optionA,
-          optionB:  candidate.optionB,
-          category: candidate.category,
-          locale:   entryLocale,
+    if (style !== 'lifestyle') {
+      const comparisonItems = buildComparisonItems(
+        entryLocale,
+        candidate.category,
+        candidate.similarItems.map(s => ({ id: s.id, title: s.title })),
+        inventory,
+      )
+      reviewOutcome = await runSemanticReview(
+        {
+          candidate: {
+            question: candidate.question,
+            optionA:  candidate.optionA,
+            optionB:  candidate.optionB,
+            category: candidate.category,
+            locale:   entryLocale,
+          },
+          comparisonItems,
         },
-        comparisonItems,
-      },
-      10_000,
-    )
-
-    if (!reviewOutcome.ok) {
-      candidate.warnings.push('semantic_review_failed')
-    } else {
-      semanticResult = reviewOutcome.result
-      hasSemanticBlock = isBlockingVerdict(semanticResult.verdict)
-      if (hasSemanticBlock) candidate.warnings.push(`semantic_review:${semanticResult.verdict}`)
+        10_000,
+      )
+      if (!reviewOutcome.ok) {
+        candidate.warnings.push('semantic_review_failed')
+      } else {
+        semanticResult = reviewOutcome.result
+        hasSemanticBlock = isBlockingVerdict(semanticResult.verdict)
+        if (hasSemanticBlock) candidate.warnings.push(`semantic_review:${semanticResult.verdict}`)
+      }
     }
 
     const scenario = dilemmaToScenario(candidate, topic)
+    if (style === 'lifestyle') scenario.dilemmaStyle = 'lifestyle'
     if (semanticResult) {
       scenario.semanticReview = {
         verdict:           semanticResult.verdict,
@@ -678,7 +787,9 @@ export async function POST(request: NextRequest) {
       let publishNote:     string   | undefined
       let gateReasons:    string[] | undefined
 
-      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP && !hasArchetypeSaturation && !hasSemanticBlock && reviewOutcome.ok) {
+      const lifestyleAutoPublishEligible = style === 'lifestyle' && !hasSemanticBlock
+      const moralAutoPublishEligible     = style !== 'lifestyle' && !hasArchetypeSaturation && !hasSemanticBlock && reviewOutcome.ok
+      if (autoPublish && autoPublishedCount < AUTO_PUBLISH_CAP && (lifestyleAutoPublishEligible || moralAutoPublishEligible)) {
         const gateResult = runQualityGates({
           locale:            entryLocale,
           question:          candidate.question,
@@ -690,6 +801,7 @@ export async function POST(request: NextRequest) {
           keywords:          candidate.keywords,
           scores:            scenario.scores,
           similarItemsCount: candidate.similarItems.length,
+          dilemmaStyle:      style,
         })
 
         if (gateResult.passed) {
@@ -788,6 +900,7 @@ export async function POST(request: NextRequest) {
     },
     dryRun,
     autoPublish,
+    style,
     noveltyThreshold: NOVELTY_THRESHOLD,
     estimatedCost: {
       calls:     topicsToProcess.length,
