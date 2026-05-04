@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { getCachedDynamicScenarios } from '@/lib/cached-data'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import { getCategoryContent } from '@/lib/categoryContent'
@@ -80,7 +80,7 @@ export default async function ItCategoryPage({ params }: Props) {
   // Dynamic IT scenarios for this category
   let dynamicIT: DynamicScenario[] = []
   try {
-    const all = await getDynamicScenarios()
+    const all = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map(s => s.id))
     dynamicIT = all.filter(d => d.category === category && d.locale === 'it' && !staticIds.has(d.id))
   } catch { /* Redis unavailable */ }

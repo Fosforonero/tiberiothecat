@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { getCachedDynamicScenarios } from '@/lib/cached-data'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCategoryContent } from '@/lib/categoryContent'
 import type { Metadata } from 'next'
@@ -66,7 +66,7 @@ export default async function CategoryPage({ params }: Props) {
   const staticFiltered = scenarios.filter((s) => s.category === category)
   let dynamicFiltered: DynamicScenario[] = []
   try {
-    const dynamic = await getDynamicScenarios()
+    const dynamic = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
     dynamicFiltered = dynamic.filter((d) => d.category === category && !staticIds.has(d.id))
   } catch { /* Redis unavailable */ }

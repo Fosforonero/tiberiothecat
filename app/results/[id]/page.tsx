@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { getScenario, getFreshNextScenarioId, getFreshNextScenarioIdByCategory, CATEGORIES, scenarios } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
-import { getDynamicScenario, getDynamicScenarios } from '@/lib/dynamic-scenarios'
+import { getDynamicScenario } from '@/lib/dynamic-scenarios'
+import { getCachedDynamicScenarios } from '@/lib/cached-data'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
@@ -72,7 +73,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
     : null
 
   let dynamicScenarios: DynamicScenario[] = []
-  try { dynamicScenarios = await getDynamicScenarios() } catch { /* non-blocking */ }
+  try { dynamicScenarios = await getCachedDynamicScenarios() } catch { /* non-blocking */ }
 
   let votedIds = new Set<string>()
   let userDetected = false
