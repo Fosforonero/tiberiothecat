@@ -82,6 +82,7 @@ const EN_COPY = {
   shareQuestion:       'Share question',
   shareQuestionCopied: 'Link copied',
   revealHint:          'Vote to reveal how the world splits.',
+  changeVote:          'Switch to this',
 }
 
 const IT_COPY = {
@@ -110,6 +111,7 @@ const IT_COPY = {
   shareQuestion:       'Condividi domanda',
   shareQuestionCopied: 'Link copiato',
   revealHint:          'Vota per scoprire come si divide il mondo.',
+  changeVote:          'Cambia con questa',
 }
 
 export default function VoteClientPage({
@@ -248,6 +250,17 @@ export default function VoteClientPage({
         setLoading(false)
         setSubmittedOption(null)
         setVoteError(true)
+        return
+      }
+      const data = await res.json()
+      // Change window expired between page-load and click — redirect with the original choice
+      if (data.locked && existingVote) {
+        const originalChoice = existingVote.choice.toLowerCase()
+        let resultsUrl = `${localePrefix}/results/${scenario.id}?voted=${originalChoice}`
+        if (pathCategory && pathStep && pathTarget) {
+          resultsUrl += `&path=${pathCategory}&step=${pathStep}&target=${pathTarget}`
+        }
+        router.push(resultsUrl)
         return
       }
       track('vote_submitted', {
@@ -395,42 +408,122 @@ export default function VoteClientPage({
               )}
             </div>
 
-            {/* Options — grayed out, chosen one highlighted */}
+            {/* Options — chosen highlighted; opposite is a button when change window is open */}
             <div className="vs divider flex items-center gap-4 mt-2">
               <div className="flex-1 h-px bg-[var(--border)]" />
               <span className="text-xs font-black text-[var(--muted)] tracking-widest">{copy.yourChoice}</span>
               <div className="flex-1 h-px bg-[var(--border)]" />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 mt-2">
-              <div className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
-                ${existingVote.choice === 'A'
-                  ? 'border-red-500 bg-red-500/20 text-red-300'
-                  : 'border-red-500/20 bg-red-500/5 text-[var(--muted)] opacity-40'
-                }`}
-              >
-                <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
-                {scenario.optionA}
-                {existingVote.choice === 'A' && <span className="ml-2 text-red-400">{copy.yourVote}</span>}
-              </div>
+            {(() => {
+              const activeOption = submittedOption ?? pendingOption
+              return (
+                <div className="grid grid-cols-1 gap-4 mt-2">
+                  {existingVote.choice === 'A' ? (
+                    <div className="w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg border-red-500 bg-red-500/20 text-red-300">
+                      <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
+                      {scenario.optionA}
+                      <span className="ml-2 text-red-400">{copy.yourVote}</span>
+                    </div>
+                  ) : canStillChange ? (
+                    <button
+                      type="button"
+                      onClick={() => handleOptionClick('a')}
+                      disabled={loading || !!submittedOption}
+                      className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                        ${activeOption === 'a'
+                          ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
+                          : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
+                        }
+                        ${activeOption && activeOption !== 'a' ? 'opacity-30' : ''}
+                        transition-all duration-200`}
+                    >
+                      <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
+                      {scenario.optionA}
+                      {!activeOption && <span className="ml-2 text-xs text-red-400">{copy.changeVote}</span>}
+                    </button>
+                  ) : (
+                    <div className="w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg border-red-500/20 bg-red-500/5 text-[var(--muted)] opacity-40">
+                      <span className="block text-xs font-black uppercase tracking-widest text-red-400 mb-2">{copy.optionA}</span>
+                      {scenario.optionA}
+                    </div>
+                  )}
 
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-[var(--border)]" />
-                <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
-                <div className="flex-1 h-px bg-[var(--border)]" />
-              </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 h-px bg-[var(--border)]" />
+                    <span className="text-2xl font-black text-[var(--muted)]">{copy.or}</span>
+                    <div className="flex-1 h-px bg-[var(--border)]" />
+                  </div>
 
-              <div className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
-                ${existingVote.choice === 'B'
-                  ? 'border-blue-500 bg-blue-500/20 text-blue-300'
-                  : 'border-blue-500/20 bg-blue-500/5 text-[var(--muted)] opacity-40'
-                }`}
-              >
-                <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
-                {scenario.optionB}
-                {existingVote.choice === 'B' && <span className="ml-2 text-blue-400">{copy.yourVote}</span>}
+                  {existingVote.choice === 'B' ? (
+                    <div className="w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg border-blue-500 bg-blue-500/20 text-blue-300">
+                      <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
+                      {scenario.optionB}
+                      <span className="ml-2 text-blue-400">{copy.yourVote}</span>
+                    </div>
+                  ) : canStillChange ? (
+                    <button
+                      type="button"
+                      onClick={() => handleOptionClick('b')}
+                      disabled={loading || !!submittedOption}
+                      className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                        ${activeOption === 'b'
+                          ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
+                          : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
+                        }
+                        ${activeOption && activeOption !== 'b' ? 'opacity-30' : ''}
+                        transition-all duration-200`}
+                    >
+                      <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
+                      {scenario.optionB}
+                      {!activeOption && <span className="ml-2 text-xs text-blue-400">{copy.changeVote}</span>}
+                    </button>
+                  ) : (
+                    <div className="w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg border-blue-500/20 bg-blue-500/5 text-[var(--muted)] opacity-40">
+                      <span className="block text-xs font-black uppercase tracking-widest text-blue-400 mb-2">{copy.optionB}</span>
+                      {scenario.optionB}
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+
+            {/* Grace countdown — shown when changing vote within window */}
+            {pendingOption && graceSecsLeft > 0 && !submittedOption && (
+              <div className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center" aria-live="polite">
+                <p className="text-white font-bold text-sm mb-1">
+                  {copy.graceCountdown(graceSecsLeft)}
+                </p>
+                <p className="text-xs text-[var(--muted)] mb-3">{copy.graceHint}</p>
+                <div className="flex gap-2 justify-center">
+                  <button
+                    onClick={cancelGrace}
+                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-[var(--muted)] border border-[var(--border)] hover:bg-white/5 transition-colors"
+                  >
+                    {copy.graceUndo}
+                  </button>
+                  <button
+                    onClick={confirmNow}
+                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-white/10 border border-white/20 hover:bg-white/15 transition-colors"
+                  >
+                    {copy.graceConfirm}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
+            {loading && (
+              <div className="flex items-center justify-center gap-2 text-[var(--muted)] text-sm mt-4">
+                <Spinner />
+                <span>{copy.counting}</span>
+              </div>
+            )}
+
+            {voteError && (
+              <p className="text-center text-red-400 text-sm mt-4">
+                {copy.voteError}
+              </p>
+            )}
 
             {/* CTA to results / next */}
             {(() => {

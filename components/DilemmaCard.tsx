@@ -3,7 +3,7 @@ import { Globe, Sparkles, Flame } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 
-export type DilemmaCardBadge = 'trending' | 'ai' | 'new'
+export type DilemmaCardBadge = 'trending' | 'ai' | 'new' | 'voted'
 
 interface Props {
   scenario: Scenario
@@ -14,8 +14,8 @@ interface Props {
 }
 
 const BADGE_COPY = {
-  en: { trending: 'trending', new: '🆕 new' },
-  it: { trending: 'tendenza', new: '🆕 nuovo' },
+  en: { trending: 'trending', new: '🆕 new', voted: '✓ Voted' },
+  it: { trending: 'tendenza', new: '🆕 nuovo', voted: '✓ Votato' },
 }
 
 export default function DilemmaCard({ scenario, playHref, totalVotes, badge, locale = 'en' }: Props) {
@@ -46,6 +46,11 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge, loc
             {badge === 'new' && (
               <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
                 {badgeCopy.new}
+              </span>
+            )}
+            {badge === 'voted' && (
+              <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
+                {badgeCopy.voted}
               </span>
             )}
           </div>

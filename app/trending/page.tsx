@@ -1,10 +1,10 @@
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCachedDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
-import type { Scenario } from '@/lib/scenarios'
+import type { Scenario, Category } from '@/lib/scenarios'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import DilemmaOptionPills from '@/components/DilemmaOptionPills'
+import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 
 export const metadata: Metadata = {
   title: 'Top Dilemmas & Trending | SplitVote',
@@ -74,7 +74,7 @@ export default async function TrendingPage() {
   // ── AI trending display items (existing section) ──────────────
   const hasDynamic = dynamicScenarios.length > 0
   type DisplayItem = {
-    id: string; emoji: string; category: string
+    id: string; emoji: string; category: Category
     question: string; optionA: string; optionB: string
     trend?: string; isDynamic: boolean
   }
@@ -190,45 +190,16 @@ export default async function TrendingPage() {
             ? "Moral dilemmas inspired by today's biggest news and trending topics. Fresh every morning at 6am UTC."
             : "The most debated moral dilemmas on SplitVote. AI-generated ones from today's news appear at 6am UTC."}
         </p>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {displayItems.map((scenario) => (
-            <Link
+            <VotedDilemmaCard
               key={scenario.id}
-              href={`/play/${scenario.id}`}
-              className="group block rounded-2xl border border-purple-500/20 bg-[var(--surface)] p-6 hover:border-purple-500/50 hover:bg-[#1a1025] transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <div className="flex items-start gap-4">
-                <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    {scenario.isDynamic ? (
-                      <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold uppercase tracking-wide">
-                        ✨ trending
-                      </span>
-                    ) : (
-                      <span className="text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5 font-bold uppercase tracking-wide">
-                        🔥 popular
-                      </span>
-                    )}
-                    <span className="text-xs text-[var(--muted)] uppercase tracking-widest font-bold">
-                      {scenario.category}
-                    </span>
-                    {scenario.isDynamic && scenario.trend && (
-                      <span className="text-xs text-[var(--muted)] opacity-60 italic truncate max-w-[200px]">
-                        inspired by: {scenario.trend}
-                      </span>
-                    )}
-                  </div>
-                  <p className="font-semibold text-[var(--text)] leading-snug mb-4">
-                    {scenario.question}
-                  </p>
-                  <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-                </div>
-                <span className="hidden sm:inline text-[var(--muted)] text-xs group-hover:text-purple-400 transition-colors flex-shrink-0">
-                  Vote →
-                </span>
-              </div>
-            </Link>
+              scenario={scenario}
+              playHref={`/play/${scenario.id}`}
+              resultsHref={`/results/${scenario.id}`}
+              badge={scenario.isDynamic ? 'ai' : 'trending'}
+              locale="en"
+            />
           ))}
         </div>
       </section>

@@ -3,6 +3,7 @@ import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
+import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import AdSlot from '@/components/AdSlot'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
@@ -148,7 +149,7 @@ export default async function HomePage() {
             </span>
           </h1>
           <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
-            Vote anonymously on impossible moral dilemmas — then see the live global split.
+            Pick a side. No sign-up. See how the world splits.
           </p>
           <div className="mt-6 flex items-center justify-center">
             <Link
@@ -160,18 +161,8 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* ── Dilemma of the Day ── */}
-        <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
-
-        {/* ── Trust strip ── */}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6 text-xs text-[var(--muted)]">
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Anonymous voting</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> See what the world chooses</span>
-        </div>
-
         {/* ── Game loop ── */}
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-4 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
             <span className="text-blue-400 font-black">1.</span> Vote on a dilemma
           </span>
@@ -184,6 +175,19 @@ export default async function HomePage() {
             <span className="text-yellow-400 font-black">3.</span> Grow your Pixie
           </span>
         </div>
+
+        {/* ── Trust strip ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-xs text-[var(--muted)]">
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Anonymous voting</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> See what the world chooses</span>
+        </div>
+
+        {/* ── Dilemma of the Day ── */}
+        <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
+          Today&apos;s dilemma — vote anonymously
+        </p>
+        <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 
         {/* ── Trending Now (ranked by recent votes: today + yesterday) ── */}
         {trendingNow.length > 0 && (
@@ -198,12 +202,14 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {trendingNow.map((s) => (
-                <DilemmaCard
+                <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/play/${s.id}`}
+                  resultsHref={`/results/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
                   badge="trending"
+                  locale="en"
                 />
               ))}
             </div>
@@ -220,11 +226,13 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {mostVoted.map((s) => (
-                <DilemmaCard
+                <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/play/${s.id}`}
+                  resultsHref={`/results/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
+                  locale="en"
                 />
               ))}
             </div>
@@ -241,11 +249,13 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {newlyGenerated.map((s) => (
-                <DilemmaCard
+                <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/play/${s.id}`}
+                  resultsHref={`/results/${s.id}`}
                   badge="new"
+                  locale="en"
                 />
               ))}
             </div>

@@ -3,6 +3,7 @@ import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaCard from '@/components/DilemmaCard'
+import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
 import LangSwitcher from '@/components/LangSwitcher'
@@ -184,7 +185,7 @@ export default async function ItPage() {
             </span>
           </h1>
           <p className="text-base sm:text-xl text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
-            Vota in modo anonimo su dilemmi etici impossibili — poi scopri come si divide il mondo.
+            Scegli da che parte stare. Nessuna registrazione. Risultati subito visibili.
           </p>
           <div className="mt-6 flex items-center justify-center">
             <Link
@@ -199,22 +200,8 @@ export default async function ItPage() {
           </div>
         </div>
 
-        {/* ── Dilemma del Giorno ── */}
-        <DailyDilemma
-          scenario={dailyIT}
-          totalVotes={voteMap.get(dailyIT.id) ?? 0}
-          locale="it"
-        />
-
-        {/* ── Trust strip ── */}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6 text-xs text-[var(--muted)]">
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Nessun account richiesto</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Voto anonimo</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Scopri cosa sceglierebbe il mondo</span>
-        </div>
-
         {/* ── Game loop ── */}
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-10 text-xs text-[var(--muted)]">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-4 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
             <span className="text-blue-400 font-black">1.</span> Vota un dilemma
           </span>
@@ -228,6 +215,23 @@ export default async function ItPage() {
           </span>
         </div>
 
+        {/* ── Trust strip ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-xs text-[var(--muted)]">
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Nessun account richiesto</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Voto anonimo</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Scopri cosa sceglierebbe il mondo</span>
+        </div>
+
+        {/* ── Dilemma del Giorno ── */}
+        <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
+          Il dilemma di oggi — vota in anonimo
+        </p>
+        <DailyDilemma
+          scenario={dailyIT}
+          totalVotes={voteMap.get(dailyIT.id) ?? 0}
+          locale="it"
+        />
+
         {/* ── Dilemmi in Evidenza ── */}
         <section className="mb-12">
           <div className="flex items-center justify-between mb-5">
@@ -237,10 +241,11 @@ export default async function ItPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {featured.map((s) => (
-              <DilemmaCard
+              <VotedDilemmaCard
                 key={s.id}
                 scenario={s}
                 playHref={`/it/play/${s.id}`}
+                resultsHref={`/it/results/${s.id}`}
                 totalVotes={voteMap.get(s.id)}
                 locale="it"
               />
@@ -261,10 +266,11 @@ export default async function ItPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {trendingIT.map((s) => (
-                <DilemmaCard
+                <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/it/play/${s.id}`}
+                  resultsHref={`/it/results/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
                   badge="trending"
                   locale="it"
@@ -284,10 +290,11 @@ export default async function ItPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {newlyGeneratedIT.map((s) => (
-                <DilemmaCard
+                <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/it/play/${s.id}`}
+                  resultsHref={`/it/results/${s.id}`}
                   badge="new"
                   locale="it"
                 />
