@@ -59,6 +59,10 @@ export default function Footer() {
         <span>·</span>
         <a href={isIT ? '/it/faq' : '/faq'} className="hover:text-white transition-colors">FAQ</a>
         <span>·</span>
+        <a href={isIT ? '/it/about' : '/about'} className="hover:text-white transition-colors">
+          {isIT ? 'Chi siamo' : 'About'}
+        </a>
+        <span>·</span>
         <a href={isIT ? '/it/privacy' : '/privacy'} className="hover:text-white transition-colors">
           {isIT ? 'Privacy' : 'Privacy Policy'}
         </a>

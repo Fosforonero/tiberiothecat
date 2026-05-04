@@ -83,7 +83,6 @@ export const metadata: Metadata = {
   },
   other: {
     'google-adsense-account': 'ca-pub-5232020244793649',
-    'google-site-verification': '',
     'apple-mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-status-bar-style': 'black',
     'apple-mobile-web-app-title': 'SplitVote',

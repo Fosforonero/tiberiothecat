@@ -168,10 +168,17 @@ const SECTIONS: Section[] = [
         q: 'Can I delete my account?',
         a: (
           <>
-            Yes. Email <a href="mailto:hello@splitvote.io" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">hello@splitvote.io</a> from
-            the address you signed up with and we&apos;ll wipe your profile and all linked vote
-            history within 7 days. Aggregate counts (the percentages on each dilemma) cannot
-            be reversed because they are not tied to your identity.
+            Yes. Go to your{' '}
+            <Link href="/profile" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+              Profile Settings
+            </Link>{' '}
+            page and look for the &ldquo;Danger zone&rdquo; section — follow the confirmation
+            steps and your account will be deleted immediately. For assisted deletion, contact{' '}
+            <a href="mailto:privacy@splitvote.io" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+              privacy@splitvote.io
+            </a>
+            . Aggregate vote counts (the percentages on each dilemma) are not reversed as they
+            are not tied to your identity.
           </>
         ),
       },

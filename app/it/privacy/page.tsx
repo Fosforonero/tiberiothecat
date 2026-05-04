@@ -20,7 +20,7 @@ export default function ItPrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Informativa sulla Privacy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 28 aprile 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 4 maggio 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 

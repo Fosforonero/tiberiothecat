@@ -82,7 +82,7 @@ const SECTIONS = [
       },
       {
         q: 'Posso eliminare il mio account?',
-        a: "Sì. Scrivi a hello@splitvote.io dall'indirizzo con cui ti sei iscritto e cancelleremo il tuo profilo e tutta la cronologia dei voti collegata entro 7 giorni. I conteggi aggregati (le percentuali su ogni dilemma) non possono essere annullati perché non sono collegati alla tua identità.",
+        a: "Sì. Vai alla pagina Impostazioni Profilo (/profile) e cerca la sezione 'Zona pericolosa' — segui i passaggi di conferma e il tuo account verrà eliminato immediatamente. Per la cancellazione assistita scrivi a privacy@splitvote.io. I conteggi aggregati (le percentuali su ogni dilemma) non possono essere annullati perché non sono collegati alla tua identità.",
       },
     ],
   },

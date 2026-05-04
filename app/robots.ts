@@ -6,7 +6,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/api/cron/', '/admin/'],
+        disallow: [
+          '/api/',
+          '/api/cron/',
+          '/admin/',
+          '/dashboard',
+          '/profile',
+          '/submit-poll',
+          '/reset-password',
+          '/offline',
+          '/u/',
+        ],
       },
     ],
     sitemap: 'https://splitvote.io/sitemap.xml',

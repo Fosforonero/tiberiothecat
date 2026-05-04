@@ -138,6 +138,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.65,
     },
     {
+      url: `${BASE}/about`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${BASE}/it/about`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.55,
+    },
+    {
       url: `${BASE}/it/faq`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
@@ -154,12 +166,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
-    },
-    {
-      url: `${BASE}/login`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
     },
     // SEO landing pages
     {
