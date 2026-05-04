@@ -70,6 +70,56 @@ export default function PersonalityPage() {
           </ul>
         </section>
 
+        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5 mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-3">
+            Expert lens
+          </p>
+          <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
+            Researchers studying moral psychology often map people&apos;s ethical reasoning along
+            dimensions like harm-care, fairness, loyalty, authority, and individual vs. collective
+            interest. SplitVote turns these tensions into short voting questions so you can explore
+            where your intuitions fall.
+          </p>
+          <ul className="space-y-1.5 mb-3">
+            <li>
+              <a
+                href="https://moralfoundations.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Moral Foundations Theory
+                <span className="text-[var(--muted)]"> — moralfoundations.org</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://plato.stanford.edu/entries/experimental-moral/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Experimental Moral Philosophy
+                <span className="text-[var(--muted)]"> — Stanford Encyclopedia of Philosophy</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.joshua-greene.net/research/moral-cognition"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Moral cognition research
+                <span className="text-[var(--muted)]"> — Joshua Greene, Harvard</span>
+              </a>
+            </li>
+          </ul>
+          <p className="text-[10px] text-[var(--muted)]">
+            SplitVote is for entertainment and aggregate insight, not a scientific test.
+          </p>
+        </div>
+
         <section className="mb-10">
           <h2 className="text-base font-bold text-white mb-4">18 moral archetypes</h2>
           <ul className="grid grid-cols-3 sm:grid-cols-4 gap-2">

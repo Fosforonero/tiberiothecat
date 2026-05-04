@@ -3,7 +3,34 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — SEO/AdSense P2 remediation: personality SSR + internal links. Dettagli nel sprint entry del 4 Maggio.
+Ultimo aggiornamento: 4 Maggio 2026 — Research trust layer: research background + expert lens su personality e topic landing pages.
+
+---
+
+## 4 May 2026 — Research trust layer ✅ DONE (pending commit)
+
+**Obiettivo:** aggiungere contesto accademico non prescrittivo su personality e topic landing pages per aumentare trust, ridurre thin-content risk AdSense, e migliorare SEO senza fare claim di validazione scientifica.
+
+**Shippato:**
+- `lib/seo-topics.ts` — +2 campi opzionali nel tipo `SeoTopic` (`researchNote`, `researchSources`); dati inline per tutti e 3 i topic pubblicati (trolley-problem, ai-ethics-dilemmas, loyalty-vs-honesty)
+- `app/[topicSlug]/page.tsx` — blocco "Research background" condizionale (cyan, border-cyan-500/20) dopo la primary dilemma card; max 3 link autorizzati, disclaimer obbligatorio
+- `app/personality/page.tsx` — blocco "Expert lens" tra "5 moral dimensions" e "18 archetypes"; 3 fonti EN; disclaimer
+- `app/it/personality/page.tsx` — stessa struttura in IT ("Lettura esperta"); EN/IT parity
+
+**Framing applicato:**
+- Ogni nota usa "researchers study" / "philosophers explore" — nessun claim "SplitVote is validated by"
+- Disclaimer fisso: "SplitVote is for entertainment and aggregate insight, not a scientific test." (IT: "...non come test scientifico.")
+- Tutti i link con `target="_blank"` + `rel="noopener noreferrer"`
+
+**Fonti usate:**
+- `/trolley-problem`: Stanford Encyclopedia (Moral Dilemmas + Doing vs. Allowing Harm)
+- `/ai-ethics-dilemmas`: Moral Machine / Nature 2018 + Stanford Encyclopedia (Privacy)
+- `/loyalty-vs-honesty`: Moral Foundations Theory + Stanford Encyclopedia (Moral Dilemmas)
+- `/personality` + `/it/personality`: Moral Foundations Theory + Stanford Encyclopedia (Experimental Moral Philosophy) + Joshua Greene / Harvard
+
+**LEGAL.md**: nessun nuovo data processor, tracking, o claim legale — link statici a risorse terze. Nessun aggiornamento richiesto.
+
+**Commit proposta:** `feat: add research-backed trust layer`
 
 ---
 
@@ -116,7 +143,8 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 5. **AI generation re-QA** — after env update + redeploy; re-run 4 dry-run scenarios; gates save mode.
 
 **Remaining (not reprioritized):**
-6. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
+6. **Product explainer blog cluster EN/IT** — 3-4 evergreen articles explaining what SplitVote is, how anonymous voting works, how to interpret results, and what moral personality means. Goal: trust, AdSense readiness, internal linking. No promotional fluff. EN first, then IT parity. Sprint: _Blog trust cluster_.
+7. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
 7. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
 8. **Generate 15 high-quality IT dilemmas** — blocked by save mode gate
 9. **Blog SEO generation/review pipeline** — audit prompt/model, improve output quality

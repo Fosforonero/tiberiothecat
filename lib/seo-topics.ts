@@ -25,6 +25,10 @@ export interface SeoTopic {
   relatedScenarioIds: string[]
   /** Slugs of related landing pages for cross-linking (missing slugs are silently skipped) */
   relatedTopicSlugs: string[]
+  /** Short contextual note about research that studies this tension (1-2 sentences, no validation claims) */
+  researchNote?: string
+  /** Max 3 authoritative external sources related to this topic */
+  researchSources?: { title: string; institution: string; url: string }[]
   /** 'published' → SSG page built; 'draft' → skipped at build time */
   status: SeoTopicStatus
   /**
@@ -68,6 +72,20 @@ export const SEO_TOPICS: SeoTopic[] = [
     primaryScenarioId: 'trolley',
     relatedScenarioIds: ['organ-harvest', 'time-machine', 'lifeboat', 'plane-parachute'],
     relatedTopicSlugs: ['ai-ethics-dilemmas', 'loyalty-vs-honesty'],
+    researchNote:
+      'Philosophers have used the trolley problem for decades to explore whether it is morally different to cause harm directly rather than allow harm to happen. SplitVote turns that classic tension into a live voting question.',
+    researchSources: [
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
+      },
+      {
+        title: 'Doing vs. Allowing Harm',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/doing-allowing/',
+      },
+    ],
     status: 'published',
     noindexUntilReady: false,
   },
@@ -83,6 +101,20 @@ export const SEO_TOPICS: SeoTopic[] = [
     primaryScenarioId: 'self-driving-crash',
     relatedScenarioIds: ['robot-judge', 'ai-replaces-jobs', 'brain-upload', 'ai-art-copyright'],
     relatedTopicSlugs: ['trolley-problem', 'loyalty-vs-honesty'],
+    researchNote:
+      'In 2018, researchers at MIT ran a large-scale study called the Moral Machine, collecting over 40 million moral decisions from people in 233 countries — asking how an autonomous vehicle should choose in unavoidable crash scenarios. SplitVote lets you explore similar questions one vote at a time.',
+    researchSources: [
+      {
+        title: 'The Moral Machine experiment (Awad et al., Nature 2018)',
+        institution: 'MIT Media Lab / Nature',
+        url: 'https://www.nature.com/articles/s41586-018-0637-6',
+      },
+      {
+        title: 'Privacy',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/privacy/',
+      },
+    ],
     status: 'published',
     noindexUntilReady: false,
   },
@@ -98,6 +130,20 @@ export const SEO_TOPICS: SeoTopic[] = [
     primaryScenarioId: 'cover-accident',
     relatedScenarioIds: ['sibling-secret', 'report-friend', 'truth-friend', 'whistleblower'],
     relatedTopicSlugs: ['trolley-problem', 'ai-ethics-dilemmas'],
+    researchNote:
+      'Moral Foundations Theory treats loyalty and fairness as distinct moral concerns that can pull in different directions. These dilemmas ask where you draw the line when protecting someone close conflicts with telling the truth.',
+    researchSources: [
+      {
+        title: 'Moral Foundations Theory',
+        institution: 'moralfoundations.org',
+        url: 'https://moralfoundations.org/',
+      },
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
+      },
+    ],
     status: 'published',
     noindexUntilReady: false,
   },

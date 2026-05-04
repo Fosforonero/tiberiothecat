@@ -245,6 +245,43 @@ export default async function TopicLandingPage({ params }: Props) {
           </div>
         </section>
 
+        {/* Research background */}
+        {topic.researchNote && (
+          <section aria-labelledby="research-bg-heading" className="mb-12">
+            <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5">
+              <h2
+                id="research-bg-heading"
+                className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-3"
+              >
+                Research background
+              </h2>
+              <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
+                {topic.researchNote}
+              </p>
+              {topic.researchSources && topic.researchSources.length > 0 && (
+                <ul className="space-y-1.5 mb-3">
+                  {topic.researchSources.map((s) => (
+                    <li key={s.url}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        {s.title}
+                        <span className="text-[var(--muted)]"> — {s.institution}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="text-[10px] text-[var(--muted)]">
+                SplitVote is for entertainment and aggregate insight, not a scientific test.
+              </p>
+            </div>
+          </section>
+        )}
+
         {/* Related dilemmas */}
         <section aria-labelledby="related-dilemmas-heading" className="mb-12">
           <h2
