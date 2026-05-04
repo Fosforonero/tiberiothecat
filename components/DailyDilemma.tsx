@@ -34,6 +34,7 @@ const IT_COPY = {
   results:       'Vedi risultati',
   shareQuestion: 'Condividi domanda',
   shareCopied:   'Link copiato',
+  alreadyVoted:  'Votato',
 }
 
 const EN_COPY = {
@@ -44,23 +45,27 @@ const EN_COPY = {
   results:       'See results',
   shareQuestion: 'Share question',
   shareCopied:   'Link copied',
+  alreadyVoted:  'Voted',
 }
 
 export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Props) {
   const [countdown, setCountdown] = useState('')
   const [mounted, setMounted] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [isVoted, setIsVoted] = useState(false)
   const copy = locale === 'it' ? IT_COPY : EN_COPY
   const prefix = locale === 'it' ? '/it' : ''
+  const ctaHref = `${prefix}/${isVoted ? 'results' : 'play'}/${scenario.id}`
 
   useEffect(() => {
     setMounted(true)
     setCountdown(getMidnightCountdown())
+    if (document.cookie.includes(`sv_voted_${scenario.id}=`)) setIsVoted(true)
     const interval = setInterval(() => {
       setCountdown(getMidnightCountdown())
     }, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [scenario.id])
 
   async function handleShare() {
     const url = `${BASE_URL}${prefix}/play/${scenario.id}`
@@ -89,7 +94,7 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
 
       {/* Full-card overlay link — covers non-interactive areas, sits behind CTAs and share button */}
       <Link
-        href={`${prefix}/play/${scenario.id}`}
+        href={ctaHref}
         className="absolute inset-0 z-0"
         aria-hidden="true"
         tabIndex={-1}
@@ -99,13 +104,22 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
       <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b"
         style={{ borderColor: 'rgba(255,215,0,0.12)', background: 'rgba(255,215,0,0.04)' }}>
         <div className="flex items-center gap-2">
-          <Zap size={14} className="text-yellow-400 pulse-glow" fill="currentColor" />
+          <Zap size={14} className="text-yellow-400 pulse-glow" fill="currentColor" aria-hidden="true" />
           <span className="text-yellow-400 text-xs sm:text-sm font-black uppercase tracking-widest neon-text-yellow">
             {copy.label}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
-          <span className="hidden sm:inline">{copy.resetsIn}</span>
+          {mounted && isVoted ? (
+            <span
+              aria-live="polite"
+              className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold"
+            >
+              <span aria-hidden="true">✓ </span>{copy.alreadyVoted}
+            </span>
+          ) : (
+            <span className="hidden sm:inline">{copy.resetsIn}</span>
+          )}
           <span className="font-mono font-bold text-yellow-400 tabular-nums text-xs">
             {mounted ? countdown : '--:--:--'}
           </span>
@@ -137,26 +151,28 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
         {/* CTA — relative z-10 so these links are above the full-card overlay */}
         <div className="relative z-10 mt-5 flex items-center gap-3">
           <Link
-            href={`${prefix}/play/${scenario.id}`}
+            href={ctaHref}
             className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
           >
-            {copy.voteNow}
+            {isVoted ? copy.results : copy.voteNow}
             <ChevronRight size={16} />
           </Link>
-          <Link
-            href={`${prefix}/results/${scenario.id}`}
-            className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 rounded-xl hover:bg-white/5"
-          >
-            {copy.results}
-          </Link>
+          {!isVoted && (
+            <Link
+              href={`${prefix}/results/${scenario.id}`}
+              className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 rounded-xl hover:bg-white/5"
+            >
+              {copy.results}
+            </Link>
+          )}
         </div>
 
-        {/* Pre-vote share — relative z-10 so button is above the full-card overlay */}
+        {/* Share — relative z-10 so button is above the full-card overlay */}
         <div className="relative z-10 mt-3 text-center">
           <button
             onClick={handleShare}
             aria-label={copy.shareQuestion}
-            className="text-xs text-[var(--muted)] hover:text-white transition-colors inline-flex items-center gap-1.5"
+            className="text-xs text-[var(--muted)] hover:text-white transition-colors inline-flex items-center gap-1.5 py-2.5"
           >
             <Share2 size={12} aria-hidden />
             {linkCopied ? copy.shareCopied : copy.shareQuestion}
