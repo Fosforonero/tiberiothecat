@@ -3,7 +3,46 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — Product explainer blog cluster EN/IT: 4 articoli evergreen (EN + IT parity) su cosa è SplitVote, voto anonimo, lettura risultati, profilo personalità morale.
+Ultimo aggiornamento: 4 Maggio 2026 — Research Source Registry: foundation interna (`lib/research-sources.ts`) con 10 fonti autorevoli tipizzate. Non consumer-facing.
+
+---
+
+## 4 May 2026 — Research Source Registry (internal foundation)
+
+**Obiettivo:** Creare un registro TypeScript statico e versionato delle fonti autorevoli già usate nel trust layer, blog e landing pages. Foundation per futuri sprint di Content Intelligence, nuovi cluster SEO, e citazioni coerenti tra superfici.
+
+**Shippato:**
+- `lib/research-sources.ts` — nuovo file server-only (`import 'server-only'`); non importato da nessuna pagina pubblica in questo sprint
+  - Tipi: `MoralCluster`, `SourceType`, `MoralAxisId` (locale, non accoppiato a `lib/personality.ts`), `ResearchSource`
+  - Campi: `id`, `title`, `authors?`, `institution`, `url`, `type`, `openAccess`, `clusters`, `moralAxes`, `safeClaim`, `claimsToAvoid`, `citationStyle`, `requiresDisclaimer`, `contentOpportunities`, `addedAt`, `addedBy?`, `reviewedAt?`, `notes?`
+  - `RESEARCH_SOURCES` — 10 fonti inserite (vedi tabella sotto)
+  - Helper: `getResearchSourceById`, `getResearchSourcesByCluster`, `getResearchSourcesForLanding`
+
+**Fonti inserite (10):**
+
+| id | institution | clusters principali |
+|---|---|---|
+| `sep-moral-dilemmas` | SEP | trolley-problem, harm-prevention, deontology, loyalty-honesty |
+| `sep-doing-allowing` | SEP | trolley-problem, harm-prevention |
+| `moral-foundations-theory` | moralfoundations.org | moral-foundations, loyalty-honesty |
+| `moral-machine-nature-2018` | MIT Media Lab / Nature | ai-ethics |
+| `sep-privacy` | SEP | privacy, ai-ethics |
+| `greene-moral-cognition` | Harvard University | experimental-moral-psychology |
+| `sep-consequentialism` | SEP | consequentialism, trolley-problem |
+| `sep-deontological-ethics` | SEP | deontology, trolley-problem, harm-prevention |
+| `sep-experimental-moral-philosophy` | SEP | experimental-moral-psychology |
+| `sep-virtue-ethics` | SEP | virtue-ethics |
+
+**Note di framing applicate:**
+- `safeClaim` in terza persona attributiva per tutte le fonti
+- `claimsToAvoid` espliciti per prevenire overclaim su SplitVote
+- `citationStyle: 'paraphrase-only'` per tutte le 10 fonti
+- `requiresDisclaimer: true` su `moral-foundations-theory` e `greene-moral-cognition` (fonti spesso mal-parafrasate)
+- `notes` su fonti fragili: `moralfoundations.org` (intermittente), `joshua-greene.net` (pagina personale)
+
+**Non consumer-facing:** il file non è importato da nessuna pagina o componente in questo sprint. Content Intelligence admin MVP e integrazione nelle superfici pubbliche restano futuri.
+
+**Verifiche:** typecheck ✅ — build ✅ — git diff --check ✅
 
 ---
 
