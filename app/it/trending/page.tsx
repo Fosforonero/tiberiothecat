@@ -8,6 +8,7 @@ import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
+import { translateScenarioToItalian } from '@/lib/scenarios-it'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -87,6 +88,7 @@ export default async function ItTrendingPage() {
     .slice(0, 8)
 
   const hasItDynamic = itDynamic.length > 0
+  const itStaticFallback = hasItDynamic ? [] : scenarios.slice(0, 6).map(translateScenarioToItalian)
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -183,7 +185,7 @@ export default async function ItTrendingPage() {
       <section className="mb-12">
         <div className="flex items-center gap-3 mb-5">
           <h2 className="text-xl font-black tracking-tight flex items-center gap-2">
-            {hasItDynamic ? <><span>✨</span> Tendenze Oggi</> : <><span>🌙</span> Dilemmi in Evidenza</>}
+            {hasItDynamic ? <><span>✨</span> Tendenze Oggi</> : <><span>🔥</span> Dilemmi da Scoprire</>}
           </h2>
           {hasItDynamic && (
             <span className="text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
@@ -194,7 +196,7 @@ export default async function ItTrendingPage() {
         {hasItDynamic ? (
           <>
             <p className="text-sm text-[var(--muted)] mb-5">
-              Dilemmi morali ispirati alle notizie e ai trend più caldi in Italia. Freschi ogni mattina alle 6:00 UTC.
+              Dilemmi morali ispirati alle notizie e ai trend più caldi in Italia. Nuovi spunti ogni giorno, senza gergo tecnico.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {itDynamic.map((scenario) => (
@@ -210,11 +212,23 @@ export default async function ItTrendingPage() {
             </div>
           </>
         ) : (
-          <div className="text-center py-16 text-[var(--muted)]">
-            <p className="text-4xl mb-4">🌙</p>
-            <p className="text-lg font-semibold text-white mb-2">Nessun dilemma italiano ancora</p>
-            <p className="text-sm">Il cron genera nuovi dilemmi ogni giorno alle 6:00 UTC. Torna domani!</p>
-          </div>
+          <>
+            <p className="text-sm text-[var(--muted)] mb-5">
+              Inizia dai dilemmi più discussi di SplitVote e scopri come si divide il mondo.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {itStaticFallback.map((scenario) => (
+                <VotedDilemmaCard
+                  key={scenario.id}
+                  scenario={scenario}
+                  playHref={`/it/play/${scenario.id}`}
+                  resultsHref={`/it/results/${scenario.id}`}
+                  badge="trending"
+                  locale="it"
+                />
+              ))}
+            </div>
+          </>
         )}
       </section>
 
