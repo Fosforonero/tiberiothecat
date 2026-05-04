@@ -36,6 +36,7 @@ Before planning or editing, read:
 - `LEGAL.md` — legal/compliance triggers and gaps
 - `LAUNCH_AUDIT.md` — launch blockers and production readiness
 - `CURRENT_HANDOFF.md` — latest PM handoff for the next Claude session, if present
+- `DESIGN.md` — **required for every UI/UX sprint**: design tokens, component rules, copy tone, accessibility constraints, and known style ambiguities
 
 For sprint-specific work, also read the files named in the user prompt.
 
@@ -143,7 +144,15 @@ Use `.claude/agents/` when a sprint benefits from a focused review:
 - `seo-content-reviewer.md`
 - `release-readiness-reviewer.md`
 - `product-growth-reviewer.md`
+- `frontend-ui-reviewer.md` — technical React/Tailwind/a11y/mobile audit; use on any sprint that modifies components, UI pages, copy layout, or motion behavior
+- `backend-systems-reviewer.md` — data correctness, API contracts, Redis atomicity, caching strategy, cron idempotency, graceful degradation; use on any sprint that touches `app/api/**`, vote flow, `lib/redis.ts`, Supabase, or caching
 - `mobile-app-readiness-reviewer.md` — use before any PWA, manifest, or app store sprint
 - `blog-seo-editor.md` — use for new articles, existing article updates, SEO cluster audits, EN/IT content planning, internal linking blog → play/results/trending/category/landing pages
 
 These agents must read the live docs above instead of relying on stale project history.
+
+### Agent Pairing Rules
+
+- **UI/UX/copy sprints**: product-growth-reviewer (intent) + frontend-ui-reviewer (technical) + release-readiness-reviewer (ship gate)
+- **API/vote/Redis/Supabase/caching sprints**: backend-systems-reviewer + security-reviewer (when auth, admin, or user data is touched) + release-readiness-reviewer (ship gate)
+- **Agents are reviewers** — they report findings and do not implement changes directly.

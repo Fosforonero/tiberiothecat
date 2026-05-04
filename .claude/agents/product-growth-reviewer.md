@@ -14,6 +14,7 @@ Review retention, sharing, gamification, premium, content engine, i18n, and grow
 ## Read First
 
 - `CLAUDE.md`
+- `DESIGN.md` — required when the sprint touches any UI surface (components, copy, tokens, share cards, gamification UI)
 - `PRODUCT_STRATEGY.md`
 - `ROADMAP.md`
 - `README.md`
