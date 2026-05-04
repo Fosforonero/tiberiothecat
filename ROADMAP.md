@@ -3,11 +3,33 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — Research trust layer: research background + expert lens su personality e topic landing pages.
+Ultimo aggiornamento: 4 Maggio 2026 — Product explainer blog cluster EN/IT: 4 articoli evergreen (EN + IT parity) su cosa è SplitVote, voto anonimo, lettura risultati, profilo personalità morale.
 
 ---
 
-## 4 May 2026 — Research trust layer ✅ DONE (pending commit)
+## 4 May 2026 — Product explainer blog cluster EN/IT
+
+**Obiettivo:** 4 articoli evergreen (EN + IT parity) che spiegano il prodotto senza marketing fluff. Goal: trust per AdSense review, ridurre thin-content risk, migliorare internal linking, dare valore ai nuovi utenti.
+
+**Shippato:**
+- `lib/blog.ts` — +4 EN posts + +4 IT posts (8 articoli totali); slug pairs con `alternateSlug` bidirezionale per hreflang automatico
+  - `what-is-splitvote` / `cos-e-splitvote` — spiegazione prodotto, come funziona, per chi è
+  - `how-anonymous-voting-works` / `come-funziona-il-voto-anonimo` — cookie locale, differenza senza/con account, aggregato ≠ identità, link a /privacy
+  - `how-to-read-splitvote-results` / `come-leggere-i-risultati-splitvote` — cosa rappresenta la %, 50/50 vs 80/20, campione non rappresentativo
+  - `what-your-moral-personality-means` / `cosa-significa-la-tua-personalita-morale` — 5 assi reali (Utility vs Principle, Freedom vs Safety, Loyalty vs Justice, Risk vs Caution, Individual vs Collective), 18 archetipi, framing entertainment
+
+**Framing applicato:**
+- Anonimato: "You can vote without creating an account" + "Anonymous votes use a local cookie" + "If you sign in, SplitVote can keep your vote history" — nessun claim assoluto su separazione identità
+- Personalità: 5 assi da `lib/personality.ts` — nomi esatti, framing "inspired by moral psychology", non replica diretta di Moral Foundations Theory
+- Risultati: "votes from SplitVote users, not a representative scientific sample" in ogni articolo risultati
+- moralfoundations.org linkato solo nell'articolo personality, con framing prudente ("researchers who study moral foundations")
+- Disclaimer obbligatorio in tutti gli 8 articoli
+
+**Verifiche:** typecheck ✅ — build ✅ — git diff --check ✅
+
+---
+
+## 4 May 2026 — Research trust layer ✅ DONE
 
 **Obiettivo:** aggiungere contesto accademico non prescrittivo su personality e topic landing pages per aumentare trust, ridurre thin-content risk AdSense, e migliorare SEO senza fare claim di validazione scientifica.
 
@@ -143,7 +165,7 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 5. **AI generation re-QA** — after env update + redeploy; re-run 4 dry-run scenarios; gates save mode.
 
 **Remaining (not reprioritized):**
-6. **Product explainer blog cluster EN/IT** — 3-4 evergreen articles explaining what SplitVote is, how anonymous voting works, how to interpret results, and what moral personality means. Goal: trust, AdSense readiness, internal linking. No promotional fluff. EN first, then IT parity. Sprint: _Blog trust cluster_.
+6. ~~**Product explainer blog cluster EN/IT**~~ — ✅ **DONE 4 Maggio 2026**: 8 articoli (4 EN + 4 IT parity) in `lib/blog.ts`; cookie/privacy framing preciso; assi reali da `lib/personality.ts`; disclaimer in tutti; hreflang automatico via `alternateSlug`.
 7. **Social comparison analytics events** — `result_revealed`, `user_in_majority`, `user_in_minority`, `near_even_split`; **requires LEGAL.md check**
 7. **Reconsideration prompt** — "Would you still choose the same?" after reveal; never modifies vote; no DB change
 8. **Generate 15 high-quality IT dilemmas** — blocked by save mode gate

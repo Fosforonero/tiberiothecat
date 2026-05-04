@@ -774,6 +774,314 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'what-is-splitvote',
+    locale: 'en',
+    title: 'What Is SplitVote?',
+    seoTitle: 'What Is SplitVote? How Moral Dilemma Voting Works',
+    description:
+      'SplitVote is a platform where you vote on moral dilemmas and see how the rest of the world answered. No lectures, no right answers — just real splits.',
+    seoDescription:
+      'SplitVote is a voting platform for moral dilemmas. Vote anonymously, see live results, and discover your moral personality profile. No account required.',
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['splitvote', 'how it works', 'moral dilemmas'],
+    relatedDilemmaIds: ['trolley', 'self-driving-crash', 'cover-accident'],
+    alternateSlug: 'cos-e-splitvote',
+    content: [
+      {
+        type: 'p',
+        text: 'SplitVote is a platform built around one idea: moral dilemmas reveal things about you that abstract questions do not. Not personality quizzes. Not surveys. A vote between two real options — each with a genuine cost.',
+      },
+      {
+        type: 'p',
+        text: "Every question on SplitVote is a genuine dilemma. There is no objectively right answer. The point is to choose — and then see how the rest of the world landed.",
+      },
+      {
+        type: 'h2',
+        text: 'How it works',
+      },
+      {
+        type: 'list',
+        items: [
+          'Pick a dilemma — classic philosophy thought experiments, AI ethics puzzles, everyday loyalty conflicts.',
+          'Choose one of two options. No explanation required.',
+          'See the live result: how the split breaks down among everyone who voted.',
+          'Vote on more dilemmas to build up your moral personality profile.',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Try your first dilemma →',
+        href: '/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'What you get from voting',
+      },
+      {
+        type: 'p',
+        text: 'Each vote updates live result percentages. Some dilemmas split almost exactly 50/50. Others go 80/20. Both are interesting — for different reasons.',
+      },
+      {
+        type: 'p',
+        text: 'After three or more votes, you can sign in to unlock your moral personality profile: which of 18 archetypes fits your pattern of choices best.',
+      },
+      {
+        type: 'cta',
+        label: 'See trending dilemmas →',
+        href: '/trending',
+      },
+      {
+        type: 'h2',
+        text: 'Who is it for?',
+      },
+      {
+        type: 'p',
+        text: 'Anyone who finds it interesting to sit with a hard choice. There are no prizes, no rankings, no social pressure. Just dilemmas and live data from real people who voted.',
+      },
+      {
+        type: 'p',
+        text: 'You can vote without an account. Results are public. SplitVote is an independent project based in Italy.',
+      },
+      {
+        type: 'cta',
+        label: 'About SplitVote →',
+        href: '/about',
+      },
+      {
+        type: 'disclaimer',
+        text: 'SplitVote is for entertainment and aggregate curiosity — not a scientific study or psychological assessment.',
+      },
+    ],
+  },
+  {
+    slug: 'how-anonymous-voting-works',
+    locale: 'en',
+    title: 'How Anonymous Voting Works on SplitVote',
+    seoTitle: 'How Anonymous Voting Works on SplitVote — Privacy Explained',
+    description:
+      'You can vote on SplitVote without an account. How the platform handles votes, what a cookie does, and what happens when you sign in.',
+    seoDescription:
+      'How does SplitVote handle your vote? Vote without an account. Anonymous votes use a local cookie. Sign in to keep your history and personality profile.',
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['privacy', 'anonymous voting', 'how it works'],
+    relatedDilemmaIds: ['trolley', 'cover-accident', 'whistleblower'],
+    alternateSlug: 'come-funziona-il-voto-anonimo',
+    content: [
+      {
+        type: 'p',
+        text: 'You can vote on SplitVote without creating an account. No email address, no registration — just pick a side and see the result.',
+      },
+      {
+        type: 'h2',
+        text: 'What happens when you vote without an account',
+      },
+      {
+        type: 'p',
+        text: "Anonymous votes use a local cookie stored in your browser. This is how SplitVote recognises that the same browser has already voted on a dilemma — so your vote isn't counted twice if you reload the page.",
+      },
+      {
+        type: 'p',
+        text: 'The cookie stays on your device. It is not tied to your name, email, or any external identity. Clearing your browser cookies removes it.',
+      },
+      {
+        type: 'h2',
+        text: 'What the results show',
+      },
+      {
+        type: 'p',
+        text: 'Result percentages show the aggregate split — how all votes cast on a dilemma broke down between option A and option B. They do not reveal who chose which side.',
+      },
+      {
+        type: 'cta',
+        label: 'See live results on the trolley problem →',
+        href: '/results/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'What changes when you sign in',
+      },
+      {
+        type: 'p',
+        text: 'If you sign in, SplitVote can keep your vote history and personality progress in your account. This lets you see your moral personality profile across all the dilemmas you have voted on.',
+      },
+      {
+        type: 'p',
+        text: "Signing in is optional. The core vote-and-see-results experience does not require an account.",
+      },
+      {
+        type: 'cta',
+        label: 'Read our full Privacy Policy →',
+        href: '/privacy',
+      },
+      {
+        type: 'disclaimer',
+        text: 'For complete details on what data SplitVote collects and how it is used, read the Privacy Policy at splitvote.io/privacy.',
+      },
+    ],
+  },
+  {
+    slug: 'how-to-read-splitvote-results',
+    locale: 'en',
+    title: 'How to Read SplitVote Results',
+    seoTitle: 'How to Read SplitVote Results — What the Percentages Mean',
+    description:
+      'A SplitVote percentage shows how people who voted on this platform chose. Here is what to take from the data — and what to leave alone.',
+    seoDescription:
+      'What does a SplitVote percentage mean? How to read result splits, what drives 50/50 vs 80/20, and why results reflect SplitVote users, not all humans.',
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['results', 'how to read', 'data'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'cover-accident'],
+    alternateSlug: 'come-leggere-i-risultati-splitvote',
+    content: [
+      {
+        type: 'p',
+        text: "When you vote on a SplitVote dilemma, you see a percentage split. Here is what that number actually means — and what it doesn't.",
+      },
+      {
+        type: 'h2',
+        text: 'What the percentage represents',
+      },
+      {
+        type: 'p',
+        text: 'The percentage shows how all votes cast on that dilemma broke down between option A and option B. If the trolley problem shows 55% pull the lever and 45% do nothing, that is the distribution of votes from SplitVote users who answered.',
+      },
+      {
+        type: 'p',
+        text: "It is not a representative sample of all humans. It reflects the people who found and voted on this platform — which skews toward people who seek out moral dilemma content.",
+      },
+      {
+        type: 'cta',
+        label: 'See live results on a real dilemma →',
+        href: '/results/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'What a 50/50 split means',
+      },
+      {
+        type: 'p',
+        text: 'A near-equal split usually signals a genuine value conflict — two defensible positions with comparable weight. Neither side is obviously wrong. The dilemma is doing its job.',
+      },
+      {
+        type: 'h2',
+        text: 'What an 80/20 split means',
+      },
+      {
+        type: 'p',
+        text: "A strong majority in one direction can mean the framing favours one option, or that most people share a strong intuition on this specific question. It doesn't mean the minority is wrong — moral intuitions vary across cultures, age groups, and life experience.",
+      },
+      {
+        type: 'h2',
+        text: 'Vote count',
+      },
+      {
+        type: 'p',
+        text: "Results with a few dozen votes are early signals. Results with tens of thousands of votes are more stable — but still reflect SplitVote's audience, not a scientific survey.",
+      },
+      {
+        type: 'h2',
+        text: 'Personality and results',
+      },
+      {
+        type: 'p',
+        text: "Your votes feed into a moral personality profile. When you see your archetype, it reflects the pattern of your choices — not how you compare to a clinical standard. It is a mirror of your answers on this platform.",
+      },
+      {
+        type: 'cta',
+        label: 'See trending dilemmas →',
+        href: '/trending',
+      },
+      {
+        type: 'disclaimer',
+        text: 'SplitVote result data reflects votes from SplitVote users, not a representative scientific sample. Results are for entertainment and aggregate curiosity only.',
+      },
+    ],
+  },
+  {
+    slug: 'what-your-moral-personality-means',
+    locale: 'en',
+    title: 'What Your Moral Personality Profile Means',
+    seoTitle: 'What Your Moral Personality Profile Means on SplitVote',
+    description:
+      'SplitVote assigns an archetype based on your votes across five moral dimensions. Here is what the axes measure and how to read your profile.',
+    seoDescription:
+      "What is a SplitVote moral personality archetype? The five moral dimensions, 18 archetypes, and what your profile does and doesn't claim.",
+    date: '2026-05-04',
+    readingTime: 4,
+    tags: ['personality', 'moral profile', 'archetypes'],
+    relatedDilemmaIds: ['trolley', 'cover-accident', 'whistleblower'],
+    alternateSlug: 'cosa-significa-la-tua-personalita-morale',
+    content: [
+      {
+        type: 'p',
+        text: "After you vote on three or more dilemmas and sign in, SplitVote shows you a moral personality archetype. This is what it measures — and how to read it honestly.",
+      },
+      {
+        type: 'h2',
+        text: 'The five moral dimensions',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote tracks your votes across five internal dimensions, inspired by how moral psychologists think about ethical reasoning:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Utility vs Principle — do you prioritise outcomes (consequentialist) or fixed rules (deontologist)?',
+          'Freedom vs Safety — do you lean toward individual autonomy (libertarian) or protecting people from harm (paternalist)?',
+          'Loyalty vs Justice — do you weight bonds to specific people (loyalist) or impartial rules that apply to everyone (universalist)?',
+          'Risk vs Caution — do you accept uncertain costs to gain something (risk-taker) or prefer the safer, known path (conservative)?',
+          'Individual vs Collective — do you prioritise what is best for a single person (individualist) or for the group (collectivist)?',
+        ],
+      },
+      {
+        type: 'p',
+        text: "These five dimensions are SplitVote's own framing, inspired by decades of moral psychology research. They are not a direct implementation of any single academic theory.",
+      },
+      {
+        type: 'h2',
+        text: 'The 18 archetypes',
+      },
+      {
+        type: 'p',
+        text: 'Each archetype represents a pattern of scores across the five axes. The algorithm finds the archetype whose profile is closest to your own scores and assigns it to you.',
+      },
+      {
+        type: 'p',
+        text: "Your archetype is not a verdict. It is a pattern derived from the specific dilemmas you voted on on SplitVote. A different mix of dilemmas, or a different day, could produce a different result.",
+      },
+      {
+        type: 'cta',
+        label: 'See your moral profile →',
+        href: '/personality',
+      },
+      {
+        type: 'h2',
+        text: 'What the profile does not claim',
+      },
+      {
+        type: 'p',
+        text: 'The moral personality profile is built for entertainment and self-reflection, not clinical classification. It does not predict behaviour, measure intelligence, or carry any psychological or diagnostic weight.',
+      },
+      {
+        type: 'p',
+        text: 'Researchers who study moral foundations — such as the work behind moralfoundations.org — use validated surveys and large representative samples. SplitVote dilemmas are designed for engagement, not academic measurement.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote to build your profile →',
+        href: '/play/trolley',
+      },
+      {
+        type: 'disclaimer',
+        text: 'SplitVote archetypes are for entertainment and self-reflection only — not a psychological assessment, diagnostic tool, or scientific measure.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -1568,6 +1876,314 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale di alcun tipo.',
+      },
+    ],
+  },
+  {
+    slug: 'cos-e-splitvote',
+    locale: 'it',
+    title: "Cos'è SplitVote?",
+    seoTitle: "Cos'è SplitVote? Come funziona il voto sui dilemmi morali",
+    description:
+      "SplitVote è una piattaforma in cui voti sui dilemmi morali e vedi come ha risposto il resto del mondo. Nessuna risposta giusta — solo divisioni reali.",
+    seoDescription:
+      "SplitVote è una piattaforma di voto per dilemmi morali. Vota in modo anonimo, scopri i risultati e il tuo profilo morale. Nessun account.",
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['splitvote', 'come funziona', 'dilemmi morali'],
+    relatedDilemmaIds: ['trolley', 'self-driving-crash', 'cover-accident'],
+    alternateSlug: 'what-is-splitvote',
+    content: [
+      {
+        type: 'p',
+        text: "SplitVote è una piattaforma costruita attorno a un'idea: i dilemmi morali rivelano qualcosa di te che le domande astratte non riescono a fare. Non quiz di personalità. Non sondaggi. Un voto tra due opzioni reali — ciascuna con un costo genuino.",
+      },
+      {
+        type: 'p',
+        text: "Ogni domanda su SplitVote è un vero dilemma. Non esiste una risposta oggettivamente giusta. L'obiettivo è scegliere — e poi vedere dove è atterrato il resto del mondo.",
+      },
+      {
+        type: 'h2',
+        text: 'Come funziona',
+      },
+      {
+        type: 'list',
+        items: [
+          "Scegli un dilemma — esperimenti mentali filosofici classici, enigmi di etica dell'IA, conflitti di lealtà quotidiani.",
+          'Scegli una delle due opzioni. Nessuna spiegazione richiesta.',
+          'Vedi il risultato in tempo reale: come si divide il voto tra tutti coloro che hanno partecipato.',
+          'Vota altri dilemmi per costruire il tuo profilo di personalità morale.',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Prova il tuo primo dilemma →',
+        href: '/it/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa ottieni votando',
+      },
+      {
+        type: 'p',
+        text: "Ogni voto aggiorna le percentuali di risultato in tempo reale. Alcuni dilemmi si dividono quasi esattamente al 50/50. Altri vanno 80/20. Entrambi sono interessanti — per ragioni diverse.",
+      },
+      {
+        type: 'p',
+        text: "Dopo tre o più voti, puoi accedere per sbloccare il tuo profilo di personalità morale: quale dei 18 archetipi si avvicina di più al tuo schema di scelte.",
+      },
+      {
+        type: 'cta',
+        label: 'Dilemmi di tendenza →',
+        href: '/it/trending',
+      },
+      {
+        type: 'h2',
+        text: 'Per chi è pensato?',
+      },
+      {
+        type: 'p',
+        text: "Per chiunque trovi interessante stare davanti a una scelta difficile. Non ci sono premi, classifiche o pressione sociale. Solo dilemmi e dati reali da persone reali che hanno votato.",
+      },
+      {
+        type: 'p',
+        text: "Puoi votare senza account. I risultati sono pubblici. SplitVote è un progetto indipendente con sede in Italia.",
+      },
+      {
+        type: 'cta',
+        label: 'Chi siamo →',
+        href: '/it/about',
+      },
+      {
+        type: 'disclaimer',
+        text: "SplitVote è pensato per intrattenimento e curiosità aggregata — non come studio scientifico o valutazione psicologica.",
+      },
+    ],
+  },
+  {
+    slug: 'come-funziona-il-voto-anonimo',
+    locale: 'it',
+    title: 'Come funziona il voto anonimo su SplitVote',
+    seoTitle: 'Come funziona il voto anonimo su SplitVote — privacy',
+    description:
+      "Puoi votare su SplitVote senza un account. Come la piattaforma gestisce i voti, cosa fa un cookie e cosa succede quando accedi.",
+    seoDescription:
+      "Come gestisce SplitVote il tuo voto? Puoi votare senza account. I voti anonimi usano un cookie locale. Se accedi, la cronologia resta nel tuo account.",
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['privacy', 'voto anonimo', 'come funziona'],
+    relatedDilemmaIds: ['trolley', 'cover-accident', 'whistleblower'],
+    alternateSlug: 'how-anonymous-voting-works',
+    content: [
+      {
+        type: 'p',
+        text: "Puoi votare su SplitVote senza creare un account. Nessun indirizzo email, nessuna registrazione — scegli solo un lato e vedi il risultato.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa succede quando voti senza account',
+      },
+      {
+        type: 'p',
+        text: "I voti anonimi usano un cookie locale memorizzato nel tuo browser. Questo è il modo in cui SplitVote riconosce che lo stesso browser ha già votato su un dilemma — così il tuo voto non viene contato due volte se ricarichi la pagina.",
+      },
+      {
+        type: 'p',
+        text: "Il cookie rimane sul tuo dispositivo. Non è collegato al tuo nome, email o a nessuna identità esterna. Cancellare i cookie del browser lo rimuove.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa mostrano i risultati',
+      },
+      {
+        type: 'p',
+        text: "Le percentuali dei risultati mostrano la divisione aggregata — come si sono distribuiti tutti i voti espressi su un dilemma tra l'opzione A e l'opzione B. Non rivelano chi ha scelto quale lato.",
+      },
+      {
+        type: 'cta',
+        label: 'Vedi i risultati in tempo reale sul problema del tram →',
+        href: '/it/results/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa cambia quando accedi',
+      },
+      {
+        type: 'p',
+        text: "Se accedi, SplitVote può conservare la tua cronologia dei voti e i progressi della personalità nel tuo account. Questo ti permette di vedere il tuo profilo di personalità morale su tutti i dilemmi a cui hai partecipato.",
+      },
+      {
+        type: 'p',
+        text: "Accedere è facoltativo. L'esperienza principale — vota e vedi i risultati — non richiede un account.",
+      },
+      {
+        type: 'cta',
+        label: 'Leggi la nostra Privacy Policy →',
+        href: '/it/privacy',
+      },
+      {
+        type: 'disclaimer',
+        text: "Per informazioni complete su quali dati raccoglie SplitVote e come vengono utilizzati, leggi la Privacy Policy su splitvote.io/it/privacy.",
+      },
+    ],
+  },
+  {
+    slug: 'come-leggere-i-risultati-splitvote',
+    locale: 'it',
+    title: 'Come leggere i risultati di SplitVote',
+    seoTitle: 'Come leggere i risultati di SplitVote — le percentuali',
+    description:
+      "Una percentuale SplitVote mostra come hanno scelto le persone che hanno votato su questa piattaforma. Ecco cosa leggere nei dati — e cosa no.",
+    seoDescription:
+      "Cosa significa una percentuale SplitVote? Come leggere una divisione 50/50 vs 80/20, e perché i risultati non sono un campione scientifico.",
+    date: '2026-05-04',
+    readingTime: 3,
+    tags: ['risultati', 'come leggere', 'dati'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'cover-accident'],
+    alternateSlug: 'how-to-read-splitvote-results',
+    content: [
+      {
+        type: 'p',
+        text: "Quando voti su un dilemma SplitVote, vedi una percentuale di divisione. Ecco cosa significa quel numero — e cosa non significa.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa rappresenta la percentuale',
+      },
+      {
+        type: 'p',
+        text: "La percentuale mostra come si sono distribuiti tutti i voti espressi su quel dilemma tra l'opzione A e l'opzione B. Se il problema del tram mostra il 55% che abbassa la leva e il 45% che non fa nulla, questa è la distribuzione dei voti degli utenti SplitVote che hanno risposto.",
+      },
+      {
+        type: 'p',
+        text: "Non è un campione rappresentativo di tutti gli esseri umani. Riflette le persone che hanno trovato e votato su questa piattaforma — un pubblico che tende verso chi cerca contenuti su dilemmi morali.",
+      },
+      {
+        type: 'cta',
+        label: 'Vedi i risultati in tempo reale su un dilemma reale →',
+        href: '/it/results/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa significa una divisione 50/50',
+      },
+      {
+        type: 'p',
+        text: "Una divisione quasi uguale segnala solitamente un conflitto di valori genuino — due posizioni difendibili con peso comparabile. Nessuna delle due è ovviamente sbagliata. Il dilemma sta facendo il suo lavoro.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa significa una divisione 80/20',
+      },
+      {
+        type: 'p',
+        text: "Una forte maggioranza in una direzione può significare che la formulazione favorisce un'opzione, o che la maggior parte delle persone condivide un'intuizione forte su questa domanda specifica. Non significa che la minoranza abbia torto — le intuizioni morali variano tra culture, fasce d'età ed esperienze di vita.",
+      },
+      {
+        type: 'h2',
+        text: 'Numero di voti',
+      },
+      {
+        type: 'p',
+        text: "I risultati con poche decine di voti sono segnali precoci. I risultati con decine di migliaia di voti sono più stabili — ma riflettono comunque il pubblico di SplitVote, non un sondaggio scientifico.",
+      },
+      {
+        type: 'h2',
+        text: 'Personalità e risultati',
+      },
+      {
+        type: 'p',
+        text: "I tuoi voti alimentano un profilo di personalità morale. Quando vedi il tuo archetipo, riflette lo schema delle tue scelte — non un confronto con uno standard clinico. È uno specchio delle tue risposte su questa piattaforma.",
+      },
+      {
+        type: 'cta',
+        label: 'Dilemmi di tendenza →',
+        href: '/it/trending',
+      },
+      {
+        type: 'disclaimer',
+        text: "I dati dei risultati di SplitVote riflettono i voti degli utenti SplitVote, non un campione scientifico rappresentativo. I risultati sono solo per intrattenimento e curiosità aggregata.",
+      },
+    ],
+  },
+  {
+    slug: 'cosa-significa-la-tua-personalita-morale',
+    locale: 'it',
+    title: 'Cosa significa il tuo profilo di personalità morale',
+    seoTitle: 'Profilo di personalità morale su SplitVote: cosa significa',
+    description:
+      "SplitVote ti assegna un archetipo in base ai tuoi voti su cinque dimensioni morali. Ecco cosa misurano gli assi e come leggere il tuo profilo.",
+    seoDescription:
+      "Cos'è un archetipo di personalità morale SplitVote? Cinque dimensioni, 18 archetipi e cosa afferma — e non afferma — il tuo profilo.",
+    date: '2026-05-04',
+    readingTime: 4,
+    tags: ['personalità', 'profilo morale', 'archetipi'],
+    relatedDilemmaIds: ['trolley', 'cover-accident', 'whistleblower'],
+    alternateSlug: 'what-your-moral-personality-means',
+    content: [
+      {
+        type: 'p',
+        text: "Dopo aver votato su tre o più dilemmi e aver effettuato l'accesso, SplitVote ti mostra un archetipo di personalità morale. Ecco cosa misura — e come leggerlo in modo onesto.",
+      },
+      {
+        type: 'h2',
+        text: 'Le cinque dimensioni morali',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote traccia i tuoi voti su cinque dimensioni interne, ispirate al modo in cui gli psicologi morali pensano al ragionamento etico:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Utilità vs Principio — dai priorità ai risultati (consequenzialista) o alle regole fisse (deontologista)?',
+          "Libertà vs Sicurezza — ti orienti verso l'autonomia individuale (libertario) o verso la protezione delle persone dal danno (paternalista)?",
+          'Lealtà vs Giustizia — pesi i legami con persone specifiche (leale) o le regole imparziali che si applicano a tutti (universalista)?',
+          'Rischio vs Cautela — accetti costi incerti per ottenere qualcosa (temerario) o preferisci il percorso più sicuro e noto (conservatore)?',
+          'Individuo vs Collettivo — dai priorità a ciò che è meglio per una singola persona (individualista) o per il gruppo (collettivista)?',
+        ],
+      },
+      {
+        type: 'p',
+        text: "Queste cinque dimensioni sono il modello interno di SplitVote, ispirato a decenni di ricerca sulla psicologia morale. Non sono l'implementazione diretta di nessuna singola teoria accademica.",
+      },
+      {
+        type: 'h2',
+        text: 'I 18 archetipi',
+      },
+      {
+        type: 'p',
+        text: "Ogni archetipo rappresenta uno schema di punteggi sui cinque assi. L'algoritmo trova l'archetipo il cui profilo è più vicino ai tuoi punteggi e te lo assegna.",
+      },
+      {
+        type: 'p',
+        text: "Il tuo archetipo non è un verdetto. È uno schema derivato dai dilemmi specifici a cui hai votato su SplitVote. Una combinazione diversa di dilemmi, o un giorno diverso, potrebbe produrre un risultato diverso.",
+      },
+      {
+        type: 'cta',
+        label: 'Vedi il tuo profilo morale →',
+        href: '/it/personality',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa non afferma il profilo',
+      },
+      {
+        type: 'p',
+        text: "Il profilo di personalità morale è pensato per intrattenimento e auto-riflessione, non per classificazione clinica. Non prevede comportamenti, non misura l'intelligenza e non ha alcun peso psicologico o diagnostico.",
+      },
+      {
+        type: 'p',
+        text: "I ricercatori che studiano i fondamenti morali — come il lavoro alla base di moralfoundations.org — usano questionari validati e campioni rappresentativi di grandi dimensioni. I dilemmi SplitVote sono progettati per il coinvolgimento, non per la misurazione accademica.",
+      },
+      {
+        type: 'cta',
+        label: 'Vota per costruire il tuo profilo →',
+        href: '/it/play/trolley',
+      },
+      {
+        type: 'disclaimer',
+        text: "Gli archetipi SplitVote sono solo per intrattenimento e auto-riflessione — non uno strumento di valutazione psicologica, diagnostica o misura scientifica.",
       },
     ],
   },
