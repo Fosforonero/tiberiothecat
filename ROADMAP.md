@@ -3,13 +3,15 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 1 Maggio 2026 — AI dry-run gate completato (C/E2), fix c85e55c deployato; env OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini richiesto prima di re-QA; nuove priorità UX: cambio voto, already-voted, core loop, /it/trending
+Ultimo aggiornamento: 3 Maggio 2026 — Vote reconsideration UX affordance shippato; P1 already-voted UX shippato: `VotedDilemmaCard` wrapper (cookie-based badge + href swap), game loop strip spostato sopra DailyDilemma, subline/copy sharpened EN/IT; SEO landing pages programmatiche shippate (3 topic seed); micro SEO hardening shippato: title dedup fix (`app/[topicSlug]` + layout template) + IT locale guard (`lib/seo-topics.ts`); DESIGN.md aggiunto; agent usage process + 2 nuovi agenti specialistici. Env OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini ancora richiesto prima di re-QA AI. Commit pendente su tutto il lavoro del 3 Maggio (non ancora pushato).
 
 Legal/compliance tracker: `LEGAL.md`. Ogni sprint che tocca cookie, analytics, ads, auth/account data, pagamenti, AI content, email, geo feature o profili pubblici deve controllarlo e aggiornarlo se cambia il trattamento dati o la superficie legale.
 
 Product strategy tracker: `PRODUCT_STRATEGY.md`. Usarlo per scegliere e delimitare sprint su premium/VIP, poll submission, personality sharing, bacheca pubblica, quest, cosmetici, micro-learning e community.
 
 Claude Code guide: `CLAUDE.md`. Usarlo come guida operativa per ogni sprint; gli agenti specialistici vivono in `.claude/agents/`.
+
+Design governance: `DESIGN.md` aggiunto (3 Maggio 2026) — token ufficiali, regole componenti, copy tone, vincoli accessibilità. Obbligatorio per ogni sprint UI/UX.
 
 ---
 
@@ -85,12 +87,12 @@ Strategia dettagliata: `PRODUCT_STRATEGY.md → Mobile App Readiness`
 
 ### Candidate Sprints
 
-**PM priority order (updated 1 May 2026, session 4):**
+**PM priority order (updated 3 Maggio 2026):**
 
-1. **Vote reconsideration within window** — allow changing a vote within `can_change_until`; high risk (vote flow, timing policy, mobile); LEGAL.md check required.
-2. **Home/trending already-voted behavior** — improve UX for already-voted dilemmas on home/trending surfaces.
-3. **Core loop clarity + Pixie Phase 1** — "why answer" copy, game framing, login icon, companion → "Pixie" rename (copy-only, zero DB). Full strategy: `PRODUCT_STRATEGY.md`.
-4. **`/it/trending` empty state** — IT trending shows empty or wrong state; investigate and fix.
+1. ~~**Vote reconsideration within window**~~ — ✅ **Client UX affordance shipped (3 Maggio 2026)**: opposite option is now a `<button>` with grace countdown when `canStillChange === true`; locked state unchanged; EN/IT copy parity. API already handled `can_change_until`; no API/schema changes. Residual: `canStillChange` reactivity in 60s tick; `vote_change` analytics event (LEGAL.md check required before adding).
+2. ~~**Home/trending already-voted behavior**~~ — ✅ **P1 shipped (3 Maggio 2026)**: `VotedDilemmaCard` wrapper (cookie `sv_voted_{id}=`, badge + href swap, hydration-safe via `useState/useEffect`); game loop strip spostato sopra DailyDilemma; label "Today's dilemma — vote anonymously" / "Il dilemma di oggi — vota in anonimo"; subline hero copy sharpened EN/IT. EN/IT parity completa su home + trending. Residui: DailyDilemma voted-state polish (has "See results" link già presente — accettato); `/it/trending` empty state copy (D sprint).
+3. **Core loop clarity + Pixie Phase 1** — game loop strip + hero copy parzialmente inclusi nel P1 (3 Maggio); Pixie rename (companion → Pixie, copy-only, zero DB) e "why answer" copy ancora pendenti. Full strategy: `PRODUCT_STRATEGY.md`.
+4. **`/it/trending` empty state** — copy tecnico "Il cron genera..." → testo user-friendly italiano. Sprint D (bassa priorità immediata).
 5. **AI generation re-QA** — after env update + redeploy; re-run 4 dry-run scenarios; gates save mode.
 
 **Remaining (not reprioritized):**
@@ -142,6 +144,75 @@ Backlog of issues and ideas surfaced via direct product observation. None implem
 
 - **VIP display name colors** — premium cosmetic: palette of 10 named shades (Silver, Gold, Steel, Diamond, Ruby, Emerald, Sapphire, Amethyst, Neon Blue, Cosmic Purple) visible to other users and in admin/super-admin view. No gameplay advantage. Gate: entitlements review + Terms check if sold as Premium perk. Sprint: _VIP profile cosmetics_.
 - **AI novelty + current-events engine** — improve draft generation to compare against published/approved/recent drafts, raise novelty threshold, reduce semantic duplicates. Current-events variant: news-inspired abstractions with no real names, no city specifics, no unverified claims, editorial review gate, no autopublish. Sprint: _AI content quality_ + _Current-events content engine_.
+
+---
+
+## Sprint completati — Micro SEO Hardening: title dedup + IT locale guard (3 Maggio 2026)
+
+**Obiettivo**: due fix tecnici SEO a scope strettissimo lasciati dal programmatic SEO sprint. Zero runtime behavior change.
+
+**Task A — Title duplicato** (`app/[topicSlug]/page.tsx`):
+- Root layout `app/layout.tsx` ha `metadata.title.template = '%s | SplitVote'`
+- `generateMetadata` passava `title = \`${topic.headline} | SplitVote\`` → Next.js produceva `"Headline | SplitVote | SplitVote"`
+- Fix: `metadata.title = topic.headline` (template appende il brand una volta sola)
+- `openGraph.title` e `twitter.title` usano `socialTitle = \`${topic.headline} | SplitVote\`` (campi OG/Twitter bypassano il template — suffix esplicito corretto)
+
+**Task B — IT locale guard** (`lib/seo-topics.ts`):
+- `getPublishedTopics()` e `getIndexableTopics()` non filtravano per locale → un futuro topic `locale: 'it'` sarebbe stato buildato in `app/[topicSlug]` (route EN-only) e incluso nella sitemap
+- Fix: `&& t.locale === 'en'` aggiunto in entrambe le funzioni
+- Nessun impatto sul build attuale: tutti e 3 i topic pubblicati sono `locale: 'en'`
+- `getTopicBySlug()` invariato (sicuro: `dynamicParams = false` auto-404 gli slug non buildati)
+- JSDoc su campo `locale` aggiornato: spiega che IT è schema-ready ma richiede route `/it/[topicSlug]` non ancora implementata
+
+**Agenti**: seo-content-reviewer (SHIP) · release-readiness-reviewer (SHIP). frontend-ui-reviewer, backend-systems-reviewer, security-reviewer: non usati (no UI, no backend data, no auth).
+
+**LEGAL.md**: nessun aggiornamento — solo metadata/build-time, zero runtime data/tracking.
+
+**Verifiche**: typecheck ✅ · build ✅ (154 pagine statiche, 3 topic landing pages) · `git diff --check` ✅
+
+**Title finale atteso**: `<title>The Trolley Problem — Would You Pull the Lever? | SplitVote</title>` (una volta)
+
+**Residuo noto**: import `getIndexableTopics` in `app/[topicSlug]/page.tsx` è pre-esistente dead import (il file calcola `isIndexable` inline) — out of scope, non causa errori.
+
+---
+
+## Sprint completati — P1 Already-Voted UX + Core Loop Clarity (3 Maggio 2026)
+
+**Obiettivo**: client-side detection dei voti già espressi su home/trending, badge + redirect verso results, chiarezza visiva del game loop.
+
+**Modifiche**:
+- `components/DilemmaCard.tsx`: aggiunto `'voted'` al tipo `DilemmaCardBadge`; badge `✓ Voted` / `✓ Votato` in `bg-green-500/20 text-green-400 border border-green-500/30`
+- `components/VotedDilemmaCard.tsx` (nuovo): client component, `useState(false)` + `useEffect` che legge `document.cookie.includes(\`sv_voted_${scenario.id}=\`)` dopo hydration; swappa badge → `'voted'` e href → `resultsHref` se già votato; server render sempre nello stato non-votato (idration-safe su ISR)
+- `app/page.tsx`: import VotedDilemmaCard; subline aggiornata; game loop strip e trust strip spostati sopra DailyDilemma; label "Today's dilemma — vote anonymously" aggiunto; sezioni Trending Now / Most Voted / Latest Questions usano VotedDilemmaCard con `locale="en"`
+- `app/it/page.tsx`: stesse modifiche in IT; label "Il dilemma di oggi — vota in anonimo"; sezioni IT con `locale="it"` e href `/it/results/${id}`
+- `app/trending/page.tsx`: sezione "Trending Today" sostituisce i `<Link>` custom con griglia 2-col VotedDilemmaCard; import `Category` aggiunto per correggere tipo `DisplayItem.category: string → Category`
+- `app/it/trending/page.tsx`: sezione "Tendenze Oggi" (hasItDynamic=true path) con VotedDilemmaCard 2-col
+
+**Agenti**: product-growth-reviewer (no blockers) · frontend-ui-reviewer (`locale="en"` polish applicato) · release-readiness-reviewer (SHIP).
+
+**LEGAL.md**: no update — cookie `sv_voted_*` già documentato in Privacy Policy; nessun nuovo dato raccolto; read-only client cookie già esistente.
+
+**Verifiche**: typecheck ✅ · build ✅ (154 pagine) · `git diff --check` ✅
+
+**Residui accettati**:
+- DailyDilemma voted-state: ha già "See results" link + play page redirecta su cookie; wrapping non triviale; deferred
+- `/it/trending` empty state copy tecnica ("Il cron genera..."): deferred a sprint D separato
+
+---
+
+## Sprint completati — Docs: Agent Governance + DESIGN.md (3 Maggio 2026)
+
+**Obiettivo**: aggiungere infrastruttura di governance per sprint UI/UX e backend senza toccare codice runtime.
+
+**Modifiche**:
+- `.claude/agents/frontend-ui-reviewer.md` (nuovo): agente tecnico React/Tailwind/a11y/mobile — design token compliance, aria, touch targets, EN/IT overflow, hydration safety, loading/error/empty states
+- `.claude/agents/backend-systems-reviewer.md` (nuovo): agente data correctness — vote integrity, Redis atomicity, Supabase, API response shape, caching strategy, cron idempotency, graceful degradation
+- `CLAUDE.md`: sezione Specialist Agents aggiornata con i due nuovi agenti + Agent Pairing Rules (UI/UX sprints: product-growth + frontend-ui + release-readiness; API/data sprints: backend-systems + security (se auth) + release-readiness)
+- `DESIGN.md` (nuovo): token ufficiali, regole componenti, copy tone, vincoli accessibilità, hydration safety rules — obbligatorio per ogni sprint UI/UX
+
+**LEGAL.md**: nessun aggiornamento — solo documentazione interna, zero runtime.
+
+**Verifiche**: typecheck ✅ · build ✅ · `git diff --check` ✅
 
 ---
 

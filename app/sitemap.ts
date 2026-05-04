@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { allPosts } from '@/lib/blog'
+import { getIndexableTopics } from '@/lib/seo-topics'
 
 const BASE = 'https://splitvote.io'
 
@@ -72,6 +73,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     ]
   })
+
+  // Programmatic SEO topic landing pages (published + not noindex-gated + ≥3 related)
+  const topicRoutes = getIndexableTopics().map((t) => ({
+    url: `${BASE}/${t.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.80,
+  }))
 
   // Category pages (EN + IT)
   const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').flatMap((c) => [
@@ -219,6 +228,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: post.locale === 'it' ? 0.65 : 0.70,
     })),
+    // SEO topic landing pages
+    ...topicRoutes,
     // Category hubs
     ...categoryRoutes,
     // Static dilemmas
