@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getPost, getPostsByLocale, getAlternateUrl } from '@/lib/blog'
+import { getPublishedBlogDrafts, findPublishedPost } from '@/lib/blog-published'
 import BlogArticle from '@/components/BlogArticle'
 import JsonLd from '@/components/JsonLd'
 
@@ -10,12 +11,20 @@ interface Props {
   params: { slug: string }
 }
 
+export const revalidate = 3600
+
 export function generateStaticParams() {
   return getPostsByLocale('it').map((p) => ({ slug: p.slug }))
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const post = getPost(params.slug, 'it')
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  let post = getPost(params.slug, 'it')
+  if (!post) {
+    try {
+      const published = await getPublishedBlogDrafts()
+      post = findPublishedPost(published, params.slug, 'it') ?? undefined
+    } catch { /* Redis unavailable */ }
+  }
   if (!post) return {}
 
   const canonical = `${BASE}/it/blog/${post.slug}`
@@ -51,8 +60,14 @@ export function generateMetadata({ params }: Props): Metadata {
   }
 }
 
-export default function ITBlogPostPage({ params }: Props) {
-  const post = getPost(params.slug, 'it')
+export default async function ITBlogPostPage({ params }: Props) {
+  let post = getPost(params.slug, 'it')
+  if (!post) {
+    try {
+      const published = await getPublishedBlogDrafts()
+      post = findPublishedPost(published, params.slug, 'it') ?? undefined
+    } catch { /* Redis unavailable */ }
+  }
   if (!post) notFound()
 
   const canonical = `${BASE}/it/blog/${post.slug}`

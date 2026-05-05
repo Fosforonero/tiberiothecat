@@ -2,9 +2,10 @@ import { redis } from './redis'
 import type { ValidatedBlogArticle } from './content-generation-validate'
 
 const BLOG_DRAFTS_KEY = 'blog:drafts'
+const BLOG_PUBLISHED_KEY = 'blog:published'
 const MAX_BLOG_DRAFTS = 50
 
-export type BlogDraftStatus = 'draft' | 'approved' | 'rejected'
+export type BlogDraftStatus = 'draft' | 'approved' | 'rejected' | 'published'
 
 export interface BlogDraft {
   id: string
@@ -12,6 +13,7 @@ export interface BlogDraft {
   generatedAt: string
   approvedAt?: string
   rejectedAt?: string
+  publishedAt?: string
   topic: string
   source: ValidatedBlogArticle
   translation: ValidatedBlogArticle | null
@@ -65,5 +67,27 @@ export async function rejectBlogDraft(id: string): Promise<boolean> {
   if (idx === -1 || drafts[idx].status !== 'draft') return false
   drafts[idx] = { ...drafts[idx], status: 'rejected', rejectedAt: new Date().toISOString() }
   await redis.set(BLOG_DRAFTS_KEY, drafts)
+  return true
+}
+
+export async function publishBlogDraft(id: string): Promise<boolean> {
+  const drafts = await getBlogDrafts()
+  const idx = drafts.findIndex(d => d.id === id)
+  if (idx === -1 || drafts[idx].status !== 'approved') return false
+
+  const publishedAt = new Date().toISOString()
+  const publishedDraft: BlogDraft = { ...drafts[idx], status: 'published', publishedAt }
+
+  // Write to blog:published (source of truth for public pages — no cap, idempotent by id)
+  let published: BlogDraft[] = []
+  try {
+    published = (await redis.get<BlogDraft[]>(BLOG_PUBLISHED_KEY)) ?? []
+  } catch { /* start fresh */ }
+  await redis.set(BLOG_PUBLISHED_KEY, [publishedDraft, ...published.filter(d => d.id !== id)])
+
+  // Update blog:drafts to reflect published status (admin workflow record)
+  drafts[idx] = publishedDraft
+  await redis.set(BLOG_DRAFTS_KEY, drafts)
+
   return true
 }

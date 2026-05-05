@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { allPosts } from '@/lib/blog'
+import { getPublishedBlogDrafts } from '@/lib/blog-published'
 import { getIndexableTopics } from '@/lib/seo-topics'
 
 const BASE = 'https://splitvote.io'
@@ -73,6 +74,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     ]
   })
+
+  // Published blog draft articles (from Redis blog:published — EN + IT)
+  let publishedBlogRoutes: MetadataRoute.Sitemap[number][] = []
+  try {
+    const published = await getPublishedBlogDrafts()
+    for (const draft of published) {
+      const lastMod = draft.publishedAt ? new Date(draft.publishedAt) : now
+      publishedBlogRoutes.push({
+        url: draft.source.locale === 'it'
+          ? `${BASE}/it/blog/${draft.source.slug}`
+          : `${BASE}/blog/${draft.source.slug}`,
+        lastModified: lastMod,
+        changeFrequency: 'monthly' as const,
+        priority: draft.source.locale === 'it' ? 0.65 : 0.70,
+      })
+      if (draft.translation) {
+        publishedBlogRoutes.push({
+          url: draft.translation.locale === 'it'
+            ? `${BASE}/it/blog/${draft.translation.slug}`
+            : `${BASE}/blog/${draft.translation.slug}`,
+          lastModified: lastMod,
+          changeFrequency: 'monthly' as const,
+          priority: draft.translation.locale === 'it' ? 0.65 : 0.70,
+        })
+      }
+    }
+  } catch { /* Redis unavailable — skip published drafts */ }
 
   // Programmatic SEO topic landing pages (published + not noindex-gated + ≥3 related)
   const topicRoutes = getIndexableTopics().map((t) => ({
@@ -225,7 +253,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.70,
     },
-    // Blog articles
+    // Blog articles (static)
     ...allPosts.map((post) => ({
       url: post.locale === 'it'
         ? `${BASE}/it/blog/${post.slug}`
@@ -234,6 +262,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: post.locale === 'it' ? 0.65 : 0.70,
     })),
+    // Blog articles (published drafts from Redis)
+    ...publishedBlogRoutes,
     // SEO topic landing pages
     ...topicRoutes,
     // Category hubs

@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPostsByLocale } from '@/lib/blog'
+import type { BlogPost } from '@/lib/blog'
+import { getPublishedBlogDrafts, getPublishedPostsForLocale } from '@/lib/blog-published'
 import BlogGrid from '@/components/BlogGrid'
 
-export const revalidate = 86400
+export const revalidate = 3600
 
 const BASE = 'https://splitvote.io'
 
@@ -29,8 +31,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ITBlogIndexPage() {
-  const posts = getPostsByLocale('it')
+export default async function ITBlogIndexPage() {
+  const staticPosts = getPostsByLocale('it')
+
+  let publishedPosts: BlogPost[] = []
+  try {
+    const published = await getPublishedBlogDrafts()
+    publishedPosts = getPublishedPostsForLocale(published, 'it')
+  } catch { /* Redis unavailable — static only */ }
+
+  const staticSlugs = new Set(staticPosts.map(p => p.slug))
+  const posts = [
+    ...staticPosts,
+    ...publishedPosts.filter(p => !staticSlugs.has(p.slug)),
+  ].sort((a, b) => b.date.localeCompare(a.date))
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">

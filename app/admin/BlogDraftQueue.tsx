@@ -5,8 +5,9 @@ import type { BlogDraft, BlogDraftStatus } from '@/lib/blog-drafts'
 
 function StatusBadge({ status }: { status: BlogDraftStatus }) {
   const cls =
-    status === 'approved' ? 'bg-green-900/60 text-green-300 border-green-700' :
-    status === 'rejected' ? 'bg-red-900/60 text-red-300 border-red-700' :
+    status === 'published' ? 'bg-blue-900/60 text-blue-300 border-blue-700' :
+    status === 'approved'  ? 'bg-green-900/60 text-green-300 border-green-700' :
+    status === 'rejected'  ? 'bg-red-900/60 text-red-300 border-red-700' :
     'bg-yellow-900/60 text-yellow-300 border-yellow-700'
   return (
     <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold border ${cls}`}>
@@ -119,7 +120,7 @@ export default function BlogDraftQueue() {
     })
   }
 
-  async function act(id: string, action: 'approve' | 'reject') {
+  async function act(id: string, action: 'approve' | 'reject' | 'publish') {
     setActing(prev => ({ ...prev, [id]: true }))
     try {
       const res = await fetch(`/api/admin/blog-drafts/${id}/${action}`, { method: 'POST' })
@@ -136,9 +137,10 @@ export default function BlogDraftQueue() {
     }
   }
 
-  const draftCount    = drafts.filter(d => d.status === 'draft').length
-  const approvedCount = drafts.filter(d => d.status === 'approved').length
-  const rejectedCount = drafts.filter(d => d.status === 'rejected').length
+  const draftCount     = drafts.filter(d => d.status === 'draft').length
+  const approvedCount  = drafts.filter(d => d.status === 'approved').length
+  const rejectedCount  = drafts.filter(d => d.status === 'rejected').length
+  const publishedCount = drafts.filter(d => d.status === 'published').length
 
   return (
     <section className="bg-white/5 rounded-xl p-6 space-y-4" aria-label="Blog Draft Queue">
@@ -146,7 +148,7 @@ export default function BlogDraftQueue() {
         <div className="flex items-center gap-3 flex-wrap">
           <h2 className="text-lg font-bold text-white">Blog Draft Queue</h2>
           <span className="text-xs text-yellow-400 border border-yellow-400/40 rounded px-2 py-0.5">
-            ✅ Approve = ready for editorial — does not publish live
+            Draft → Approve → Publish (manual, admin-only)
           </span>
         </div>
         <button
@@ -159,10 +161,9 @@ export default function BlogDraftQueue() {
       </div>
 
       <p className="text-xs text-white/40 leading-relaxed">
-        Approved drafts are <strong className="text-white/60">not published automatically</strong>.
-        Approval marks the draft as ready for manual integration into{' '}
-        <code className="font-mono text-purple-300">lib/blog.ts</code>{' '}
-        after editorial review.
+        <strong className="text-white/60">Approve</strong> marks a draft as editorially ready — does not publish.{' '}
+        <strong className="text-blue-300/70">Publish</strong> (approved only) makes it live on the public blog immediately.
+        Published articles appear in <code className="font-mono text-purple-300">/blog</code> and sitemap within 1h (ISR).
       </p>
 
       {error && (
@@ -180,6 +181,7 @@ export default function BlogDraftQueue() {
           <span>Draft: <strong className="text-yellow-300">{draftCount}</strong></span>
           <span>Approved: <strong className="text-green-300">{approvedCount}</strong></span>
           <span>Rejected: <strong className="text-red-300">{rejectedCount}</strong></span>
+          <span>Published: <strong className="text-blue-300">{publishedCount}</strong></span>
         </div>
       )}
 
@@ -242,9 +244,43 @@ export default function BlogDraftQueue() {
                     </div>
                   )}
                   {draft.status === 'approved' && (
-                    <p className="text-xs text-green-300/60">
-                      Approved {draft.approvedAt ? new Date(draft.approvedAt).toLocaleDateString() : ''}
-                    </p>
+                    <div className="flex flex-col gap-1.5 items-end">
+                      <p className="text-xs text-green-300/60">
+                        Approved {draft.approvedAt ? new Date(draft.approvedAt).toLocaleDateString() : ''}
+                      </p>
+                      <button
+                        onClick={() => act(draft.id, 'publish')}
+                        disabled={isActing}
+                        className="text-xs bg-blue-900/40 hover:bg-blue-900/70 text-blue-300 border border-blue-700/40 rounded px-3 py-1 disabled:opacity-40 transition-colors"
+                      >
+                        {isActing ? '…' : '🌐 Publish'}
+                      </button>
+                    </div>
+                  )}
+                  {draft.status === 'published' && (
+                    <div className="flex flex-col gap-1 items-end">
+                      <p className="text-xs text-blue-300/60">
+                        Published {draft.publishedAt ? new Date(draft.publishedAt).toLocaleDateString() : ''}
+                      </p>
+                      <a
+                        href={draft.source.locale === 'it' ? `/it/blog/${draft.source.slug}` : `/blog/${draft.source.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                      >
+                        {draft.source.locale === 'it' ? '🇮🇹' : '🇺🇸'} /blog/{draft.source.slug} ↗
+                      </a>
+                      {draft.translation && (
+                        <a
+                          href={draft.translation.locale === 'it' ? `/it/blog/${draft.translation.slug}` : `/blog/${draft.translation.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                        >
+                          {draft.translation.locale === 'it' ? '🇮🇹' : '🇺🇸'} /blog/{draft.translation.slug} ↗
+                        </a>
+                      )}
+                    </div>
                   )}
                   {draft.status === 'rejected' && (
                     <p className="text-xs text-red-300/60">Rejected</p>
