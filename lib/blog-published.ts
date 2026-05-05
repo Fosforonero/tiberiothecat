@@ -13,6 +13,10 @@ export async function getPublishedBlogDrafts(): Promise<BlogDraft[]> {
   }
 }
 
+function stripInlineBold(text: string): string {
+  return text.replace(/\*\*(.+?)\*\*/g, '$1')
+}
+
 function bodyToSections(body: string): SectionType[] {
   const lines = body.split('\n')
   const result: SectionType[] = []
@@ -31,12 +35,12 @@ function bodyToSections(body: string): SectionType[] {
 
     if (trimmed.startsWith('## ')) {
       flushList()
-      result.push({ type: 'h2', text: trimmed.slice(3).trim() })
+      result.push({ type: 'h2', text: stripInlineBold(trimmed.slice(3).trim()) })
       continue
     }
     if (trimmed.startsWith('### ')) {
       flushList()
-      result.push({ type: 'h3', text: trimmed.slice(4).trim() })
+      result.push({ type: 'h3', text: stripInlineBold(trimmed.slice(4).trim()) })
       continue
     }
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {

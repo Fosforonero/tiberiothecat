@@ -5,6 +5,18 @@ import { scenarios } from '@/lib/scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import BlogShareButton from '@/components/BlogShareButton'
 
+function renderInline(text: string): React.ReactNode {
+  const parts = text.split(/\*\*(.+?)\*\*/)
+  if (parts.length === 1) return text
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+      )}
+    </>
+  )
+}
+
 interface Props {
   post: BlogPost
   localePrefix?: '' | '/it'
@@ -87,7 +99,7 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
           if (section.type === 'p') {
             return (
               <p key={i} className="text-[var(--text)] opacity-80 leading-relaxed">
-                {section.text}
+                {renderInline(section.text)}
               </p>
             )
           }
@@ -97,7 +109,7 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
                 {section.items.map((item, j) => (
                   <li key={j} className="flex gap-2 text-[var(--text)] opacity-80 leading-relaxed">
                     <span className="text-violet-400 flex-shrink-0 mt-1">–</span>
-                    <span>{item}</span>
+                    <span>{renderInline(item)}</span>
                   </li>
                 ))}
               </ul>
