@@ -11,8 +11,6 @@ interface Props {
   params: { slug: string }
 }
 
-export const revalidate = 3600
-
 export function generateStaticParams() {
   return getPostsByLocale('en').map((p) => ({ slug: p.slug }))
 }
