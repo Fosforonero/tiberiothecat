@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { TrendingUp, Scale, Cpu, Users, Heart, Building2, Compass } from 'lucide-react'
+import { TrendingUp, Scale, Cpu, Users, Heart, Building2, Compass, BookOpen } from 'lucide-react'
 
 const EN_LINKS = [
   { href: '/trending',               label: 'Trending',    icon: TrendingUp, color: 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 hover:border-purple-500/20' },
@@ -11,6 +11,7 @@ const EN_LINKS = [
   { href: '/category/society',       label: 'Society',     icon: Users,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/category/relationships', label: 'Love',        icon: Heart,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/personality',            label: 'My Profile',  icon: Compass,    color: 'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-500/20' },
+  { href: '/blog',                   label: 'Blog',        icon: BookOpen,   color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/business',               label: 'Business',    icon: Building2,  color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
 ]
 
@@ -21,6 +22,7 @@ const IT_LINKS = [
   { href: '/it/category/society',       label: 'Società',     icon: Users,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/it/category/relationships', label: 'Amore',       icon: Heart,      color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/it/personality',            label: 'Il Mio Profilo', icon: Compass, color: 'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-500/20' },
+  { href: '/it/blog',                   label: 'Blog',        icon: BookOpen,   color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
   { href: '/it/faq',                    label: 'FAQ',         icon: Building2,  color: 'text-[var(--muted)] hover:text-white hover:bg-white/5' },
 ]
 
