@@ -24,7 +24,7 @@ function getDailyScenario(all: Scenario[]): Scenario {
 export default async function HomePage() {
   let dynamicScenarios: DynamicScenario[] = []
   try {
-    dynamicScenarios = await getCachedDynamicScenarios()
+    dynamicScenarios = (await getCachedDynamicScenarios()).filter(s => s.locale === 'en')
   } catch {
     // Redis unavailable
   }

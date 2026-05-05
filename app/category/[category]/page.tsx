@@ -68,7 +68,7 @@ export default async function CategoryPage({ params }: Props) {
   try {
     const dynamic = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
-    dynamicFiltered = dynamic.filter((d) => d.category === category && !staticIds.has(d.id))
+    dynamicFiltered = dynamic.filter((d) => d.category === category && d.locale === 'en' && !staticIds.has(d.id))
   } catch { /* Redis unavailable */ }
 
   const allForCategory = [...dynamicFiltered, ...staticFiltered]

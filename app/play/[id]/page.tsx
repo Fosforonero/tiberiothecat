@@ -131,7 +131,7 @@ export default async function PlayPage({ params, searchParams }: Props) {
   let dynamicScenarios: Awaited<ReturnType<typeof getDynamicScenarios>> = []
   let allScenarios: Scenario[] = [...scenarios]
   try {
-    dynamicScenarios = await getDynamicScenarios()
+    dynamicScenarios = (await getDynamicScenarios()).filter((s) => s.locale === 'en')
     const staticIds = new Set(scenarios.map((s) => s.id))
     allScenarios = [...scenarios, ...dynamicScenarios.filter((d) => !staticIds.has(d.id))]
   } catch {

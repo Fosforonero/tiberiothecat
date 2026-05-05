@@ -73,7 +73,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
     : null
 
   let dynamicScenarios: DynamicScenario[] = []
-  try { dynamicScenarios = await getCachedDynamicScenarios() } catch { /* non-blocking */ }
+  try { dynamicScenarios = (await getCachedDynamicScenarios()).filter(s => s.locale === 'en') } catch { /* non-blocking */ }
 
   let votedIds = new Set<string>()
   let userDetected = false
