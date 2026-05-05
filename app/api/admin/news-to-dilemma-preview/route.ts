@@ -143,7 +143,7 @@ function parsePreview(text: string): { ok: true; preview: DilemmaPreview } | { o
 
   const category = typeof o.category === 'string' && VALID_CATEGORIES.has(o.category)
     ? o.category
-    : 'ethics'
+    : 'morality'
 
   const seoKeywords: string[] = Array.isArray(o.seoKeywords)
     ? (o.seoKeywords as unknown[]).filter((k): k is string => typeof k === 'string').slice(0, 6)
