@@ -94,6 +94,7 @@ export default function BlogDraftQueue() {
   const [error, setError]         = useState<string | null>(null)
   const [expanded, setExpanded]   = useState<Set<string>>(new Set())
   const [acting, setActing]       = useState<Record<string, boolean>>({})
+  const [exporting, setExporting] = useState(false)
 
   const fetchDrafts = useCallback(async () => {
     setLoading(true)
@@ -111,6 +112,27 @@ export default function BlogDraftQueue() {
   }, [])
 
   useEffect(() => { fetchDrafts() }, [fetchDrafts])
+
+  async function exportPublished() {
+    setExporting(true)
+    try {
+      const res = await fetch('/api/admin/blog-published/export')
+      if (!res.ok) { alert('Export failed'); return }
+      const blob = await res.blob()
+      const filename = res.headers.get('Content-Disposition')?.match(/filename="([^"]+)"/)?.[1]
+        ?? 'blog-published-export.json'
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      alert('Network error during export')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   function toggleExpand(id: string) {
     setExpanded(prev => {
@@ -151,13 +173,22 @@ export default function BlogDraftQueue() {
             Draft → Approve → Publish (manual, admin-only)
           </span>
         </div>
-        <button
-          onClick={fetchDrafts}
-          disabled={loading}
-          className="text-xs text-white/50 hover:text-white border border-white/10 rounded px-3 py-1 disabled:opacity-40"
-        >
-          {loading ? 'Loading…' : '↻ Refresh'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportPublished}
+            disabled={exporting}
+            className="text-xs text-white/50 hover:text-white border border-white/10 rounded px-3 py-1 disabled:opacity-40"
+          >
+            {exporting ? 'Exporting…' : '↓ Export published JSON'}
+          </button>
+          <button
+            onClick={fetchDrafts}
+            disabled={loading}
+            className="text-xs text-white/50 hover:text-white border border-white/10 rounded px-3 py-1 disabled:opacity-40"
+          >
+            {loading ? 'Loading…' : '↻ Refresh'}
+          </button>
+        </div>
       </div>
 
       <p className="text-xs text-white/40 leading-relaxed">
