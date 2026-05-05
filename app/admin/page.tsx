@@ -6,7 +6,7 @@ import {
   Users, Vote, Trophy, ClipboardList, Flame, UserPlus,
   Clock, CheckCircle, XCircle, Flag, Star, Settings,
   LayoutDashboard, UserCircle, TrendingUp, Eye, EyeOff,
-  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap, Search, ShieldCheck,
+  ThumbsUp, MessageSquare, BookOpen, BarChart2, Zap, Search, ShieldCheck, Inbox,
 } from 'lucide-react'
 import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
@@ -14,6 +14,8 @@ import GenerateDraftPanel from './GenerateDraftPanel'
 import BlogDraftQueue from './BlogDraftQueue'
 import SeedBatchPanel from './SeedBatchPanel'
 import ScenarioQAEditor from './ScenarioQAEditor'
+import ContentSignalsPanel from './ContentSignalsPanel'
+import NewsToDilemmaPreviewPanel from './NewsToDilemmaPreviewPanel'
 import type { UserRole } from '@/lib/admin-auth'
 import { getUserEntitlements } from '@/lib/entitlements'
 import RolesPanel from './RolesPanel'
@@ -24,8 +26,8 @@ import { getFeedbackBatchDetail } from '@/lib/redis'
 export const metadata = { title: 'Admin | SplitVote' }
 export const dynamic = 'force-dynamic'
 
-type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'blog' | 'monetization' | 'roles'
-const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'blog', 'monetization', 'roles']
+type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'content-signals' | 'blog' | 'monetization' | 'roles'
+const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'content-signals', 'blog', 'monetization', 'roles']
 
 interface AdminProps {
   searchParams: { preview?: string; tab?: string }
@@ -255,21 +257,23 @@ export default async function AdminPage({ searchParams }: AdminProps) {
   ]
 
   const baseTabs = locale === 'it' ? [
-    { id: 'overview'     as AdminTab, label: 'Panoramica',     Icon: LayoutDashboard },
-    { id: 'voting'       as AdminTab, label: 'Voti',           Icon: Vote            },
-    { id: 'content'      as AdminTab, label: 'Contenuti',      Icon: ClipboardList   },
-    { id: 'content-qa'   as AdminTab, label: 'QA contenuti',   Icon: Search          },
-    { id: 'ai-drafts'    as AdminTab, label: 'Bozze AI',       Icon: Zap             },
-    { id: 'blog'         as AdminTab, label: 'Blog',           Icon: BookOpen        },
-    { id: 'monetization' as AdminTab, label: 'Monetizzazione', Icon: Star            },
+    { id: 'overview'         as AdminTab, label: 'Panoramica',       Icon: LayoutDashboard },
+    { id: 'voting'           as AdminTab, label: 'Voti',             Icon: Vote            },
+    { id: 'content'          as AdminTab, label: 'Contenuti',        Icon: ClipboardList   },
+    { id: 'content-qa'       as AdminTab, label: 'QA contenuti',     Icon: Search          },
+    { id: 'ai-drafts'        as AdminTab, label: 'Bozze AI',         Icon: Zap             },
+    { id: 'content-signals'  as AdminTab, label: 'Content Signals',  Icon: Inbox           },
+    { id: 'blog'             as AdminTab, label: 'Blog',             Icon: BookOpen        },
+    { id: 'monetization'     as AdminTab, label: 'Monetizzazione',   Icon: Star            },
   ] : [
-    { id: 'overview'     as AdminTab, label: 'Overview',      Icon: LayoutDashboard },
-    { id: 'voting'       as AdminTab, label: 'Voting',         Icon: Vote            },
-    { id: 'content'      as AdminTab, label: 'Content',        Icon: ClipboardList   },
-    { id: 'content-qa'   as AdminTab, label: 'Content QA',     Icon: Search          },
-    { id: 'ai-drafts'    as AdminTab, label: 'AI Drafts',      Icon: Zap             },
-    { id: 'blog'         as AdminTab, label: 'Blog',           Icon: BookOpen        },
-    { id: 'monetization' as AdminTab, label: 'Monetization',   Icon: Star            },
+    { id: 'overview'         as AdminTab, label: 'Overview',         Icon: LayoutDashboard },
+    { id: 'voting'           as AdminTab, label: 'Voting',           Icon: Vote            },
+    { id: 'content'          as AdminTab, label: 'Content',          Icon: ClipboardList   },
+    { id: 'content-qa'       as AdminTab, label: 'Content QA',       Icon: Search          },
+    { id: 'ai-drafts'        as AdminTab, label: 'AI Drafts',        Icon: Zap             },
+    { id: 'content-signals'  as AdminTab, label: 'Content Signals',  Icon: Inbox           },
+    { id: 'blog'             as AdminTab, label: 'Blog',             Icon: BookOpen        },
+    { id: 'monetization'     as AdminTab, label: 'Monetization',     Icon: Star            },
   ]
   const TABS = isSuperAdmin
     ? [...baseTabs, { id: 'roles' as AdminTab, label: 'Roles', Icon: ShieldCheck }]
@@ -692,6 +696,27 @@ export default async function AdminPage({ searchParams }: AdminProps) {
               <CronDebug />
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          TAB: Content Signals
+      ══════════════════════════════════════════════ */}
+      {activeTab === 'content-signals' && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-4 flex items-start gap-3">
+            <Inbox size={16} className="text-blue-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-bold text-blue-300 mb-1">Content signals pipeline — Phase 0</p>
+              <p className="text-xs text-white/50 leading-relaxed">
+                Two tools: <strong className="text-white/70">Content Signals Intake</strong> validates and risk-flags structured items
+                (no AI, no writes). <strong className="text-white/70">News → Dilemma Preview</strong> uses OpenRouter to abstract
+                a normalised item into a universal moral dilemma preview (no publish, no DB writes).
+              </p>
+            </div>
+          </div>
+          <ContentSignalsPanel />
+          <NewsToDilemmaPreviewPanel />
         </div>
       )}
 
