@@ -9,9 +9,42 @@
 import { redis } from './redis'
 import type { Scenario } from './scenarios'
 
-const DYNAMIC_KEY = 'dynamic:scenarios'
-const DRAFTS_KEY  = 'dynamic:drafts'
-const MAX_DRAFTS  = 120
+const DYNAMIC_KEY      = 'dynamic:scenarios'
+const DRAFTS_KEY       = 'dynamic:drafts'
+const MAX_DRAFTS       = 120
+const APPROVE_LOCK_KEY = 'dynamic:approve-lock'
+const LOCK_TTL_MS      = 5000
+
+export class ApproveLockError extends Error {
+  constructor() {
+    super('Another approval is in progress')
+    this.name = 'ApproveLockError'
+  }
+}
+
+async function acquireApproveLock(): Promise<string | null> {
+  const token = globalThis.crypto.randomUUID()
+  const result = await redis.set(APPROVE_LOCK_KEY, token, { nx: true, px: LOCK_TTL_MS })
+  return result === 'OK' ? token : null
+}
+
+async function releaseApproveLock(token: string): Promise<void> {
+  const lua = `
+    if redis.call("GET", KEYS[1]) == ARGV[1] then
+      return redis.call("DEL", KEYS[1])
+    else
+      return 0
+    end
+  `
+  await redis.eval(lua, [APPROVE_LOCK_KEY], [token])
+}
+
+// Strict read: does not swallow errors. Callers inside the approve lock
+// need real failures to propagate rather than silently returning [].
+async function getApprovedScenariosStrict(): Promise<DynamicScenario[]> {
+  const raw = await redis.get<DynamicScenario[]>(DYNAMIC_KEY)
+  return Array.isArray(raw) ? raw.map(s => ({ ...s, status: s.status ?? 'approved' })) : []
+}
 
 export type DilemmaStatus = 'draft' | 'approved' | 'rejected'
 export type TrendSource   = 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed' | 'openrouter'
@@ -114,22 +147,34 @@ export async function saveDraftScenarios(newOnes: DynamicScenario[]): Promise<vo
 }
 
 export async function approveDraftScenario(id: string): Promise<boolean> {
-  const drafts = await getDraftScenarios()
-  const idx = drafts.findIndex(s => s.id === id)
-  if (idx === -1) return false
+  const token = await acquireApproveLock()
+  if (!token) throw new ApproveLockError()
 
-  const scenario: DynamicScenario = {
-    ...drafts[idx],
-    status: 'approved',
-    approvedAt: new Date().toISOString(),
+  try {
+    const drafts = await getDraftScenarios()
+    const idx = drafts.findIndex(s => s.id === id)
+    if (idx === -1) return false
+
+    const scenario: DynamicScenario = {
+      ...drafts[idx],
+      status: 'approved',
+      approvedAt: new Date().toISOString(),
+    }
+
+    const approved = await getApprovedScenariosStrict()
+    const newDrafts = drafts.filter(s => s.id !== id)
+
+    if (!approved.some(s => s.id === scenario.id)) {
+      // Write approved list first — if this fails, draft stays in queue (recoverable).
+      await redis.set(DYNAMIC_KEY, [scenario, ...approved])
+    }
+    // Remove from draft queue only after approved write succeeds.
+    await redis.set(DRAFTS_KEY, newDrafts)
+
+    return true
+  } finally {
+    await releaseApproveLock(token)
   }
-  const newDrafts = drafts.filter(s => s.id !== id)
-
-  await Promise.all([
-    redis.set(DRAFTS_KEY, newDrafts),
-    saveDynamicScenarios([scenario]),
-  ])
-  return true
 }
 
 export async function rejectDraftScenario(id: string): Promise<boolean> {

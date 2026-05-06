@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { approveDraftScenario } from '@/lib/dynamic-scenarios'
+import { approveDraftScenario, ApproveLockError } from '@/lib/dynamic-scenarios'
 import { requireAdmin } from '@/lib/admin-guard'
 import { revalidateTag, revalidatePath } from 'next/cache'
 
@@ -13,7 +13,20 @@ export async function POST(
   const auth = await requireAdmin()
   if (auth instanceof NextResponse) return auth
 
-  const ok = await approveDraftScenario(params.id)
+  let ok: boolean
+  try {
+    ok = await approveDraftScenario(params.id)
+  } catch (err) {
+    if (err instanceof ApproveLockError) {
+      return NextResponse.json(
+        { error: 'approve_in_progress', retryable: true, message: 'Another approval is in progress. Retry in a few seconds.' },
+        { status: 503 },
+      )
+    }
+    console.error('[approve/route] Unexpected error during approveDraftScenario:', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+
   if (!ok) {
     return NextResponse.json({ error: 'Draft not found' }, { status: 404 })
   }
