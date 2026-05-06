@@ -8,6 +8,7 @@ import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
 import NavLinks from '@/components/NavLinks'
+import LocaleAwareLogo from '@/components/LocaleAwareLogo'
 import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
@@ -168,17 +169,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="border-b border-[var(--border)] px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
           style={{ backdropFilter: 'blur(12px)', background: 'rgba(7,7,24,0.75)' }}>
 
-          {/* Logo — icon on mobile, wordmark on desktop */}
-          <Link href="/" className="flex-shrink-0 flex items-center group" aria-label="SplitVote home">
-            {/* Wordmark PNG — visible on all screen sizes */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/splitvote_wordmark.png"
-              alt="SplitVote"
-              height={28}
-              className="h-[28px] w-auto flex-shrink-0"
-            />
-          </Link>
+          {/* Logo — locale-aware: links to /it on IT pages, / elsewhere */}
+          <LocaleAwareLogo />
 
           {/* Desktop category links — locale-aware */}
           <NavLinks />

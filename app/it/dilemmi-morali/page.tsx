@@ -24,27 +24,27 @@ export const metadata: Metadata = {
   },
 }
 
-const DILEMMI = [
-  'Azioneresti una leva per deviare un tram fuori controllo — uccidendo uno per salvarne cinque?',
-  'Ruberesti medicinali per salvare la vita di tuo figlio?',
-  'Sacrificheresti una persona innocente per salvarne cinque?',
-  'Diresti una verità dolorosa che potrebbe distruggere la felicità di qualcuno per sempre?',
-  'Denunceresti il crimine grave di un amico intimo, sapendo che lo rovinerebbe?',
-  'Menteresti per proteggere qualcuno che ami da un dolore insopportabile?',
-  'Accetteresti dei soldi sapendo che provengono da una fonte non etica?',
-  'Violeresti una legge ingiusta per fare la cosa giusta?',
-  'Doneresti un rene a uno sconosciuto che altrimenti morirebbe?',
-  'Spingeresti una persona davanti a un tram per fermarlo e salvarne cinque?',
-  'Riveleresti un segreto che libererebbe un innocente ma distruggerebbe la tua famiglia?',
-  'Useresti una singola bugia per prevenire una grande ingiustizia?',
-  'Lasceresti morire cinque persone piuttosto che violare i diritti di una?',
-  "Copriresti l'errore di una persona cara che ha danneggiato altri?",
-  'Metteresti fine alle sofferenze di qualcuno contro la sua volontà dichiarata, se credi che sia l\'atto più umano?',
-  'Hackeresti illegalmente un sistema per smascherare una frode aziendale che mette a rischio vite umane?',
-  'Rinunceresti alla tua libertà per garantire la sicurezza di tutti quelli che ami?',
-  'Tradiresti il tuo Paese per prevenire una guerra che ucciderebbe migliaia di persone?',
-  'Permetteresti a una persona di soffrire indefinitamente per garantire la felicità di milioni?',
-  'Sacrificheresti il tuo futuro per riparare il danno causato da qualcuno della tua famiglia?',
+const DILEMMI: { text: string; id?: string }[] = [
+  { text: 'Azioneresti una leva per deviare un tram fuori controllo — uccidendo uno per salvarne cinque?', id: 'trolley' },
+  { text: 'Ruberesti medicinali per salvare la vita di tuo figlio?', id: 'steal-medicine' },
+  { text: 'Sacrificheresti una persona innocente per salvarne cinque?', id: 'organ-harvest' },
+  { text: 'Diresti una verità dolorosa che potrebbe distruggere la felicità di qualcuno per sempre?', id: 'truth-friend' },
+  { text: 'Denunceresti il crimine grave di un amico intimo, sapendo che lo rovinerebbe?', id: 'report-friend' },
+  { text: 'Menteresti per proteggere qualcuno che ami da un dolore insopportabile?' },
+  { text: 'Accetteresti dei soldi sapendo che provengono da una fonte non etica?' },
+  { text: 'Violeresti una legge ingiusta per fare la cosa giusta?' },
+  { text: 'Doneresti un rene a uno sconosciuto che altrimenti morirebbe?' },
+  { text: 'Spingeresti una persona davanti a un tram per fermarlo e salvarne cinque?' },
+  { text: 'Riveleresti un segreto che libererebbe un innocente ma distruggerebbe la tua famiglia?' },
+  { text: 'Useresti una singola bugia per prevenire una grande ingiustizia?', id: 'deepfake-expose' },
+  { text: 'Lasceresti morire cinque persone piuttosto che violare i diritti di una?' },
+  { text: "Copriresti l'errore di una persona cara che ha danneggiato altri?", id: 'cover-accident' },
+  { text: "Metteresti fine alle sofferenze di qualcuno contro la sua volontà dichiarata, se credi che sia l'atto più umano?", id: 'mercy-kill' },
+  { text: 'Hackeresti illegalmente un sistema per smascherare una frode aziendale che mette a rischio vite umane?', id: 'whistleblower' },
+  { text: 'Rinunceresti alla tua libertà per garantire la sicurezza di tutti quelli che ami?' },
+  { text: 'Tradiresti il tuo Paese per prevenire una guerra che ucciderebbe migliaia di persone?' },
+  { text: 'Permetteresti a una persona di soffrire indefinitamente per garantire la felicità di milioni?' },
+  { text: 'Sacrificheresti il tuo futuro per riparare il danno causato da qualcuno della tua famiglia?' },
 ]
 
 const jsonLd = {
@@ -56,7 +56,8 @@ const jsonLd = {
   itemListElement: DILEMMI.map((d, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    name: d,
+    name: d.text,
+    ...(d.id ? { url: `${BASE_URL}/it/play/${d.id}` } : {}),
   })),
 }
 
@@ -64,6 +65,13 @@ export default function DilemmiMoraliPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <JsonLd data={jsonLd} />
+
+      {/* Breadcrumb */}
+      <nav className="text-xs text-[var(--muted)] mb-8" aria-label="Percorso di navigazione">
+        <Link href="/it" className="hover:text-white transition-colors">Tutti i dilemmi</Link>
+        <span className="mx-2">›</span>
+        <span className="text-white">Dilemmi morali</span>
+      </nav>
 
       {/* Hero */}
       <div className="text-center mb-12">
@@ -103,7 +111,7 @@ export default function DilemmiMoraliPage() {
           className="text-xl font-black text-white mb-6 flex items-center gap-2"
         >
           <span className="text-2xl">⚖️</span>
-          20 Dilemmi Morali
+          20 dilemmi morali
         </h2>
         <ol className="space-y-3">
           {DILEMMI.map((d, i) => (
@@ -114,7 +122,16 @@ export default function DilemmiMoraliPage() {
               <span className="flex-shrink-0 w-7 h-7 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold flex items-center justify-center">
                 {i + 1}
               </span>
-              <span className="text-sm sm:text-base text-white leading-snug">{d}</span>
+              {d.id ? (
+                <Link
+                  href={`/it/play/${d.id}`}
+                  className="text-sm sm:text-base text-white leading-snug hover:text-red-300 transition-colors"
+                >
+                  {d.text}
+                </Link>
+              ) : (
+                <span className="text-sm sm:text-base text-white leading-snug">{d.text}</span>
+              )}
             </li>
           ))}
         </ol>
@@ -130,7 +147,7 @@ export default function DilemmiMoraliPage() {
             { href: '/it/play/trolley', label: 'Il Problema del Tram — azioneresti la leva o staresti fermo?' },
             { href: '/it/play/steal-medicine', label: 'Rubare le Medicine — lo faresti per salvare tuo figlio?' },
             { href: '/it/play/organ-harvest', label: 'Trapianto di Organi — sacrificheresti uno per salvarne cinque?' },
-            { href: '/it/play/whistleblower', label: 'Whistleblower — denunceresti la verità o resteresti in silenzio?' },
+            { href: '/it/play/whistleblower', label: 'Segnalare un illecito — denunceresti o resteresti in silenzio?' },
             { href: '/it/play/report-friend', label: 'Denunciare un Amico — giustizia o lealtà?' },
           ].map(({ href, label }) => (
             <li key={href}>
@@ -153,7 +170,7 @@ export default function DilemmiMoraliPage() {
         </p>
         <div className="flex flex-wrap gap-3">
           <Link href="/it/domande-would-you-rather" className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">
-            Domande Would You Rather →
+            Domande preferiresti →
           </Link>
           <Link href="/it/trending" className="text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors">
             Dilemmi di Tendenza →
