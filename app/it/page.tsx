@@ -4,6 +4,7 @@ import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
+import DilemmaGrid from '@/components/DilemmaGrid'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
 import LangSwitcher from '@/components/LangSwitcher'
@@ -137,11 +138,13 @@ export default async function ItPage() {
     dynamicIT = await getCachedDynamicScenariosByLocale('it')
   } catch { /* Redis unavailable */ }
 
+  // Full IT catalog: unique dynamic IT + all static translated — drives both daily pool and browse grid.
+  const staticIds = new Set(scenarios.map((s) => s.id))
+  const uniqueDynamicIT = dynamicIT.filter((d) => !staticIds.has(d.id))
+  const allScenariosIT: Scenario[] = [...uniqueDynamicIT, ...scenarios.map(translateScenarioToItalian)]
+
   // Daily dilemma for IT — prefers dynamic IT, falls back to translated static pool
-  const allITPool: Scenario[] = [
-    ...dynamicIT,
-    ...scenarios.map(translateScenarioToItalian),
-  ]
+  const allITPool: Scenario[] = allScenariosIT
   const dailyIT = getDailyScenario(allITPool)
 
   // Batch vote counts for featured + dynamic + daily
@@ -315,6 +318,14 @@ export default async function ItPage() {
           </section>
         )}
 
+        {/* ── Tutti i dilemmi ── */}
+        <section className="mb-12">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
+            📂 Tutti i dilemmi
+          </h2>
+          <DilemmaGrid scenarios={allScenariosIT} locale="it" />
+        </section>
+
         {/* ── Categorie ── */}
         <section className="mb-12">
           <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5 flex items-center gap-2">
@@ -371,17 +382,6 @@ export default async function ItPage() {
           </div>
         </section>
 
-        {/* ── CTA finale ── */}
-        <section className="text-center py-8">
-          <h2 className="text-2xl font-black mb-3">Pronto a scegliere?</h2>
-          <p className="text-[var(--muted)] mb-6">Unisciti a migliaia di persone che votano ogni giorno.</p>
-          <Link
-            href="/it"
-            className="inline-block rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)]"
-          >
-            Vedi tutti i dilemmi →
-          </Link>
-        </section>
       </div>
     </>
   )

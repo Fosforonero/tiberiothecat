@@ -4,19 +4,33 @@ import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
 import { CATEGORIES } from '@/lib/scenarios'
 import type { Scenario, Category } from '@/lib/scenarios'
+import { CATEGORY_LABELS_IT } from '@/lib/scenarios-it'
 import Link from 'next/link'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 
 interface Props {
   scenarios: Scenario[]
+  locale?: 'en' | 'it'
 }
 
-export default function DilemmaGrid({ scenarios }: Props) {
+export default function DilemmaGrid({ scenarios, locale = 'en' }: Props) {
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all')
 
   const filtered = activeCategory === 'all'
     ? scenarios
     : scenarios.filter((s) => s.category === activeCategory)
+
+  function catLabel(value: Category | 'all', enLabel: string): string {
+    if (locale !== 'it') return enLabel
+    if (value === 'all') return 'Tutti'
+    return CATEGORY_LABELS_IT[value] ?? enLabel
+  }
+
+  const playHref = (id: string) => locale === 'it' ? `/it/play/${id}` : `/play/${id}`
+
+  const countText = locale === 'it'
+    ? `${filtered.length} dilemm${filtered.length !== 1 ? 'i' : 'a'}`
+    : `${filtered.length} dilemma${filtered.length !== 1 ? 's' : ''}`
 
   return (
     <>
@@ -33,14 +47,14 @@ export default function DilemmaGrid({ scenarios }: Props) {
               }`}
           >
             <span>{cat.emoji}</span>
-            <span className="hidden sm:inline">{cat.label}</span>
+            <span className="hidden sm:inline">{catLabel(cat.value, cat.label)}</span>
           </button>
         ))}
       </div>
 
       {/* Count */}
       <p className="text-center text-xs text-[var(--muted)] mb-5 opacity-60">
-        {filtered.length} dilemma{filtered.length !== 1 ? 's' : ''}
+        {countText}
       </p>
 
       {/* Grid */}
@@ -48,7 +62,7 @@ export default function DilemmaGrid({ scenarios }: Props) {
         {filtered.map((scenario) => (
           <Link
             key={scenario.id}
-            href={`/play/${scenario.id}`}
+            href={playHref(scenario.id)}
             className="card-neon group block rounded-2xl p-5 sm:p-6"
           >
             <div className="flex items-start gap-3 sm:gap-4">
@@ -56,12 +70,12 @@ export default function DilemmaGrid({ scenarios }: Props) {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
-                    {scenario.category}
+                    {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
                   </span>
                   {'generatedAt' in scenario && (
                     <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5">
                       <Sparkles size={9} />
-                      trending
+                      {locale === 'it' ? 'nuovo' : 'trending'}
                     </span>
                   )}
                 </div>
