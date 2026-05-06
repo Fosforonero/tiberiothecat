@@ -10,6 +10,7 @@ import {
   type SeoTopic,
 } from '@/lib/seo-topics'
 import { getScenario } from '@/lib/scenarios'
+import { getItalianScenario } from '@/lib/scenarios-it'
 import { getVotes } from '@/lib/redis'
 
 const BASE_URL = 'https://splitvote.io'
@@ -115,11 +116,11 @@ export default async function ITTopicLandingPage({ params }: Props) {
   const topic = getTopicBySlugAndLocale(params.topicSlug, 'it')
   if (!topic) notFound()
 
-  const primaryScenario = getScenario(topic.primaryScenarioId)
+  const primaryScenario = getItalianScenario(topic.primaryScenarioId)
   if (!primaryScenario) notFound()
 
   const relatedScenarios = topic.relatedScenarioIds
-    .map((id) => getScenario(id))
+    .map((id) => getItalianScenario(id))
     .filter((s): s is NonNullable<typeof s> => s !== undefined)
     .slice(0, 5)
 
