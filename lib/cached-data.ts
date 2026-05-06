@@ -16,16 +16,19 @@ import { getTrendingScenarioIds24h } from './trending'
 import type { DynamicScenario } from './dynamic-scenarios'
 
 // Approved dynamic scenario list — refreshed hourly or on-demand via revalidateTag.
+// keyParts bumped to -v2 so old untagged Data Cache entries (pre-f2d4b20) are
+// bypassed immediately; new entries are created with tags from the first request.
 export const getCachedDynamicScenarios = unstable_cache(
   (): Promise<DynamicScenario[]> => getDynamicScenarios(),
-  ['dynamic-scenarios'],
+  ['dynamic-scenarios-v2'],
   { revalidate: 3600, tags: ['dynamic-scenarios'] },
 )
 
 // Locale-filtered approved scenarios — refreshed hourly or on-demand via revalidateTag.
+// keyParts bumped to -v2 for the same reason.
 export const getCachedDynamicScenariosByLocale = unstable_cache(
   (locale: string): Promise<DynamicScenario[]> => getDynamicScenariosByLocale(locale),
-  ['dynamic-scenarios-by-locale'],
+  ['dynamic-scenarios-by-locale-v2'],
   { revalidate: 3600, tags: ['dynamic-scenarios-by-locale'] },
 )
 
