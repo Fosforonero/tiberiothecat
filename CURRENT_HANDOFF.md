@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 6 May 2026
+Last updated: 6 May 2026 (post-deploy QA 2dbb133)
 PM: Matteo
 Implementer: Claude Code
 
@@ -9,11 +9,10 @@ Implementer: Claude Code
 ## 1. Production State
 
 - **Branch:** `main`
-- **Local vs remote:** `main` is **ahead 1 commit** of `origin/main`
-  - Local HEAD: current local governance commit — `chore: add safe autonomous governance and nightly checks` (not pushed)
-  - Remote HEAD: `19f7252` — `feat: improve blog translation prompt quality and add review warning` (pushed ✅, Vercel deploy expected/in progress)
-- **Vercel deploy:** `19f7252` pushed to origin/main — deploy expected/in progress; `f9918e7` (bold fix) previously verified ✅
-- **Governance commit status:** local only, not pushed. Awaiting PM GO to push.
+- **Local vs remote:** `main` is **in sync** with `origin/main`
+  - HEAD: `2dbb133` — `feat: add Italian SEO topic landing pages` (pushed ✅, Vercel deploy verified ✅)
+- **Vercel deploy:** `2dbb133` live — post-deploy QA PASS ✅
+- **Governance commit status:** `e5121cb` — pushed ✅
 
 ### Feature state
 
@@ -29,14 +28,24 @@ Implementer: Claude Code
 | Blog published export | ✅ deployed (`cff52b4`) |
 | Blog inline bold rendering | ✅ deployed (`f9918e7`, verified) |
 | Blog translation prompt quality | ✅ pushed (`19f7252`), Vercel deploy expected/in progress |
-| Blog translation admin warning | ✅ pushed (`19f7252`), Vercel deploy expected/in progress |
+| Blog translation admin warning | ✅ deployed (`19f7252`) |
 | Research Source Registry | ✅ internal foundation only (`lib/research-sources.ts`) |
+| IT topic landing pages | ✅ live (`2dbb133`) — `/it/problema-del-carrello`, `/it/dilemmi-etici-intelligenza-artificiale`, `/it/lealta-vs-onesta` |
 
 ---
 
 ## 2. Last Completed Work
 
-### Sprint: Professional Blog Translation QA (`19f7252` — pushed ✅, Vercel deploy expected/in progress)
+### Sprint: Italian SEO topic landing pages (`2dbb133` — pushed ✅, QA PASS ✅)
+- **Files modified:**
+  - `lib/seo-topics.ts` — added `alternateSlug?` to `SeoTopic` interface; added `RESERVED_IT_SLUGS`; added `alternateSlug` to all 3 EN entries; added 3 IT topic entries (`problema-del-carrello`, `dilemmi-etici-intelligenza-artificiale`, `lealta-vs-onesta`) with natural Italian content; added helpers `getTopicBySlugAndLocale`, `getPublishedITTopics`, `getIndexableITTopics`; removed unused `getTopicBySlug`
+  - `app/it/[topicSlug]/page.tsx` — new file: IT mirror of EN topic page; locale-aware routing; Italian UI copy; hreflang `it-IT`/`en`/`x-default` cross-linking via `alternateSlug`; all links prefixed `/it/`
+  - `app/[topicSlug]/page.tsx` — switched to `getTopicBySlugAndLocale(…,'en')` in all call sites; added `alternates.languages` hreflang to IT counterpart
+  - `app/sitemap.ts` — added `getIndexableITTopics` import and `topicRoutesIT` block (`/it/${slug}`, priority 0.75, monthly)
+- **QA verified:** HTTP 200, canonical correct, hreflang EN↔IT present, sitemap includes 3 IT URLs, no 404s
+- **Residual risk:** Related dilemma card text on IT topic pages shows EN questions — static scenarios (`lib/scenarios.ts`) are not localized. Pre-existing behavior, not introduced by this sprint.
+
+### Sprint: Professional Blog Translation QA (`19f7252` — deployed ✅)
 - **Files modified:**
   - `lib/content-generation-prompts.ts` — `buildTranslationPrompt()` fully rewritten: system prompt now says "NOT to translate — produce a ${lang} article that reads as if a native ${lang}-speaking editor wrote it from scratch"; added `sourceLang`, anti-calchi rules, per-field SEO/slug/body/CTA/FAQ guidance
   - `app/admin/BlogDraftQueue.tsx` — yellow warning banner in expanded translation section: "Translation quality review required before publishing. Check: no calchi, natural phrasing, localized SEO keywords, native CTA copy."
@@ -53,7 +62,7 @@ Implementer: Claude Code
 ### Sprint: Blog draft publish flow (`a808aae` — deployed)
 - Manual publish flow: Draft → Approve → Publish in admin panel
 
-### Sprint: Governance / context engineering (current local commit — not pushed)
+### Sprint: Governance / context engineering (`e5121cb` — pushed ✅)
 - `.gitignore` — added `push_*.command` and `*.local.command` to ignore new untracked local helpers
 - `CLAUDE.md` — added `## Autonomous / Ralph-style Safe Tasks` section (GSD method, SAFE/SEMI/HUMAN classification, Ralph loop rules)
 - `scripts/nightly-check.mjs` — new aggregator script (read-only: validate-personality + check-it-copy)
@@ -66,7 +75,6 @@ Implementer: Claude Code
 
 | Step | Owner | Priority |
 |---|---|---|
-| Push current governance commit to origin/main | Matteo (GO) | **Immediate** |
 | Request AdSense review from AdSense dashboard → Sites → splitvote.io | Matteo | High |
 | Stripe live checkout QA (real card or test card, end-to-end) | Matteo | High |
 | Set `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` in Vercel Production, redeploy | Matteo | Before AI save mode re-QA |
@@ -82,11 +90,11 @@ Pre-conditions:
 
 ## 4. Active Sprint / Next Recommended Step
 
-**Immediate:** PM GO for `git push origin main` of the current governance commit (safe autonomous tasks, nightly checks, handoff schema).
+**Active sprint complete.** `2dbb133` live, QA PASS.
 
 **Next sprint candidates (ordered by impact):**
 
-1. **`app/it/[topicSlug]` route** — 3 IT topic pages currently missing; `lib/seo-topics.ts` has `locale: 'it'` entries; EN/IT parity, metadata/hreflang, no Stripe/auth/Redis/middleware/env/legal changes
+1. **IT static scenario localization foundation** — related dilemma cards on IT topic pages show EN questions; `lib/scenarios.ts` has no `it` translations; define scope before implementing (could be a field on `Scenario` or a separate IT scenarios map)
 2. **AI generation re-QA** — set `OPENROUTER_MODEL_REVIEW` env, redeploy, run 4 dry-run scenarios → unlock save mode
 3. **Stripe live QA** — end-to-end checkout with real/test card
 4. **AdSense review request** — manual step, should be done before active promotion
@@ -118,7 +126,6 @@ Without a dedicated sprint and explicit GO:
 |---|---|
 | Context rot in docs | Mitigated: this file restructured; CLAUDE.md updated |
 | `push_*.command` git noise | `.gitignore` now hides new untracked local helpers. 7 historical files already tracked (`push_growth_sprint.command` etc.) are not removed or touched — tracked files are unaffected by `.gitignore`. |
-| Current governance commit local-only — not on Vercel | Will resolve on next push (awaiting PM GO) |
 | AI generation: `review_err` for IT semantic review | Probably resolved with `OPENROUTER_MODEL_REVIEW` env — not confirmed until re-QA |
 | Stripe live payment: config correct but never tested end-to-end | Open |
 | AdSense review not yet requested | Open |
@@ -127,6 +134,7 @@ Without a dedicated sprint and explicit GO:
 | `moralfoundations.org` intermittent | Note in `lib/research-sources.ts`; verify before using on new public pages |
 | `joshua-greene.net` personal page — may move | Prefer DOI paper links in public content |
 | `<html lang="en">` on IT pages | Pre-existing issue; root layout not locale-scoped; not addressed |
+| EN dilemma card text on IT topic pages | Related dilemma cards (`/it/[topicSlug]`) display EN question text — `lib/scenarios.ts` has no IT translations. Pre-existing, not introduced by `2dbb133`. Next sprint candidate: IT static scenario localization foundation. |
 | Agent drift (agents relying on stale project history) | Mitigated: agents must read live docs per CLAUDE.md |
 | Unsafe autonomy (Ralph loops touching HUMAN_ONLY areas) | Mitigated: SAFE/SEMI/HUMAN classification added to CLAUDE.md |
 
@@ -174,11 +182,11 @@ Poi esegui:
 - git log --oneline -10
 
 Task di ripartenza:
-1. Conferma stato branch (verifica se governance commit è ancora ahead/not pushed).
+1. Conferma stato branch (main deve essere in sync con origin/main, HEAD 2dbb133).
 2. Verifica se AdSense review è già stata richiesta manualmente (non verificabile dal repo — chiedi al PM).
 3. Verifica se Stripe live QA è stato eseguito.
 4. Verifica se AI generation re-QA pre-conditions sono soddisfatte (OPENROUTER_MODEL_REVIEW env + redeploy).
-5. Proponi prossimo sprint tra: governance push, AI re-QA, Stripe QA, app/it/[topicSlug], blog cluster expansion.
+5. Proponi prossimo sprint tra: IT static scenario localization, AI re-QA, Stripe QA, blog cluster expansion.
 
 Output atteso:
 - Stato repo in 8 righe
@@ -194,7 +202,7 @@ Output atteso:
 
 > The following items were in the prior CURRENT_HANDOFF.md (4 May 2026). Marked stale where likely superseded.
 
-- `app/it/[topicSlug]` — route IT per topic landing pages non implementata. IT topics in `lib/seo-topics.ts` hanno `locale: 'it'`. **Still open.**
+- `app/it/[topicSlug]` — ✅ completato in `2dbb133`. IT topic pages live: `/it/problema-del-carrello`, `/it/dilemmi-etici-intelligenza-artificiale`, `/it/lealta-vs-onesta`. Residual risk: dilemma card text nelle pagine IT mostra domande EN — `lib/scenarios.ts` non ha traduzioni IT. Sprint candidato: IT static scenario localization foundation.
 - Blog cluster espansione — 8 articoli live (4 EN + 4 IT) al 4 maggio. Prossimi cluster: bioethics, AI accountability, virtue ethics. **Still open; may have more articles now — verify.**
 - Content Intelligence admin MVP — `lib/research-sources.ts` è il foundation layer. Admin MVP sprint non pianificato. **Still open.**
 - AdSense readiness table (4 May): all checks ✅ except "Review richiesta" ❌. **Review still not requested as of 6 May.**
