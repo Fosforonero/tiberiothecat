@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
-import { getCachedDynamicScenarios } from '@/lib/cached-data'
+import { getCachedDynamicScenarios, getCachedVotesBatch } from '@/lib/cached-data'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import { getCategoryContent } from '@/lib/categoryContent'
@@ -85,6 +85,23 @@ export default async function ItCategoryPage({ params }: Props) {
     dynamicIT = all.filter(d => d.category === category && d.locale === 'it' && !staticIds.has(d.id))
   } catch { /* Redis unavailable */ }
 
+  // Sort by total votes DESC, then by freshness (approvedAt > generatedAt > static)
+  const allForCategory = [...dynamicIT, ...staticFiltered]
+  const rawVotes = allForCategory.length > 0
+    ? await getCachedVotesBatch(allForCategory.map(s => s.id))
+    : {} as Record<string, number>
+  const voteMap = new Map(Object.entries(rawVotes))
+  const allSorted = [...allForCategory].sort((a, b) => {
+    const va = voteMap.get(a.id) ?? 0
+    const vb = voteMap.get(b.id) ?? 0
+    if (vb !== va) return vb - va
+    const da = a as DynamicScenario
+    const db = b as DynamicScenario
+    const ta = da.approvedAt ? new Date(da.approvedAt).getTime() : da.generatedAt ? new Date(da.generatedAt).getTime() : 0
+    const tb = db.approvedAt ? new Date(db.approvedAt).getTime() : db.generatedAt ? new Date(db.generatedAt).getTime() : 0
+    return tb - ta
+  })
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -118,12 +135,12 @@ export default async function ItCategoryPage({ params }: Props) {
           </h1>
           <p className="text-lg text-[var(--muted)] max-w-md mx-auto">{itMeta.description}</p>
           <p className="text-sm text-[var(--muted)] mt-3 opacity-60">
-            {dynamicIT.length + staticFiltered.length} dilemm{(dynamicIT.length + staticFiltered.length) === 1 ? 'a' : 'i'} · Voti globali in tempo reale
+            {allSorted.length} dilemm{allSorted.length === 1 ? 'a' : 'i'} · Voti globali in tempo reale
           </p>
         </div>
 
         {/* Start path CTA */}
-        {(dynamicIT.length + staticFiltered.length) >= 3 && (
+        {allSorted.length >= 3 && (
           <div className="mb-8 rounded-2xl border border-blue-500/25 bg-blue-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="font-bold text-white text-sm mb-0.5">
@@ -134,7 +151,7 @@ export default async function ItCategoryPage({ params }: Props) {
               </p>
             </div>
             <Link
-              href={`/it/play/${(dynamicIT[0] ?? staticFiltered[0]).id}?path=${category}&step=1&target=3`}
+              href={`/it/play/${allSorted[0].id}?path=${category}&step=1&target=3`}
               className="flex-shrink-0 text-sm font-bold px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors whitespace-nowrap"
             >
               Inizia percorso →
@@ -142,58 +159,29 @@ export default async function ItCategoryPage({ params }: Props) {
           </div>
         )}
 
-        {/* Dynamic IT dilemmas first */}
-        {dynamicIT.length > 0 && (
-          <div className="mb-8">
-            <p className="text-xs font-black uppercase tracking-widest text-purple-400 mb-4">✨ Tendenze</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {dynamicIT.map(scenario => (
-                <Link
-                  key={scenario.id}
-                  href={`/it/play/${scenario.id}`}
-                  className="group block rounded-2xl border border-purple-500/20 bg-[var(--surface)] p-6 hover:border-purple-500/40 hover:bg-[#1a1025] transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  <div className="flex items-start gap-4">
-                    <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 mb-2 inline-block">
-                        ✨ tendenza
-                      </span>
-                      <p className="font-semibold text-[var(--text)] leading-snug mb-4 line-clamp-3">{scenario.question}</p>
-                      <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Static scenarios */}
-        {staticFiltered.length > 0 && (
-          <div>
-            {dynamicIT.length > 0 && (
-              <p className="text-xs font-black uppercase tracking-widest text-[var(--muted)] mb-4">Classici</p>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {staticFiltered.map(scenario => (
-                <Link
-                  key={scenario.id}
-                  href={`/it/play/${scenario.id}`}
-                  className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-blue-500/40 hover:bg-[#16162a] transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  <div className="flex items-start gap-4">
-                    <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-[var(--text)] leading-snug mb-4 line-clamp-3">{scenario.question}</p>
-                      <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Merged grid — sorted by votes DESC then freshness */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {allSorted.map(scenario => (
+            <Link
+              key={scenario.id}
+              href={`/it/play/${scenario.id}`}
+              className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-blue-500/40 hover:bg-[#16162a] transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <div className="flex items-start gap-4">
+                <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  {'generatedAt' in scenario && (
+                    <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 mb-2 inline-block">
+                      ✨ tendenza
+                    </span>
+                  )}
+                  <p className="font-semibold text-[var(--text)] leading-snug mb-4 line-clamp-3">{scenario.question}</p>
+                  <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
 
         {/* Editorial + FAQ */}
         {content && (

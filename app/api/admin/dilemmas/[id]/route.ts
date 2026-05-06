@@ -62,8 +62,8 @@ export async function PATCH(
     return NextResponse.json({ error: 'No valid patchable fields provided' }, { status: 400 })
   }
 
-  const ok = await patchApprovedScenario(params.id, patch as Parameters<typeof patchApprovedScenario>[1])
-  if (!ok) {
+  const category = await patchApprovedScenario(params.id, patch as Parameters<typeof patchApprovedScenario>[1])
+  if (!category) {
     return NextResponse.json({ error: 'Scenario not found in approved pool' }, { status: 404 })
   }
 
@@ -73,6 +73,8 @@ export async function PATCH(
   revalidatePath('/it')
   revalidatePath('/trending')
   revalidatePath('/it/trending')
+  revalidatePath(`/category/${category}`)
+  revalidatePath(`/it/category/${category}`)
 
   return NextResponse.json({ ok: true, id: params.id, patched: Object.keys(patch) })
 }

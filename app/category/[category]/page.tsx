@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Category } from '@/lib/scenarios'
-import { getCachedDynamicScenarios } from '@/lib/cached-data'
+import { getCachedDynamicScenarios, getCachedVotesBatch } from '@/lib/cached-data'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getCategoryContent } from '@/lib/categoryContent'
 import type { Metadata } from 'next'
@@ -73,6 +73,22 @@ export default async function CategoryPage({ params }: Props) {
 
   const allForCategory = [...dynamicFiltered, ...staticFiltered]
 
+  // Sort by total votes DESC, then by freshness (approvedAt > generatedAt > static)
+  const rawVotes = allForCategory.length > 0
+    ? await getCachedVotesBatch(allForCategory.map(s => s.id))
+    : {} as Record<string, number>
+  const voteMap = new Map(Object.entries(rawVotes))
+  const allSorted = [...allForCategory].sort((a, b) => {
+    const va = voteMap.get(a.id) ?? 0
+    const vb = voteMap.get(b.id) ?? 0
+    if (vb !== va) return vb - va
+    const da = a as DynamicScenario
+    const db = b as DynamicScenario
+    const ta = da.approvedAt ? new Date(da.approvedAt).getTime() : da.generatedAt ? new Date(da.generatedAt).getTime() : 0
+    const tb = db.approvedAt ? new Date(db.approvedAt).getTime() : db.generatedAt ? new Date(db.generatedAt).getTime() : 0
+    return tb - ta
+  })
+
   const content = getCategoryContent(cat.value, 'en')
 
   const descriptions: Record<string, string> = {
@@ -103,8 +119,8 @@ export default async function CategoryPage({ params }: Props) {
     name: `${cat.label} Moral Dilemmas — SplitVote`,
     description: descriptions[cat.value as string],
     url: `${BASE_URL}/category/${cat.value}`,
-    numberOfItems: allForCategory.length,
-    itemListElement: allForCategory.slice(0, 20).map((s, i) => ({
+    numberOfItems: allSorted.length,
+    itemListElement: allSorted.slice(0, 20).map((s, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       name: s.question,
@@ -138,12 +154,12 @@ export default async function CategoryPage({ params }: Props) {
             {descriptions[cat.value as string]}
           </p>
           <p className="text-sm text-[var(--muted)] mt-3 opacity-60">
-            {allForCategory.length} dilemma{allForCategory.length !== 1 ? 's' : ''} · Real-time global votes
+            {allSorted.length} dilemma{allSorted.length !== 1 ? 's' : ''} · Real-time global votes
           </p>
         </div>
 
         {/* Start path CTA */}
-        {allForCategory.length >= 3 && (
+        {allSorted.length >= 3 && (
           <div className="mb-8 rounded-2xl border border-blue-500/25 bg-blue-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <p className="font-bold text-white text-sm mb-0.5">
@@ -154,7 +170,7 @@ export default async function CategoryPage({ params }: Props) {
               </p>
             </div>
             <Link
-              href={`/play/${allForCategory[0].id}?path=${cat.value}&step=1&target=3`}
+              href={`/play/${allSorted[0].id}?path=${cat.value}&step=1&target=3`}
               className="flex-shrink-0 text-sm font-bold px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors whitespace-nowrap"
             >
               Start path →
@@ -164,7 +180,7 @@ export default async function CategoryPage({ params }: Props) {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {allForCategory.map((scenario) => (
+          {allSorted.map((scenario) => (
             <Link
               key={scenario.id}
               href={`/play/${scenario.id}`}

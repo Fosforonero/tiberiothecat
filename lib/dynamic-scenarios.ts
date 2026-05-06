@@ -146,14 +146,14 @@ export async function saveDraftScenarios(newOnes: DynamicScenario[]): Promise<vo
   await redis.set(DRAFTS_KEY, merged)
 }
 
-export async function approveDraftScenario(id: string): Promise<boolean> {
+export async function approveDraftScenario(id: string): Promise<DynamicScenario | null> {
   const token = await acquireApproveLock()
   if (!token) throw new ApproveLockError()
 
   try {
     const drafts = await getDraftScenarios()
     const idx = drafts.findIndex(s => s.id === id)
-    if (idx === -1) return false
+    if (idx === -1) return null
 
     const scenario: DynamicScenario = {
       ...drafts[idx],
@@ -171,7 +171,7 @@ export async function approveDraftScenario(id: string): Promise<boolean> {
     // Remove from draft queue only after approved write succeeds.
     await redis.set(DRAFTS_KEY, newDrafts)
 
-    return true
+    return scenario
   } finally {
     await releaseApproveLock(token)
   }
@@ -189,13 +189,13 @@ type PatchableFields = Pick<DynamicScenario, 'question' | 'optionA' | 'optionB' 
 export async function patchApprovedScenario(
   id: string,
   patch: Partial<PatchableFields>,
-): Promise<boolean> {
+): Promise<string | null> {
   const scenarios = await getDynamicScenarios()
   const idx = scenarios.findIndex(s => s.id === id)
-  if (idx === -1) return false
+  if (idx === -1) return null
   scenarios[idx] = { ...scenarios[idx], ...patch }
   await redis.set(DYNAMIC_KEY, scenarios)
-  return true
+  return scenarios[idx].category
 }
 
 // ── Feedback score update ────────────────────────────────────
