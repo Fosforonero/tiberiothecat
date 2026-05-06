@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Zap, Globe, ChevronRight, Share2 } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 import { track } from '@/lib/gtag'
+import { getServerVotedIds } from '@/lib/client-voted-ids'
 import { shareQuestion } from '@/lib/share-question'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
@@ -60,10 +61,19 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
   useEffect(() => {
     setMounted(true)
     setCountdown(getMidnightCountdown())
-    if (document.cookie.includes(`sv_voted_${scenario.id}=`)) setIsVoted(true)
-    const interval = setInterval(() => {
-      setCountdown(getMidnightCountdown())
-    }, 1000)
+    const interval = setInterval(() => setCountdown(getMidnightCountdown()), 1000)
+
+    // Fast path: cookie set on this device after voting
+    if (document.cookie.includes(`sv_voted_${scenario.id}=`)) {
+      setIsVoted(true)
+    } else {
+      // Fallback: server-side voted IDs for logged-in users (cross-device consistency).
+      // Shares the same deduped Promise as VotedDilemmaCard — no extra HTTP request.
+      getServerVotedIds().then((ids) => {
+        if (ids.has(scenario.id)) setIsVoted(true)
+      })
+    }
+
     return () => clearInterval(interval)
   }, [scenario.id])
 

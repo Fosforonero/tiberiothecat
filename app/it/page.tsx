@@ -158,9 +158,21 @@ export default async function ItPage() {
 
   const trendingITIds = await getCachedTrendingIds(allITPool.map(s => s.id), 6)
   const itScenarioById = new Map(allITPool.map(s => [s.id, s]))
-  const trendingIT = trendingITIds.map(id => itScenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
+
+  // Accumulate seen IDs in section priority order so the same scenario ID
+  // cannot appear in more than one visible section.
+  const seen = new Set<string>([dailyIT.id])
+
+  const featuredDeduped = featured.filter(s => !seen.has(s.id))
+  featuredDeduped.forEach(s => seen.add(s.id))
+
+  const trendingIT = trendingITIds
+    .map(id => itScenarioById.get(id))
+    .filter((s): s is Scenario => s !== undefined && !seen.has(s.id))
+  trendingIT.forEach(s => seen.add(s.id))
 
   const newlyGeneratedIT = [...dynamicIT]
+    .filter(s => !seen.has(s.id))
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
     .slice(0, 6)
 
@@ -240,7 +252,7 @@ export default async function ItPage() {
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            {featured.map((s) => (
+            {featuredDeduped.map((s) => (
               <VotedDilemmaCard
                 key={s.id}
                 scenario={s}
@@ -281,7 +293,7 @@ export default async function ItPage() {
         )}
 
         {/* ── Nuove Domande ── */}
-        {newlyGeneratedIT.length > 0 && newlyGeneratedIT[0].id !== trendingIT[0]?.id && (
+        {newlyGeneratedIT.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">

@@ -48,14 +48,25 @@ export default async function HomePage() {
   if (trendingResult.status === 'fulfilled') trendingIds = trendingResult.value
   const dailyVotes = voteMap.get(dailyScenario.id) ?? 0
   const scenarioById = new Map(allScenarios.map(s => [s.id, s]))
-  const trendingNow = trendingIds.map(id => scenarioById.get(id)).filter((s): s is Scenario => Boolean(s))
+
+  // Accumulate seen IDs in section priority order so the same scenario ID
+  // cannot appear in more than one visible section. Browse All is intentionally
+  // exempt — it remains the complete list for SEO and category filtering.
+  const seen = new Set<string>([dailyScenario.id])
+
+  const trendingNow = trendingIds
+    .map(id => scenarioById.get(id))
+    .filter((s): s is Scenario => s !== undefined && !seen.has(s.id))
+  trendingNow.forEach(s => seen.add(s.id))
 
   const mostVoted = [...allScenarios.slice(0, 30)]
-    .filter((s) => (voteMap.get(s.id) ?? 0) > 0)
+    .filter((s) => (voteMap.get(s.id) ?? 0) > 0 && !seen.has(s.id))
     .sort((a, b) => (voteMap.get(b.id) ?? 0) - (voteMap.get(a.id) ?? 0))
     .slice(0, 6)
+  mostVoted.forEach(s => seen.add(s.id))
 
   const newlyGenerated = [...uniqueDynamic]
+    .filter(s => !seen.has(s.id))
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
     .slice(0, 6)
 
