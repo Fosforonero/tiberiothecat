@@ -21,7 +21,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin-guard'
 import { isOpenRouterConfigured, generateWithOpenRouter } from '@/lib/openrouter'
-import { buildContentInventory } from '@/lib/content-inventory'
+import { buildContentInventory, type ContentItem } from '@/lib/content-inventory'
 import { scoreNovelty, detectMoralArchetypes, getArchetypeSaturation, MORAL_ARCHETYPES, type NoveltyResult } from '@/lib/content-dedup'
 import { buildDilemmaPrompt, buildLifestyleDilemmaPrompt } from '@/lib/content-generation-prompts'
 import { validateGeneratedOutput, slugify, type ValidatedDilemma } from '@/lib/content-generation-validate'
@@ -36,6 +36,7 @@ import { computeSeoScore } from '@/lib/trend-signals'
 import type { Category } from '@/lib/scenarios'
 import { getAllContentSeeds, getContentSeedsByPack, CONTENT_SEED_PACKS, type ContentSeed } from '@/lib/content-seed-packs'
 import { loadSeedUsageMap, batchUpdateSeedUsage, saveSeedUsageMap, type SeedUsageMap } from '@/lib/content-seed-usage'
+import { isSeedExcluded } from '@/lib/content-seed-exclusions'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -306,6 +307,54 @@ function selectSeedPackTopics(
     .slice(0, count)
 }
 
+// Filters a seed pool to seeds that are eligible for generation in the given locale.
+// Applies three criteria in order: manual exclusion, usage suppression, inventory similarity.
+// Lifestyle seeds skip the inventory similarity check (consistent with post-generation behaviour).
+function getEligibleSeeds(
+  seeds:    ContentSeed[],
+  usageMap: SeedUsageMap,
+  locale:   'en' | 'it',
+  inventory: ContentItem[],
+  style:    'moral' | 'lifestyle',
+): { eligible: ContentSeed[]; excluded: Array<{ seedId: string; reason: string }> } {
+  const eligible: ContentSeed[] = []
+  const excluded: Array<{ seedId: string; reason: string }> = []
+
+  for (const seed of seeds) {
+    // 1. Manual exclusion / cooldown
+    const manualCheck = isSeedExcluded(seed.id, locale)
+    if (manualCheck.excluded) {
+      excluded.push({ seedId: seed.id, reason: `${manualCheck.status}:${manualCheck.reason}` })
+      continue
+    }
+
+    // 2. Usage suppression: repeatedly rejected with no successful saves
+    const usage = usageMap[seed.id]
+    if (usage && usage.rejectedCount >= 2 && usage.savedDraftCount === 0) {
+      excluded.push({ seedId: seed.id, reason: `high_rejection:${usage.rejectedCount}_rejected_0_saved` })
+      continue
+    }
+
+    // 3. Inventory similarity (moral only — lifestyle preference topics are inherently non-novel)
+    if (style === 'moral') {
+      const preCheck = scoreNovelty({ type: 'dilemma', locale, title: seed.topic }, inventory)
+      const block = getPreflightBlock(preCheck)
+      if (block !== null) {
+        const closest = preCheck.similarItems[0]
+        const label = closest
+          ? `"${closest.title.slice(0, 48)}" (${closest.similarity}%)`
+          : 'unknown'
+        excluded.push({ seedId: seed.id, reason: `inventory_similar:${block}:${label}` })
+        continue
+      }
+    }
+
+    eligible.push(seed)
+  }
+
+  return { eligible, excluded }
+}
+
 function dilemmaToScenario(candidate: ValidatedDilemma, topic: string): DynamicScenario {
   const suffix = Date.now().toString(36).slice(-5)
   const id = `ai-${candidate.locale}-${slugify(candidate.question).slice(0, 22).replace(/-+$/, '')}-${suffix}`
@@ -510,6 +559,13 @@ export async function POST(request: NextRequest) {
   const seedUsageMap: SeedUsageMap = seedPackMode ? await loadSeedUsageMap() : {}
 
   // ── Build topic list ────────────────────────────────────────────────────────
+  // Populated in seedPack mode only; undefined otherwise (excluded from response).
+  let seedEligibilitySummary: {
+    seedPoolCount:      number
+    eligibilityByLocale: Record<string, { eligible: number; excluded: number }>
+    exclusionReasons:   Record<string, number>
+  } | undefined = undefined
+
   const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category; angle?: string; notes?: string; seedId?: string; seedPackId?: string }> = []
 
   if (!seedPackMode && style === 'lifestyle' && manualSeed === undefined && customTopics === undefined) {
@@ -543,26 +599,38 @@ export async function POST(request: NextRequest) {
       topicsToProcess.push({ locale: locale as 'en' | 'it', topic })
     }
   } else if (seedPackMode) {
-    // Seed pack mode: select least-used seeds, generate for each locale.
-    // Seeds are locale-agnostic English topic phrases — same seed drives both EN and IT generation.
     let seedPool = seedPackId ? getContentSeedsByPack(seedPackId) : getAllContentSeeds()
     seedPool = seedPool.filter(s => s.style === seedPackStyleFilter)
 
-    const selectedSeeds = selectSeedPackTopics(seedPool, seedUsageMap, count)
-    if (selectedSeeds.length < count) {
-      return NextResponse.json(
-        {
-          error: 'not_enough_seed_pack_topics',
-          requested: count,
-          available: selectedSeeds.length,
-          message: 'Not enough seeds in the selected pack after style filter. Lower count or change filter.',
-        },
-        { status: 409 },
-      )
-    }
-
     const locales: Array<'en' | 'it'> = locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']
+    const eligibilityByLocale: Record<string, { eligible: number; excluded: number }> = {}
+    const exclusionReasonCounts: Record<string, number> = {}
+
     for (const l of locales) {
+      const { eligible, excluded } = getEligibleSeeds(seedPool, seedUsageMap, l, inventory, seedPackStyleFilter)
+      eligibilityByLocale[l] = { eligible: eligible.length, excluded: excluded.length }
+      for (const { reason } of excluded) {
+        const category = reason.split(':')[0]
+        exclusionReasonCounts[category] = (exclusionReasonCounts[category] ?? 0) + 1
+      }
+
+      const selectedSeeds = selectSeedPackTopics(eligible, seedUsageMap, count)
+      if (selectedSeeds.length < count) {
+        return NextResponse.json(
+          {
+            error: 'not_enough_eligible_seed_pack_topics',
+            requested: count,
+            availableAfterFilter: eligible.length,
+            locale: l,
+            seedPoolCount: seedPool.length,
+            excludedCount: excluded.length,
+            exclusionReasons: exclusionReasonCounts,
+            message: `Not enough eligible seeds for locale '${l}' after eligibility filter. ${eligible.length} of ${seedPool.length} in pool eligible. Lower count, change pack, or review exclusion rules.`,
+          },
+          { status: 409 },
+        )
+      }
+
       for (const seed of selectedSeeds) {
         topicsToProcess.push({
           locale:     l,
@@ -574,6 +642,12 @@ export async function POST(request: NextRequest) {
           seedPackId: seed.packId,
         })
       }
+    }
+
+    seedEligibilitySummary = {
+      seedPoolCount:      seedPool.length,
+      eligibilityByLocale,
+      exclusionReasons:   exclusionReasonCounts,
     }
   } else {
     // Default SEED_TOPICS — pre-filter by preflight before selection to avoid wasting OpenRouter calls.
@@ -994,6 +1068,7 @@ export async function POST(request: NextRequest) {
       skipped_preflight: skippedPreflight,
       openRouterCalls,
       errors,
+      ...(seedEligibilitySummary ? { seedEligibility: seedEligibilitySummary } : {}),
     },
     dryRun,
     autoPublish,
