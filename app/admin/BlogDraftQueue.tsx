@@ -330,7 +330,16 @@ export default function BlogDraftQueue() {
                 <div className="space-y-4 pt-2 border-t border-white/5">
                   <ArticleBody article={draft.source} colorClass="text-green-300" />
                   {draft.translation && (
-                    <ArticleBody article={draft.translation} colorClass="text-blue-200" />
+                    <>
+                      <div className="flex items-start gap-2 rounded-md border border-yellow-500/30 bg-yellow-900/20 px-3 py-2 text-xs text-yellow-300/90">
+                        <span className="flex-shrink-0 mt-0.5">⚠</span>
+                        <span>
+                          <strong>Translation quality review required</strong> before publishing.
+                          Check: no calchi, natural phrasing, localized SEO keywords, native CTA copy.
+                        </span>
+                      </div>
+                      <ArticleBody article={draft.translation} colorClass="text-blue-200" />
+                    </>
                   )}
                   {draft.translationFailed && (
                     <p className="text-xs text-orange-400/60">

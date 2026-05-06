@@ -251,17 +251,25 @@ export function buildTranslationPrompt(
   articleKind: ArticleKind = 'standard',
 ): { system: string; prompt: string } {
   const lang = targetLocale === 'it' ? 'Italian' : 'English'
+  const sourceLang = source.locale === 'it' ? 'Italian' : 'English'
   const disclaimer = targetLocale === 'it'
     ? 'Contenuto educativo, non consulenza professionale.'
     : 'Educational content, not professional advice.'
   const isCornerstone = articleKind === 'cornerstone'
 
-  const system = `You are a bilingual localization editor for SplitVote, a global moral dilemma platform. \
-Translate and culturally adapt a blog article into ${lang}. \
-Preserve SEO intent, educational tone, and structural outline. \
-Keep relatedDilemmaIds unchanged — they are locale-independent. \
-The disclaimer must match the target locale exactly. \
-Output ONLY valid JSON — no markdown, no code fences, no extra text.`
+  const system = `You are a professional bilingual editorial localization editor for SplitVote, a global moral dilemma platform.
+Your goal is NOT to translate — it is to produce a ${lang} article that reads as if a native ${lang}-speaking editor wrote it from scratch on the same topic.
+Rules:
+- Restructure sentences and paragraphs to match ${lang} natural syntax — never mirror ${sourceLang} sentence structure
+- Replace idioms, expressions, and rhetorical patterns with ${lang} equivalents — never transliterate them
+- Adapt the editorial voice so it resonates naturally with a ${lang}-speaking audience
+- Preserve the argumentative logic, educational depth, and structural outline of the source
+- SEO fields (title, seoTitle, seoDescription, keywords, slug) must be optimized for how ${lang} speakers actually search, not translated from ${sourceLang} keywords
+- CTAs and calls-to-action must feel natural and compelling in ${lang}, not translated
+- If the source contains FAQ, rephrase questions the way native ${lang} speakers would ask them
+- relatedDilemmaIds and internalLinks are locale-independent — copy them unchanged
+- The disclaimer must match the target locale exactly
+- Output ONLY valid JSON — no markdown, no code fences, no extra text`
 
   const sourceJson = JSON.stringify({
     title:             source.title,
@@ -282,17 +290,23 @@ Output ONLY valid JSON — no markdown, no code fences, no extra text.`
   "internalLinks": [...],`
     : ''
 
-  const prompt = `Translate and adapt the following blog article into ${lang}.
+  const prompt = `Localize the following blog article into ${lang}. Do not translate — rewrite it as a native ${lang} editorial piece on the same topic.
 
 Source article (${source.locale.toUpperCase()}):
 ${sourceJson}
 
-Requirements:
-- Translate meaning-equivalently and fluently — not word-for-word
-- New slug: URL-safe kebab-case appropriate for ${lang} content (max 60 chars)
+Localization requirements:
+- Write as a native ${lang} speaker: restructure sentences, not just words
+- Avoid calchi: never carry over ${sourceLang} idioms or expressions literally — find ${lang} equivalents
+- title and seoTitle: adapt for ${lang} SEO intent — use the phrasing ${lang} speakers search for, not a literal translation
+- seoDescription: rewrite to sound native and compelling in ${lang}
+- keywords: replace with ${lang} SEO equivalents — terms ${lang} audiences actually use, not keyword-for-keyword translations
+- slug: URL-safe kebab-case meaningful in ${lang} (max 60 chars)
+- body: rewrite paragraphs and headings to flow naturally in ${lang} — same ideas, native expression
+- CTAs ("Vote now", "Try it", etc.): use the most natural ${lang} phrasing
+- FAQ questions (if present): rephrase as a native ${lang} speaker would ask, not as a translated question
 - Must include this disclaimer verbatim: "${disclaimer}"
-- keywords: translate/adapt to ${lang} SEO equivalents
-- relatedDilemmaIds and internalLinks: keep exactly as-is
+- relatedDilemmaIds and internalLinks: copy exactly as-is
 
 Output this exact JSON object (no other text):
 {
@@ -304,10 +318,10 @@ Output this exact JSON object (no other text):
   "seoDescription": "...",
   "keywords": ["...", "..."],
   "outline": [...],
-  "body": "Full translated article text here...",
+  "body": "Full localized article text here...",
 ${cornerstoneFields}
   "relatedDilemmaIds": [...],
-  "rationale": "One sentence: why this translation serves the ${lang} audience",
+  "rationale": "One sentence: what localization choices make this feel native in ${lang}",
   "safetyNotes": []
 }`
 
