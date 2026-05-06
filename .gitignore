@@ -38,3 +38,7 @@ next-env.d.ts
 
 # Pixie asset working files — local reference only, never commit
 /public/pixie/**/*-preview-sheet.png
+
+# Claude / local operational artifacts — ignore new local helper files
+push_*.command
+*.local.command

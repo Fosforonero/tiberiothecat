@@ -136,6 +136,46 @@ Ask before:
 - Broad dependency upgrades or framework upgrades
 - Large refactors outside the sprint scope
 
+## Autonomous / Ralph-style Safe Tasks
+
+Use this section to decide whether a task can run without PM confirmation. When in doubt, stop and ask.
+
+**SAFE_AUTONOMOUS** — can run without GO:
+- Read-only checks (typecheck, build, git diff)
+- Local report generation (no writes to DB or production)
+- SEO/copy QA (check-it-copy, validate-personality)
+- Personality consistency validation
+- Content opportunity reports (dry-run output only)
+- Social content generation local-only if it does not write to DB and does not auto-publish
+
+**SEMI_AUTONOMOUS** — propose and wait for GO:
+- Content suggestions (no save/publish)
+- Internal linking suggestions
+- SEO cluster gap analysis
+- Analytics/product recommendations
+
+**HUMAN_ONLY** — always stop and ask:
+- Auth, Supabase migrations, Redis voting logic, middleware
+- Stripe pricing/subscription/webhook/entitlements
+- Billing, security, legal docs, env vars
+- Admin allowlist changes
+- AI content save mode or auto-publish
+- Git push / deploy to production
+
+**Ralph-style loop rules (if/when loops are used):**
+- Must never push.
+- Must never deploy.
+- Must never write to production DB.
+- Must never enable save mode.
+- Dry-run only unless Matteo gives explicit GO.
+- Any task touching HUMAN_ONLY areas must stop and ask.
+
+**GSD method (lightweight, integrated into existing workflow):**
+- GSD = Get Stuff Done: short, scoped sprints with explicit GO gates.
+- Plan → GO → Implement → Verify → Report. No BMAD project-context.md, no new agents.
+- CLAUDE.md is and remains the master governance document.
+- Ralph-style automation is limited to SAFE_AUTONOMOUS tasks only.
+
 ## Specialist Agents
 
 Use `.claude/agents/` when a sprint benefits from a focused review:
