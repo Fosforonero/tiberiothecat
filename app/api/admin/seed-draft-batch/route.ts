@@ -34,6 +34,8 @@ import { runQualityGates } from '@/lib/content-quality-gates'
 import { buildComparisonItems, runSemanticReview, isBlockingVerdict, type SemanticReviewResult } from '@/lib/content-semantic-review'
 import { computeSeoScore } from '@/lib/trend-signals'
 import type { Category } from '@/lib/scenarios'
+import { getAllContentSeeds, getContentSeedsByPack, CONTENT_SEED_PACKS, type ContentSeed } from '@/lib/content-seed-packs'
+import { loadSeedUsageMap, batchUpdateSeedUsage, saveSeedUsageMap, type SeedUsageMap } from '@/lib/content-seed-usage'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -288,6 +290,22 @@ function getEligibleTopics(
     .filter(t => getPreflightBlock(scoreNovelty({ type: 'dilemma', locale, title: t.topic }, inventory)) === null)
 }
 
+// Selects `count` seeds from the pool sorted by ascending usage count (least-used first).
+// Secondary sort by id for deterministic ordering when counts are equal.
+function selectSeedPackTopics(
+  seeds: ContentSeed[],
+  usageMap: SeedUsageMap,
+  count: number,
+): ContentSeed[] {
+  return [...seeds]
+    .sort((a, b) => {
+      const ua = usageMap[a.id]?.generatedCount ?? 0
+      const ub = usageMap[b.id]?.generatedCount ?? 0
+      return ua !== ub ? ua - ub : (a.id < b.id ? -1 : 1)
+    })
+    .slice(0, count)
+}
+
 function dilemmaToScenario(candidate: ValidatedDilemma, topic: string): DynamicScenario {
   const suffix = Date.now().toString(36).slice(-5)
   const id = `ai-${candidate.locale}-${slugify(candidate.question).slice(0, 22).replace(/-+$/, '')}-${suffix}`
@@ -348,6 +366,10 @@ export interface SeedResult {
   semanticVerdict?:           string
   semanticReason?:            string
   semanticClosestMatchTitle?: string
+  // Seed pack metadata — present only in seedPack mode
+  seedId?:                    string
+  seedPackId?:                string
+  usageCountBefore?:          number
 }
 
 export async function POST(request: NextRequest) {
@@ -372,6 +394,17 @@ export async function POST(request: NextRequest) {
 
   const dryRun      = body.dryRun === true
   const autoPublish = body.autoPublish === true
+
+  const seedPackMode = body.seedPackMode === true
+  const rawSeedPackId: unknown = body.seedPackId
+  if (seedPackMode && rawSeedPackId !== undefined) {
+    if (typeof rawSeedPackId !== 'string' || !CONTENT_SEED_PACKS.some(p => p.id === (rawSeedPackId as string).trim())) {
+      return NextResponse.json({ error: 'invalid_seed_pack_id' }, { status: 400 })
+    }
+  }
+  const seedPackId = seedPackMode && typeof rawSeedPackId === 'string' ? rawSeedPackId.trim() : undefined
+  const seedPackStyleFilter: 'moral' | 'lifestyle' =
+    body.seedPackStyleFilter === 'lifestyle' ? 'lifestyle' : 'moral'
 
   const style: 'moral' | 'lifestyle' = body.style === 'lifestyle' ? 'lifestyle' : 'moral'
   const NOVELTY_THRESHOLD = style === 'lifestyle' ? LIFESTYLE_NOVELTY_THRESHOLD : MORAL_NOVELTY_THRESHOLD
@@ -466,11 +499,20 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     )
   }
+  if (seedPackMode && (manualSeed !== undefined || customTopics !== undefined)) {
+    return NextResponse.json(
+      { error: 'invalid_request', message: 'Cannot combine seedPackMode with manualSeed or topics override.' },
+      { status: 400 },
+    )
+  }
+
+  // Load seed usage map once before topic selection (fail-open empty map when not in seedPack mode).
+  const seedUsageMap: SeedUsageMap = seedPackMode ? await loadSeedUsageMap() : {}
 
   // ── Build topic list ────────────────────────────────────────────────────────
-  const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category; angle?: string; notes?: string }> = []
+  const topicsToProcess: Array<{ locale: 'en' | 'it'; topic: string; category?: Category; angle?: string; notes?: string; seedId?: string; seedPackId?: string }> = []
 
-  if (style === 'lifestyle' && manualSeed === undefined && customTopics === undefined) {
+  if (!seedPackMode && style === 'lifestyle' && manualSeed === undefined && customTopics === undefined) {
     // Lifestyle mode: random sample from LIFESTYLE_SEED_TOPICS (no category diversity needed)
     const lifestylePool = (locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']) as Array<'en' | 'it'>
     for (const l of lifestylePool) {
@@ -499,6 +541,39 @@ export async function POST(request: NextRequest) {
     // Custom topics have no category annotation — targetCategory will be undefined (no hint)
     for (const topic of customTopics) {
       topicsToProcess.push({ locale: locale as 'en' | 'it', topic })
+    }
+  } else if (seedPackMode) {
+    // Seed pack mode: select least-used seeds, generate for each locale.
+    // Seeds are locale-agnostic English topic phrases — same seed drives both EN and IT generation.
+    let seedPool = seedPackId ? getContentSeedsByPack(seedPackId) : getAllContentSeeds()
+    seedPool = seedPool.filter(s => s.style === seedPackStyleFilter)
+
+    const selectedSeeds = selectSeedPackTopics(seedPool, seedUsageMap, count)
+    if (selectedSeeds.length < count) {
+      return NextResponse.json(
+        {
+          error: 'not_enough_seed_pack_topics',
+          requested: count,
+          available: selectedSeeds.length,
+          message: 'Not enough seeds in the selected pack after style filter. Lower count or change filter.',
+        },
+        { status: 409 },
+      )
+    }
+
+    const locales: Array<'en' | 'it'> = locale === 'all' ? ['en', 'it'] : [locale as 'en' | 'it']
+    for (const l of locales) {
+      for (const seed of selectedSeeds) {
+        topicsToProcess.push({
+          locale:     l,
+          topic:      seed.topic,
+          category:   seed.category,
+          angle:      seed.angle,
+          notes:      seed.notes,
+          seedId:     seed.id,
+          seedPackId: seed.packId,
+        })
+      }
     }
   } else {
     // Default SEED_TOPICS — pre-filter by preflight before selection to avoid wasting OpenRouter calls.
@@ -548,6 +623,14 @@ export async function POST(request: NextRequest) {
 
   for (let i = 0; i < topicsToProcess.length; i++) {
     const { locale: entryLocale, topic } = topicsToProcess[i]
+    const seedMeta: Partial<Pick<SeedResult, 'seedId' | 'seedPackId' | 'usageCountBefore'>> =
+      topicsToProcess[i].seedId
+        ? {
+            seedId:           topicsToProcess[i].seedId!,
+            seedPackId:       topicsToProcess[i].seedPackId,
+            usageCountBefore: seedUsageMap[topicsToProcess[i].seedId!]?.generatedCount ?? 0,
+          }
+        : {}
 
     if (i > 0) await delay(400)
 
@@ -575,6 +658,7 @@ export async function POST(request: NextRequest) {
         similarItems:      preCheck.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
         rejectionReason,
         publishNote:       preflightBlock,
+        ...seedMeta,
       })
       skippedPreflight++
       continue
@@ -628,7 +712,7 @@ export async function POST(request: NextRequest) {
     const generated = await generateWithOpenRouter({ system, prompt })
 
     if (!generated.ok) {
-      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: generated.error })
+      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', ...seedMeta, errorCode: generated.error })
       errors++
       continue
     }
@@ -636,7 +720,7 @@ export async function POST(request: NextRequest) {
     const validation = validateGeneratedOutput(generated.text, 'dilemma', entryLocale, inventory)
 
     if (!validation.ok) {
-      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: validation.error })
+      results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', ...seedMeta, errorCode: validation.error })
       errors++
       continue
     }
@@ -673,6 +757,7 @@ export async function POST(request: NextRequest) {
         category:          candidate.category,
         question:          candidate.question,
         topKeyword:        candidate.keywords[0],
+        ...seedMeta,
       })
       skipped++
       continue
@@ -742,6 +827,7 @@ export async function POST(request: NextRequest) {
         semanticVerdict:           semanticResult.verdict,
         semanticReason:            semanticResult.reason,
         semanticClosestMatchTitle: semanticResult.closestMatch?.title,
+        ...seedMeta,
       })
       skipped++
       continue
@@ -779,6 +865,7 @@ export async function POST(request: NextRequest) {
           semanticReason:            semanticResult.reason,
           semanticClosestMatchTitle: semanticResult.closestMatch?.title,
         } : (!reviewOutcome.ok ? { semanticVerdict: 'review_failed' } : {})),
+        ...seedMeta,
       })
       dryRunPassed++
     } else {
@@ -834,6 +921,7 @@ export async function POST(request: NextRequest) {
                 semanticReason:            semanticResult.reason,
                 semanticClosestMatchTitle: semanticResult.closestMatch?.title,
               } : {}),
+              ...seedMeta,
             })
             autoPublishedCount++
             didPublish = true
@@ -869,13 +957,22 @@ export async function POST(request: NextRequest) {
               semanticReason:            semanticResult.reason,
               semanticClosestMatchTitle: semanticResult.closestMatch?.title,
             } : (!reviewOutcome.ok ? { semanticVerdict: 'review_failed' } : {})),
+            ...seedMeta,
           })
           savedDrafts++
         } catch {
-          results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', errorCode: 'redis_save_failed' })
+          results.push({ index: i + 1, locale: entryLocale, topic, status: 'error', ...seedMeta, errorCode: 'redis_save_failed' })
           errors++
         }
       }
+    }
+  }
+
+  // ── Persist seed usage (fail-open, seedPack mode only) ─────────────────────
+  if (seedPackMode) {
+    const usageUpdates = results.filter(r => r.seedId).map(r => ({ seedId: r.seedId!, status: r.status }))
+    if (usageUpdates.length > 0) {
+      await saveSeedUsageMap(batchUpdateSeedUsage(usageUpdates, seedUsageMap))
     }
   }
 

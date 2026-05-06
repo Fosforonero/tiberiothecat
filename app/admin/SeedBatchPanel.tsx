@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { CONTENT_SEED_PACKS } from '@/lib/content-seed-packs'
 
 interface SeedResult {
   index:               number
@@ -21,6 +22,9 @@ interface SeedResult {
   semanticVerdict?:           string
   semanticReason?:            string
   semanticClosestMatchTitle?: string
+  seedId?:                    string
+  seedPackId?:                string
+  usageCountBefore?:          number
 }
 
 interface SeedSummary {
@@ -44,8 +48,9 @@ interface SeedResponse {
   results:          SeedResult[]
 }
 
-type LocaleParam = 'all' | 'en' | 'it'
-type SeedMode    = 'default' | 'manual'
+type LocaleParam        = 'all' | 'en' | 'it'
+type SeedMode           = 'default' | 'manual' | 'seedPack'
+type SeedPackStyleFilter = 'moral' | 'lifestyle'
 
 export default function SeedBatchPanel() {
   const [seedMode, setSeedMode] = useState<SeedMode>('default')
@@ -58,6 +63,10 @@ export default function SeedBatchPanel() {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
   const abortRef                = useRef(false)
 
+  // Seed pack fields
+  const [selectedPackId,        setSelectedPackId]        = useState<string>('all')
+  const [seedPackStyleFilter,   setSeedPackStyleFilter]   = useState<SeedPackStyleFilter>('moral')
+
   // Manual seed fields
   const [manualTopic, setManualTopic] = useState('')
   const [manualTitle, setManualTitle] = useState('')
@@ -65,7 +74,7 @@ export default function SeedBatchPanel() {
   const [manualNotes, setManualNotes] = useState('')
 
   const estimatedCalls = locale === 'all' ? count * 2 : count
-  const canRun = !loading && (seedMode === 'default' || manualTopic.trim().length >= 3)
+  const canRun = !loading && (seedMode === 'default' || seedMode === 'seedPack' || manualTopic.trim().length >= 3)
 
   function resetResults() {
     setResult(null)
@@ -112,6 +121,11 @@ export default function SeedBatchPanel() {
               ...(manualAngle.trim() ? { angle: manualAngle.trim() } : {}),
               ...(manualNotes.trim() ? { notes: manualNotes.trim() } : {}),
             }
+          } else if (seedMode === 'seedPack') {
+            body.seedPackMode = true
+            if (selectedPackId !== 'all') body.seedPackId = selectedPackId
+            body.seedPackStyleFilter = seedPackStyleFilter
+            body.style = seedPackStyleFilter
           }
 
           const res = await fetch('/api/admin/seed-draft-batch', {
@@ -258,8 +272,8 @@ export default function SeedBatchPanel() {
       {/* Seed mode toggle */}
       <div className="flex flex-col gap-1.5">
         <span className="text-[10px] text-white/40 font-semibold uppercase tracking-wide">Seed mode</span>
-        <div className="flex gap-1">
-          {(['default', 'manual'] as SeedMode[]).map(m => (
+        <div className="flex gap-1 flex-wrap">
+          {(['default', 'manual', 'seedPack'] as SeedMode[]).map(m => (
             <button
               key={m}
               type="button"
@@ -271,7 +285,7 @@ export default function SeedBatchPanel() {
                   : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
               }`}
             >
-              {m === 'default' ? 'Default seed topics' : 'Manual seed'}
+              {m === 'default' ? 'Default seed topics' : m === 'manual' ? 'Manual seed' : '📦 Seed pack'}
             </button>
           ))}
         </div>
@@ -336,6 +350,62 @@ export default function SeedBatchPanel() {
               className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 placeholder:text-white/30 disabled:opacity-40"
             />
           </div>
+        </div>
+      )}
+
+      {/* Seed pack selector */}
+      {seedMode === 'seedPack' && (
+        <div className="space-y-3 p-4 rounded-xl bg-white/5 border border-purple-500/20">
+          <p className="text-[11px] text-purple-300/70">
+            Generates drafts from curated seed packs. Seeds are selected least-used-first to balance coverage over time.
+            Usage counts persist in Redis at <code className="font-mono">content:seed-usage:v1</code>.
+          </p>
+
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col gap-1 flex-1 min-w-[220px]">
+              <label className="text-xs text-white/60">Pack</label>
+              <select
+                value={selectedPackId}
+                onChange={e => setSelectedPackId(e.target.value)}
+                disabled={loading}
+                className="bg-white/10 text-white rounded px-3 py-1.5 text-sm border border-white/10 disabled:opacity-40"
+              >
+                <option value="all">All packs ({CONTENT_SEED_PACKS.reduce((n, p) => n + p.seeds.length, 0)} seeds)</option>
+                {CONTENT_SEED_PACKS.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.label} ({p.seeds.length} seeds)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-white/60">Style filter</label>
+              <div className="flex gap-1">
+                {(['moral', 'lifestyle'] as SeedPackStyleFilter[]).map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSeedPackStyleFilter(s)}
+                    disabled={loading}
+                    className={`px-3 py-1.5 rounded text-xs font-bold transition-colors disabled:opacity-40 ${
+                      seedPackStyleFilter === s
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {selectedPackId !== 'all' && (
+            <p className="text-[11px] text-white/40 italic">
+              {CONTENT_SEED_PACKS.find(p => p.id === selectedPackId)?.description}
+            </p>
+          )}
         </div>
       )}
 
@@ -419,6 +489,12 @@ export default function SeedBatchPanel() {
         {' '}· 1 item per call)
         {seedMode === 'manual' && (
           <span className="text-purple-400/70 font-semibold ml-1">— manual seed topic</span>
+        )}
+        {seedMode === 'seedPack' && (
+          <span className="text-purple-400/70 font-semibold ml-1">
+            — {selectedPackId === 'all' ? 'all packs' : (CONTENT_SEED_PACKS.find(p => p.id === selectedPackId)?.label ?? selectedPackId)}
+            {` · ${seedPackStyleFilter}`}
+          </span>
         )}
         {dryRun && <span className="text-blue-400 font-semibold ml-1">— preview only, no Redis writes</span>}
       </p>
@@ -526,6 +602,7 @@ export default function SeedBatchPanel() {
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Similar</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Keyword</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">Question</th>
+                  <th className="text-left px-3 py-2 text-white/40 font-semibold">Seed</th>
                   <th className="text-left px-3 py-2 text-white/40 font-semibold">ID / Note</th>
                 </tr>
               </thead>
@@ -570,6 +647,19 @@ export default function SeedBatchPanel() {
                       <span title={r.question} className="truncate block">
                         {r.question ? r.question.slice(0, 80) + (r.question.length > 80 ? '…' : '') : '—'}
                       </span>
+                    </td>
+                    <td className="px-3 py-2 font-mono text-[10px] max-w-[130px]">
+                      {r.seedId ? (
+                        <span
+                          className="text-purple-400/70 truncate block cursor-help"
+                          title={`pack: ${r.seedPackId ?? '?'} | seed: ${r.seedId} | prev uses: ${r.usageCountBefore ?? 0}`}
+                        >
+                          {r.seedId.slice(0, 22)}{r.seedId.length > 22 ? '…' : ''}
+                          {(r.usageCountBefore ?? 0) > 0 && (
+                            <span className="ml-1 text-white/20">×{r.usageCountBefore}</span>
+                          )}
+                        </span>
+                      ) : '—'}
                     </td>
                     <td className="px-3 py-2 font-mono text-[10px] max-w-[150px]">
                       {r.rejectionReason
