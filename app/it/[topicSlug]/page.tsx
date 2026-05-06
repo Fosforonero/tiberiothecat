@@ -5,9 +5,8 @@ import JsonLd from '@/components/JsonLd'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 import {
   getTopicBySlugAndLocale,
-  getPublishedTopics,
-  getIndexableTopics,
-  RESERVED_SLUGS,
+  getPublishedITTopics,
+  RESERVED_IT_SLUGS,
   type SeoTopic,
 } from '@/lib/seo-topics'
 import { getScenario } from '@/lib/scenarios'
@@ -19,17 +18,14 @@ interface Props {
   params: { topicSlug: string }
 }
 
-// Only build pages for published topics.
-// dynamicParams=false means all other slugs return 404 automatically.
 export async function generateStaticParams() {
-  const published = getPublishedTopics()
+  const published = getPublishedITTopics()
 
-  // Collision guard — fail the build loudly if a slug conflicts with an existing route
   for (const t of published) {
-    if (RESERVED_SLUGS.has(t.slug)) {
+    if (RESERVED_IT_SLUGS.has(t.slug)) {
       throw new Error(
-        `[seo-topics] Slug "${t.slug}" conflicts with a reserved route. ` +
-          `Update RESERVED_SLUGS or rename the topic in lib/seo-topics.ts.`,
+        `[seo-topics] IT slug "${t.slug}" conflicts with a reserved /it/ route. ` +
+          `Update RESERVED_IT_SLUGS or rename the topic in lib/seo-topics.ts.`,
       )
     }
   }
@@ -41,7 +37,7 @@ export const dynamicParams = false
 export const revalidate = 3600
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const topic = getTopicBySlugAndLocale(params.topicSlug, 'en')
+  const topic = getTopicBySlugAndLocale(params.topicSlug, 'it')
   if (!topic) return {}
 
   const isIndexable =
@@ -49,16 +45,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     !topic.noindexUntilReady &&
     topic.relatedScenarioIds.length >= 3
 
-  // title: passes just the headline so the root layout template ("%s | SplitVote") appends the brand once.
-  // socialTitle: OG/Twitter fields bypass the template — they need the suffix explicitly.
   const socialTitle = `${topic.headline} | SplitVote`
   const description = topic.intro.slice(0, 160)
 
   const languagesAlt = topic.alternateSlug
     ? {
-        'en': `${BASE_URL}/${topic.slug}`,
-        'it-IT': `${BASE_URL}/it/${topic.alternateSlug}`,
-        'x-default': `${BASE_URL}/${topic.slug}`,
+        'it-IT': `${BASE_URL}/it/${topic.slug}`,
+        'en': `${BASE_URL}/${topic.alternateSlug}`,
+        'x-default': `${BASE_URL}/${topic.alternateSlug}`,
       }
     : undefined
 
@@ -67,15 +61,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     robots: isIndexable ? undefined : { index: false, follow: true },
     alternates: {
-      canonical: `${BASE_URL}/${topic.slug}`,
+      canonical: `${BASE_URL}/it/${topic.slug}`,
       ...(languagesAlt ? { languages: languagesAlt } : {}),
     },
     openGraph: {
       title: socialTitle,
       description,
-      url: `${BASE_URL}/${topic.slug}`,
+      url: `${BASE_URL}/it/${topic.slug}`,
       siteName: 'SplitVote',
-      locale: 'en_US',
+      locale: 'it_IT',
     },
     twitter: { card: 'summary_large_image', title: socialTitle, description },
   }
@@ -86,8 +80,8 @@ function buildBreadcrumbLd(topic: SeoTopic) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'SplitVote', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: topic.topic, item: `${BASE_URL}/${topic.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'SplitVote', item: `${BASE_URL}/it` },
+      { '@type': 'ListItem', position: 2, name: topic.topic, item: `${BASE_URL}/it/${topic.slug}` },
     ],
   }
 }
@@ -106,19 +100,19 @@ function buildItemListLd(
     '@type': 'ItemList',
     name: topic.headline,
     description: topic.tension,
-    url: `${BASE_URL}/${topic.slug}`,
+    url: `${BASE_URL}/it/${topic.slug}`,
     numberOfItems: items.length,
     itemListElement: items.map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       name: item.question,
-      url: `${BASE_URL}/play/${item.id}`,
+      url: `${BASE_URL}/it/play/${item.id}`,
     })),
   }
 }
 
-export default async function TopicLandingPage({ params }: Props) {
-  const topic = getTopicBySlugAndLocale(params.topicSlug, 'en')
+export default async function ITTopicLandingPage({ params }: Props) {
+  const topic = getTopicBySlugAndLocale(params.topicSlug, 'it')
   if (!topic) notFound()
 
   const primaryScenario = getScenario(topic.primaryScenarioId)
@@ -129,24 +123,21 @@ export default async function TopicLandingPage({ params }: Props) {
     .filter((s): s is NonNullable<typeof s> => s !== undefined)
     .slice(0, 5)
 
-  // Thin-content guard: need primary + at least 3 related
   if (relatedScenarios.length < 3) notFound()
 
-  // Vote counts for the primary dilemma — graceful fallback if Redis is unavailable
   let votes: { a: number; b: number } | null = null
   try {
     votes = await getVotes(topic.primaryScenarioId)
   } catch {
-    // Redis unavailable — render page without vote percentages
+    // Redis unavailable — render without vote percentages
   }
 
   const totalVotes = votes ? votes.a + votes.b : 0
   const pctA = totalVotes > 0 ? Math.round((votes!.a / totalVotes) * 100) : null
   const pctB = pctA !== null ? 100 - pctA : null
 
-  // Related topics — only show those that are published and actually exist
   const relatedTopics = topic.relatedTopicSlugs
-    .map((slug) => getTopicBySlugAndLocale(slug, 'en'))
+    .map((slug) => getTopicBySlugAndLocale(slug, 'it'))
     .filter((t): t is NonNullable<typeof t> => t !== undefined && t.status === 'published')
 
   const nextDilemma = relatedScenarios[0]
@@ -159,8 +150,8 @@ export default async function TopicLandingPage({ params }: Props) {
       <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
 
         {/* Breadcrumb */}
-        <nav className="text-xs text-[var(--muted)] mb-8" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-white transition-colors">All dilemmas</Link>
+        <nav className="text-xs text-[var(--muted)] mb-8" aria-label="Percorso di navigazione">
+          <Link href="/it" className="hover:text-white transition-colors">Tutti i dilemmi</Link>
           <span className="mx-2">›</span>
           <span className="text-white">{topic.topic}</span>
         </nav>
@@ -184,7 +175,7 @@ export default async function TopicLandingPage({ params }: Props) {
             id="primary-dilemma-heading"
             className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-4"
           >
-            Vote on this dilemma
+            Vota su questo dilemma
           </h2>
 
           <div className="card-neon rounded-2xl p-6 sm:p-8">
@@ -202,7 +193,6 @@ export default async function TopicLandingPage({ params }: Props) {
               optionB={primaryScenario.optionB}
             />
 
-            {/* Live vote split — shown only when Redis data is available */}
             {pctA !== null && pctB !== null && (
               <div className="mt-5 space-y-2.5">
                 <div>
@@ -234,23 +224,23 @@ export default async function TopicLandingPage({ params }: Props) {
                   </div>
                 </div>
                 <p className="text-xs text-[var(--muted)] pt-0.5">
-                  {totalVotes.toLocaleString()} votes cast
+                  {totalVotes.toLocaleString('it-IT')} voti
                 </p>
               </div>
             )}
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href={`/play/${topic.primaryScenarioId}`}
+                href={`/it/play/${topic.primaryScenarioId}`}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-400 hover:to-purple-500 text-white font-bold text-sm transition-all shadow-lg"
               >
-                Vote now →
+                Vota ora →
               </Link>
               <Link
-                href={`/results/${topic.primaryScenarioId}`}
+                href={`/it/results/${topic.primaryScenarioId}`}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-white hover:border-[var(--border-hi)] text-sm font-semibold transition-colors"
               >
-                See full results →
+                Vedi i risultati →
               </Link>
             </div>
           </div>
@@ -264,7 +254,7 @@ export default async function TopicLandingPage({ params }: Props) {
                 id="research-bg-heading"
                 className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-3"
               >
-                Research background
+                Approfondimento
               </h2>
               <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
                 {topic.researchNote}
@@ -287,7 +277,7 @@ export default async function TopicLandingPage({ params }: Props) {
                 </ul>
               )}
               <p className="text-[10px] text-[var(--muted)]">
-                SplitVote is for entertainment and aggregate insight, not a scientific test.
+                SplitVote è uno strumento di intrattenimento e analisi aggregata, non un test scientifico.
               </p>
             </div>
           </section>
@@ -299,14 +289,14 @@ export default async function TopicLandingPage({ params }: Props) {
             id="related-dilemmas-heading"
             className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-4"
           >
-            Related dilemmas
+            Dilemmi correlati
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {relatedScenarios.map((s) => (
               <Link
                 key={s.id}
-                href={`/play/${s.id}`}
+                href={`/it/play/${s.id}`}
                 className="group flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-blue-500/40 hover:bg-[#16162a] transition-all p-4"
               >
                 <span className="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">
@@ -330,13 +320,13 @@ export default async function TopicLandingPage({ params }: Props) {
               id="related-topics-heading"
               className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-4"
             >
-              Related topics
+              Argomenti correlati
             </h2>
             <div className="flex flex-wrap gap-3">
               {relatedTopics.map((t) => (
                 <Link
                   key={t.slug}
-                  href={`/${t.slug}`}
+                  href={`/it/${t.slug}`}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border border-[var(--border)] text-[var(--muted)] hover:border-purple-500/40 hover:text-white transition-all"
                 >
                   {t.topic} →
@@ -348,28 +338,28 @@ export default async function TopicLandingPage({ params }: Props) {
 
         {/* Vote-next loop */}
         <div className="rounded-2xl border border-blue-500/25 bg-blue-500/5 p-6 text-center">
-          <p className="text-white font-black text-lg mb-2">Keep voting</p>
+          <p className="text-white font-black text-lg mb-2">Continua a votare</p>
           <p className="text-[var(--muted)] text-sm mb-5">
-            Explore more dilemmas and see how the world is split.
+            Esplora altri dilemmi e scopri come è diviso il mondo.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link
-              href={`/play/${nextDilemma.id}`}
+              href={`/it/play/${nextDilemma.id}`}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-colors"
             >
-              Vote next →
+              Prossimo voto →
             </Link>
             <Link
-              href="/trending"
+              href="/it/trending"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-[var(--border)] text-[var(--muted)] hover:text-white hover:border-[var(--border-hi)] text-sm font-semibold transition-colors"
             >
-              See trending →
+              Vedi trending →
             </Link>
           </div>
         </div>
 
         <p className="text-center text-xs text-[var(--muted)] mt-8 opacity-60">
-          No account required. Your vote is anonymous.
+          Nessun account richiesto. Il tuo voto è anonimo.
         </p>
       </div>
     </>

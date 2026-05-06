@@ -3,7 +3,7 @@ import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { allPosts } from '@/lib/blog'
 import { getPublishedBlogDrafts } from '@/lib/blog-published'
-import { getIndexableTopics } from '@/lib/seo-topics'
+import { getIndexableTopics, getIndexableITTopics } from '@/lib/seo-topics'
 
 const BASE = 'https://splitvote.io'
 
@@ -102,12 +102,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch { /* Redis unavailable — skip published drafts */ }
 
-  // Programmatic SEO topic landing pages (published + not noindex-gated + ≥3 related)
+  // Programmatic SEO topic landing pages — EN
   const topicRoutes = getIndexableTopics().map((t) => ({
     url: `${BASE}/${t.slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.80,
+  }))
+
+  // Programmatic SEO topic landing pages — IT
+  const topicRoutesIT = getIndexableITTopics().map((t) => ({
+    url: `${BASE}/it/${t.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.75,
   }))
 
   // Category pages (EN + IT)
@@ -264,8 +272,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     // Blog articles (published drafts from Redis)
     ...publishedBlogRoutes,
-    // SEO topic landing pages
+    // SEO topic landing pages — EN + IT
     ...topicRoutes,
+    ...topicRoutesIT,
     // Category hubs
     ...categoryRoutes,
     // Static dilemmas
