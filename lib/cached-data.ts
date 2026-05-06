@@ -15,18 +15,18 @@ import { getVotesBatch, getVotesBatchDetail } from './redis'
 import { getTrendingScenarioIds24h } from './trending'
 import type { DynamicScenario } from './dynamic-scenarios'
 
-// Approved dynamic scenario list — refreshed hourly.
+// Approved dynamic scenario list — refreshed hourly or on-demand via revalidateTag.
 export const getCachedDynamicScenarios = unstable_cache(
   (): Promise<DynamicScenario[]> => getDynamicScenarios(),
   ['dynamic-scenarios'],
-  { revalidate: 3600 },
+  { revalidate: 3600, tags: ['dynamic-scenarios'] },
 )
 
-// Locale-filtered approved scenarios — refreshed hourly.
+// Locale-filtered approved scenarios — refreshed hourly or on-demand via revalidateTag.
 export const getCachedDynamicScenariosByLocale = unstable_cache(
   (locale: string): Promise<DynamicScenario[]> => getDynamicScenariosByLocale(locale),
   ['dynamic-scenarios-by-locale'],
-  { revalidate: 3600 },
+  { revalidate: 3600, tags: ['dynamic-scenarios-by-locale'] },
 )
 
 // Vote totals for homepage cards — refreshed every 5 minutes.
