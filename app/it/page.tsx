@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import DilemmaGrid from '@/components/DilemmaGrid'
@@ -132,15 +132,22 @@ export default async function ItPage() {
 
   const featured = featuredBase.map(translateScenarioToItalian)
 
-  // Dynamic IT dilemmas from Redis
+  // Same source as category pages — prevents cache divergence with getCachedDynamicScenariosByLocale
+  const staticIds = new Set(scenarios.map((s) => s.id))
   let dynamicIT: DynamicScenario[] = []
   try {
-    dynamicIT = await getCachedDynamicScenariosByLocale('it')
+    const allDynamic = await getCachedDynamicScenarios()
+    dynamicIT = allDynamic
+      .filter((d) => !staticIds.has(d.id) && d.locale === 'it')
+      .sort((a, b) => {
+        const ta = a.approvedAt ? new Date(a.approvedAt).getTime() : a.generatedAt ? new Date(a.generatedAt).getTime() : 0
+        const tb = b.approvedAt ? new Date(b.approvedAt).getTime() : b.generatedAt ? new Date(b.generatedAt).getTime() : 0
+        return tb - ta
+      })
   } catch { /* Redis unavailable */ }
 
-  // Full IT catalog: unique dynamic IT + all static translated — drives both daily pool and browse grid.
-  const staticIds = new Set(scenarios.map((s) => s.id))
-  const uniqueDynamicIT = dynamicIT.filter((d) => !staticIds.has(d.id))
+  // Full IT catalog: dynamic IT (already deduped against static) + all static translated
+  const uniqueDynamicIT = dynamicIT
   const allScenariosIT: Scenario[] = [...uniqueDynamicIT, ...scenarios.map(translateScenarioToItalian)]
 
   // Daily dilemma for IT — prefers dynamic IT, falls back to translated static pool

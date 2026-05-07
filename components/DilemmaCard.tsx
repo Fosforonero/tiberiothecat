@@ -15,8 +15,8 @@ interface Props {
 }
 
 const BADGE_COPY = {
-  en: { trending: 'trending', new: '🆕 new', voted: '✓ Voted' },
-  it: { trending: 'tendenza', new: '🆕 nuovo', voted: '✓ Votato' },
+  en: { trending: 'trending', new: '🆕 new', voted: '✓ Voted', ai: 'New' },
+  it: { trending: 'tendenza', new: '🆕 nuovo', voted: '✓ Votato', ai: 'Nuovo' },
 }
 
 export default function DilemmaCard({ scenario, playHref, totalVotes, badge, locale = 'en' }: Props) {
@@ -41,7 +41,7 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge, loc
             {badge === 'ai' && (
               <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold">
                 <Sparkles size={9} />
-                AI
+                {badgeCopy.ai}
               </span>
             )}
             {badge === 'new' && (
