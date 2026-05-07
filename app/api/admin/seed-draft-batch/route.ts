@@ -419,6 +419,8 @@ export interface SeedResult {
   seedId?:                    string
   seedPackId?:                string
   usageCountBefore?:          number
+  // Set when AI chose a different category than the seed's targetCategory
+  categoryMismatch?:          boolean
 }
 
 export async function POST(request: NextRequest) {
@@ -800,6 +802,7 @@ export async function POST(request: NextRequest) {
     }
 
     const candidate = validation.candidate as ValidatedDilemma
+    const categoryMismatch = targetCat !== undefined && candidate.category !== targetCat
 
     // Archetype saturation penalty — skipped for lifestyle (no moral archetypes to detect).
     const hasArchetypeSaturation = style === 'lifestyle' ? false : (() => {
@@ -934,6 +937,7 @@ export async function POST(request: NextRequest) {
         similarItemsCount: candidate.similarItems.length,
         similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
         topKeyword:        candidate.keywords[0],
+        ...(categoryMismatch ? { categoryMismatch: true } : {}),
         ...(semanticResult ? {
           semanticVerdict:           semanticResult.verdict,
           semanticReason:            semanticResult.reason,
@@ -990,6 +994,7 @@ export async function POST(request: NextRequest) {
               similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
               topKeyword:        candidate.keywords[0],
               qualityGateReasons: [],
+              ...(categoryMismatch ? { categoryMismatch: true } : {}),
               ...(semanticResult ? {
                 semanticVerdict:           semanticResult.verdict,
                 semanticReason:            semanticResult.reason,
@@ -1024,6 +1029,7 @@ export async function POST(request: NextRequest) {
             similarItemsCount: candidate.similarItems.length,
             similarItems:      candidate.similarItems.slice(0, 3).map(s => ({ title: s.title, similarity: s.similarity, source: s.status, locale: s.locale })),
             topKeyword:        candidate.keywords[0],
+            ...(categoryMismatch ? { categoryMismatch: true } : {}),
             ...(publishNote  ? { publishNote }          : {}),
             ...(gateReasons  ? { qualityGateReasons: gateReasons } : {}),
             ...(semanticResult ? {

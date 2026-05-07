@@ -18,3 +18,7 @@ export function getServerVotedIds(): Promise<Set<string>> {
   }
   return _fetch
 }
+
+export function resetServerVotedIds(): void {
+  _fetch = null
+}

@@ -32,7 +32,13 @@ export default async function TrendingPage() {
   try {
     const all = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
-    dynamicScenarios = all.filter((d) => !staticIds.has(d.id))
+    dynamicScenarios = all
+      .filter((d) => !staticIds.has(d.id) && d.locale === 'en')
+      .sort((a, b) => {
+        const ta = a.approvedAt ? new Date(a.approvedAt).getTime() : a.generatedAt ? new Date(a.generatedAt).getTime() : 0
+        const tb = b.approvedAt ? new Date(b.approvedAt).getTime() : b.generatedAt ? new Date(b.generatedAt).getTime() : 0
+        return tb - ta
+      })
   } catch { /* Redis unavailable */ }
 
   const allScenarios: Scenario[] = [...dynamicScenarios, ...scenarios]

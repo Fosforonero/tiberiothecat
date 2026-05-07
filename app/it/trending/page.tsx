@@ -41,17 +41,21 @@ function rankIcon(i: number): string {
 }
 
 export default async function ItTrendingPage() {
-  // ── All scenarios (static + dynamic approved, all locales) ────
-  let allDynamic: DynamicScenario[] = []
+  // ── IT-only scenarios (static + dynamic approved, IT locale only) ─
   let itDynamic: DynamicScenario[] = []
   try {
     const all = await getCachedDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
-    allDynamic = all.filter((d) => !staticIds.has(d.id))
-    itDynamic = allDynamic.filter(s => s.locale === 'it')
+    itDynamic = all
+      .filter((d) => !staticIds.has(d.id) && d.locale === 'it')
+      .sort((a, b) => {
+        const ta = a.approvedAt ? new Date(a.approvedAt).getTime() : a.generatedAt ? new Date(a.generatedAt).getTime() : 0
+        const tb = b.approvedAt ? new Date(b.approvedAt).getTime() : b.generatedAt ? new Date(b.generatedAt).getTime() : 0
+        return tb - ta
+      })
   } catch { /* Redis unavailable */ }
 
-  const allScenarios: Scenario[] = [...allDynamic, ...scenarios]
+  const allScenarios: Scenario[] = [...itDynamic, ...scenarios]
 
   // ── Vote detail for leaderboard (one pipeline round-trip) ─────
   let voteDetail = new Map<string, { a: number; b: number }>()

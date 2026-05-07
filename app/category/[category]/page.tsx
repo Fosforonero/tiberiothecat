@@ -7,7 +7,7 @@ import { getCategoryContent } from '@/lib/categoryContent'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import JsonLd from '@/components/JsonLd'
-import DilemmaOptionPills from '@/components/DilemmaOptionPills'
+import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -181,28 +181,15 @@ export default async function CategoryPage({ params }: Props) {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {allSorted.map((scenario) => (
-            <Link
+            <VotedDilemmaCard
               key={scenario.id}
-              href={`/play/${scenario.id}`}
-              className="group block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-blue-500/40 hover:bg-[#16162a] transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <div className="flex items-start gap-4">
-                <span className="text-4xl flex-shrink-0">{scenario.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    {'generatedAt' in scenario && (
-                      <span className="text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5">
-                        ✨ trending
-                      </span>
-                    )}
-                  </div>
-                  <p className="font-semibold text-[var(--text)] leading-snug mb-4 line-clamp-3">
-                    {scenario.question}
-                  </p>
-                  <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-                </div>
-              </div>
-            </Link>
+              scenario={scenario}
+              playHref={`/play/${scenario.id}`}
+              resultsHref={`/results/${scenario.id}`}
+              totalVotes={voteMap.get(scenario.id)}
+              badge={'generatedAt' in scenario ? 'ai' : undefined}
+              locale="en"
+            />
           ))}
         </div>
 

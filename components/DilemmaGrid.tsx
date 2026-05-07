@@ -1,12 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sparkles } from 'lucide-react'
 import { CATEGORIES } from '@/lib/scenarios'
 import type { Scenario, Category } from '@/lib/scenarios'
 import { CATEGORY_LABELS_IT } from '@/lib/scenarios-it'
 import Link from 'next/link'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
+import { getServerVotedIds } from '@/lib/client-voted-ids'
+
+function GridCard({ scenario, locale, playHref }: { scenario: Scenario; locale: 'en' | 'it'; playHref: string }) {
+  const [isVoted, setIsVoted] = useState(false)
+  const resultsHref = locale === 'it' ? `/it/results/${scenario.id}` : `/results/${scenario.id}`
+
+  useEffect(() => {
+    if (document.cookie.includes(`sv_voted_${scenario.id}=`)) {
+      setIsVoted(true)
+      return
+    }
+    getServerVotedIds().then((ids) => {
+      if (ids.has(scenario.id)) setIsVoted(true)
+    })
+  }, [scenario.id])
+
+  return (
+    <Link
+      href={isVoted ? resultsHref : playHref}
+      className="card-neon group block rounded-2xl p-5 sm:p-6"
+    >
+      <div className="flex items-start gap-3 sm:gap-4">
+        <span className="text-3xl sm:text-4xl flex-shrink-0">{scenario.emoji}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
+              {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
+            </span>
+            {'generatedAt' in scenario && (
+              <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5">
+                <Sparkles size={9} />
+                {locale === 'it' ? 'nuovo' : 'trending'}
+              </span>
+            )}
+            {isVoted && (
+              <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
+                {locale === 'it' ? '✓ Votato' : '✓ Voted'}
+              </span>
+            )}
+          </div>
+          <p className="font-semibold text-[var(--text)] leading-snug mb-3 line-clamp-3 text-sm sm:text-base">
+            {scenario.question}
+          </p>
+          <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
+        </div>
+      </div>
+    </Link>
+  )
+}
 
 interface Props {
   scenarios: Scenario[]
@@ -60,32 +109,12 @@ export default function DilemmaGrid({ scenarios, locale = 'en' }: Props) {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {filtered.map((scenario) => (
-          <Link
+          <GridCard
             key={scenario.id}
-            href={playHref(scenario.id)}
-            className="card-neon group block rounded-2xl p-5 sm:p-6"
-          >
-            <div className="flex items-start gap-3 sm:gap-4">
-              <span className="text-3xl sm:text-4xl flex-shrink-0">{scenario.emoji}</span>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
-                    {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
-                  </span>
-                  {'generatedAt' in scenario && (
-                    <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5">
-                      <Sparkles size={9} />
-                      {locale === 'it' ? 'nuovo' : 'trending'}
-                    </span>
-                  )}
-                </div>
-                <p className="font-semibold text-[var(--text)] leading-snug mb-3 line-clamp-3 text-sm sm:text-base">
-                  {scenario.question}
-                </p>
-                <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-              </div>
-            </div>
-          </Link>
+            scenario={scenario}
+            locale={locale}
+            playHref={playHref(scenario.id)}
+          />
         ))}
       </div>
     </>

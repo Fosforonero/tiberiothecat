@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Globe, Sparkles, Flame } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
+import { CATEGORY_LABELS_IT } from '@/lib/scenarios-it'
 
 export type DilemmaCardBadge = 'trending' | 'ai' | 'new' | 'voted'
 
@@ -29,7 +30,7 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge, loc
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
-              {scenario.category}
+              {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
             </span>
             {badge === 'trending' && (
               <span className="flex items-center gap-1 text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5 font-bold">
