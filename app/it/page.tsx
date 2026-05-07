@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import DilemmaGrid from '@/components/DilemmaGrid'
@@ -54,8 +54,6 @@ export const metadata: Metadata = {
     'dilemma morale online',
   ],
 }
-
-export const revalidate = 3600
 
 const FEATURED_CATEGORIES = [
   { slug: 'morality', label: 'Moralità', emoji: '⚖️', desc: 'Le scelte più difficili della vita' },
@@ -136,7 +134,7 @@ export default async function ItPage() {
   const staticIds = new Set(scenarios.map((s) => s.id))
   let dynamicIT: DynamicScenario[] = []
   try {
-    const allDynamic = await getCachedDynamicScenarios()
+    const allDynamic = await getFreshDynamicScenarios()
     dynamicIT = allDynamic
       .filter((d) => !staticIds.has(d.id) && d.locale === 'it')
       .sort((a, b) => {

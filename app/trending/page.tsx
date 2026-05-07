@@ -1,5 +1,5 @@
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Scenario, Category } from '@/lib/scenarios'
 import Link from 'next/link'
@@ -17,8 +17,6 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 3600
-
 function rankIcon(i: number): string {
   if (i === 0) return '🥇'
   if (i === 1) return '🥈'
@@ -30,7 +28,7 @@ export default async function TrendingPage() {
   // ── All scenarios (static + dynamic approved) ─────────────────
   let dynamicScenarios: DynamicScenario[] = []
   try {
-    const all = await getCachedDynamicScenarios()
+    const all = await getFreshDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
     dynamicScenarios = all
       .filter((d) => !staticIds.has(d.id) && d.locale === 'en')

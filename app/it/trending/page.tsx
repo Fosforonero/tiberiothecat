@@ -2,7 +2,7 @@
  * /it/trending — Classifiche aggregate e dilemmi di tendenza italiani.
  */
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
 import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
@@ -31,8 +31,6 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 3600
-
 function rankIcon(i: number): string {
   if (i === 0) return '🥇'
   if (i === 1) return '🥈'
@@ -44,7 +42,7 @@ export default async function ItTrendingPage() {
   // ── IT-only scenarios (static + dynamic approved, IT locale only) ─
   let itDynamic: DynamicScenario[] = []
   try {
-    const all = await getCachedDynamicScenarios()
+    const all = await getFreshDynamicScenarios()
     const staticIds = new Set(scenarios.map((s) => s.id))
     itDynamic = all
       .filter((d) => !staticIds.has(d.id) && d.locale === 'it')

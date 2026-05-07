@@ -1,6 +1,6 @@
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
@@ -13,8 +13,6 @@ import type { Scenario } from '@/lib/scenarios'
 const SLOT_HOME = process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? 'TODO'
 const BASE_URL = 'https://splitvote.io'
 
-export const revalidate = 3600
-
 function getDailyScenario(all: Scenario[]): Scenario {
   if (all.length === 0) return scenarios[0]
   const daysSinceEpoch = Math.floor(Date.now() / 86_400_000)
@@ -24,7 +22,7 @@ function getDailyScenario(all: Scenario[]): Scenario {
 export default async function HomePage() {
   let dynamicScenarios: DynamicScenario[] = []
   try {
-    dynamicScenarios = (await getCachedDynamicScenarios()).filter(s => s.locale === 'en')
+    dynamicScenarios = (await getFreshDynamicScenarios()).filter(s => s.locale === 'en')
   } catch {
     // Redis unavailable
   }

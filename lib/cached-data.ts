@@ -9,7 +9,7 @@
  * Return types use plain objects (not Maps) for JSON serialisation compatibility.
  * Callers convert back to Maps with new Map(Object.entries(obj)).
  */
-import { unstable_cache } from 'next/cache'
+import { unstable_cache, unstable_noStore as noStore } from 'next/cache'
 import { getDynamicScenarios, getDynamicScenariosByLocale } from './dynamic-scenarios'
 import { getVotesBatch, getVotesBatchDetail } from './redis'
 import { getTrendingScenarioIds24h } from './trending'
@@ -31,6 +31,13 @@ export const getCachedDynamicScenariosByLocale = unstable_cache(
   ['dynamic-scenarios-by-locale-v2'],
   { revalidate: 3600, tags: ['dynamic-scenarios-by-locale'] },
 )
+
+// Direct Redis read for public discovery surfaces — bypasses unstable_cache to guarantee
+// fresh approved scenario data on every render. Tradeoff: no ISR on the calling page.
+export async function getFreshDynamicScenarios(): Promise<DynamicScenario[]> {
+  noStore()
+  return getDynamicScenarios()
+}
 
 // Vote totals for homepage cards — refreshed every 5 minutes.
 export const getCachedVotesBatch = unstable_cache(
