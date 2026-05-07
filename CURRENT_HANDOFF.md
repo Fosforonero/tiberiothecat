@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 6 May 2026 (post-deploy QA 2dbb133)
+Last updated: 7 May 2026 (post-push 9491d7a — Dynamic Discovery + Locale Consistency + Badge Fix)
 PM: Matteo
 Implementer: Claude Code
 
@@ -10,8 +10,8 @@ Implementer: Claude Code
 
 - **Branch:** `main`
 - **Local vs remote:** `main` is **in sync** with `origin/main`
-  - HEAD: `2dbb133` — `feat: add Italian SEO topic landing pages` (pushed ✅, Vercel deploy verified ✅)
-- **Vercel deploy:** `2dbb133` live — post-deploy QA PASS ✅
+  - HEAD: `9491d7a` — `fix: align IT home dynamic source and hide AI badge copy` (pushed ✅, Vercel deployed ✅, QA PASS ✅)
+- **Vercel deploy:** `9491d7a` — deployed and browser-QA'd (7 May 2026)
 - **Governance commit status:** `e5121cb` — pushed ✅
 
 ### Feature state
@@ -23,18 +23,60 @@ Implementer: Claude Code
 | AdSense slots (HOME/PLAY/RESULTS) | ✅ live (RSC/JS bundle verified) |
 | AdSense review | ❌ **not yet requested** — manual step in AdSense dashboard |
 | Stripe Premium config | ✅ corrected 29 Apr (Price ID set); live checkout QA pending |
+| Dynamic discovery EN/IT | ✅ live — locale isolation PASS, browser QA PASS (`9491d7a`) |
+| IT home dynamic source | ✅ fixed — uses `getCachedDynamicScenarios()` + locale filter (same cache as category pages) |
+| Voted badge (EN + IT) | ✅ browser QA PASS — "✓ Voted" / "✓ Votato" shown on already-voted cards |
+| Category pages EN/IT | ✅ dynamic content shown, locale-correct, badge labels correct |
+| "AI" badge copy | ✅ removed — replaced with "New" (EN) / "Nuovo" (IT) |
+| Locale isolation EN/IT | ✅ verified — no ai-it- on EN surfaces, no ai-en- on IT surfaces |
+| AdSense code | ✅ present in RSC/JS bundle (review still not requested) |
+| Social launch readiness | ✅ READY FOR CONTROLLED SOFT TEST |
 | AI generation (save mode) | ❌ blocked — re-QA required before enabling |
 | Blog Draft Queue | ✅ deployed and QA'd |
 | Blog published export | ✅ deployed (`cff52b4`) |
 | Blog inline bold rendering | ✅ deployed (`f9918e7`, verified) |
-| Blog translation prompt quality | ✅ pushed (`19f7252`), Vercel deploy expected/in progress |
+| Blog translation prompt quality | ✅ pushed (`19f7252`), deployed |
 | Blog translation admin warning | ✅ deployed (`19f7252`) |
 | Research Source Registry | ✅ internal foundation only (`lib/research-sources.ts`) |
 | IT topic landing pages | ✅ live (`2dbb133`) — `/it/problema-del-carrello`, `/it/dilemmi-etici-intelligenza-artificiale`, `/it/lealta-vs-onesta` |
+| Content Seed Pack Integration v1 | ✅ pushed (`ea2a3b4`) — admin only; dry-run first; no auto-publish |
 
 ---
 
 ## 2. Last Completed Work
+
+### Sprint: Dynamic Discovery + Locale Consistency + Badge Fix (`9491d7a` — pushed ✅, deployed ✅, browser QA PASS ✅)
+Three micro-sprints bundled across two commits (`3b2228c` + `9491d7a`):
+
+**Dynamic Discovery + Voted Badge** (`3b2228c`):
+- `components/DilemmaGrid.tsx` — `GridCard` sub-component with cookie fast path + `getServerVotedIds()` voted state; shows "✓ Voted"/"✓ Votato" badge; redirects to results if already voted
+- `app/category/[category]/page.tsx` — grid replaced with `VotedDilemmaCard` (EN hrefs, `locale="en"`)
+- `app/it/category/[category]/page.tsx` — grid replaced with `VotedDilemmaCard` (IT hrefs, `locale="it"`)
+- `lib/client-voted-ids.ts` — added `resetServerVotedIds()` export
+- `app/api/admin/seed-draft-batch/route.ts` — `categoryMismatch?: boolean` added to `SeedResult`
+
+**Pre-launch Locale Consistency Fix** (`3b2228c`):
+- `app/it/trending/page.tsx` — `allScenarios` now built from IT-only pool (`locale === 'it'`); EN dynamic scenarios no longer leak into IT leaderboard or "Tendenze Oggi"
+- `app/trending/page.tsx` — added `approvedAt ?? generatedAt` DESC sort to `dynamicScenarios`
+- `components/DilemmaCard.tsx` — added `CATEGORY_LABELS_IT` lookup for `locale="it"` (category slug → Italian label); added `ai` key to `BADGE_COPY` ("New" / "Nuovo"); `badge='ai'` no longer renders hardcoded "AI"
+
+**IT Home Cache Divergence Fix + Badge Audit** (`9491d7a`):
+- `app/it/page.tsx` — swapped `getCachedDynamicScenariosByLocale('it')` → `getCachedDynamicScenarios()` + inline `locale === 'it'` filter + `approvedAt ?? generatedAt` DESC sort; eliminates cache divergence with category pages (single `unstable_cache` entry, single tag)
+- `components/DilemmaCard.tsx` — `BADGE_COPY.ai` already added in prior commit; no further change needed
+
+**Verified:** typecheck ✅ — build ✅ (167 pages) — git diff --check ✅ — nightly:check ✅ 2/2 — curl QA ✅ — browser QA ✅
+
+---
+
+### Sprint: Content Seed Pack Integration v1 (`ea2a3b4` — pushed ✅)
+- **Files added/modified:**
+  - `lib/content-seed-packs.ts` — 15 curated `ContentSeedPack` objects × 15 seeds each (225 seeds total); `getAllContentSeeds()`, `getContentSeedsByPack()`, `getContentSeedsByStyle()`; exports `CONTENT_SEED_USAGE_REDIS_KEY = 'content:seed-usage:v1'`
+  - `lib/content-seed-usage.ts` — Redis usage tracking layer: `loadSeedUsageMap()`, `batchUpdateSeedUsage()`, `saveSeedUsageMap()`; fail-open on Redis errors
+  - `app/api/admin/seed-draft-batch/route.ts` — new `seedPack` mode: `selectSeedPackTopics()` (least-used-first, deterministic tie-break); `seedPackStyleFilter: 'moral' | 'lifestyle'`; usage load/persist around loop; `!seedPackMode` guard prevents `LIFESTYLE_SEED_TOPICS` fallback in seedPack mode; `seedMeta` spread on all 9 result push sites
+  - `app/admin/SeedBatchPanel.tsx` — new "📦 Seed pack" tab; pack selector dropdown; style filter buttons (moral/lifestyle only, no "all"); Seed column in results table with usage count badge
+- **Micro-fix included:** lifestyle fallback branch guarded with `!seedPackMode`; `seedPackStyleFilter` 'all' removed from both UI and backend; `body.style` always coupled directly to `seedPackStyleFilter`
+- **Verified:** typecheck ✅ — build ✅ (167 pages) — git diff --check ✅ — nightly:check ✅ 2/2
+- **Usage rules:** always dry-run first; manual review in Dynamic Dilemmas; auto-publish remains disabled
 
 ### Sprint: Italian SEO topic landing pages (`2dbb133` — pushed ✅, QA PASS ✅)
 - **Files modified:**
@@ -90,16 +132,29 @@ Pre-conditions:
 
 ## 4. Active Sprint / Next Recommended Step
 
-**Active sprint complete.** `2dbb133` live, QA PASS.
+**Active sprint complete.** `9491d7a` pushed and deployed. Browser QA PASS. Platform is **READY FOR CONTROLLED SOFT TEST**.
 
-**Next sprint candidates (ordered by impact):**
+**Immediate next step: Controlled Social Soft Launch**
 
-1. **IT static scenario localization foundation** — related dilemma cards on IT topic pages show EN questions; `lib/scenarios.ts` has no `it` translations; define scope before implementing (could be a field on `Scenario` or a separate IT scenarios map)
-2. **AI generation re-QA** — set `OPENROUTER_MODEL_REVIEW` env, redeploy, run 4 dry-run scenarios → unlock save mode
-3. **Stripe live QA** — end-to-end checkout with real/test card
-4. **AdSense review request** — manual step, should be done before active promotion
-5. **Blog cluster expansion** — bioethics, AI accountability, virtue ethics (foundation in `lib/research-sources.ts`)
-6. **Content Intelligence admin MVP** — surface `lib/research-sources.ts` in admin panel
+All pre-launch technical gates are green:
+- Dynamic discovery EN/IT: live and locale-isolated ✅
+- Voted badge: working ✅
+- Category pages: locale-correct ✅
+- Badge copy: no "AI" text exposed publicly ✅
+- AdSense code: in bundle ✅
+
+First recommended action: share 1-2 specific dilemma URLs on a small social channel (e.g. Twitter/X, Reddit, or Telegram). Monitor votes and surface feedback.
+
+**Sprint candidates (ordered by impact):**
+
+1. **Controlled social soft test** — share 1-2 EN dilemma URLs; monitor vote counts and error logs
+2. **AdSense review request** — manual step in AdSense dashboard (splitvote.io → Sites → Request review)
+3. **Stripe live checkout QA** — end-to-end with real or test card
+4. **Content Production Batch 1** — Admin → Seed Draft Batch → "📦 Seed pack"; dry-run ON first; Locale EN; Count 5
+5. **AI generation re-QA** — set `OPENROUTER_MODEL_REVIEW=openai/gpt-4o-mini` in Vercel Production, redeploy, run 4 dry-run scenarios → unlock save mode
+6. **IT static scenario localization foundation** — related dilemma cards on IT topic pages show EN questions; `lib/scenarios.ts` has no `it` translations
+7. **Blog cluster expansion** — bioethics, AI accountability, virtue ethics (foundation in `lib/research-sources.ts`)
+8. **Deprecate `getCachedDynamicScenariosByLocale`** — no longer used by any public surface; safe to remove from `lib/cached-data.ts`
 
 ---
 
@@ -135,6 +190,7 @@ Without a dedicated sprint and explicit GO:
 | `joshua-greene.net` personal page — may move | Prefer DOI paper links in public content |
 | `<html lang="en">` on IT pages | Pre-existing issue; root layout not locale-scoped; not addressed |
 | EN dilemma card text on IT topic pages | Related dilemma cards (`/it/[topicSlug]`) display EN question text — `lib/scenarios.ts` has no IT translations. Pre-existing, not introduced by `2dbb133`. Next sprint candidate: IT static scenario localization foundation. |
+| Picoclaw / Content Intelligence overreach | Direction captured: Picoclaw is only external trend radar; SplitVote Content Intelligence Agent is internal read-only/dry-run gatekeeper. No auto-publish, auto-save, automatic file mutation, commit, push, or deploy. |
 | Agent drift (agents relying on stale project history) | Mitigated: agents must read live docs per CLAUDE.md |
 | Unsafe autonomy (Ralph loops touching HUMAN_ONLY areas) | Mitigated: SAFE/SEMI/HUMAN classification added to CLAUDE.md |
 
@@ -168,7 +224,7 @@ Tasks Claude can run without waiting for PM GO (per `## Autonomous / Ralph-style
 ## 8. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — 7 Maggio 2026 o successivo.
+Ripartenza sessione SplitVote — 8 Maggio 2026 o successivo.
 
 Leggi prima (in questo ordine):
 - CLAUDE.md
@@ -182,11 +238,12 @@ Poi esegui:
 - git log --oneline -10
 
 Task di ripartenza:
-1. Conferma stato branch (main deve essere in sync con origin/main, HEAD 2dbb133).
-2. Verifica se AdSense review è già stata richiesta manualmente (non verificabile dal repo — chiedi al PM).
-3. Verifica se Stripe live QA è stato eseguito.
-4. Verifica se AI generation re-QA pre-conditions sono soddisfatte (OPENROUTER_MODEL_REVIEW env + redeploy).
-5. Proponi prossimo sprint tra: IT static scenario localization, AI re-QA, Stripe QA, blog cluster expansion.
+1. Conferma stato branch (main deve essere in sync con origin/main, HEAD 9491d7a).
+2. Conferma che Vercel deploy 9491d7a sia confermato deployed (QA già passato il 7 maggio).
+3. Platform è READY FOR CONTROLLED SOFT TEST — proponi prossimo sprint.
+4. Verifica se AdSense review è già stata richiesta manualmente.
+5. Verifica se Stripe live QA è stato eseguito.
+6. Verifica se AI generation re-QA pre-conditions sono soddisfatte (OPENROUTER_MODEL_REVIEW env + redeploy).
 
 Output atteso:
 - Stato repo in 8 righe
