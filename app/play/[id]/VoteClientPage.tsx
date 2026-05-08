@@ -373,7 +373,7 @@ export default function VoteClientPage({
           <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] mb-4 block">
             {scenario.category}
           </span>
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text)] leading-snug">
+          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text)] leading-snug">
             {scenario.question}
           </h1>
 
@@ -437,10 +437,10 @@ export default function VoteClientPage({
                       type="button"
                       onClick={() => handleOptionClick('a')}
                       disabled={loading || !!submittedOption}
-                      className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                      className={`w-full min-h-[88px] rounded-2xl border-2 p-6 text-left font-semibold text-lg
                         ${activeOption === 'a'
                           ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
-                          : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
+                          : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 active:scale-[0.97] active:bg-red-500/15 cursor-pointer'
                         }
                         ${activeOption && activeOption !== 'a' ? 'opacity-30' : ''}
                         transition-all duration-200`}
@@ -473,10 +473,10 @@ export default function VoteClientPage({
                       type="button"
                       onClick={() => handleOptionClick('b')}
                       disabled={loading || !!submittedOption}
-                      className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                      className={`w-full min-h-[88px] rounded-2xl border-2 p-6 text-left font-semibold text-lg
                         ${activeOption === 'b'
                           ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
-                          : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
+                          : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 active:scale-[0.97] active:bg-blue-500/15 cursor-pointer'
                         }
                         ${activeOption && activeOption !== 'b' ? 'opacity-30' : ''}
                         transition-all duration-200`}
@@ -586,10 +586,10 @@ export default function VoteClientPage({
                   <button
                     onClick={() => handleOptionClick('a')}
                     disabled={loading || !!submittedOption}
-                    className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                    className={`w-full min-h-[88px] rounded-2xl border-2 p-6 text-left font-semibold text-lg
                       ${activeOption === 'a'
                         ? 'border-red-500 bg-red-500/20 text-red-300 scale-[0.99] animate-vote-tap'
-                        : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 cursor-pointer'
+                        : 'border-red-500/30 bg-red-500/5 text-[var(--text)] hover:border-red-500/70 hover:bg-red-500/15 hover:-translate-y-0.5 active:scale-[0.97] active:bg-red-500/15 cursor-pointer'
                       }
                       ${activeOption && activeOption !== 'a' ? 'opacity-30' : ''}
                       transition-all duration-200
@@ -608,10 +608,10 @@ export default function VoteClientPage({
                   <button
                     onClick={() => handleOptionClick('b')}
                     disabled={loading || !!submittedOption}
-                    className={`w-full rounded-2xl border-2 p-6 text-left font-semibold text-lg
+                    className={`w-full min-h-[88px] rounded-2xl border-2 p-6 text-left font-semibold text-lg
                       ${activeOption === 'b'
                         ? 'border-blue-500 bg-blue-500/20 text-blue-300 scale-[0.99] animate-vote-tap'
-                        : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 cursor-pointer'
+                        : 'border-blue-500/30 bg-blue-500/5 text-[var(--text)] hover:border-blue-500/70 hover:bg-blue-500/15 hover:-translate-y-0.5 active:scale-[0.97] active:bg-blue-500/15 cursor-pointer'
                       }
                       ${activeOption && activeOption !== 'b' ? 'opacity-30' : ''}
                       transition-all duration-200
