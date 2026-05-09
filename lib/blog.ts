@@ -1481,6 +1481,117 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'loyalty-vs-honesty-when-they-collide',
+    locale: 'en',
+    title: 'Loyalty vs Honesty: When the Two Cannot Coexist',
+    seoTitle: 'Loyalty vs Honesty — When Telling the Truth Means Betraying Someone You Love',
+    description:
+      'Most real moral dilemmas are not about trolleys — they are about people we know. When loyalty and honesty directly conflict, which wins? And where is the breaking point?',
+    seoDescription:
+      'Loyalty and honesty are both virtues — until they collide. Explore the moral psychology of when protecting someone close conflicts with telling the truth, through five real dilemmas.',
+    date: '2026-05-09',
+    readingTime: 5,
+    tags: ['loyalty', 'honesty', 'ethics', 'moral philosophy', 'moral dilemmas'],
+    relatedDilemmaIds: ['cover-accident', 'report-friend', 'sibling-secret', 'truth-friend', 'whistleblower'],
+    alternateSlug: 'lealta-vs-onesta-quando-si-scontrano',
+    content: [
+      {
+        type: 'p',
+        text: "Most moral dilemmas in real life don't involve runaway trolleys or anonymous strangers. They involve people we know. A partner who made a terrible mistake. A sibling hiding something painful. A friend who crossed a line. The question is no longer abstract — it is: do I protect them, or do I tell the truth?",
+      },
+      {
+        type: 'p',
+        text: 'Loyalty and honesty are both genuine moral virtues. The problem is that they can fail to coexist at the same time. When they collide, you cannot satisfy both — and your answer reveals something real about how you actually reason about ethics, regardless of the values you think you hold.',
+      },
+      {
+        type: 'h2',
+        text: 'What makes them collide',
+      },
+      {
+        type: 'p',
+        text: "Loyalty — staying committed to those who depend on us — is foundational to trust, family, and the social bonds that make cooperation possible. Honesty — telling the truth even when it hurts — is foundational to justice, accountability, and relationships built on reality rather than a comfortable lie.",
+      },
+      {
+        type: 'p',
+        text: "The tension arises when being loyal requires concealment. Your partner runs a red light and kills a pedestrian. Being loyal means driving away. Being honest means calling the police. The math is identical: one act, two values, direct conflict. You cannot do both.",
+      },
+      {
+        type: 'h2',
+        text: 'What moral psychology tells us',
+      },
+      {
+        type: 'p',
+        text: "Researchers who study moral reasoning have argued that human intuitions draw on multiple distinct concerns that can pull in opposite directions — including care for individuals, fairness and justice, loyalty to groups, and respect for social bonds. Different people weight these concerns differently, and the weights can shift depending on context.",
+      },
+      {
+        type: 'p',
+        text: "One influential framework, Moral Foundations Theory, treats loyalty and fairness as separate moral foundations that can conflict. This is an active area of research with ongoing debate — not settled consensus. SplitVote dilemmas explore similar tensions for reflection, not as a measure of any psychological theory.",
+      },
+      {
+        type: 'h2',
+        text: 'The hierarchy most people carry',
+      },
+      {
+        type: 'p',
+        text: "Most people have an implicit loyalty hierarchy, even if they have never named it: loyalty to close family tends to outweigh loyalty to friends, which outweighs loyalty to institutions, which outweighs abstract honesty principles. This is why covering for a sibling feels different from covering for a colleague — and covering for a stranger feels almost impossible.",
+      },
+      {
+        type: 'p',
+        text: "But the hierarchy shifts with the severity of the wrong. Helping a friend cover a parking fine is different from covering a fatal accident. Most people's loyalty has a breaking point — they just rarely know where it sits until they face the actual situation.",
+      },
+      {
+        type: 'h2',
+        text: 'Four dilemmas, four different breaking points',
+      },
+      {
+        type: 'p',
+        text: 'These scenarios test the loyalty-honesty line at different levels of severity. Each one changes something — the relationship, the harm done, the reversibility of the wrong. Where do you break?',
+      },
+      {
+        type: 'cta',
+        label: 'Your partner caused a fatal accident. Drive away or call the police? →',
+        href: '/play/cover-accident',
+      },
+      {
+        type: 'cta',
+        label: 'Your best friend embezzled from a charity. Report them or talk first? →',
+        href: '/play/report-friend',
+      },
+      {
+        type: 'cta',
+        label: "Your sibling is cheating — and their spouse is your friend. Tell or stay out? →",
+        href: '/play/sibling-secret',
+      },
+      {
+        type: 'cta',
+        label: "Your best friend's new partner is wrong for them. Be honest or keep the peace? →",
+        href: '/play/truth-friend',
+      },
+      {
+        type: 'h2',
+        text: 'When loyalty to a person becomes loyalty to an institution',
+      },
+      {
+        type: 'p',
+        text: "The conflict takes a different shape when it is not personal but institutional. Whistleblowing cases make the loyalty-honesty tension visible at scale: one employee's decision can expose harm done to thousands and simultaneously destroy livelihoods in a community. The stakes are different — but the underlying question is the same.",
+      },
+      {
+        type: 'cta',
+        label: 'Your company illegally pollutes a river. 1,000 jobs are at stake. Report or stay silent? →',
+        href: '/play/whistleblower',
+      },
+      {
+        type: 'cta',
+        label: 'Explore all loyalty vs honesty dilemmas →',
+        href: '/loyalty-vs-honesty',
+      },
+      {
+        type: 'disclaimer',
+        text: "SplitVote presents ethical dilemmas for reflection and discussion. Mention of Moral Foundations Theory is for context only — SplitVote's design is inspired by, and not a replication of, any academic framework. Results represent our community's votes, not scientific conclusions.",
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -2932,6 +3043,117 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche. Fonte: Awad et al., 'The Moral Machine experiment', Nature 558, 59–64 (2018).",
+      },
+    ],
+  },
+  {
+    slug: 'lealta-vs-onesta-quando-si-scontrano',
+    locale: 'it',
+    title: 'Lealtà vs Onestà: Quando le Due Virtù Non Possono Coesistere',
+    seoTitle: 'Lealtà vs Onestà — Quando Dire la Verità Significa Tradire Chi Ami',
+    description:
+      'La maggior parte dei veri dilemmi morali non riguarda trolley — riguarda persone che conosciamo. Quando lealtà e onestà entrano in conflitto diretto, quale vince? E dove si trova il punto di rottura?',
+    seoDescription:
+      "Lealtà e onestà sono entrambe virtù — finché non si scontrano. Esplora la psicologia morale di quando proteggere qualcuno di caro entra in conflitto con dire la verità, attraverso cinque dilemmi reali.",
+    date: '2026-05-09',
+    readingTime: 5,
+    tags: ['lealtà', 'onestà', 'etica', 'filosofia morale', 'dilemmi morali'],
+    relatedDilemmaIds: ['cover-accident', 'report-friend', 'sibling-secret', 'truth-friend', 'whistleblower'],
+    alternateSlug: 'loyalty-vs-honesty-when-they-collide',
+    content: [
+      {
+        type: 'p',
+        text: "La maggior parte dei dilemmi morali nella vita reale non riguarda trolley fuori controllo o sconosciuti anonimi. Riguarda persone che conosciamo. Un partner che ha fatto qualcosa di terribile. Un fratello che nasconde qualcosa di doloroso. Un amico che ha superato un limite. La domanda non è più astratta — è: lo proteggo, o dico la verità?",
+      },
+      {
+        type: 'p',
+        text: "Lealtà e onestà sono entrambe autentiche virtù morali. Il problema è che possono non riuscire a coesistere nello stesso momento. Quando si scontrano, non puoi soddisfare entrambe — e la tua risposta rivela qualcosa di reale su come ragioni effettivamente in etica, indipendentemente dai valori che pensi di avere.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa le fa scontrare',
+      },
+      {
+        type: 'p',
+        text: "La lealtà — restare fedeli a chi dipende da noi — è alla base della fiducia, della famiglia e dei legami sociali che rendono possibile la cooperazione. L'onestà — dire la verità anche quando fa male — è alla base della giustizia, della responsabilità e delle relazioni costruite sulla realtà piuttosto che su una comoda bugia.",
+      },
+      {
+        type: 'p',
+        text: "La tensione emerge quando essere leali richiede di nascondere qualcosa. Il tuo partner brucia un semaforo rosso e uccide un pedone. Essere leale significa fuggire. Essere onesto significa chiamare la polizia. La matematica è identica: un atto, due valori, conflitto diretto. Non puoi fare entrambe le cose.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa ci dice la psicologia morale',
+      },
+      {
+        type: 'p',
+        text: "I ricercatori che studiano il ragionamento morale sostengono che le intuizioni umane attingono a molteplici preoccupazioni distinte che possono tirare in direzioni opposte — tra cui la cura per gli individui, l'equità e la giustizia, la lealtà verso i gruppi e il rispetto dei legami sociali. Persone diverse pesano queste preoccupazioni in modo diverso, e i pesi possono cambiare a seconda del contesto.",
+      },
+      {
+        type: 'p',
+        text: "Un framework influente, la Moral Foundations Theory, tratta lealtà ed equità come fondamenti morali separati che possono entrare in conflitto. Si tratta di un'area di ricerca attiva con dibattiti in corso — non di un consenso definitivo. I dilemmi di SplitVote esplorano tensioni simili per la riflessione, non come misura di alcuna teoria psicologica.",
+      },
+      {
+        type: 'h2',
+        text: "La gerarchia che la maggior parte di noi porta con sé",
+      },
+      {
+        type: 'p',
+        text: "La maggior parte delle persone ha una gerarchia implicita di lealtà, anche se non l'ha mai nominata: la lealtà verso i familiari stretti tende a prevalere sulla lealtà verso gli amici, che prevale sulla lealtà verso le istituzioni, che prevale sui principi astratti di onestà. Per questo coprire un fratello sembra diverso dal coprire un collega — e coprire uno sconosciuto sembra quasi impossibile.",
+      },
+      {
+        type: 'p',
+        text: "Ma la gerarchia cambia con la gravità del torto. Aiutare un amico a coprire una multa è diverso dal coprire un incidente mortale. La lealtà della maggior parte delle persone ha un punto di rottura — ma raramente sanno dove si trova finché non affrontano la situazione reale.",
+      },
+      {
+        type: 'h2',
+        text: 'Quattro dilemmi, quattro punti di rottura diversi',
+      },
+      {
+        type: 'p',
+        text: "Questi scenari mettono alla prova il confine lealtà-onestà a livelli di gravità diversi. Ognuno cambia qualcosa — la relazione, il danno causato, la reversibilità del torto. Dove si rompe la tua lealtà?",
+      },
+      {
+        type: 'cta',
+        label: 'Il tuo partner ha causato un incidente mortale. Fuggi o chiami la polizia? →',
+        href: '/it/play/cover-accident',
+      },
+      {
+        type: 'cta',
+        label: 'Il tuo migliore amico ha sottratto fondi a un ente benefico. Lo denunci o gli parli prima? →',
+        href: '/it/play/report-friend',
+      },
+      {
+        type: 'cta',
+        label: "Tuo fratello tradisce il coniuge — che è anche tuo amico. Lo dici o resti fuori? →",
+        href: '/it/play/sibling-secret',
+      },
+      {
+        type: 'cta',
+        label: "Il nuovo partner del tuo migliore amico fa schifo. Sei onesto o mantieni la pace? →",
+        href: '/it/play/truth-friend',
+      },
+      {
+        type: 'h2',
+        text: "Quando la lealtà verso una persona diventa lealtà verso un'istituzione",
+      },
+      {
+        type: 'p',
+        text: "Il conflitto assume una forma diversa quando non è personale ma istituzionale. I casi di whistleblowing rendono visibile la tensione lealtà-onestà su larga scala: la decisione di un singolo dipendente può esporre danni fatti a migliaia di persone e allo stesso tempo distruggere i mezzi di sostentamento di una comunità. Le posta in gioco è diversa — ma la domanda di fondo è la stessa.",
+      },
+      {
+        type: 'cta',
+        label: "La tua azienda inquina illegalmente un fiume. 1.000 posti di lavoro sono a rischio. Denunci o taci? →",
+        href: '/it/play/whistleblower',
+      },
+      {
+        type: 'cta',
+        label: 'Esplora tutti i dilemmi su lealtà e onestà →',
+        href: '/it/lealta-vs-onesta',
+      },
+      {
+        type: 'disclaimer',
+        text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. Il riferimento alla Moral Foundations Theory è solo contestuale — il design di SplitVote è ispirato a, e non una replica di, alcun framework accademico. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche.",
       },
     ],
   },
