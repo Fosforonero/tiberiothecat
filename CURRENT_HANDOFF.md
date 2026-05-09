@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 8 May 2026 (post-push d59af3c — S7 Mobile play polish + full discovery QA 9/9 PASS)
+Last updated: 9 May 2026 (post-push c25184c — 4 content sprints merged: blog parity + AI ethics + loyalty + share button)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6)
 
@@ -10,8 +10,8 @@ Implementer: Claude Code (Sonnet 4.6)
 
 - **Branch:** `main`
 - **Local vs remote:** `main` is **in sync** with `origin/main`
-  - HEAD: `d59af3c` — `merge: S7 — Mobile play page polish (heading + tactile feedback)` (pushed ✅, deployed ✅)
-- **Verified deploy:** `d59af3c` (S7 merged 8 May 2026, smoke 8/8 PASS)
+  - HEAD: `c25184c` — `Merge branch 'claude/share-before-vote'` (pushed ✅, deploying)
+- **Previous verified deploy:** `d59af3c` (S7 merged 8 May 2026, smoke 8/8 PASS)
 - **Full discovery QA verified:** 9/9 PASS (steps #86–94, 8 May 2026) — Home/Category/Trending/Admin EN+IT, sort, regressions
 
 ### Feature state
@@ -39,38 +39,41 @@ Implementer: Claude Code (Sonnet 4.6)
 | Blog Draft Queue | ✅ deployed and QA'd |
 | IT topic landing pages | ✅ live (`2dbb133`) |
 | Content Seed Pack Integration v1 | ✅ pushed (`ea2a3b4`) — admin only; dry-run first |
+| DilemmaCard share button | ✅ live (`c25184c`) — Web Share API + clipboard fallback, GA4 tracked |
+| Blog EN/IT parity fix | ✅ live (`a6e5c3a`) — `moral-dilemmas-examples` (EN) + `statistiche-problema-del-carrello` (IT) |
+| G1 AI Ethics article EN+IT | ✅ live (`6ce40be`) — `ai-ethics-what-40-million-people-chose` + `ia-etica-40-milioni-scelte` |
+| G2 Loyalty vs Honesty article EN+IT | ✅ live (`372d085`) — `loyalty-vs-honesty-when-they-collide` + `lealta-vs-onesta-quando-si-scontrano` |
 
 ---
 
-## 2. Last Completed Work (Session 8 May 2026)
+## 2. Last Completed Work (Session 9 May 2026)
 
-### Mobile-First Redesign Phase 1 — All Sprints Live ✅
+### Content Sprint Batch — 4 Branches Merged ✅
 
-Six mobile-first UI sprints + 1 governance agent + branch cleanup, all merged to main and verified.
+All 4 content branches merged to main via explicit PM GO after 22-test QA across all branches. Pushed to `origin/main` at `c25184c`.
 
-**S5c — Sticky "Next dilemma" CTA mobile** (`6c7cc08` → `7299607`):
-- `app/results/[id]/ResultsClientPage.tsx` — `showStickyNext = !pathCategory && !!nextId`; `fixed bottom-0 left-0 right-0 z-40 sm:hidden` bar with iOS safe-area-inset; tracks `next_dilemma_clicked` source `results_sticky`
-- Smoke 8/8 PASS
+**Blog parity fix** (`a6e5c3a`):
+- `lib/blog.ts` — Added `moral-dilemmas-examples` (EN) + `statistiche-problema-del-carrello` (IT); `alternateSlug` cross-locale hreflang linking
+
+**G1 AI Ethics article** (`6ce40be`):
+- `lib/blog.ts` — `ai-ethics-what-40-million-people-chose` (EN) + `ia-etica-40-milioni-scelte` (IT); 5 play CTAs; Moral Machine (Awad et al., Nature 2018) source disclaimer
+
+**G2 Loyalty vs Honesty article** (`372d085`):
+- `lib/blog.ts` — `loyalty-vs-honesty-when-they-collide` (EN) + `lealta-vs-onesta-quando-si-scontrano` (IT); 5 play CTAs each; MFT context disclaimer; `alternateSlug` cross-linking
+
+**Share Before Vote** (`c25184c`):
+- `components/DilemmaCard.tsx` — restructured to `div.card-neon` outer + inner `Link` block + sibling share row (valid HTML, no button-in-anchor)
+- `components/DilemmaCardShareButton.tsx` (NEW) — Web Share API + clipboard fallback; GA4 `share_clicked { target, scenario_id, locale }`; EN/IT copy ("Share"/"Condividi", "Copied!"/"Copiato!")
+
+**Verification:** typecheck ✅ — build ✅ — git diff --check ✅ — 22-test PM QA PASS across all 4 branches pre-merge
+
+### Mobile-First Redesign Phase 1 — All Sprints Live ✅ (8 May 2026)
 
 **S7 — Mobile play page polish** (`4b5ea78` → `d59af3c`):
-- `app/play/[id]/VoteClientPage.tsx` — question heading `text-2xl md:text-3xl` → `text-3xl md:text-4xl`; vote buttons `min-h-[88px]` + `active:scale-[0.97] active:bg-{color}/15` for tactile feedback (4 button instances total)
+- `app/play/[id]/VoteClientPage.tsx` — question heading `text-2xl md:text-3xl` → `text-3xl md:text-4xl`; vote buttons `min-h-[88px]` + `active:scale-[0.97] active:bg-{color}/15` for tactile feedback
 - Smoke 8/8 PASS
 
-**S8 — Discovery audit (Codex parallel session)**:
-- Full end-to-end QA on dynamic discovery EN+IT across home/category/trending/admin/regressions
-- Steps #86–94 verified: locale isolation ✅, sort DESC ✅, admin approve flow EN(171→172) + IT(173→174) ✅, voto+results 404 graceful ✅
-- Note: specific commit SHAs for S8 are in Codex session log, not tracked here
-
-**HANDOFF refresh** (`816ce58`):
-- Document brought from stale `9491d7a` declaration to current state
-
-**Branch cleanup**:
-- Removed 4 stale worktrees: `charming-villani-b7ba2b`, `affectionate-banzai-be21a3`, `fervent-elion-b33aa3`, `s5c-sticky-next-cta`, `s7-play-mobile`
-- Deleted 9 stale local branches: all `claude/s*` merged sprints + 2 `charming-villani` variants + `affectionate-banzai` + `fervent-elion` + `s7-play-mobile`
-- Deleted 6 stale remote branches: all merged sprint branches on `origin`
-- **Preserved:** `stripe-preview-qa` (local + remote) — contains Stripe-specific commits not in main
-
-**Verified for all sprints in this session:** typecheck ✅ — build ✅ — git diff --check ✅ — smoke checklist ✅ — visual QA ✅
+**S8 — Discovery audit (Codex parallel session)**: Steps #86–94 verified — locale isolation ✅, sort DESC ✅, admin approve flow EN(171→172) + IT(173→174) ✅
 
 ---
 
@@ -90,16 +93,16 @@ All HUMAN_ONLY — require credentials, env vars in Vercel, or external dashboar
 
 ## 4. Active Sprint / Next Recommended Step
 
-**Active sprint complete.** `d59af3c` pushed and deployed. Mobile redesign phase 1 done. Discovery QA fully verified.
+**Active sprint complete.** `c25184c` pushed. 4 content branches merged. Blog now has 14 EN + 14 IT posts.
 
 **Sprint candidates for next session (ordered by autonomy):**
 
 ### SAFE_AUTONOMOUS / SEMI_AUTONOMOUS (Claude can execute)
 
-1. **S8b — Mobile UI polish phase 2** — profile page, missions HUD, dashboard refinements (~35–45 min, same pattern as S7)
-2. **Blog cluster gap audit** — read-only SEO analysis: existing articles vs research-sources thematic gaps; output `reports/blog-cluster-gaps-DATE.md` (~20–30 min)
-3. **Dry-run content factory** — admin API call with `seedPack` mode + `dryRun=true`; output preview JSON (~10–15 min)
-4. **IT static scenario localization scaffolding** — add `optionA_it`/`optionB_it`/`question_it` optional fields to `lib/scenarios.ts` types + 1 sample translation as proof of concept
+1. **G3 — Three ethics theories trio** — consequentialism, deontology, virtue ethics; 3 EN + 3 IT articles; same pattern as G1/G2 (~90 min, no PM credentials needed)
+2. **Blog cluster gap audit** — read-only SEO analysis: existing articles vs thematic gaps; output `reports/blog-cluster-gaps-DATE.md` (~20–30 min)
+3. **S8b — Mobile UI polish phase 2** — profile page, missions HUD, dashboard refinements (~35–45 min, same pattern as S7)
+4. **Dry-run content factory** — admin API call with `seedPack` mode + `dryRun=true`; output preview JSON (~10–15 min)
 
 ### HUMAN_ONLY (require PM action first)
 
@@ -170,7 +173,7 @@ Tasks Claude can run without waiting for PM GO (per `## Autonomous / Ralph-style
 ## 8. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — 9 Maggio 2026 o successivo.
+Ripartenza sessione SplitVote — 10 Maggio 2026 o successivo.
 
 Leggi prima (in questo ordine):
 - CLAUDE.md
@@ -178,14 +181,16 @@ Leggi prima (in questo ordine):
 - git status --short --branch
 - git log --oneline -10
 
-State al 8 maggio sera:
-- HEAD main: d59af3c (S7 mobile play polish — pushed e deployed)
-- Discovery QA full: 9/9 PASS verificato (#86–94)
+State al 9 maggio sera:
+- HEAD main: c25184c (merge share-before-vote — pushed a origin/main)
+- 4 content branch merges completati: blog-parity-fix, blog-ai-ethics, blog-loyalty, share-before-vote
+- Blog: 14 EN + 14 IT articoli (G1 AI Ethics + G2 Loyalty live)
+- DilemmaCard share button live (Web Share API + clipboard, GA4 tracked)
 - OPENROUTER_MODEL_REVIEW env: SET in Vercel + redeploy DONE
 - Mobile redesign phase 1: S1/S2/S5a/S5b/S5c/S6a/S7 tutti live ✅
-- Branch cleanup completato (1 worktree solo, branch attivi: main + stripe-preview-qa)
+- Branch attivi: main + stripe-preview-qa
 - 79 righe unstaged in PRODUCT_STRATEGY.md + ROADMAP.md (non Claude — PM da committare)
-- reports/ ha 1 audit dilemma-visibility-2026-05-07.md (storico, non toccare)
+- reports/ ha audit dilemma-visibility-2026-05-07.md (storico, non toccare)
 
 Backlog HUMAN_ONLY aperto:
 - Task #55 Stripe MVP premium subscription (credenziali live + webhook)
@@ -194,10 +199,10 @@ Backlog HUMAN_ONLY aperto:
 - AdSense review request (dashboard manual click)
 
 Sprint candidates SAFE_AUTONOMOUS/SEMI_AUTONOMOUS (proponi UNO):
-1. S8b — Mobile UI polish phase 2 (profile/missions HUD)
-2. Blog cluster gap audit (read-only SEO report)
-3. Dry-run content factory (Seed Pack batch preview)
-4. IT static scenario localization scaffolding
+1. G3 — Three ethics theories trio (consequentialism, deontology, virtue ethics — 3 EN + 3 IT)
+2. Blog cluster gap audit (read-only SEO report → reports/)
+3. S8b — Mobile UI polish phase 2 (profile/missions HUD)
+4. Dry-run content factory (Seed Pack batch preview, dryRun=true)
 
 Output atteso:
 - Conferma stato repo in 6 righe
