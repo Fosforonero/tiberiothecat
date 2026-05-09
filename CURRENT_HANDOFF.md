@@ -93,16 +93,37 @@ All HUMAN_ONLY — require credentials, env vars in Vercel, or external dashboar
 
 ## 4. Active Sprint / Next Recommended Step
 
-**Active sprint complete.** `c25184c` pushed. 4 content branches merged. Blog now has 14 EN + 14 IT posts.
+**PROSSIMO SPRINT CONFERMATO DA MATTEO: G3 — Trio teorie etiche**
 
-**Sprint candidates for next session (ordered by autonomy):**
+Da fare come prima cosa nella prossima sessione. GO esplicito già dato.
 
-### SAFE_AUTONOMOUS / SEMI_AUTONOMOUS (Claude can execute)
+### G3 — Piano dettagliato
 
-1. **G3 — Three ethics theories trio** — consequentialism, deontology, virtue ethics; 3 EN + 3 IT articles; same pattern as G1/G2 (~90 min, no PM credentials needed)
-2. **Blog cluster gap audit** — read-only SEO analysis: existing articles vs thematic gaps; output `reports/blog-cluster-gaps-DATE.md` (~20–30 min)
-3. **S8b — Mobile UI polish phase 2** — profile page, missions HUD, dashboard refinements (~35–45 min, same pattern as S7)
-4. **Dry-run content factory** — admin API call with `seedPack` mode + `dryRun=true`; output preview JSON (~10–15 min)
+3 articoli EN + 3 articoli IT, stesso schema di G1/G2 (`lib/blog.ts`, pattern `alternateSlug`, disclaimer accademico).
+
+**Articoli da scrivere:**
+
+| Slug EN | Slug IT | Topic |
+|---|---|---|
+| `consequentialism-the-greatest-good` | `consequenzialismo-il-bene-maggiore` | Bentham/Mill, trolley problem come caso reale, 4-5 CTA (trolley, pandemic-dose, organ-harvest, rich-or-fair, universal-basic-income) |
+| `deontology-some-things-are-always-wrong` | `deontologia-alcune-cose-sono-sempre-sbagliate` | Kant senza jargon, conflitto con consequentialism, CTA (whistleblower, cover-accident, innocent-juror, mandatory-vaccine) |
+| `virtue-ethics-what-would-a-good-person-do` | `etica-della-virtu-cosa-farebbe-una-persona-buona` | Aristotele, come risponde alle domande che le altre due evitano, CTA (truth-friend, forgive-cheater, sibling-secret, love-or-career) |
+
+**Regole applicate in G1/G2 da rispettare:**
+- `alternateSlug` bidirezionale per hreflang automatico
+- `relatedDilemmaIds` = IDs degli scenari statici linkati nelle CTA
+- `date: '2026-05-10'` (domani)
+- `readingTime: 5` per tutti
+- Disclaimer finale in ogni articolo: variante MFT per consequentialism/deontology/virtue ethics (non è replica di framework accademico)
+- Cross-link tra i 3 articoli del trio (ogni articolo menziona gli altri due)
+- CTA chiusura: link alla categoria landing page rilevante
+
+**Al termine di G3:** blog a 20 EN + 20 IT articoli → richiedere revisione AdSense (task Matteo).
+
+**Dopo G3 (ordine priorità):**
+- Matteo: visita `splitvote.io/profile` → clicca "Upgrade to Premium" → verifica checkout si apre con piano mensile €4,99 (5 min, sblocca Stripe)
+- Matteo: richiedi revisione AdSense dal dashboard (3 min)
+- OpenRouter optimization: set `OPENROUTER_MODEL_REVIEW` a modello economico (haiku/mistral) — risparmio 50% crediti per ogni seed batch
 
 ### HUMAN_ONLY (require PM action first)
 
@@ -173,41 +194,37 @@ Tasks Claude can run without waiting for PM GO (per `## Autonomous / Ralph-style
 ## 8. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — 10 Maggio 2026 o successivo.
+Ripartenza sessione SplitVote — 10 Maggio 2026.
 
 Leggi prima (in questo ordine):
 - CLAUDE.md
-- CURRENT_HANDOFF.md
+- CURRENT_HANDOFF.md  ← contiene il piano G3 completo già approvato
 - git status --short --branch
-- git log --oneline -10
+- git log --oneline -5
 
 State al 9 maggio sera:
-- HEAD main: c25184c (merge share-before-vote — pushed a origin/main)
-- 4 content branch merges completati: blog-parity-fix, blog-ai-ethics, blog-loyalty, share-before-vote
-- Blog: 14 EN + 14 IT articoli (G1 AI Ethics + G2 Loyalty live)
+- HEAD main: 909d07a (CURRENT_HANDOFF refresh — pushed a origin/main)
+- Blog: 14 EN + 14 IT articoli live (G1 AI Ethics + G2 Loyalty + parity fix + share button)
 - DilemmaCard share button live (Web Share API + clipboard, GA4 tracked)
-- OPENROUTER_MODEL_REVIEW env: SET in Vercel + redeploy DONE
-- Mobile redesign phase 1: S1/S2/S5a/S5b/S5c/S6a/S7 tutti live ✅
+- OPENROUTER_MODEL_REVIEW env: SET in Vercel
+- Mobile redesign phase 1 completo (S1/S2/S5a/S5b/S5c/S6a/S7)
 - Branch attivi: main + stripe-preview-qa
-- 79 righe unstaged in PRODUCT_STRATEGY.md + ROADMAP.md (non Claude — PM da committare)
 - reports/ ha audit dilemma-visibility-2026-05-07.md (storico, non toccare)
 
-Backlog HUMAN_ONLY aperto:
-- Task #55 Stripe MVP premium subscription (credenziali live + webhook)
-- Task #46 Stripe Name Change €0.99 (price ID + webhook)
-- Task #24 Discord OAuth (callback URLs)
-- AdSense review request (dashboard manual click)
+SPRINT CONFERMATO: G3 — Trio teorie etiche (GO già dato da Matteo)
+→ Consequentialism EN+IT + Deontology EN+IT + Virtue Ethics EN+IT
+→ 6 articoli in lib/blog.ts, stesso schema G1/G2
+→ Piano completo nella sezione 4 di questo file
 
-Sprint candidates SAFE_AUTONOMOUS/SEMI_AUTONOMOUS (proponi UNO):
-1. G3 — Three ethics theories trio (consequentialism, deontology, virtue ethics — 3 EN + 3 IT)
-2. Blog cluster gap audit (read-only SEO report → reports/)
-3. S8b — Mobile UI polish phase 2 (profile/missions HUD)
-4. Dry-run content factory (Seed Pack batch preview, dryRun=true)
+NON proporre alternative sprint — vai diretto su G3.
+Lavora su un worktree dedicato (claude/blog-ethics-trio o simile).
+Scrivi gli articoli, typecheck, build, poi chiedi GO per merge e push.
 
-Output atteso:
-- Conferma stato repo in 6 righe
-- Sprint scelto con motivazione (1 paragrafo)
-- Plan sintetico (file toccati, LoC stimato, smoke checklist breve)
-- Aspetta GO esplicito prima di implementare
-- Nessuna modifica a PRODUCT_STRATEGY.md / ROADMAP.md / LEGAL.md / CLAUDE.md senza GO esplicito
+Backlog HUMAN_ONLY (non blocca G3):
+- Stripe live QA: splitvote.io/profile → Upgrade to Premium → verifica checkout €4,99/mese
+- AdSense review request: dashboard Google AdSense → Sites → splitvote.io → richiedi revisione
+- Task #46 Stripe Name Change €0.99
+- Task #24 Discord OAuth
+
+Nessuna modifica a PRODUCT_STRATEGY.md / ROADMAP.md / LEGAL.md / CLAUDE.md senza GO esplicito.
 ```
