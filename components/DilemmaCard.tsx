@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Globe, Sparkles, Flame } from 'lucide-react'
 import type { Scenario } from '@/lib/scenarios'
 import DilemmaOptionPills from '@/components/DilemmaOptionPills'
+import DilemmaCardShareButton from '@/components/DilemmaCardShareButton'
 import { CATEGORY_LABELS_IT } from '@/lib/scenarios-it'
 
 export type DilemmaCardBadge = 'trending' | 'ai' | 'new' | 'voted'
@@ -24,49 +25,62 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge, loc
   const votesLabel = locale === 'it' ? 'voti' : 'votes'
 
   return (
-    <Link href={playHref} className="card-neon group block rounded-2xl p-5 sm:p-6">
-      <div className="flex items-start gap-3 sm:gap-4">
-        <span className="text-3xl sm:text-4xl flex-shrink-0">{scenario.emoji}</span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
-              {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
-            </span>
-            {badge === 'trending' && (
-              <span className="flex items-center gap-1 text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5 font-bold">
-                <Flame size={9} />
-                {badgeCopy.trending}
+    <div className="card-neon group rounded-2xl">
+      {/* Main clickable area → play page */}
+      <Link href={playHref} className="block p-5 sm:p-6 pb-2">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <span className="text-3xl sm:text-4xl flex-shrink-0">{scenario.emoji}</span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
+                {locale === 'it' ? (CATEGORY_LABELS_IT[scenario.category] ?? scenario.category) : scenario.category}
               </span>
-            )}
-            {badge === 'ai' && (
-              <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold">
-                <Sparkles size={9} />
-                {badgeCopy.ai}
-              </span>
-            )}
-            {badge === 'new' && (
-              <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
-                {badgeCopy.new}
-              </span>
-            )}
-            {badge === 'voted' && (
-              <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
-                {badgeCopy.voted}
-              </span>
+              {badge === 'trending' && (
+                <span className="flex items-center gap-1 text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-full px-2 py-0.5 font-bold">
+                  <Flame size={9} />
+                  {badgeCopy.trending}
+                </span>
+              )}
+              {badge === 'ai' && (
+                <span className="flex items-center gap-1 text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full px-2 py-0.5 font-bold">
+                  <Sparkles size={9} />
+                  {badgeCopy.ai}
+                </span>
+              )}
+              {badge === 'new' && (
+                <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
+                  {badgeCopy.new}
+                </span>
+              )}
+              {badge === 'voted' && (
+                <span className="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 rounded-full px-2 py-0.5 font-bold">
+                  {badgeCopy.voted}
+                </span>
+              )}
+            </div>
+            <p className="font-semibold text-[var(--text)] leading-snug mb-3 line-clamp-3 text-sm sm:text-base">
+              {scenario.question}
+            </p>
+            <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
+            {totalVotes !== undefined && totalVotes > 0 && (
+              <div className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
+                <Globe size={10} />
+                <span>{totalVotes.toLocaleString(locale === 'it' ? 'it-IT' : 'en-US')} {votesLabel}</span>
+              </div>
             )}
           </div>
-          <p className="font-semibold text-[var(--text)] leading-snug mb-3 line-clamp-3 text-sm sm:text-base">
-            {scenario.question}
-          </p>
-          <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-          {totalVotes !== undefined && totalVotes > 0 && (
-            <div className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
-              <Globe size={10} />
-              <span>{totalVotes.toLocaleString(locale === 'it' ? 'it-IT' : 'en-US')} {votesLabel}</span>
-            </div>
-          )}
         </div>
+      </Link>
+
+      {/* Share button row — separate from the Link to keep valid HTML */}
+      <div className="px-5 sm:px-6 pb-4 flex justify-end">
+        <DilemmaCardShareButton
+          question={scenario.question}
+          playHref={playHref}
+          scenarioId={scenario.id}
+          locale={locale}
+        />
       </div>
-    </Link>
+    </div>
   )
 }
