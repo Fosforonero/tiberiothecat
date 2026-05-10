@@ -4,23 +4,61 @@ import Link from 'next/link'
 import PersonalityClient from './PersonalityClient'
 import { ARCHETYPES, MORAL_AXES } from '@/lib/personality'
 
-export const metadata: Metadata = {
-  title: 'Your Moral Profile | SplitVote',
-  description: 'Discover your SplitVote personality archetype based on your votes. Which moral sign are you — Guardian, Rebel, Oracle, Diplomat, Strategist, or Empath?',
-  alternates: {
-    canonical: 'https://splitvote.io/personality',
-    languages: {
-      'en': 'https://splitvote.io/personality',
-      'it-IT': 'https://splitvote.io/it/personality',
-      'x-default': 'https://splitvote.io/personality',
+const VALID_ARCHETYPE_IDS = new Set(ARCHETYPES.map(a => a.id))
+
+interface Props {
+  searchParams: { archetype?: string }
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const requested = (searchParams.archetype ?? '').toLowerCase()
+  const isValidArchetype = VALID_ARCHETYPE_IDS.has(requested)
+  const archetype = isValidArchetype ? ARCHETYPES.find(a => a.id === requested) : null
+
+  // Dynamic title/description when an archetype is in the URL → richer share preview
+  const title = archetype
+    ? `${archetype.signEmoji} I'm a ${archetype.name} — SplitVote Moral Personality`
+    : 'Your Moral Profile | SplitVote'
+  const description = archetype
+    ? `${archetype.tagline} — Discover your SplitVote moral archetype based on how you vote on real dilemmas.`
+    : 'Discover your SplitVote personality archetype based on your votes. Which moral sign are you — Guardian, Rebel, Oracle, Diplomat, Strategist, or Empath?'
+
+  // OG image: personalised when archetype is set, generic fallback otherwise
+  const ogImage = `https://splitvote.io/api/personality-card?archetype=${isValidArchetype ? requested : 'diplomat'}&locale=en&format=og`
+  const canonicalSuffix = isValidArchetype ? `?archetype=${requested}` : ''
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://splitvote.io/personality${canonicalSuffix}`,
+      languages: {
+        'en': `https://splitvote.io/personality${canonicalSuffix}`,
+        'it-IT': `https://splitvote.io/it/personality${canonicalSuffix}`,
+        'x-default': `https://splitvote.io/personality${canonicalSuffix}`,
+      },
     },
-  },
-  openGraph: {
-    title: 'Your Moral Profile — SplitVote',
-    description: 'Find out your moral archetype based on your dilemma votes.',
-    url: 'https://splitvote.io/personality',
-    siteName: 'SplitVote',
-  },
+    openGraph: {
+      title: archetype ? `${archetype.signEmoji} ${archetype.name} — SplitVote Sign` : 'Your Moral Profile — SplitVote',
+      description: archetype ? `"${archetype.tagline}" — Find your own moral archetype on SplitVote.` : 'Find out your moral archetype based on your dilemma votes.',
+      url: `https://splitvote.io/personality${canonicalSuffix}`,
+      siteName: 'SplitVote',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: archetype ? `${archetype.name} — SplitVote moral personality` : 'SplitVote moral personality',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: archetype ? `${archetype.signEmoji} I'm a ${archetype.name}` : 'Your Moral Profile — SplitVote',
+      description: archetype ? `"${archetype.tagline}"` : 'Discover your moral archetype on SplitVote.',
+      images: [ogImage],
+    },
+  }
 }
 
 export default function PersonalityPage() {

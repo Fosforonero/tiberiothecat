@@ -126,8 +126,11 @@ export default function PersonalityClient({ locale = 'en' }: Props) {
   }, [locale])
 
   const handleShare = async () => {
+    const archetypeId = data?.archetype?.id
     const text = data?.archetype?.shareText ?? (locale === 'it' ? 'Scopri la tua personalità SplitVote su splitvote.io!' : 'Check out my SplitVote personality at splitvote.io!')
-    const url = locale === 'it' ? 'https://splitvote.io/it/personality' : 'https://splitvote.io/personality'
+    // Build URL with ?archetype= so the receiving side renders the matching OG card
+    const baseUrl = locale === 'it' ? 'https://splitvote.io/it/personality' : 'https://splitvote.io/personality'
+    const url = archetypeId ? `${baseUrl}?archetype=${archetypeId}` : baseUrl
     if (navigator.share) {
       await navigator.share({ text, url })
     } else {

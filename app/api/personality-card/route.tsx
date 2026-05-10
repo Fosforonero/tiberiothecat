@@ -32,13 +32,15 @@ const ARCHETYPE_HEX: Record<string, string> = {
 }
 
 /**
- * GET /api/personality-card?archetype=guardian&locale=en|it
- * Returns a 1080×1920 PNG personality share card.
+ * GET /api/personality-card?archetype=guardian&locale=en|it&format=story|og
+ * - format=story (default): 1080×1920 PNG vertical (Instagram/TikTok stories)
+ * - format=og: 1200×630 PNG horizontal (OG image for social link previews)
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const rawId  = searchParams.get('archetype') ?? 'diplomat'
   const locale = searchParams.get('locale') === 'it' ? 'it' : 'en'
+  const format = searchParams.get('format') === 'og' ? 'og' : 'story'
   const isIT   = locale === 'it'
 
   const archetypeId = VALID_IDS.has(rawId) ? rawId : 'diplomat'
@@ -56,6 +58,157 @@ export async function GET(request: NextRequest) {
                           : 'For entertainment only — not scientifically validated'
   const urlLabel   = isIT ? 'splitvote.io/it/personality' : 'splitvote.io/personality'
 
+  // ───────────────── HORIZONTAL OG (1200×630) ─────────────────
+  if (format === 'og') {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #07071a 0%, #0d0d2e 60%, #080820 100%)',
+            fontFamily: '"system-ui", sans-serif',
+            position: 'relative',
+          }}
+        >
+          {/* Background orbs */}
+          <div style={{
+            position: 'absolute', top: -120, left: -160,
+            width: 480, height: 480, borderRadius: '50%',
+            background: `${color}20`, display: 'flex',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: -80, right: -120,
+            width: 360, height: 360, borderRadius: '50%',
+            background: `${color}14`, display: 'flex',
+          }} />
+
+          {/* Top accent bar */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0,
+            height: 5, background: `linear-gradient(90deg, ${color}, ${color}55)`,
+            display: 'flex',
+          }} />
+
+          {/* Brand top-right */}
+          <div style={{
+            position: 'absolute', top: 32, right: 40,
+            display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+          }}>
+            <div style={{ display: 'flex', fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: '-0.5px' }}>
+              <span>Split</span>
+              <span style={{ color: '#60a5fa' }}>Vote</span>
+            </div>
+            <div style={{ display: 'flex', fontSize: 13, color: 'rgba(255,255,255,0.32)', marginTop: 2, letterSpacing: '0.06em' }}>
+              {isIT ? 'PERSONALITÀ MORALE' : 'MORAL PERSONALITY'}
+            </div>
+          </div>
+
+          {/* LEFT — emoji + sign label */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            width: 460, height: '100%',
+            paddingLeft: 60,
+          }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 280, height: 280, borderRadius: '50%',
+              background: `${color}1a`,
+              border: `1.5px solid ${color}45`,
+              marginBottom: 22,
+            }}>
+              <div style={{ display: 'flex', fontSize: 150, lineHeight: 1 }}>
+                {archetype.signEmoji}
+              </div>
+            </div>
+            <div style={{
+              display: 'flex',
+              fontSize: 14, fontWeight: 700,
+              color: 'rgba(255,255,255,0.45)',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+            }}>
+              {signLabel}
+            </div>
+          </div>
+
+          {/* RIGHT — name + tagline + traits + cta */}
+          <div style={{
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            flex: 1, paddingRight: 60, paddingLeft: 30,
+          }}>
+            {/* Archetype name */}
+            <div style={{
+              display: 'flex',
+              fontSize: 78, fontWeight: 900,
+              color, letterSpacing: '-2px',
+              lineHeight: 1.0,
+              marginBottom: 18,
+            }}>
+              {name}
+            </div>
+
+            {/* Tagline */}
+            <div style={{
+              display: 'flex',
+              fontSize: 24, fontWeight: 600,
+              color: 'rgba(255,255,255,0.6)',
+              fontStyle: 'italic',
+              maxWidth: 580,
+              marginBottom: 28,
+              lineHeight: 1.32,
+            }}>
+              &ldquo;{tagline}&rdquo;
+            </div>
+
+            {/* Traits */}
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 10, flexWrap: 'wrap', marginBottom: 32, maxWidth: 580 }}>
+              {traits.slice(0, 4).map((trait) => (
+                <div key={trait} style={{
+                  display: 'flex',
+                  fontSize: 16, fontWeight: 700,
+                  color,
+                  background: `${color}18`,
+                  border: `1px solid ${color}40`,
+                  borderRadius: 10,
+                  padding: '7px 16px',
+                }}>
+                  {trait}
+                </div>
+              ))}
+            </div>
+
+            {/* CTA pill */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 12,
+              padding: '10px 16px',
+              alignSelf: 'flex-start',
+            }}>
+              <div style={{ display: 'flex', fontSize: 15, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>
+                {isIT ? 'Scopri il tuo archetipo →' : 'Find your archetype →'}
+              </div>
+              <div style={{ display: 'flex', fontSize: 14, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.02em' }}>
+                {urlLabel}
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+        headers: {
+          'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+        },
+      },
+    )
+  }
+
+  // ───────────────── VERTICAL STORY (1080×1920) ─────────────────
   return new ImageResponse(
     (
       <div
