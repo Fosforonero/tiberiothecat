@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { tryCreateAdminClient } from '@/lib/supabase/admin'
 import { MISSIONS, type MissionId } from '@/lib/missions'
 import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
@@ -8,16 +9,23 @@ export const dynamic = 'force-dynamic'
 
 // ── Server-side XP constants (never trust client-supplied XP) ───────
 // Mirror of MISSIONS[].xp — kept here as the single authoritative source
-// for the API. The DB function award_mission_xp also validates mission_id
-// and uses its own hardcoded XP table, so there is no path for
-// arbitrary XP injection from the client.
+// for the API. The DB function award_mission_xp handles original 5 IDs;
+// new mission IDs use a direct admin-client profiles.xp update as fallback.
 const MISSION_XP: Record<MissionId, number> = {
-  vote_3:           30,
-  vote_2_categories: 25,
-  challenge_friend: 20,
-  share_result:     15,
-  daily_dilemma:    50,
+  vote_3:              30,
+  vote_5:              45,
+  vote_2_categories:   25,
+  vote_3_categories:   40,
+  challenge_friend:    20,
+  share_result:        15,
+  share_and_challenge: 35,
+  daily_dilemma:       50,
 }
+
+// Original 5 mission IDs that award_mission_xp DB function handles
+const LEGACY_MISSION_IDS = new Set<MissionId>([
+  'vote_3', 'vote_2_categories', 'challenge_friend', 'share_result', 'daily_dilemma',
+])
 
 // ── Helper: count unique dilemma votes cast by user today ────────────
 async function countVotesToday(
@@ -104,6 +112,68 @@ async function verifyMission(
       }
     }
 
+    case 'vote_5': {
+      const count = await countVotesToday(supabase, userId)
+      if (count < 5) {
+        return { eligible: false, reason: `Only ${count}/5 votes today` }
+      }
+      return { eligible: true }
+    }
+
+    case 'vote_3_categories': {
+      const todayStart3c = new Date()
+      todayStart3c.setHours(0, 0, 0, 0)
+      const { data: voteData3c } = await supabase
+        .from('dilemma_votes')
+        .select('dilemma_id')
+        .eq('user_id', userId)
+        .gte('voted_at', todayStart3c.toISOString())
+      const votedIds3c = (voteData3c ?? []).map((r: { dilemma_id: string }) => r.dilemma_id)
+      const catMap3c = new Map<string, string>()
+      for (const s of scenarios) catMap3c.set(s.id, s.category)
+      try {
+        const dyn3c = await getDynamicScenarios()
+        for (const s of dyn3c) catMap3c.set(s.id, s.category)
+      } catch { /* non-blocking */ }
+      const cats3c = new Set(votedIds3c.map(id => catMap3c.get(id)).filter(Boolean))
+      if (cats3c.size < 3) {
+        return { eligible: false, reason: `Only ${cats3c.size}/3 categories voted today` }
+      }
+      return { eligible: true }
+    }
+
+    case 'share_and_challenge': {
+      const todayStartSac = new Date()
+      todayStartSac.setHours(0, 0, 0, 0)
+      try {
+        const [shareRes, refRes] = await Promise.all([
+          supabase
+            .from('user_events')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .in('event_type', ['share_result', 'copy_result_link', 'story_card_share', 'story_card_download'])
+            .gte('created_at', todayStartSac.toISOString()),
+          supabase
+            .from('user_events')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .eq('event_type', 'referral_visit')
+            .gte('created_at', todayStartSac.toISOString()),
+        ])
+        const shareCount = shareRes.count ?? 0
+        const refCount   = refRes.count ?? 0
+        if (shareCount < 1 || refCount < 1) {
+          const missing = []
+          if (shareCount < 1) missing.push('share a result')
+          if (refCount < 1) missing.push('send a challenge link')
+          return { eligible: false, reason: `Still needed: ${missing.join(' and ')}` }
+        }
+        return { eligible: true }
+      } catch {
+        return { eligible: false, reason: 'Event tracking unavailable — apply migration_v8 and v9 first' }
+      }
+    }
+
     case 'challenge_friend': {
       const todayStart4 = new Date()
       todayStart4.setHours(0, 0, 0, 0)
@@ -173,14 +243,37 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'DB error' }, { status: 500 })
     }
 
-    // Award XP — uses server-side XP value via mission_id (DB function ignores client XP)
-    try {
-      await supabase.rpc('award_mission_xp', {
-        p_user_id: user.id,
-        p_mission_id: missionId,
-      })
-    } catch {
-      // migration_v3 not applied yet — non-blocking
+    // Award XP — two paths depending on mission ID:
+    // • Original 5 IDs: delegate to DB function (handles atomically; migration_v3 required)
+    // • New IDs: direct admin-client update of profiles.xp (award_mission_xp returns 0 for unknown IDs)
+    if (LEGACY_MISSION_IDS.has(missionId as MissionId)) {
+      try {
+        await supabase.rpc('award_mission_xp', {
+          p_user_id: user.id,
+          p_mission_id: missionId,
+        })
+      } catch {
+        // migration_v3 not applied yet — non-blocking
+      }
+    } else {
+      // New mission IDs: direct xp increment via admin client (bypasses RLS)
+      try {
+        const { client: admin } = tryCreateAdminClient()
+        if (admin) {
+          const { data: prof } = await admin
+            .from('profiles')
+            .select('xp')
+            .eq('id', user.id)
+            .single()
+          const currentXp = (prof as { xp?: number } | null)?.xp ?? 0
+          await admin
+            .from('profiles')
+            .update({ xp: currentXp + xpAwarded })
+            .eq('id', user.id)
+        }
+      } catch {
+        // Non-critical — mission still marked complete; XP update failed silently
+      }
     }
 
     return NextResponse.json({ ok: true, xpAwarded })

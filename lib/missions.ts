@@ -1,9 +1,12 @@
 // ── Mission definitions ──────────────────────────────────────────
 export type MissionId =
   | 'vote_3'
+  | 'vote_5'
   | 'vote_2_categories'
+  | 'vote_3_categories'
   | 'challenge_friend'
   | 'share_result'
+  | 'share_and_challenge'
   | 'daily_dilemma'
 
 export interface Mission {
@@ -14,6 +17,7 @@ export interface Mission {
   icon: string
 }
 
+// Full mission pool — 7 rotatable + 1 permanent special (daily_dilemma)
 export const MISSIONS: Mission[] = [
   {
     id: 'vote_3',
@@ -23,11 +27,25 @@ export const MISSIONS: Mission[] = [
     icon: '🗳️',
   },
   {
+    id: 'vote_5',
+    title: 'Vote on 5 dilemmas',
+    description: 'Cast your vote on 5 different dilemmas today',
+    xp: 45,
+    icon: '🔥',
+  },
+  {
     id: 'vote_2_categories',
     title: 'Explore 2 categories',
     description: 'Vote in at least 2 different categories',
     xp: 25,
     icon: '🗂️',
+  },
+  {
+    id: 'vote_3_categories',
+    title: 'Explore 3 categories',
+    description: 'Vote in at least 3 different categories today',
+    xp: 40,
+    icon: '🧭',
   },
   {
     id: 'challenge_friend',
@@ -44,6 +62,13 @@ export const MISSIONS: Mission[] = [
     icon: '📤',
   },
   {
+    id: 'share_and_challenge',
+    title: 'Share & challenge',
+    description: 'Share a result AND send a challenge link today',
+    xp: 35,
+    icon: '🚀',
+  },
+  {
     id: 'daily_dilemma',
     title: 'Dilemma of the Day',
     description: "Vote on today's featured dilemma",
@@ -52,6 +77,25 @@ export const MISSIONS: Mission[] = [
   },
 ]
 
+// ── Daily rotation ─────────────────────────────────────────────────
+// Special mission is always daily_dilemma (50 XP).
+// 3 daily missions rotate through the other 7 in a 7-day cycle.
+const SPECIAL_ID: MissionId = 'daily_dilemma'
+const DAILY_POOL = MISSIONS.filter(m => m.id !== SPECIAL_ID)
+const SPECIAL_MISSION = MISSIONS.find(m => m.id === SPECIAL_ID)!
+
+/**
+ * Returns today's daily mission set: 3 rotating missions + 1 permanent special.
+ * Deterministic per UTC calendar day — all users see the same pool each day.
+ */
+export function getDailyMissions(): { daily: Mission[]; special: Mission } {
+  const dayIndex = Math.floor(Date.now() / 86_400_000) // UTC day since epoch
+  const n = DAILY_POOL.length // 7
+  // Three consecutive modular indices — always unique since offsets 0,1,2 are distinct
+  const daily = [0, 1, 2].map(offset => DAILY_POOL[(dayIndex + offset) % n])
+  return { daily, special: SPECIAL_MISSION }
+}
+
 // ── Server-computed mission state (returned by GET /api/missions) ─
 export interface MissionState extends Mission {
   progress: number
@@ -59,6 +103,7 @@ export interface MissionState extends Mission {
   completed: boolean
   claimable: boolean
   comingSoon: boolean
+  isSpecial?: boolean
 }
 
 // ── XP Levels ────────────────────────────────────────────────────
