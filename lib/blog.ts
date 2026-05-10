@@ -2835,6 +2835,159 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'why-good-people-do-nothing',
+    locale: 'en',
+    title: 'Why Good People Do Nothing: The Psychology of Moral Inaction',
+    seoTitle: 'Why Good People Do Nothing — The Bystander Effect Explained',
+    description:
+      'Being capable of helping is not the same as helping. Research on the bystander effect, diffusion of responsibility, and moral disengagement explains why decent people walk past.',
+    seoDescription:
+      'Good people often fail to act in moral emergencies. The bystander effect, diffusion of responsibility, and pluralistic ignorance explain why — and what changes it.',
+    date: '2026-05-10',
+    readingTime: 7,
+    tags: ['moral psychology', 'bystander effect', 'moral inaction', 'diffusion of responsibility', 'ethics'],
+    relatedDilemmaIds: ['innocent-juror', 'cure-secret', 'organ-harvest', 'trolley', 'self-driving-crash'],
+    alternateSlug: 'perche-le-persone-buone-non-fanno-nulla',
+    content: [
+      {
+        type: 'p',
+        text: 'In 1964, a young woman was attacked outside her apartment building in New York. The incident became one of the most cited cases in the history of social psychology — not primarily because of what happened, but because of the newspaper story that followed: that 38 witnesses had watched from their windows and done nothing. The number and the story were later shown to be largely fabricated by the press. But the question the case sparked was real: why do groups of people sometimes fail to act when individuals are in obvious need?',
+      },
+      {
+        type: 'p',
+        text: 'Two psychologists, John Darley and Bibb Latané, decided to find out. The experiments they designed over the next decade produced results that are still deeply uncomfortable: the presence of other people does not make us more likely to help. In many circumstances, it makes us significantly less likely to help. They called it the bystander effect.',
+      },
+      {
+        type: 'h2',
+        text: 'The experiment that changed how we think about moral action',
+      },
+      {
+        type: 'p',
+        text: "In Darley and Latané's most famous study, participants sat alone or in groups while they believed a fellow participant began to have an epileptic seizure — communicated via an intercom. When participants were alone, 85 percent sought help within six minutes. When they believed four other people were also listening, that number dropped to 31 percent. The emergency was identical. The only variable was the number of observers.",
+      },
+      {
+        type: 'p',
+        text: 'What was happening was not callousness. Most participants who did not act were visibly distressed — they fidgeted, looked anxious, seemed genuinely upset. They were not indifferent to what they were hearing. They were caught in a social and cognitive trap that paralysed their response.',
+      },
+      {
+        type: 'h2',
+        text: 'Diffusion of responsibility',
+      },
+      {
+        type: 'p',
+        text: "The first trap is diffusion of responsibility. When many people witness an emergency, each individual feels personally less responsible for resolving it. If you are the only one who sees someone collapse, the moral weight falls entirely on you. If twenty people see it, your share of the responsibility feels like one twentieth — even though the person still needs help just as urgently. The group doesn't pool its capacity; it dilutes it.",
+      },
+      {
+        type: 'p',
+        text: "This is not a character flaw unique to cowards. It is a feature of how human beings process shared moral situations. We evolved in small groups where responsibility was naturally clear. We did not evolve good intuitions for mass-observer scenarios. The same person who would act decisively alone may freeze completely when surrounded by others who are also watching.",
+      },
+      {
+        type: 'cta',
+        label: 'You know the defendant is innocent — do you still vote to convict? →',
+        href: '/play/innocent-juror',
+      },
+      {
+        type: 'h2',
+        text: 'Pluralistic ignorance',
+      },
+      {
+        type: 'p',
+        text: 'The second trap is pluralistic ignorance — a phenomenon where every individual in a group privately doubts the prevailing norm, but assumes everyone else endorses it. Each person looks at the others for signals about how to interpret an ambiguous situation. If nobody is acting, everyone assumes there must be a reason — maybe it is not really an emergency, maybe help is already on the way, maybe the right response is to wait.',
+      },
+      {
+        type: 'p',
+        text: 'The silence of the crowd is read as evidence that silence is appropriate. Everyone suppresses their individual concern and mirrors the inaction around them — while privately feeling uneasy. The result is a group that collectively produces a response (none) that no individual actually endorses.',
+      },
+      {
+        type: 'cta',
+        label: 'A scientist has the cure for a fatal disease — but keeps it secret. Is that wrong? →',
+        href: '/play/cure-secret',
+      },
+      {
+        type: 'h2',
+        text: 'Moral disengagement — how we quiet the alarm',
+      },
+      {
+        type: 'p',
+        text: "Psychologist Albert Bandura identified a different but related mechanism: moral disengagement. Rather than being blocked from acting, people actively construct reasons why they are not obligated to act. Bandura identified several mechanisms through which this happens: moral justification (convincing yourself the action would cause greater harm), euphemistic labelling (calling inaction 'not getting involved' rather than 'abandoning someone in need'), diffusion of agency across a group, and dehumanising or depersonalising the victim.",
+      },
+      {
+        type: 'p',
+        text: "These are not conscious strategies of self-deception. They operate quickly and automatically. By the time you have talked yourself out of intervening, you may genuinely believe the intervention was unnecessary or harmful. The alarm was real; the disengagement reasoning came after it, manufacturing justification for an inaction that was already attractive for other reasons.",
+      },
+      {
+        type: 'cta',
+        label: "Harvest one patient's organs to save five waiting for transplants? →",
+        href: '/play/organ-harvest',
+      },
+      {
+        type: 'h2',
+        text: 'The capable bystander problem',
+      },
+      {
+        type: 'p',
+        text: 'There is a philosophical tradition that holds we are more culpable for harms we cause than for harms we merely allow. The distinction between commission and omission is built into many legal systems and many people\'s moral intuitions. But the bystander research complicates this framework in an important way: being capable of preventing a harm and choosing not to — while being aware of the harm and the capacity — starts to look much more like a moral choice than a passive default.',
+      },
+      {
+        type: 'p',
+        text: "A bystander who watches someone drown while holding a life ring has not merely failed to help. They have made a series of real-time decisions: not to throw the ring, not to call for help, not to shout. Inaction, in circumstances where action was available and obvious, is itself an act. The question is whether our moral intuitions are well-calibrated to treat it that way.",
+      },
+      {
+        type: 'cta',
+        label: 'Pull the lever — is it right to sacrifice one to save five? →',
+        href: '/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'What SplitVote data shows about inaction',
+      },
+      {
+        type: 'p',
+        text: "On SplitVote, dilemmas that involve clear action — pulling a lever, making an intervention, overriding a system — tend to produce closer splits than their omission equivalents. Scenarios where the question is whether to do something active to cause a harm consistently produce more resistance than scenarios where the same harm results from choosing not to act. The commission-omission asymmetry that philosophers have debated for decades appears clearly in how real people vote.",
+      },
+      {
+        type: 'p',
+        text: "What is less clear from voting data is whether people are aware of this asymmetry in their own reasoning. Many voters who would decline to actively cause a harm would also decline to prevent an equivalent harm — and often feel the two positions are entirely consistent. The moral discomfort shows up differently depending on which direction the action faces.",
+      },
+      {
+        type: 'cta',
+        label: 'How should an autonomous car decide who lives in a crash? →',
+        href: '/play/self-driving-crash',
+      },
+      {
+        type: 'h2',
+        text: 'What actually changes bystander behaviour',
+      },
+      {
+        type: 'p',
+        text: 'Darley and Latané also studied interventions that reduce the bystander effect. The most reliable is specificity: being directly addressed by name, or being clearly designated as the person responsible, dramatically increases the probability of action. "Someone call an ambulance" produces less response than "You, in the blue jacket — call an ambulance now." Responsibility that is diffuse stays diffuse; responsibility that is made explicit lands differently.',
+      },
+      {
+        type: 'p',
+        text: "A second intervention is prior awareness of the effect itself. People who have been told about the bystander effect and diffusion of responsibility before entering a scenario are meaningfully more likely to act against the crowd signal. This is one of the few cases in social psychology where knowing the bias genuinely seems to reduce it — which is one reason the research continues to be worth discussing.",
+      },
+      {
+        type: 'cta',
+        label: 'See your moral personality based on how you vote →',
+        href: '/personality',
+      },
+      {
+        type: 'cta',
+        label: 'Why good people disagree on ethics — moral psychology explained →',
+        href: '/blog/why-we-disagree-on-ethics',
+      },
+      {
+        type: 'cta',
+        label: 'Doing vs. allowing harm — is there a moral difference? →',
+        href: '/blog/doing-vs-allowing-harm',
+      },
+      {
+        type: 'disclaimer',
+        text: "References to bystander effect research, diffusion of responsibility, pluralistic ignorance, and moral disengagement are for contextual and educational purposes. Original research described is attributed to Darley, Latané, and Bandura. The Kitty Genovese case summary reflects revised historical accounts that challenged early press reports. SplitVote is an entertainment and reflection platform, not a scientific study. Voting data described represents community patterns, not controlled experimental results.",
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -5640,6 +5793,159 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "I riferimenti alla Teoria dei Fondamenti Morali, alla cognizione morale a doppio processo e allo studio del Moral Machine sono a scopo contestuale ed educativo. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico. I risultati rappresentano voti della community — non dati peer-reviewed e non conclusioni sul carattere morale individuale. Le teorie descritte qui sono contestate nella filosofia morale e nelle scienze cognitive.",
+      },
+    ],
+  },
+  {
+    slug: 'perche-le-persone-buone-non-fanno-nulla',
+    locale: 'it',
+    title: "Perché le Persone Buone Non Fanno Nulla: La Psicologia dell'Inazione Morale",
+    seoTitle: "Perché le Persone Buone Non Fanno Nulla — L'Effetto Spettatore Spiegato",
+    description:
+      "Essere capaci di aiutare non è la stessa cosa di aiutare. La ricerca sull'effetto spettatore, la diffusione della responsabilità e il disimpegno morale spiega perché le persone per bene passano oltre.",
+    seoDescription:
+      "Le persone per bene spesso non agiscono nelle emergenze morali. L'effetto spettatore, la diffusione della responsabilità e l'ignoranza pluralistica spiegano perché — e cosa può cambiarlo.",
+    date: '2026-05-10',
+    readingTime: 7,
+    tags: ['psicologia morale', 'effetto spettatore', 'inazione morale', 'diffusione della responsabilità', 'etica'],
+    relatedDilemmaIds: ['innocent-juror', 'cure-secret', 'organ-harvest', 'trolley', 'self-driving-crash'],
+    alternateSlug: 'why-good-people-do-nothing',
+    content: [
+      {
+        type: 'p',
+        text: "Nel 1964, una giovane donna fu aggredita fuori dal suo condominio a New York. L'episodio divenne uno dei casi più citati nella storia della psicologia sociale — non tanto per quello che accadde, ma per l'articolo di giornale che seguì: che 38 testimoni avevano osservato dalle finestre senza fare nulla. Il numero e la storia furono in seguito dimostrati largamente inventati dalla stampa. Ma la domanda che il caso sollevò era reale: perché i gruppi di persone a volte non agiscono quando qualcuno ha bisogno di aiuto in modo evidente?",
+      },
+      {
+        type: 'p',
+        text: "Due psicologi, John Darley e Bibb Latané, decisero di scoprirlo. Gli esperimenti che progettarono nel decennio successivo produssero risultati ancora oggi profondamente scomodi: la presenza di altre persone non ci rende più propensi ad aiutare. In molte circostanze, ci rende significativamente meno propensi ad aiutare. Lo chiamarono effetto spettatore.",
+      },
+      {
+        type: 'h2',
+        text: "L'esperimento che ha cambiato il nostro modo di pensare all'azione morale",
+      },
+      {
+        type: 'p',
+        text: "Nello studio più famoso di Darley e Latané, i partecipanti sedevano da soli o in gruppo mentre credevano che un altro partecipante stesse avendo una crisi epilettica — comunicata via interfono. Quando i partecipanti erano soli, l'85 percento cercava aiuto entro sei minuti. Quando credevano che altre quattro persone stessero ascoltando, quel numero scendeva al 31 percento. L'emergenza era identica. L'unica variabile era il numero di osservatori.",
+      },
+      {
+        type: 'p',
+        text: "Quello che accadeva non era insensibilità. La maggior parte dei partecipanti che non agivano erano visibilmente in difficoltà — si agitavano, sembravano ansiosi, genuinamente turbati. Non erano indifferenti a ciò che sentivano. Erano intrappolati in una trappola sociale e cognitiva che paralizzava la loro risposta.",
+      },
+      {
+        type: 'h2',
+        text: 'Diffusione della responsabilità',
+      },
+      {
+        type: 'p',
+        text: "La prima trappola è la diffusione della responsabilità. Quando molte persone assistono a un'emergenza, ogni individuo si sente personalmente meno responsabile di risolverla. Se sei l'unico a vedere qualcuno collassare, il peso morale ricade interamente su di te. Se venti persone lo vedono, la tua quota di responsabilità sembra un ventesimo — anche se la persona ha bisogno di aiuto con la stessa urgenza. Il gruppo non mette in comune la sua capacità; la diluisce.",
+      },
+      {
+        type: 'p',
+        text: "Questo non è un difetto di carattere esclusivo dei codardi. È una caratteristica del modo in cui gli esseri umani elaborano le situazioni morali condivise. Ci siamo evoluti in piccoli gruppi dove la responsabilità era naturalmente chiara. Non abbiamo sviluppato buone intuizioni per scenari con molti osservatori. La stessa persona che agirebbe in modo deciso da sola può bloccarsi completamente quando è circondata da altri che guardano.",
+      },
+      {
+        type: 'cta',
+        label: "Sai che l'imputato è innocente — voti comunque per condannarlo? →",
+        href: '/it/play/innocent-juror',
+      },
+      {
+        type: 'h2',
+        text: "Ignoranza pluralistica",
+      },
+      {
+        type: 'p',
+        text: "La seconda trappola è l'ignoranza pluralistica — un fenomeno in cui ogni individuo in un gruppo dubita privatamente della norma prevalente, ma assume che tutti gli altri la condividano. Ogni persona guarda agli altri per segnali su come interpretare una situazione ambigua. Se nessuno agisce, tutti assumono che ci debba essere un motivo — forse non è davvero un'emergenza, forse l'aiuto è già in arrivo, forse la risposta giusta è aspettare.",
+      },
+      {
+        type: 'p',
+        text: "Il silenzio della folla viene letto come prova che il silenzio sia appropriato. Tutti sopprimono la loro preoccupazione individuale e rispecchiano l'inazione intorno a loro — mentre privatamente si sentono a disagio. Il risultato è un gruppo che produce collettivamente una risposta (nessuna) che nessun individuo approva davvero.",
+      },
+      {
+        type: 'cta',
+        label: 'Uno scienziato ha la cura per una malattia mortale — ma la tiene segreta. È sbagliato? →',
+        href: '/it/play/cure-secret',
+      },
+      {
+        type: 'h2',
+        text: "Disimpegno morale — come silenzieamo l'allarme",
+      },
+      {
+        type: 'p',
+        text: "Lo psicologo Albert Bandura ha identificato un meccanismo diverso ma correlato: il disimpegno morale. Invece di essere bloccate dall'azione, le persone costruiscono attivamente ragioni per cui non sono obbligate ad agire. Bandura ha identificato diversi meccanismi attraverso cui questo avviene: giustificazione morale (convincersi che l'azione causerebbe danni maggiori), etichettatura eufemistica (chiamare l'inazione 'non interferire' invece di 'abbandonare qualcuno in difficoltà'), diffusione dell'agentività nel gruppo e disumanizzazione della vittima.",
+      },
+      {
+        type: 'p',
+        text: "Non sono strategie consapevoli di autoinganno. Operano rapidamente e automaticamente. Quando ti sei convinto di non dover intervenire, potresti genuinamente credere che l'intervento fosse inutile o dannoso. L'allarme era reale; il ragionamento di disimpegno è venuto dopo, costruendo una giustificazione per un'inazione che era già attraente per altri motivi.",
+      },
+      {
+        type: 'cta',
+        label: "Prelevi gli organi di un paziente sano per salvarne cinque in lista d'attesa? →",
+        href: '/it/play/organ-harvest',
+      },
+      {
+        type: 'h2',
+        text: 'Il problema dello spettatore capace',
+      },
+      {
+        type: 'p',
+        text: "Esiste una tradizione filosofica secondo cui siamo più colpevoli per i danni che causiamo rispetto a quelli che permettiamo semplicemente. La distinzione tra commissione e omissione è incorporata in molti sistemi legali e nelle intuizioni morali di molte persone. Ma la ricerca sugli spettatori complica questo quadro in modo importante: essere capaci di prevenire un danno e scegliere di non farlo — pur essendo consapevoli del danno e della capacità — inizia ad assomigliare molto più a una scelta morale che a un default passivo.",
+      },
+      {
+        type: 'p',
+        text: "Uno spettatore che guarda qualcuno annegare mentre tiene un salvagente non ha semplicemente omesso di aiutare. Ha preso una serie di decisioni in tempo reale: non lanciare il salvagente, non chiamare aiuto, non urlare. L'inazione, in circostanze dove l'azione era disponibile e ovvia, è essa stessa un atto. La domanda è se le nostre intuizioni morali siano ben calibrate per trattarla in questo modo.",
+      },
+      {
+        type: 'cta',
+        label: 'Tira la leva — è giusto sacrificare uno per salvarne cinque? →',
+        href: '/it/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: "Cosa mostrano i dati di SplitVote sull'inazione",
+      },
+      {
+        type: 'p',
+        text: "Su SplitVote, i dilemmi che implicano un'azione chiara — tirare una leva, fare un intervento, ignorare un sistema — tendono a produrre divisioni più equilibrate rispetto ai loro equivalenti di omissione. Gli scenari in cui la domanda è se fare qualcosa di attivo per causare un danno producono costantemente più resistenza rispetto agli scenari in cui lo stesso danno deriva dalla scelta di non agire. L'asimmetria commissione-omissione che i filosofi dibattono da decenni appare chiaramente nel modo in cui le persone reali votano.",
+      },
+      {
+        type: 'p',
+        text: "Ciò che è meno chiaro dai dati di voto è se le persone siano consapevoli di questa asimmetria nel proprio ragionamento. Molti votanti che rifiuterebbero di causare attivamente un danno rifiuterebbero anche di prevenire un danno equivalente — e spesso sentono le due posizioni completamente coerenti. Il disagio morale si manifesta diversamente a seconda della direzione in cui l'azione è orientata.",
+      },
+      {
+        type: 'cta',
+        label: "Come dovrebbe decidere un'auto autonoma chi salva in un incidente? →",
+        href: '/it/play/self-driving-crash',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa cambia davvero il comportamento degli spettatori',
+      },
+      {
+        type: 'p',
+        text: "Darley e Latané hanno studiato anche gli interventi che riducono l'effetto spettatore. Il più affidabile è la specificità: essere indirizzati direttamente per nome, o essere chiaramente designati come la persona responsabile, aumenta notevolmente la probabilità di azione. 'Qualcuno chiami un'ambulanza' produce meno risposta di 'Tu, con la giacca blu — chiama subito un'ambulanza'. La responsabilità che è diffusa rimane diffusa; la responsabilità resa esplicita colpisce diversamente.",
+      },
+      {
+        type: 'p',
+        text: "Un secondo intervento è la consapevolezza preventiva dell'effetto stesso. Le persone che sono state informate sull'effetto spettatore e sulla diffusione della responsabilità prima di entrare in uno scenario hanno significativamente più probabilità di agire contro il segnale della folla. Questo è uno dei rari casi in psicologia sociale in cui conoscere il bias sembra ridurlo genuinamente — il che è una delle ragioni per cui la ricerca continua a valere la pena di discuterne.",
+      },
+      {
+        type: 'cta',
+        label: 'Scopri la tua personalità morale in base a come voti →',
+        href: '/it/personality',
+      },
+      {
+        type: 'cta',
+        label: "Perché le persone oneste non sono d'accordo in etica →",
+        href: '/it/blog/perche-non-siamo-daccordo-sull-etica',
+      },
+      {
+        type: 'cta',
+        label: 'Causare vs. permettere danno — c\'è una differenza morale? →',
+        href: '/it/blog/causare-vs-permettere-danno',
+      },
+      {
+        type: 'disclaimer',
+        text: "I riferimenti alla ricerca sull'effetto spettatore, diffusione della responsabilità, ignoranza pluralistica e disimpegno morale sono a scopo contestuale ed educativo. La ricerca originale descritta è attribuita a Darley, Latané e Bandura. Il caso citato riflette i resoconti storici rivisti che hanno messo in discussione i primi articoli di stampa. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico. I dati di voto descritti rappresentano pattern della community, non risultati sperimentali controllati.",
       },
     ],
   },
