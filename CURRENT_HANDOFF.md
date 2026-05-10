@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 10 May 2026 (post `4fcab11` — G14 blog + mission rotation)
+Last updated: 10 May 2026 (post `f75f79e` — personality teaser + G15 blog)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6)
 
@@ -10,19 +10,19 @@ Implementer: Claude Code (Sonnet 4.6)
 
 - **Branch:** `main`
 - **Local vs remote:** **in sync** — all commits pushed
-- **Last pushed:** `4fcab11`
+- **Last pushed:** `f75f79e`
 
 ### Recent commits
 | Hash | Description |
 |---|---|
+| `f75f79e` | feat(retention): personality teaser on results page for logged-in users |
+| `1d4b18e` | feat(blog): G15 moral emotions EN+IT — Haidt, disgust, social intuitionism |
+| `cdfc48c` | fix(pixie): fall back to votesCount when pixieXp map is empty {} |
+| `a1564cd` | docs: update CURRENT_HANDOFF — G14 complete, mission rotation live, session state |
 | `4fcab11` | feat(blog): G14 trolley problem moral personality EN+IT |
 | `f060ee8` | feat: daily mission rotation with expanded 8-mission pool |
 | `dab7e5a` | feat(viral): personality OG card + dynamic share URL with archetype |
 | `7bb8336` | fix(mobile): respect iOS safe-area insets on sticky HUD + FAB |
-| `a6df232` | feat(mobile): sticky Pixie HUD + floating vote FAB on dashboard |
-| `9850f7c` | feat(dashboard): user level pill + share-impact card |
-| `58e1327` | feat(blog): G13 bystander effect EN+IT + handoff update |
-| `49cf8c2` | feat(virality): profile share button + public profile card on dashboard |
 
 ### Feature state
 
@@ -37,8 +37,9 @@ Implementer: Claude Code (Sonnet 4.6)
 | `STRIPE_WEBHOOK_SECRET` | ✅ set in Vercel production + preview |
 | Stripe Name Change QA (#46) | ✅ DONE — webhook live, endpoint responds correctly |
 | Search Console sitemap | ✅ submitted — 433 pages indexed |
-| Blog G1→G14 EN+IT | ✅ complete — 24 EN + 24 IT articles |
+| Blog G1→G15 EN+IT | ✅ complete — 25 EN + 25 IT articles (50 total) |
 | SEO landings | ✅ 10 EN + 10 IT = 20 landings |
+| Blog hreflang audit | ✅ all 50 articles have bilateral alternateSlug — no gaps |
 | **Daily mission rotation** | ✅ 8-mission pool, 3 daily + 1 special (50 XP), 7-day cycle |
 | **Personality OG card** | ✅ `/api/personality-card?format=og` — 1200×630 horizontal |
 | **Dynamic personality share URL** | ✅ `?archetype=X` → personalised OG on every share |
@@ -53,6 +54,8 @@ Implementer: Claude Code (Sonnet 4.6)
 | **Pixie per-species XP** | ✅ committed + migration run in production |
 | **Pixie share card** `/api/pixie-card` | ✅ edge SVG, species accent colours, OG on `/u/[id]` |
 | **Profile share button** | ✅ Web Share API + clipboard fallback |
+| **Pixie empty-map bug fix** | ✅ `cdfc48c` — dashboard now falls back to votesCount when pixie_xp={} |
+| **Personality teaser** | ✅ `f75f79e` — logged-in users nudged to /personality after voting |
 | AI generation (save mode) | ⚠️ unblocked technically, re-QA decision pending |
 
 ---
@@ -79,17 +82,30 @@ Implementer: Claude Code (Sonnet 4.6)
 
 ## 3. Blog content inventory (10 May 2026)
 
-**24 EN + 24 IT = 48 articles** (all SSG). SEO landings: 10 EN + 10 IT = 20 total.
+**25 EN + 25 IT = 50 articles** (all SSG). SEO landings: 10 EN + 10 IT = 20 total.
+Hreflang audit: ✅ all 50 articles bilateral, no gaps.
 
-**G14 (latest):** "What Your Trolley Problem Answer Reveals About Your Moral Personality"
-- EN: `/blog/trolley-problem-moral-personality`
-- IT: `/it/blog/problema-tram-personalita-morale`
-- Links to `/personality`, `/play/trolley`, organ-harvest, self-driving-crash, innocent-juror
-- Cross-links to consequentialism (G7) and what-is-a-moral-dilemma (G1)
+**G15 (latest):** "Moral Emotions: When Your Gut Feeling Is Your Moral Compass"
+- EN: `/blog/moral-emotions-gut-feeling-moral-compass`
+- IT: `/it/blog/emozioni-morali-istinto-bussola-morale`
+- Topics: Haidt Social Intuitionist Model, elephant/rider, moral dumbfounding, disgust as co-opted pathogen system, guilt/shame/elevation/anger/contempt, Greene dual-process fMRI, Guardian/Strategist/Empath mapping
+- 5 CTAs each: organ-harvest, trolley, /personality, G1 (what-is-a-moral-dilemma), G11 (moral-foundations-theory)
 
 ---
 
-## 4. Pending Manual Steps
+## 4. Personality Teaser — implementation detail
+
+**File:** `app/results/[id]/ResultsClientPage.tsx`
+
+- Shows after vote to logged-in users only (`isAnon === false && voted !== null`)
+- Condition: localStorage key `sv_personality_teaser_dismissed` absent or older than 7 days
+- Purple card, EN+IT copy via existing `isIT` flag
+- × button sets dismiss timestamp; CTA links to `/personality` or `/it/personality`
+- Sits after the AdSense slot + anon sign-up CTA, before sticky next-dilemma bar
+
+---
+
+## 5. Pending Manual Steps
 
 | Task | Description | Owner | Priority |
 |---|---|---|---|
@@ -100,7 +116,7 @@ Implementer: Claude Code (Sonnet 4.6)
 
 ---
 
-## 5. Do Not Touch
+## 6. Do Not Touch
 
 - Auth, middleware, Redis vote logic, Supabase migrations
 - Stripe pricing/subscription/webhook without PM GO
@@ -110,7 +126,7 @@ Implementer: Claude Code (Sonnet 4.6)
 
 ---
 
-## 6. Known Risks
+## 7. Known Risks
 
 | Risk | Status |
 |---|---|
@@ -122,10 +138,10 @@ Implementer: Claude Code (Sonnet 4.6)
 
 ---
 
-## 7. Next Session Prompt
+## 8. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — post 10 Maggio 2026.
+Ripartenza sessione SplitVote — post 10 Maggio 2026 (sera).
 
 Leggi prima:
 - CLAUDE.md
@@ -134,18 +150,19 @@ Leggi prima:
 - git status --short
 
 State:
-- main in sync con origin — tutto pushato (last: 4fcab11)
-- Blog: 24 EN + 24 IT (G1→G14 completo)
+- main in sync con origin — tutto pushato (last: f75f79e)
+- Blog: 25 EN + 25 IT (G1→G15 completo) — hreflang audit: tutto OK
 - Mission pool espanso a 8, daily rotation attiva (3 daily + 1 special/50XP)
 - Personality OG card con dynamic share URL (?archetype=X)
 - Mobile: sticky HUD + FAB (Pixie, XP bar, streak, safe area iOS)
 - Dashboard: level pill, referral impact card, profile share button
-- Pixie: sistema completo (stage 1-6, 5 specie, selector, share card, OG profile)
+- Pixie: sistema completo + bug fix empty-map (cdfc48c)
+- Personality teaser: card viola su results page per utenti loggati (f75f79e)
 
 Prossimi step autonomi suggeriti:
-- G15 blog article — "Moral Emotions: When Gut Feeling Is Your Moral Compass" (Haidt, disgust research)
-- Homepage personalisation teaser: nudge utenti loggati verso /personality dopo il voto
-- Blog SEO audit: verificare che tutti gli articoli G1-G14 abbiano hreflang bilaterale
+- G16 blog article — "Free Will and Moral Responsibility: Can You Be Blamed for What You Couldn't Help?" (compatibilismo, Strawson, P.F. Strawson reactive attitudes)
+- Homepage: mostrare il teaser personalità anche sull'homepage per utenti loggati (component client-side leggero dopo DailyDilemma)
+- Blog cluster: articolo su "The Bystander Effect and Moral Diffusion of Responsibility" (diverso da G13 che era sul bystander più generale)
 
 HUMAN_ONLY:
 - Stripe live end-to-end QA (carta reale su splitvote.io/profile)
