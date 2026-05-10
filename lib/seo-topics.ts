@@ -560,6 +560,66 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false,
   },
+  {
+    slug: 'bioethics',
+    locale: 'en',
+    alternateSlug: 'bioetica',
+    topic: 'Bioethics',
+    searchIntent: 'bioethics dilemmas, medical ethics examples, organ donation ethics, euthanasia debate, bodily autonomy philosophy',
+    tension: 'extending life and relieving suffering vs respecting autonomy and fair allocation of scarce resources',
+    headline: 'Bioethics — The Moral Questions Medicine Cannot Fully Answer',
+    intro:
+      'Medicine saves lives — and forces choices that no protocol fully resolves. Who gets the last transplant organ when five patients need it? Is it ethical to end a life to stop irremediable suffering? Should vaccines be mandatory when public health conflicts with individual freedom? Bioethics is where the abstract principles of moral philosophy collide with flesh-and-blood decisions made under pressure, with incomplete information, against a countdown. These dilemmas have no comfortable answers — only trade-offs between values that all matter.',
+    primaryScenarioId: 'mercy-kill',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'pandemic-dose', 'brain-upload'],
+    relatedTopicSlugs: ['consequentialism', 'deontology', 'privacy-ethics'],
+    researchNote:
+      'The dominant framework in practical bioethics — Beauchamp and Childress\'s four principles (autonomy, non-maleficence, beneficence, justice) — provides structure for reasoning without resolving all conflicts. Philosophers and clinicians continue to debate where autonomy ends and collective obligation begins.',
+    researchSources: [
+      {
+        title: 'Bioethics',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/bioethics/',
+      },
+      {
+        title: 'Voluntary Euthanasia',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/euthanasia-voluntary/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'bioetica',
+    locale: 'it',
+    alternateSlug: 'bioethics',
+    topic: 'Bioetica',
+    searchIntent: 'bioetica dilemmi, etica medica esempi, donazione organi etica, dibattito eutanasia, autonomia corporea filosofia',
+    tension: 'prolungare la vita e alleviare la sofferenza contro rispettare l\'autonomia e distribuire equamente risorse scarse',
+    headline: 'Bioetica — Le Domande Morali a Cui la Medicina Non Può Rispondere del Tutto',
+    intro:
+      "La medicina salva vite — e impone scelte che nessun protocollo risolve completamente. Chi ottiene l'ultimo organo disponibile per il trapianto quando cinque pazienti ne hanno bisogno? È etico porre fine a una vita per fermare una sofferenza irrimediabile? I vaccini dovrebbero essere obbligatori quando la salute pubblica entra in conflitto con la libertà individuale? La bioetica è il luogo in cui i principi astratti della filosofia morale si scontrano con decisioni concrete prese sotto pressione, con informazioni incomplete, contro un conto alla rovescia. Questi dilemmi non hanno risposte comode — solo compromessi tra valori che contano tutti.",
+    primaryScenarioId: 'mercy-kill',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'pandemic-dose', 'brain-upload'],
+    relatedTopicSlugs: ['consequenzialismo', 'deontologia', 'etica-della-privacy'],
+    researchNote:
+      "Il framework dominante nella bioetica pratica — i quattro principi di Beauchamp e Childress (autonomia, non maleficenza, beneficenza, giustizia) — fornisce struttura per il ragionamento senza risolvere tutti i conflitti. Filosofi e clinici continuano a dibattere dove finisce l'autonomia e dove inizia l'obbligo collettivo.",
+    researchSources: [
+      {
+        title: 'Bioethics',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/bioethics/',
+      },
+      {
+        title: 'Voluntary Euthanasia',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/euthanasia-voluntary/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {
