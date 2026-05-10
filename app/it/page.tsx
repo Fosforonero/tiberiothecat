@@ -223,15 +223,15 @@ export default async function ItPage() {
         {/* ── Game loop ── */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-4 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
-            <span className="text-blue-400 font-black">1.</span> Vota un dilemma
+            <span className="text-blue-400 font-black neon-text-blue">1.</span> Vota un dilemma
           </span>
           <span className="text-white/15 hidden sm:inline">→</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-purple-400 font-black">2.</span> Scopri come si divide il mondo
+            <span className="text-purple-400 font-black neon-text-purple">2.</span> Scopri come si divide il mondo
           </span>
           <span className="text-white/15 hidden sm:inline">→</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-yellow-400 font-black">3.</span> Fai crescere il tuo Pixie
+            <span className="text-yellow-400 font-black neon-text-yellow">3.</span> Fai crescere il tuo Pixie
           </span>
         </div>
 

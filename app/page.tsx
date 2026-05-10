@@ -173,15 +173,15 @@ export default async function HomePage() {
         {/* ── Game loop ── */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-4 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
-            <span className="text-blue-400 font-black">1.</span> Vote on a dilemma
+            <span className="text-blue-400 font-black neon-text-blue">1.</span> Vote on a dilemma
           </span>
           <span className="text-white/15 hidden sm:inline">→</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-purple-400 font-black">2.</span> See how the world splits
+            <span className="text-purple-400 font-black neon-text-purple">2.</span> See how the world splits
           </span>
           <span className="text-white/15 hidden sm:inline">→</span>
           <span className="flex items-center gap-1.5">
-            <span className="text-yellow-400 font-black">3.</span> Grow your Pixie
+            <span className="text-yellow-400 font-black neon-text-yellow">3.</span> Grow your Pixie
           </span>
         </div>
 
