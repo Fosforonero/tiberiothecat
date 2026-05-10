@@ -159,6 +159,24 @@ const EN_POSTS: BlogPost[] = [
         href: '/play/trolley',
       },
       {
+        type: 'h2',
+        text: 'The two ways of thinking that the trolley problem reveals',
+      },
+      {
+        type: 'p',
+        text: 'The split between pulling the lever and pushing the man tracks a real divide in moral philosophy. People who pull but refuse to push tend to reason consequentially in some situations and deontologically in others — and the trolley problem is precisely the test case that reveals where their line sits.',
+      },
+      {
+        type: 'cta',
+        label: 'Consequentialism: the math behind pulling the lever →',
+        href: '/blog/consequentialism-the-greatest-good',
+      },
+      {
+        type: 'cta',
+        label: 'Deontology: why pushing the man feels different →',
+        href: '/blog/deontology-some-things-are-always-wrong',
+      },
+      {
         type: 'disclaimer',
         text: 'Educational content, not professional advice.',
       },
@@ -770,6 +788,29 @@ const EN_POSTS: BlogPost[] = [
         href: '/play/truth-friend',
       },
       {
+        type: 'h2',
+        text: 'Three frameworks that help you think about these dilemmas',
+      },
+      {
+        type: 'p',
+        text: 'When two values you actually hold are pulling in opposite directions, three classic ethical frameworks each offer a different lens — focused on outcomes, on rules, or on character.',
+      },
+      {
+        type: 'cta',
+        label: 'Consequentialism: what produces the most good? →',
+        href: '/blog/consequentialism-the-greatest-good',
+      },
+      {
+        type: 'cta',
+        label: 'Deontology: what duties always hold? →',
+        href: '/blog/deontology-some-things-are-always-wrong',
+      },
+      {
+        type: 'cta',
+        label: 'Virtue ethics: what would a good person do? →',
+        href: '/blog/virtue-ethics-what-would-a-good-person-do',
+      },
+      {
         type: 'disclaimer',
         text: 'Educational content, not professional advice.',
       },
@@ -1076,6 +1117,29 @@ const EN_POSTS: BlogPost[] = [
         type: 'cta',
         label: 'Vote to build your profile →',
         href: '/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Want to go deeper into the theories?',
+      },
+      {
+        type: 'p',
+        text: 'The "Utility vs Principle" axis maps loosely onto the consequentialism vs deontology debate in moral philosophy. The "Loyalty vs Justice" axis touches questions that virtue ethics handles uniquely. None of the three frameworks is right or wrong — they each illuminate a different part of how people actually reason.',
+      },
+      {
+        type: 'cta',
+        label: 'Consequentialism: the ethics of outcomes →',
+        href: '/blog/consequentialism-the-greatest-good',
+      },
+      {
+        type: 'cta',
+        label: 'Deontology: the ethics of duties →',
+        href: '/blog/deontology-some-things-are-always-wrong',
+      },
+      {
+        type: 'cta',
+        label: 'Virtue ethics: the ethics of character →',
+        href: '/blog/virtue-ethics-what-would-a-good-person-do',
       },
       {
         type: 'disclaimer',
@@ -2025,6 +2089,24 @@ const IT_POSTS: BlogPost[] = [
         href: '/it/play/trolley',
       },
       {
+        type: 'h2',
+        text: 'I due modi di pensare che il problema del carrello rivela',
+      },
+      {
+        type: 'p',
+        text: "La differenza tra tirare la leva e spingere l'uomo dal ponte traccia una vera divisione nella filosofia morale. Chi tira ma rifiuta di spingere ragiona in modo consequenzialista in alcune situazioni e in modo deontologico in altre — e il problema del carrello è esattamente il caso che rivela dove si trova il confine.",
+      },
+      {
+        type: 'cta',
+        label: 'Consequenzialismo: la matematica dietro al tirare la leva →',
+        href: '/it/blog/consequenzialismo-il-bene-maggiore',
+      },
+      {
+        type: 'cta',
+        label: "Deontologia: perché spingere l'uomo sembra diverso →",
+        href: '/it/blog/deontologia-alcune-cose-sono-sempre-sbagliate',
+      },
+      {
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale.',
       },
@@ -2680,6 +2762,29 @@ const IT_POSTS: BlogPost[] = [
         href: '/it/play/truth-friend',
       },
       {
+        type: 'h2',
+        text: 'Tre framework che aiutano a pensare a questi dilemmi',
+      },
+      {
+        type: 'p',
+        text: 'Quando due valori che davvero senti tuoi vanno in direzioni opposte, tre framework etici classici offrono lenti diverse — concentrate sui risultati, sulle regole o sul carattere.',
+      },
+      {
+        type: 'cta',
+        label: 'Consequenzialismo: cosa produce il maggior bene? →',
+        href: '/it/blog/consequenzialismo-il-bene-maggiore',
+      },
+      {
+        type: 'cta',
+        label: 'Deontologia: quali doveri valgono sempre? →',
+        href: '/it/blog/deontologia-alcune-cose-sono-sempre-sbagliate',
+      },
+      {
+        type: 'cta',
+        label: 'Etica della virtù: cosa farebbe una persona di buon carattere? →',
+        href: '/it/blog/etica-della-virtu-cosa-farebbe-una-persona-buona',
+      },
+      {
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale di alcun tipo.',
       },
@@ -2986,6 +3091,29 @@ const IT_POSTS: BlogPost[] = [
         type: 'cta',
         label: 'Vota per costruire il tuo profilo →',
         href: '/it/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Vuoi approfondire le teorie?',
+      },
+      {
+        type: 'p',
+        text: "L'asse \"Utility vs Principle\" si avvicina al dibattito tra consequenzialismo e deontologia nella filosofia morale. L'asse \"Loyalty vs Justice\" tocca questioni che l'etica della virtù gestisce in modo unico. Nessuno dei tre framework è giusto o sbagliato — ognuno illumina una parte diversa di come le persone ragionano davvero.",
+      },
+      {
+        type: 'cta',
+        label: 'Consequenzialismo: l\'etica dei risultati →',
+        href: '/it/blog/consequenzialismo-il-bene-maggiore',
+      },
+      {
+        type: 'cta',
+        label: 'Deontologia: l\'etica dei doveri →',
+        href: '/it/blog/deontologia-alcune-cose-sono-sempre-sbagliate',
+      },
+      {
+        type: 'cta',
+        label: 'Etica della virtù: l\'etica del carattere →',
+        href: '/it/blog/etica-della-virtu-cosa-farebbe-una-persona-buona',
       },
       {
         type: 'disclaimer',
