@@ -10,6 +10,7 @@ import BadgeSection from './BadgeSection'
 import OnboardingModal from './OnboardingModal'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import DailyMissions from '@/components/DailyMissions'
+import PixieSelector from '@/components/PixieSelector'
 import type { CompanionSpecies } from '@/lib/companion'
 import { STREAK_MILESTONES, getStreakProgress } from '@/lib/badges'
 
@@ -186,6 +187,14 @@ export default async function DashboardPage() {
         locale={locale}
         userId={user.id}
         enableLevelUpModal
+      />
+
+      {/* ── Pixie Selector ── */}
+      <PixieSelector
+        currentSpecies={companionSpecies}
+        votesCount={votesCount}
+        streakDays={streakDays}
+        locale={locale}
       />
 
       {/* ── Daily Missions ── */}

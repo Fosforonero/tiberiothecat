@@ -98,3 +98,31 @@ export const RARITY_STYLES: Record<string, string> = {
   epic:      'border-purple-500/40 bg-purple-500/10 text-purple-300',
   legendary: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-300',
 }
+
+/** Unlock conditions (in sync with CompanionDef.unlockCondition strings). */
+const UNLOCK_REQUIREMENTS: Record<CompanionSpecies, (votes: number, streak: number) => boolean> = {
+  spark: () => true,
+  blip:  () => true,
+  momo:  (votes) => votes >= 10,
+  shade: (_, streak) => streak >= 7,
+  orbit: (votes) => votes >= 100,
+}
+
+/**
+ * Returns the species that the user has unlocked.
+ * `heart` and `robot` are premium/future — not included here.
+ */
+export function getUnlockedSpecies(votesCount: number, streakDays: number): CompanionSpecies[] {
+  return COMPANIONS
+    .map(c => c.id)
+    .filter(id => UNLOCK_REQUIREMENTS[id]?.(votesCount, streakDays) ?? false)
+}
+
+/** Returns true if the given species is unlocked for the user. */
+export function isSpeciesUnlocked(
+  species: CompanionSpecies,
+  votesCount: number,
+  streakDays: number,
+): boolean {
+  return UNLOCK_REQUIREMENTS[species]?.(votesCount, streakDays) ?? false
+}

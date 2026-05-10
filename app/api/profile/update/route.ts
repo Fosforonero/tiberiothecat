@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
+import { isSpeciesUnlocked, type CompanionSpecies } from '@/lib/companion'
+
+const VALID_SPECIES: CompanionSpecies[] = ['spark', 'blip', 'momo', 'shade', 'orbit']
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -12,7 +15,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { displayName, birthYear, gender, countryCode, avatarEmoji } = body
+  const { displayName, birthYear, gender, countryCode, avatarEmoji, companionSpecies } = body
 
   if (displayName !== undefined) {
     const name = String(displayName).trim()
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest) {
 
   const { data: currentProfile } = await supabase
     .from('profiles')
-    .select('display_name, name_changes, is_premium, role')
+    .select('display_name, name_changes, is_premium, role, votes_count, streak_days')
     .eq('id', user.id)
     .single()
 
@@ -91,6 +94,19 @@ export async function POST(req: NextRequest) {
     if (emoji.length <= 8) {
       updatePayload.avatar_emoji = emoji
     }
+  }
+
+  if (companionSpecies !== undefined) {
+    const species = String(companionSpecies) as CompanionSpecies
+    if (!VALID_SPECIES.includes(species)) {
+      return NextResponse.json({ error: 'Invalid species' }, { status: 400 })
+    }
+    const votes = currentProfile?.votes_count ?? 0
+    const streak = currentProfile?.streak_days ?? 0
+    if (!isSpeciesUnlocked(species, votes, streak)) {
+      return NextResponse.json({ error: 'Species not yet unlocked' }, { status: 403 })
+    }
+    updatePayload.companion_species = species
   }
 
   if (Object.keys(updatePayload).length === 0) {
