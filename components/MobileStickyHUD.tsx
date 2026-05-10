@@ -108,12 +108,13 @@ export default function MobileStickyHUD({
           WebkitBackdropFilter: 'blur(18px) saturate(180%)',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
           boxShadow: visible ? '0 8px 24px -8px rgba(0,0,0,0.5)' : undefined,
+          paddingTop: 'env(safe-area-inset-top, 0px)',
         }}
       >
         {/* Top accent line — matches level color */}
         <div className={`h-[2px] w-full bg-gradient-to-r ${accentGradient} opacity-60`} />
 
-        <div className="px-3 pt-2 pb-2.5 max-w-3xl mx-auto">
+        <div className="px-3 pt-2 pb-2.5 max-w-3xl mx-auto" style={{ paddingLeft: 'max(12px, env(safe-area-inset-left))', paddingRight: 'max(12px, env(safe-area-inset-right))' }}>
           <div className="flex items-center gap-2.5">
             {/* Pixie thumbnail */}
             <div

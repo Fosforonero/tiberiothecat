@@ -63,7 +63,7 @@ export default function MobileFloatingVoteCTA({
         href={href}
         aria-label={IT ? 'Vota un dilemma' : 'Vote on a dilemma'}
         className={`
-          md:hidden fixed bottom-5 right-5 z-30
+          md:hidden fixed z-30
           flex items-center gap-2
           h-14 px-5 rounded-full
           font-black text-sm text-white
@@ -71,6 +71,9 @@ export default function MobileFloatingVoteCTA({
           ${visible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}
         `}
         style={{
+          // Anchor to bottom-right respecting iOS home indicator + landscape safe areas
+          bottom: 'max(20px, calc(env(safe-area-inset-bottom) + 12px))',
+          right: 'max(20px, calc(env(safe-area-inset-right) + 16px))',
           background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
           border: '1px solid rgba(255,255,255,0.18)',
           boxShadow: '0 8px 24px -4px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08) inset',
