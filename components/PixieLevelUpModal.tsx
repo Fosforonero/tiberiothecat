@@ -12,6 +12,7 @@ const IT_STAGE_LABELS: Record<number, string> = {
   3: 'Esploratore',
   4: 'Campione',
   5: 'Leggendario',
+  6: 'Ultra Leggendario',
 }
 
 interface Props {
@@ -32,7 +33,7 @@ export default function PixieLevelUpModal({ species, stage, xp, locale, userId, 
   const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
 
   // Emoji fallbacks mirror companion.ts spark defaults; safe for any species
-  const stageFallbackEmoji: Record<number, string> = { 1: '⚡', 2: '⚡', 3: '🌟', 4: '💫', 5: '✨' }
+  const stageFallbackEmoji: Record<number, string> = { 1: '⚡', 2: '⚡', 3: '🌟', 4: '💫', 5: '✨', 6: '🌟' }
   const emoji = stageFallbackEmoji[stage] ?? '⚡'
 
   useEffect(() => {

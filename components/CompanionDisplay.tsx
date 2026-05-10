@@ -29,6 +29,7 @@ const IT_STAGE_LABELS: Record<number, string> = {
   3: 'Esploratore',
   4: 'Campione',
   5: 'Leggendario',
+  6: 'Ultra Leggendario',
 }
 
 export default function CompanionDisplay({
@@ -74,7 +75,7 @@ export default function CompanionDisplay({
   const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
   const emoji = companion.stageEmoji[stage - 1]
   const toNext = votesToNextStage(votesCount)
-  const isMaxStage = stage === 5
+  const isMaxStage = stage === 6
 
   // Progress bar within current stage
   const currentThreshold = STAGE_THRESHOLDS[stage - 1]
@@ -184,7 +185,7 @@ export default function CompanionDisplay({
             </>
           ) : (
             <div className="text-xs font-bold text-yellow-400">
-              {IT ? '✨ Forma leggendaria sbloccata!' : '✨ Legendary form unlocked!'}
+              {IT ? '✨ Forma ultra leggendaria sbloccata!' : '✨ Ultra Legendary form unlocked!'}
             </div>
           )}
         </div>

@@ -7,8 +7,8 @@ export interface CompanionDef {
   description: string
   rarity: 'common' | 'rare' | 'epic' | 'legendary'
   unlockCondition: string
-  // Emoji per stage 1-5
-  stageEmoji: [string, string, string, string, string]
+  // Emoji per stage 1-6
+  stageEmoji: [string, string, string, string, string, string]
   color: string
 }
 
@@ -19,7 +19,7 @@ export const COMPANIONS: CompanionDef[] = [
     description: 'A curious little energy being who loves bold choices.',
     rarity: 'common',
     unlockCondition: 'Available to all users',
-    stageEmoji: ['⚡', '⚡', '🌟', '💫', '✨'],
+    stageEmoji: ['⚡', '⚡', '🌟', '💫', '✨', '🌟'],
     color: 'text-yellow-400',
   },
   {
@@ -28,7 +28,7 @@ export const COMPANIONS: CompanionDef[] = [
     description: 'A glitchy digital creature that feeds on data and dilemmas.',
     rarity: 'common',
     unlockCondition: 'Available to all users',
-    stageEmoji: ['🔮', '🔮', '💎', '🌀', '🌐'],
+    stageEmoji: ['🔮', '🔮', '💎', '🌀', '🌐', '💠'],
     color: 'text-purple-400',
   },
   {
@@ -37,7 +37,7 @@ export const COMPANIONS: CompanionDef[] = [
     description: 'A cheerful forest spirit who weighs every decision carefully.',
     rarity: 'rare',
     unlockCondition: 'Earn the 10 Votes badge',
-    stageEmoji: ['🍄', '🍄', '🌿', '🌲', '🌳'],
+    stageEmoji: ['🍄', '🍄', '🌿', '🌲', '🌳', '🍃'],
     color: 'text-green-400',
   },
   {
@@ -46,7 +46,7 @@ export const COMPANIONS: CompanionDef[] = [
     description: 'A mysterious lunar entity who thrives in moral ambiguity.',
     rarity: 'epic',
     unlockCondition: 'Maintain a 7-day streak',
-    stageEmoji: ['🌑', '🌒', '🌓', '🌔', '🌕'],
+    stageEmoji: ['🌑', '🌒', '🌓', '🌔', '🌕', '🌙'],
     color: 'text-blue-400',
   },
   {
@@ -55,7 +55,7 @@ export const COMPANIONS: CompanionDef[] = [
     description: 'A cosmic wanderer who has seen every dilemma in the universe.',
     rarity: 'legendary',
     unlockCondition: 'Reach 100 votes',
-    stageEmoji: ['🪐', '🪐', '🌌', '☄️', '🌠'],
+    stageEmoji: ['🪐', '🪐', '🌌', '☄️', '🌠', '💿'],
     color: 'text-orange-400',
   },
 ]
@@ -65,7 +65,8 @@ export const COMPANION_MAP: Record<CompanionSpecies, CompanionDef> = Object.from
 ) as Record<CompanionSpecies, CompanionDef>
 
 // Stage thresholds (based on votes_count)
-export function getCompanionStage(votesCount: number): 1 | 2 | 3 | 4 | 5 {
+export function getCompanionStage(votesCount: number): 1 | 2 | 3 | 4 | 5 | 6 {
+  if (votesCount >= 1000) return 6
   if (votesCount >= 500) return 5
   if (votesCount >= 100) return 4
   if (votesCount >= 50)  return 3
@@ -79,14 +80,15 @@ export const STAGE_LABELS: Record<number, string> = {
   3: 'Explorer',
   4: 'Champion',
   5: 'Legendary',
+  6: 'Ultra Legendary',
 }
 
-export const STAGE_THRESHOLDS = [0, 10, 50, 100, 500]
+export const STAGE_THRESHOLDS = [0, 10, 50, 100, 500, 1000]
 
 /** Returns votes needed to reach the next stage, or 0 if at max. */
 export function votesToNextStage(votesCount: number): number {
   const stage = getCompanionStage(votesCount)
-  if (stage === 5) return 0
+  if (stage === 6) return 0
   return STAGE_THRESHOLDS[stage] - votesCount
 }
 
