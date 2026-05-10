@@ -88,6 +88,9 @@ const EN_COPY = {
   anonCTAHeadline:   'Want to track your choices over time?',
   anonCTABody:       'Create a free account to track your answers, earn badges, and grow your Pixie.',
   anonCTAButton:     'Join free — it takes 10 seconds',
+  personalityTeaser: '🧠 Your votes are revealing a pattern',
+  personalityTeaserBody: 'Discover your Moral Personality Type — are you a Guardian, Strategist, or Empath?',
+  personalityTeaserCTA: 'See your moral type →',
   webShareCTA:       '📤 Share result',
   webShareSub:       'Send via messages, stories, or copy link',
   webShareCopied:    '✅ Link copied!',
@@ -160,6 +163,9 @@ const IT_COPY = {
   anonCTAHeadline:   'Vuoi tracciare le tue scelte nel tempo?',
   anonCTABody:       'Crea un account gratis per tenere traccia delle risposte, guadagnare badge e far crescere il tuo Pixie.',
   anonCTAButton:     'Crea profilo gratis — ci vogliono 10 secondi',
+  personalityTeaser: '🧠 I tuoi voti stanno rivelando un pattern',
+  personalityTeaserBody: 'Scopri il tuo Tipo di Personalità Morale — sei un Guardian, Strategist o Empath?',
+  personalityTeaserCTA: 'Scopri il tuo tipo morale →',
   webShareCTA:       '📤 Condividi risultato',
   webShareSub:       'Invia via messaggi, storie o copia il link',
   webShareCopied:    '✅ Link copiato!',
@@ -193,6 +199,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const [igCaptionCopied, setIgCaptionCopied] = useState(false)
   const [isAnon, setIsAnon] = useState(false)
   const [referralCode, setReferralCode] = useState<string | null>(null)
+  const [showPersonalityTeaser, setShowPersonalityTeaser] = useState(false)
 
   const isIT = sharePrefix === '/it'
   const copy = isIT ? IT_COPY : EN_COPY
@@ -230,6 +237,16 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             .eq('user_id', user.id)
             .single()
           if (data?.referral_code) setReferralCode(data.referral_code)
+          // Show personality teaser to logged-in users who haven't dismissed it in the last 7 days
+          if (voted) {
+            try {
+              const dismissed = localStorage.getItem('sv_personality_teaser_dismissed')
+              const sevenDays = 7 * 24 * 60 * 60 * 1000
+              if (!dismissed || Date.now() - parseInt(dismissed, 10) > sevenDays) {
+                setShowPersonalityTeaser(true)
+              }
+            } catch { /* localStorage unavailable */ }
+          }
         }
       })
       .catch(() => {/* non-blocking */})
@@ -1031,6 +1048,34 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           >
             {copy.anonCTAButton}
           </a>
+        </div>
+      )}
+
+      {/* ── Personality teaser for logged-in users who just voted ── */}
+      {showPersonalityTeaser && (
+        <div className="rounded-2xl border border-purple-500/25 bg-purple-500/5 p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-white text-sm mb-1">{copy.personalityTeaser}</p>
+            <p className="text-xs text-[var(--muted)] leading-relaxed">{copy.personalityTeaserBody}</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
+            <a
+              href={isIT ? '/it/personality' : '/personality'}
+              className="flex-1 sm:flex-none text-center text-sm font-bold px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-colors min-h-[48px] flex items-center justify-center"
+            >
+              {copy.personalityTeaserCTA}
+            </a>
+            <button
+              aria-label="Dismiss"
+              onClick={() => {
+                try { localStorage.setItem('sv_personality_teaser_dismissed', String(Date.now())) } catch { /* noop */ }
+                setShowPersonalityTeaser(false)
+              }}
+              className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 text-[var(--muted)] hover:text-white hover:border-white/25 transition-colors flex items-center justify-center text-lg leading-none"
+            >
+              ×
+            </button>
+          </div>
         </div>
       )}
     </div>
