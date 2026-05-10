@@ -14,6 +14,7 @@ import PixieSelector from '@/components/PixieSelector'
 import ProfileShareButton from '@/components/ProfileShareButton'
 import type { CompanionSpecies, PixieXpMap } from '@/lib/companion'
 import { STREAK_MILESTONES, getStreakProgress } from '@/lib/badges'
+import { getLevelInfo } from '@/lib/missions'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -85,8 +86,13 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login?redirect=/dashboard')
 
+  // Compute "7 days ago" once for the referral-week query
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const sevenDaysAgoIso = sevenDaysAgo.toISOString()
+
   // Fetch all data in parallel
-  const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
+  const [profileRes, pollsRes, dilemmaVotesRes, badgesRes, referralWeekRes, referralAllRes] = await Promise.all([
     supabase
       .from('profiles')
       .select('display_name, email, is_premium, role, votes_count, equipped_frame, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp')
@@ -109,6 +115,19 @@ export default async function DashboardPage() {
       .select('badge_id, earned_at, is_equipped, badges(name, emoji, rarity, description)')
       .eq('user_id', user.id)
       .order('earned_at', { ascending: false }),
+    // Referral visits in the last 7 days (graceful fallback if table missing)
+    supabase
+      .from('user_events')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('event_type', 'referral_visit')
+      .gte('created_at', sevenDaysAgoIso),
+    // Referral visits all-time
+    supabase
+      .from('user_events')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('event_type', 'referral_visit'),
   ])
 
   const profile = profileRes.data
@@ -129,6 +148,14 @@ export default async function DashboardPage() {
   const streakDays = profile?.streak_days ?? 0
   const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
   const pixieXp: PixieXpMap = (profile?.pixie_xp as PixieXpMap) ?? {}
+
+  // Level info derived from XP — surfaces "Lv. 3 · Philosopher" in hero
+  const levelInfo = getLevelInfo(xp)
+
+  // Referral counts (null on tables/RLS error → card hidden gracefully)
+  const referralWeek = referralWeekRes.error ? null : (referralWeekRes.count ?? 0)
+  const referralAll = referralAllRes.error ? null : (referralAllRes.count ?? 0)
+  const showReferralCard = referralAll !== null
 
 
   // Fetch dynamic scenarios ONCE (no N+1 Redis calls)
@@ -161,11 +188,28 @@ export default async function DashboardPage() {
 
       {/* ── Header ── */}
       <div className="mb-10 flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-3xl font-black text-white mb-1">
             {IT ? 'Ciao' : 'Hey'}, {profile?.display_name?.split(' ')[0] ?? (IT ? 'amico' : 'there')} 👋
           </h1>
-          <p className="text-[var(--muted)] text-sm">{profile?.email ?? user.email}</p>
+          <p className="text-[var(--muted)] text-sm truncate">{profile?.email ?? user.email}</p>
+
+          {/* Level pill — derived from total XP */}
+          <div className="mt-2 inline-flex items-center gap-2 px-2.5 py-1 rounded-lg border border-white/10 bg-white/5">
+            <span className={`text-xs font-black ${levelInfo.color}`}>
+              {IT ? 'Lv.' : 'Lv.'} {levelInfo.level}
+            </span>
+            <span className="text-xs font-bold text-white/80">·</span>
+            <span className={`text-xs font-bold ${levelInfo.color}`}>{levelInfo.title}</span>
+            {levelInfo.xpNeeded > 0 && levelInfo.progressPct < 100 && (
+              <>
+                <span className="text-xs text-white/30 ml-1">·</span>
+                <span className="text-[10px] text-[var(--muted)] tabular-nums">
+                  {levelInfo.xpIntoLevel}/{levelInfo.xpNeeded} XP
+                </span>
+              </>
+            )}
+          </div>
         </div>
         {userBadges.length > 0 && (
           <div className="flex gap-1.5 flex-wrap justify-end mt-1">
@@ -242,6 +286,48 @@ export default async function DashboardPage() {
           />
         </div>
       </div>
+
+      {/* ── Referral impact (only when data is queryable) ── */}
+      {showReferralCard && (
+        <div className="rounded-2xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 p-5 mb-8">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg">🔗</span>
+              </div>
+              <div>
+                <p className="font-bold text-white text-sm">
+                  {IT ? 'Il tuo impatto' : 'Your share impact'}
+                </p>
+                <p className="text-[var(--muted)] text-xs mt-0.5">
+                  {IT ? 'Chi ha cliccato i tuoi link sfida' : 'Friends who visited your challenge links'}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-yellow-500/20 bg-white/[0.02] p-3 text-center">
+              <p className="text-2xl font-black text-yellow-400 tabular-nums">{referralWeek ?? 0}</p>
+              <p className="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-0.5 font-bold">
+                {IT ? 'Questa settimana' : 'This week'}
+              </p>
+            </div>
+            <div className="rounded-xl border border-yellow-500/20 bg-white/[0.02] p-3 text-center">
+              <p className="text-2xl font-black text-orange-400 tabular-nums">{referralAll ?? 0}</p>
+              <p className="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-0.5 font-bold">
+                {IT ? 'Totale' : 'All time'}
+              </p>
+            </div>
+          </div>
+          {(referralAll ?? 0) === 0 && (
+            <p className="text-[11px] text-[var(--muted)] italic mt-3 text-center">
+              {IT
+                ? 'Sfida un amico dopo un voto — il link è già pronto.'
+                : 'Challenge a friend after voting — the link is ready to share.'}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* ── Personality entry ── */}
       <div className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-5 mb-8 flex items-center justify-between gap-4">
