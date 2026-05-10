@@ -2491,6 +2491,139 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'experimental-moral-psychology-how-science-studies-moral-intuitions',
+    locale: 'en',
+    title: 'Experimental Moral Psychology — How Science Studies Why We Disagree',
+    seoTitle: 'Experimental Moral Psychology: What Science Reveals About Moral Intuitions',
+    description:
+      "Experimental moral psychology uses empirical methods to study how people actually reason about right and wrong — and the findings are often surprising. We are less rational, more emotional, and more inconsistent than we believe.",
+    seoDescription:
+      "Experimental moral psychology studies how people reason about ethics — revealing dual-process thinking, moral dumbfounding, and cross-cultural patterns. Explore the science on SplitVote.",
+    date: '2026-05-10',
+    readingTime: 6,
+    tags: ['moral psychology', 'experimental philosophy', 'moral intuitions', 'Joshua Greene', 'trolley problem'],
+    relatedDilemmaIds: ['trolley', 'self-driving-crash', 'robot-judge', 'organ-harvest', 'innocent-juror'],
+    alternateSlug: 'psicologia-morale-sperimentale-come-la-scienza-studia-le-intuizioni-morali',
+    content: [
+      {
+        type: 'p',
+        text: "Ask someone whether it is acceptable to push a large man off a footbridge to stop a runaway trolley and save five lives. Most say no — immediately, viscerally. Ask them whether pulling a lever that diverts the trolley onto a track where one person will die is acceptable. Most say yes. The arithmetic is identical. The moral reaction is not. This asymmetry — replicated across thousands of participants in dozens of countries — is one of the founding observations of experimental moral psychology.",
+      },
+      {
+        type: 'p',
+        text: "Experimental moral psychology applies the methods of cognitive science and empirical psychology to questions that philosophy has traditionally studied from the armchair. Instead of reasoning about what people should think, researchers measure what they do think — and the picture that emerges is more complicated than standard philosophical theories predict.",
+      },
+      {
+        type: 'h2',
+        text: 'Two systems, one dilemma',
+      },
+      {
+        type: 'p',
+        text: "Psychologist Joshua Greene proposed that the footbridge asymmetry reflects two competing cognitive systems. System 1 — fast, automatic, emotional — fires an alarm when you imagine physically pushing someone to their death. System 2 — slower, deliberative, consequentialist — calculates that one death is better than five and endorses the intervention. In the lever case, the emotional alarm is quieter: the action is indirect, impersonal, mechanical. System 2 has more room to run its calculation.",
+      },
+      {
+        type: 'p',
+        text: "This dual-process account has been influential and controversial. Critics argue it over-simplifies — that emotional responses can themselves be tracking morally relevant features of a situation, not just triggering irrational bias. The debate has not resolved, but it has sharpened: the question is no longer whether emotion influences moral judgment, but whether it does so reliably, and in what direction.",
+      },
+      {
+        type: 'cta',
+        label: 'Pull the lever and divert the trolley — one death to save five? →',
+        href: '/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Moral dumbfounding',
+      },
+      {
+        type: 'p',
+        text: "Psychologist Jonathan Haidt studied a different phenomenon: moral dumbfounding. Participants were told a story about a brother and sister who have consensual sex once, enjoy it, and decide never to repeat it — no one is harmed, the act is kept private. When asked if it was wrong, most participants said yes, immediately. When asked why, they struggled. Each reason they offered — risk of genetic harm, psychological damage — was pre-empted by the story's stipulations. Yet they maintained their verdict, often citing a strong feeling that it was just wrong.",
+      },
+      {
+        type: 'p',
+        text: "Haidt concluded that moral judgments are often made first by intuition and rationalised afterwards — that we construct reasons to explain verdicts we have already reached. This 'social intuitionist model' contrasts sharply with the Enlightenment picture of the moral reasoner carefully weighing principles before concluding.",
+      },
+      {
+        type: 'cta',
+        label: 'A self-driving car must choose who to save. Program it how? →',
+        href: '/play/self-driving-crash',
+      },
+      {
+        type: 'h2',
+        text: 'What varies across cultures — and what does not',
+      },
+      {
+        type: 'p',
+        text: "Cross-cultural studies have complicated simple claims about universal moral intuitions. Some findings travel reliably: the preference for saving more lives over fewer, the distinction between harm caused directly and harm caused indirectly. Others do not: intuitions about authority, purity, and in-group loyalty show considerably more variation. The Moral Foundations research suggests this variation is not noise but structure — different societies emphasise different foundations, producing coherent but distinct moral systems rather than rational agreement on universal rules.",
+      },
+      {
+        type: 'cta',
+        label: 'Should an AI judge criminal cases better than a human court? →',
+        href: '/play/robot-judge',
+      },
+      {
+        type: 'h2',
+        text: 'What happens when stakes rise',
+      },
+      {
+        type: 'p',
+        text: "One consistent finding is that the framing of a moral dilemma changes its verdict. Describing the same action using passive versus active language, or personal versus statistical victims, can flip majority responses. This is disturbing for anyone who believes that moral judgments track objective features of situations — if the frame changes the verdict, what exactly is being tracked?",
+      },
+      {
+        type: 'p',
+        text: "Researchers have proposed different explanations: framing effects reveal cognitive biases that corrupt moral reasoning; framing effects reveal that different framings describe genuinely different situations (active harm really is different from passive allowance); or framing effects reveal that moral judgment is context-sensitive in ways our theories have failed to capture. Each explanation carries different implications for how seriously to take moral intuitions as evidence.",
+      },
+      {
+        type: 'cta',
+        label: 'Harvest one patient\'s organs to save five who need transplants? →',
+        href: '/play/organ-harvest',
+      },
+      {
+        type: 'h2',
+        text: 'What SplitVote data adds to this picture',
+      },
+      {
+        type: 'p',
+        text: "Every vote on SplitVote is, in miniature, a data point in this research tradition. The platform does not claim to be a scientific instrument — the sample is not random, participation is voluntary, and the framing of each dilemma is fixed. But at sufficient scale, consistent patterns across thousands of votes on identical scenarios create a signal worth examining: which dilemmas split people most evenly? Which produce landslides? Do the same scenarios that divided laboratory participants in published studies divide SplitVote users in similar proportions?",
+      },
+      {
+        type: 'cta',
+        label: 'You know the defendant is innocent. Vote to convict to uphold the rule of law? →',
+        href: '/play/innocent-juror',
+      },
+      {
+        type: 'h2',
+        text: 'The limits of the science',
+      },
+      {
+        type: 'p',
+        text: "Experimental moral psychology is a young field and its findings are not always stable. Several high-profile results have failed to replicate. The populations studied have historically skewed heavily toward Western, educated, industrialised, rich, and democratic (WEIRD) societies — a limitation that the field has increasingly worked to address. The dual-process account of moral cognition remains contested at the theoretical level even as its individual empirical findings accumulate.",
+      },
+      {
+        type: 'p',
+        text: "The field's most durable contribution may be methodological: it has demonstrated that the data of moral philosophy — what people believe and why — can be studied empirically, and that the results often surprise our prior theories. Whatever the correct account of moral reasoning turns out to be, it will need to explain the trolley asymmetry, the dumbfounding effect, and the cross-cultural patterns this research has documented.",
+      },
+      {
+        type: 'cta',
+        label: 'Discover what your votes reveal about your moral reasoning →',
+        href: '/personality',
+      },
+      {
+        type: 'cta',
+        label: 'Moral Foundations Theory — why good people disagree →',
+        href: '/blog/moral-foundations-theory-why-good-people-disagree',
+      },
+      {
+        type: 'cta',
+        label: 'Explore all moral dilemmas →',
+        href: '/moral-dilemmas',
+      },
+      {
+        type: 'disclaimer',
+        text: "References to Greene, Haidt, and experimental moral philosophy research are for contextual background only. SplitVote is an entertainment and reflection platform, not a scientific study. Results represent community votes — not peer-reviewed data, and not conclusions about individual moral character. The dual-process theory described here is contested within cognitive science and moral philosophy.",
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -4952,6 +5085,139 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. I riferimenti alla bioetica e alla letteratura filosofica sono contestuali — l'obiettivo è aiutarti a riflettere, non fornire consulenza medica o legale. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche. Se stai affrontando decisioni mediche reali, consulta un professionista sanitario.",
+      },
+    ],
+  },
+  {
+    slug: 'psicologia-morale-sperimentale-come-la-scienza-studia-le-intuizioni-morali',
+    locale: 'it',
+    title: 'Psicologia Morale Sperimentale — Come la Scienza Studia Perché Non Siamo d\'Accordo',
+    seoTitle: 'Psicologia Morale Sperimentale: Cosa Rivela la Scienza sulle Intuizioni Morali',
+    description:
+      "La psicologia morale sperimentale usa metodi empirici per studiare come le persone ragionano sul bene e sul male — e i risultati sono spesso sorprendenti. Siamo meno razionali, più emotivi e più incoerenti di quanto crediamo.",
+    seoDescription:
+      "La psicologia morale sperimentale studia come le persone ragionano sull'etica — rivelando il pensiero duale, il moral dumbfounding e i pattern cross-culturali. Esplora la scienza su SplitVote.",
+    date: '2026-05-10',
+    readingTime: 6,
+    tags: ['psicologia morale', 'filosofia sperimentale', 'intuizioni morali', 'Joshua Greene', 'problema del tram'],
+    relatedDilemmaIds: ['trolley', 'self-driving-crash', 'robot-judge', 'organ-harvest', 'innocent-juror'],
+    alternateSlug: 'experimental-moral-psychology-how-science-studies-moral-intuitions',
+    content: [
+      {
+        type: 'p',
+        text: "Chiedi a qualcuno se è accettabile spingere un uomo grande giù da una passerella per fermare un tram in corsa e salvare cinque vite. La maggior parte dice no — immediatamente, visceralmente. Chiedi loro se tirare una leva che devia il tram su un binario dove morirà una persona è accettabile. La maggior parte dice sì. L'aritmetica è identica. La reazione morale non lo è. Questa asimmetria — replicata su migliaia di partecipanti in decine di paesi — è una delle osservazioni fondanti della psicologia morale sperimentale.",
+      },
+      {
+        type: 'p',
+        text: "La psicologia morale sperimentale applica i metodi della scienza cognitiva e della psicologia empirica a domande che la filosofia ha tradizionalmente studiato dalla poltrona. Invece di ragionare su cosa le persone dovrebbero pensare, i ricercatori misurano cosa pensano effettivamente — e il quadro che emerge è più complicato di quanto le teorie filosofiche standard prevedano.",
+      },
+      {
+        type: 'h2',
+        text: 'Due sistemi, un dilemma',
+      },
+      {
+        type: 'p',
+        text: "Lo psicologo Joshua Greene ha proposto che l'asimmetria della passerella rifletta due sistemi cognitivi in competizione. Il Sistema 1 — veloce, automatico, emotivo — fa scattare un allarme quando immagini di spingere fisicamente qualcuno verso la morte. Il Sistema 2 — più lento, deliberativo, consequenzialista — calcola che una morte è meglio di cinque e approva l'intervento. Nel caso della leva, l'allarme emotivo è più silenzioso: l'azione è indiretta, impersonale, meccanica. Il Sistema 2 ha più spazio per eseguire il suo calcolo.",
+      },
+      {
+        type: 'p',
+        text: "Questo schema a doppio processo è stato influente e controverso. I critici sostengono che semplifichi eccessivamente — che le risposte emotive possano esse stesse tracciare caratteristiche moralmente rilevanti di una situazione, non semplicemente innescare un bias irrazionale. Il dibattito non si è risolto, ma si è affinato: la domanda non è più se le emozioni influenzino il giudizio morale, ma se lo facciano in modo affidabile e in quale direzione.",
+      },
+      {
+        type: 'cta',
+        label: 'Tira la leva e devia il tram — una morte per salvarne cinque? →',
+        href: '/it/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Il moral dumbfounding',
+      },
+      {
+        type: 'p',
+        text: "Lo psicologo Jonathan Haidt ha studiato un fenomeno diverso: il moral dumbfounding (lo stupore morale). Ai partecipanti veniva raccontata una storia di un fratello e una sorella che hanno un rapporto sessuale consensuale una volta, lo trovano piacevole e decidono di non ripeterlo — nessuno viene ferito, l'atto resta privato. Quando viene chiesto se fosse sbagliato, la maggior parte dei partecipanti diceva sì, immediatamente. Quando veniva chiesto perché, faticavano. Ogni ragione che offrivano — rischio di danno genetico, danno psicologico — era pre-emessa dai dettagli della storia. Eppure mantenevano il loro verdetto, citando spesso un forte senso che fosse semplicemente sbagliato.",
+      },
+      {
+        type: 'p',
+        text: "Haidt ha concluso che i giudizi morali vengono spesso emessi prima dall'intuizione e razionalizzati dopo — che costruiamo ragioni per spiegare verdetti già raggiunti. Questo 'modello intuizionista sociale' contrasta nettamente con il quadro illuminista del ragionatore morale che soppesa attentamente i principi prima di concludere.",
+      },
+      {
+        type: 'cta',
+        label: "Un'auto a guida autonoma deve scegliere chi salvare. Come la programmi? →",
+        href: '/it/play/self-driving-crash',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa varia tra le culture — e cosa no',
+      },
+      {
+        type: 'p',
+        text: "Gli studi cross-culturali hanno complicato le semplici affermazioni sulle intuizioni morali universali. Alcuni risultati viaggiano in modo affidabile: la preferenza per salvare più vite rispetto a meno, la distinzione tra danno causato direttamente e danno causato indirettamente. Altri no: le intuizioni su autorità, purezza e lealtà verso il gruppo interno mostrano variazioni considerevolmente maggiori. La ricerca sui Fondamenti Morali suggerisce che questa variazione non è rumore ma struttura — diverse società enfatizzano fondamenti diversi, producendo sistemi morali coerenti ma distinti piuttosto che accordo razionale su regole universali.",
+      },
+      {
+        type: 'cta',
+        label: 'Un giudice IA dovrebbe decidere i casi penali meglio di un tribunale umano? →',
+        href: '/it/play/robot-judge',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa succede quando le posta si alza',
+      },
+      {
+        type: 'p',
+        text: "Un risultato coerente è che il framing di un dilemma morale ne cambia il verdetto. Descrivere la stessa azione usando un linguaggio passivo rispetto ad attivo, o vittime personali rispetto a statistiche, può ribaltare le risposte maggioritarie. Questo è preoccupante per chi crede che i giudizi morali tracchino caratteristiche oggettive delle situazioni — se il frame cambia il verdetto, cosa viene tracciato esattamente?",
+      },
+      {
+        type: 'p',
+        text: "I ricercatori hanno proposto diverse spiegazioni: gli effetti del framing rivelano bias cognitivi che corrompono il ragionamento morale; gli effetti del framing rivelano che i diversi frame descrivono situazioni genuinamente diverse (il danno attivo è davvero diverso dall'omissione passiva); o gli effetti del framing rivelano che il giudizio morale è sensibile al contesto in modi che le nostre teorie non hanno saputo catturare.",
+      },
+      {
+        type: 'cta',
+        label: 'Prelevi gli organi di un paziente sano per salvarne cinque che ne hanno bisogno? →',
+        href: '/it/play/organ-harvest',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa aggiungono i dati di SplitVote',
+      },
+      {
+        type: 'p',
+        text: "Ogni voto su SplitVote è, in miniatura, un punto dati in questa tradizione di ricerca. La piattaforma non pretende di essere uno strumento scientifico — il campione non è casuale, la partecipazione è volontaria e il framing di ogni dilemma è fisso. Ma a scala sufficiente, i pattern coerenti attraverso migliaia di voti su scenari identici creano un segnale degno di esame: quali dilemmi dividono le persone nel modo più equo? Quali producono valanghe? Gli stessi scenari che hanno diviso i partecipanti in laboratorio nei studi pubblicati dividono gli utenti di SplitVote in proporzioni simili?",
+      },
+      {
+        type: 'cta',
+        label: "Sai che l'imputato è innocente. Voti per condannarlo per sostenere lo stato di diritto? →",
+        href: '/it/play/innocent-juror',
+      },
+      {
+        type: 'h2',
+        text: 'I limiti della scienza',
+      },
+      {
+        type: 'p',
+        text: "La psicologia morale sperimentale è un campo giovane e i suoi risultati non sono sempre stabili. Diversi risultati di alto profilo non sono stati replicati. Le popolazioni studiate hanno storicamente privilegiato fortemente le società occidentali, istruite, industrializzate, ricche e democratiche (WEIRD) — un limite che il campo ha lavorato sempre più ad affrontare. Il doppio processo come spiegazione della cognizione morale rimane contestato a livello teorico anche mentre i suoi singoli risultati empirici si accumulano.",
+      },
+      {
+        type: 'p',
+        text: "Il contributo più durevole del campo potrebbe essere metodologico: ha dimostrato che i dati della filosofia morale — cosa credono le persone e perché — possono essere studiati empiricamente, e che i risultati spesso sorprendono le nostre teorie precedenti. Qualunque sia il corretto resoconto del ragionamento morale, dovrà spiegare l'asimmetria del tram, l'effetto del moral dumbfounding e i pattern cross-culturali che questa ricerca ha documentato.",
+      },
+      {
+        type: 'cta',
+        label: 'Scopri cosa rivelano i tuoi voti sul tuo ragionamento morale →',
+        href: '/it/personality',
+      },
+      {
+        type: 'cta',
+        label: 'La Teoria dei Fondamenti Morali — perché le persone oneste non sono d\'accordo →',
+        href: '/it/blog/teoria-fondamenti-morali',
+      },
+      {
+        type: 'cta',
+        label: 'Esplora tutti i dilemmi morali →',
+        href: '/it/dilemmi-morali',
+      },
+      {
+        type: 'disclaimer',
+        text: "I riferimenti a Greene, Haidt e alla ricerca di filosofia morale sperimentale sono solo contestuali. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico. I risultati rappresentano voti della community — non dati peer-reviewed, e non conclusioni sul carattere morale individuale. La teoria del doppio processo descritta qui è contestata nell'ambito della scienza cognitiva e della filosofia morale.",
       },
     ],
   },
