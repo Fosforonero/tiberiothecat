@@ -94,7 +94,9 @@ All HUMAN_ONLY — require credentials, env vars in Vercel, or external dashboar
 
 ## 4. Active Sprint / Next Recommended Step
 
-**G3 COMPLETATO ✅** — blog ora a 20 EN + 20 IT articoli.
+**G3 COMPLETATO ✅** — blog ora a 16 EN + 16 IT articoli (32 totali).
+
+**Blog cluster gap audit aggiornato:** vedi [`reports/blog-cluster-gaps-2026-05-10.md`](./reports/blog-cluster-gaps-2026-05-10.md). 5 cluster su 11 risolti da G1+G2+G3. Nuovo gap principale emerso: i 3 articoli G3 non hanno landing pages SEO aggregatori (gap A nell'audit).
 
 ### Prossimi sprint (ordine priorità)
 
