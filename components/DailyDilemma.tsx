@@ -96,7 +96,7 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
   }
 
   return (
-    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow relative"
+    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow card-neon-yellow relative"
       style={{
         border: '1px solid rgba(255,215,0,0.25)',
         background: 'linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,140,0,0.04) 50%, rgba(255,51,102,0.04) 100%)'
@@ -162,7 +162,7 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
         <div className="relative z-10 mt-5 flex items-center gap-3">
           <Link
             href={ctaHref}
-            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
+            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 active:scale-[0.97] active:bg-yellow-300 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
           >
             {isVoted ? copy.results : copy.voteNow}
             <ChevronRight size={16} />

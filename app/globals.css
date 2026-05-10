@@ -170,6 +170,26 @@ nav, main, footer {
   box-shadow: 0 4px 24px rgba(77,159,255,0.12), 0 0 0 1px rgba(77,159,255,0.1) inset;
   transform: translateY(-2px);
 }
+/* Touch devices: active replaces hover for tap feedback */
+@media (hover: none) {
+  .card-neon:active {
+    border-color: rgba(77,159,255,0.7);
+    background: var(--surface2);
+    box-shadow: 0 0 16px rgba(77,159,255,0.3), 0 0 32px rgba(77,159,255,0.15), 0 0 0 1px rgba(77,159,255,0.2) inset;
+    transform: scale(0.99);
+  }
+}
+
+/* ── DailyDilemma yellow card — mobile touch active ──── */
+.card-neon-yellow {
+  transition: all 0.15s ease;
+}
+@media (hover: none) {
+  .card-neon-yellow:active {
+    box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 48px rgba(255,215,0,0.4);
+    transform: scale(0.99);
+  }
+}
 
 /* ── Glowing divider ─────────────────────────────────── */
 .neon-divider {
@@ -239,7 +259,8 @@ nav, main, footer {
   .mobile-menu-enter {
     animation: none;
   }
-  .card-neon {
+  .card-neon,
+  .card-neon-yellow {
     transition: none;
   }
 }
