@@ -272,7 +272,7 @@ export const SEO_TOPICS: SeoTopic[] = [
       'Five lives saved at the cost of one — most people accept that calculation. But change the case slightly and the math becomes unbearable: would you sacrifice one healthy patient to save five who need transplants? The arithmetic is identical. The verdict almost always isn\'t. Consequentialism judges actions by their outcomes — produce the most good, minimise the most harm — and it captures something real about how people reason in emergencies. It also runs into a sharp limit when the best aggregate outcome requires using a person as a means.',
     primaryScenarioId: 'organ-harvest',
     relatedScenarioIds: ['trolley', 'pandemic-dose', 'rich-or-fair', 'universal-basic-income'],
-    relatedTopicSlugs: ['deontology', 'virtue-ethics', 'trolley-problem', 'moral-foundations'],
+    relatedTopicSlugs: ['deontology', 'virtue-ethics', 'trolley-problem', 'moral-foundations', 'experimental-moral-psychology'],
     researchNote:
       'Bentham and Mill formulated the modern utilitarian version of consequentialism in the 18th and 19th centuries. Contemporary philosophers continue to debate where the boundary lies between aggregate welfare and individual rights.',
     researchSources: [
@@ -362,7 +362,7 @@ export const SEO_TOPICS: SeoTopic[] = [
       "Cinque vite salvate al costo di una — la maggior parte delle persone accetta questo calcolo. Ma cambia leggermente il caso e la matematica diventa insostenibile: sacrificheresti un paziente sano per salvarne cinque che hanno bisogno di trapianti? L'aritmetica è identica. Il verdetto quasi mai. Il consequenzialismo giudica le azioni dai risultati — produrre il maggior bene, minimizzare il maggior danno — e cattura qualcosa di reale su come ragioniamo nelle emergenze. Si scontra anche con un limite netto quando il miglior risultato aggregato richiede di usare una persona come strumento.",
     primaryScenarioId: 'organ-harvest',
     relatedScenarioIds: ['trolley', 'pandemic-dose', 'rich-or-fair', 'universal-basic-income'],
-    relatedTopicSlugs: ['deontologia', 'etica-della-virtu', 'problema-del-carrello', 'fondamenti-morali'],
+    relatedTopicSlugs: ['deontologia', 'etica-della-virtu', 'problema-del-carrello', 'fondamenti-morali', 'psicologia-morale-sperimentale'],
     researchNote:
       "Bentham e Mill hanno formulato la versione utilitarista moderna del consequenzialismo nei secoli XVIII e XIX. I filosofi contemporanei continuano a dibattere dove si trovi il confine tra benessere aggregato e diritti individuali.",
     researchSources: [
@@ -615,6 +615,67 @@ export const SEO_TOPICS: SeoTopic[] = [
         title: 'Voluntary Euthanasia',
         institution: 'Stanford Encyclopedia of Philosophy',
         url: 'https://plato.stanford.edu/entries/euthanasia-voluntary/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  // ── Experimental moral psychology (G11 — added 10 May 2026) ────────────────
+  {
+    slug: 'experimental-moral-psychology',
+    locale: 'en',
+    alternateSlug: 'psicologia-morale-sperimentale',
+    topic: 'Moral Psychology',
+    searchIntent: 'experimental moral psychology, moral intuition research, trolley problem study, why people disagree on ethics, dual process moral cognition',
+    tension: 'fast emotional moral intuitions vs slow deliberative reasoning — and which one should we trust',
+    headline: 'Moral Psychology — What Science Reveals About How We Make Ethical Decisions',
+    intro:
+      'Why do most people pull the lever but refuse to push someone off a bridge, even when the arithmetic is identical? Why does framing a choice as an action versus an omission change the verdict? And why do our snap moral judgments so often override our careful reasoning — or vice versa? Experimental moral psychology uses the methods of cognitive science to study how people actually make ethical decisions, not how they say they do. The dilemmas below are the same ones researchers use in labs to probe the hidden machinery of moral thought.',
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['self-driving-crash', 'robot-judge', 'organ-harvest', 'innocent-juror'],
+    relatedTopicSlugs: ['trolley-problem', 'consequentialism', 'deontology', 'moral-foundations'],
+    researchNote:
+      'Researchers have found that people\'s responses to moral dilemmas are shaped by both fast emotional reactions and slower deliberative reasoning — and that these can conflict. The trolley problem family of cases has been central to this empirical research since the 1980s.',
+    researchSources: [
+      {
+        title: 'Experimental Moral Philosophy',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/experimental-moral/',
+      },
+      {
+        title: 'Moral Cognition Research',
+        institution: 'Harvard University (Joshua Greene)',
+        url: 'https://www.joshua-greene.net/research/moral-cognition',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'psicologia-morale-sperimentale',
+    locale: 'it',
+    alternateSlug: 'experimental-moral-psychology',
+    topic: 'Psicologia morale',
+    searchIntent: 'psicologia morale sperimentale, ricerca intuizione morale, studio problema del carrello, perché le persone non sono d\'accordo sull\'etica, cognizione morale duale',
+    tension: 'intuizioni morali emotive veloci contro ragionamento deliberativo lento — e quale dei due dobbiamo seguire',
+    headline: 'Psicologia Morale — Cosa Rivela la Scienza su Come Prendiamo Decisioni Etiche',
+    intro:
+      "Perché la maggior parte delle persone abbassa la leva ma si rifiuta di spingere qualcuno giù da un ponte, anche quando la matematica è identica? Perché inquadrare una scelta come azione o come omissione cambia il verdetto? E perché i nostri giudizi morali immediati spesso sopraffanno il ragionamento attento — o viceversa? La psicologia morale sperimentale usa i metodi delle scienze cognitive per studiare come le persone prendono davvero le decisioni etiche, non come dicono di farlo. I dilemmi qui sotto sono gli stessi usati dai ricercatori nei laboratori per sondare la macchina nascosta del pensiero morale.",
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['self-driving-crash', 'robot-judge', 'organ-harvest', 'innocent-juror'],
+    relatedTopicSlugs: ['problema-del-carrello', 'consequenzialismo', 'deontologia', 'fondamenti-morali'],
+    researchNote:
+      "I ricercatori hanno scoperto che le risposte delle persone ai dilemmi morali sono modellate sia da reazioni emotive rapide che da un ragionamento deliberativo più lento — e che questi possono entrare in conflitto. La famiglia di casi del problema del carrello è stata centrale in questa ricerca empirica dagli anni '80.",
+    researchSources: [
+      {
+        title: 'Experimental Moral Philosophy',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/experimental-moral/',
+      },
+      {
+        title: 'Moral Cognition Research',
+        institution: 'Harvard University (Joshua Greene)',
+        url: 'https://www.joshua-greene.net/research/moral-cognition',
       },
     ],
     status: 'published',
