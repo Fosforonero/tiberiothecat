@@ -30,11 +30,14 @@ function getMissionTarget(id: MissionId, locale: string): string | undefined {
 }
 
 const IT_MISSION_TITLES: Record<string, string> = {
-  vote_3:            'Vota 3 dilemmi',
-  vote_2_categories: 'Esplora 2 categorie',
-  challenge_friend:  'Sfida un amico',
-  share_result:      'Condividi un risultato',
-  daily_dilemma:     'Dilemma del Giorno',
+  vote_3:              'Vota 3 dilemmi',
+  vote_5:              'Vota 5 dilemmi',
+  vote_2_categories:   'Esplora 2 categorie',
+  vote_3_categories:   'Esplora 3 categorie',
+  challenge_friend:    'Sfida un amico',
+  share_result:        'Condividi un risultato',
+  share_and_challenge: 'Condividi e sfida',
+  daily_dilemma:       'Dilemma del Giorno',
 }
 
 export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }: Props) {
@@ -224,16 +227,20 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
               ? getMissionTarget(m.id, locale)
               : undefined
 
+            const isSpecial = (m as MissionState).isSpecial
+
             const cardClassName = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all ${
               m.completed
                 ? 'border-green-500/30 bg-green-500/10 opacity-75'
                 : m.comingSoon
                   ? 'border-white/5 bg-white/3 opacity-50'
-                  : m.claimable
-                    ? 'border-blue-500/40 bg-blue-500/5'
-                    : target
-                      ? 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5 min-h-[44px]'
-                      : 'border-[var(--border)] bg-[#0a0a1a]/40'
+                  : isSpecial && !m.claimable
+                    ? 'border-yellow-500/30 bg-yellow-500/5'
+                    : m.claimable
+                      ? 'border-blue-500/40 bg-blue-500/5'
+                      : target
+                        ? 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5 min-h-[44px]'
+                        : 'border-[var(--border)] bg-[#0a0a1a]/40'
             }`
 
             const cardContent = (
@@ -243,17 +250,24 @@ export default function DailyMissions({ userId, xp, streakDays, locale = 'en' }:
                 </span>
 
                 <div className="flex-1 min-w-0">
-                  <p
-                    className={`text-xs font-bold ${
-                      m.completed
-                        ? 'text-green-400 line-through'
-                        : m.comingSoon
-                          ? 'text-white/40'
-                          : 'text-white'
-                    }`}
-                  >
-                    {displayTitle}
-                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p
+                      className={`text-xs font-bold ${
+                        m.completed
+                          ? 'text-green-400 line-through'
+                          : m.comingSoon
+                            ? 'text-white/40'
+                            : 'text-white'
+                      }`}
+                    >
+                      {displayTitle}
+                    </p>
+                    {isSpecial && !m.comingSoon && (
+                      <span className="text-[9px] font-black uppercase tracking-widest text-yellow-400 bg-yellow-500/15 border border-yellow-500/25 rounded-full px-1.5 py-0.5 leading-none flex-shrink-0">
+                        {IT ? 'SPECIALE' : 'SPECIAL'}
+                      </span>
+                    )}
+                  </div>
                   {m.comingSoon ? (
                     <p className="text-[10px] text-white/25">
                       {IT ? 'Prossimamente' : 'Coming soon'}

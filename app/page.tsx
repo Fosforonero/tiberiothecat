@@ -130,7 +130,7 @@ export default async function HomePage() {
         name: 'Is SplitVote free?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Voting on all dilemmas is completely free. A PRO membership unlocks advanced features like custom poll creation and detailed vote analytics.',
+          text: 'Voting on all dilemmas is completely free. A Premium membership unlocks advanced features like custom poll creation and no ads.',
         },
       },
     ],
