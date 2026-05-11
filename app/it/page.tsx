@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PersonalityTeaser from '@/components/PersonalityTeaser'
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
@@ -251,6 +252,9 @@ export default async function ItPage() {
           totalVotes={voteMap.get(dailyIT.id) ?? 0}
           locale="it"
         />
+
+        {/* ── Personality teaser (utenti loggati, dismiss 7 giorni) ── */}
+        <PersonalityTeaser locale="it" />
 
         {/* ── Dilemmi in Evidenza ── */}
         <section className="mb-12">

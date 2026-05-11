@@ -6,6 +6,7 @@ import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import AdSlot from '@/components/AdSlot'
 import DailyDilemma from '@/components/DailyDilemma'
+import PersonalityTeaser from '@/components/PersonalityTeaser'
 import JsonLd from '@/components/JsonLd'
 import Link from 'next/link'
 import type { Scenario } from '@/lib/scenarios'
@@ -197,6 +198,9 @@ export default async function HomePage() {
           Today&apos;s dilemma — vote anonymously
         </p>
         <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
+
+        {/* ── Personality teaser (logged-in users, 7-day dismiss) ── */}
+        <PersonalityTeaser locale="en" />
 
         {/* ── Trending Now (ranked by recent votes: today + yesterday) ── */}
         {trendingNow.length > 0 && (
