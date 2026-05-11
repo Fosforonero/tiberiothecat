@@ -3,13 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
-  COSMETIC_ITEMS, COSMETIC_MAP, COSMETICS_BY_CATEGORY,
+  COSMETIC_MAP, COSMETICS_BY_CATEGORY,
   RARITY_STYLES, RARITY_GLOW,
   type CosmeticItem, type CosmeticCategory, type CosmeticItemId,
 } from '@/lib/cosmetics-store'
 
 interface Props {
-  items: CosmeticItem[]
   ownedIds: string[]
 }
 
@@ -20,7 +19,7 @@ const CATEGORY_TABS: { key: CosmeticCategory; label: string; emoji: string }[] =
   { key: 'name_color', label: 'Name Colors',    emoji: '🎨' },
 ]
 
-export default function StoreClient({ items: _items, ownedIds: initialOwned }: Props) {
+export default function StoreClient({ ownedIds: initialOwned }: Props) {
   const router  = useRouter()
   const params  = useSearchParams()
 

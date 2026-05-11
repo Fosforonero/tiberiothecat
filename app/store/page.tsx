@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { COSMETIC_ITEMS } from '@/lib/cosmetics-store'
 import StoreClient from './StoreClient'
 
 export const metadata = { title: 'Cosmetics Store | SplitVote' }
@@ -19,7 +18,7 @@ export default async function StorePage() {
     admin = createAdminClient()
   } catch {
     // Fallback: show store without purchase data
-    return <StoreClient items={COSMETIC_ITEMS} ownedIds={[]} />
+    return <StoreClient ownedIds={[]} />
   }
 
   const { data: purchases } = await admin
@@ -30,5 +29,5 @@ export default async function StorePage() {
 
   const ownedIds = (purchases ?? []).map(p => p.product_id)
 
-  return <StoreClient items={COSMETIC_ITEMS} ownedIds={ownedIds} />
+  return <StoreClient ownedIds={ownedIds} />
 }
