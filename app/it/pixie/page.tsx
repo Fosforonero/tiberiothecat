@@ -23,6 +23,21 @@ export const metadata: Metadata = {
     url: `${BASE_URL}/it/pixie`,
     siteName: 'SplitVote',
     locale: 'it_IT',
+    images: [
+      {
+        url: `${BASE_URL}/api/pixie-explainer-card?locale=it`,
+        width: 1200,
+        height: 630,
+        alt: 'Conosci i Pixie — 12 specie, 6 stadi di evoluzione su SplitVote',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Conosci i Pixie — SplitVote',
+    description:
+      'Piccoli compagni che evolvono votando dilemmi morali reali. 12 specie, 6 stadi.',
+    images: [`${BASE_URL}/api/pixie-explainer-card?locale=it`],
   },
 }
 

@@ -22,6 +22,21 @@ export const metadata: Metadata = {
       'Small companions that evolve as you vote on real moral dilemmas. 12 species, 6 evolution stages, infinite combinations.',
     url: `${BASE_URL}/pixie`,
     siteName: 'SplitVote',
+    images: [
+      {
+        url: `${BASE_URL}/api/pixie-explainer-card`,
+        width: 1200,
+        height: 630,
+        alt: 'Meet the Pixies — 12 species, 6 evolution stages on SplitVote',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Meet the Pixies — SplitVote',
+    description:
+      'Small companions that evolve as you vote on real moral dilemmas. 12 species, 6 evolution stages.',
+    images: [`${BASE_URL}/api/pixie-explainer-card`],
   },
 }
 
