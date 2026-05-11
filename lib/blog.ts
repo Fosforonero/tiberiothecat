@@ -3357,6 +3357,180 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  // G16
+  {
+    slug: 'free-will-and-moral-responsibility',
+    locale: 'en',
+    title: 'Free Will and Moral Responsibility: Do Your Choices Actually Matter?',
+    seoTitle: 'Free Will and Moral Responsibility — Compatibilism, Strawson & Moral Dilemmas',
+    description:
+      'If your brain was wired by genes and experience, are you really free? The debate over free will is not just academic — it determines whether moral responsibility makes any sense at all.',
+    seoDescription:
+      'Explore the free will debate through compatibilism and P.F. Strawson\'s reactive attitudes. Understand how determinism, responsibility, and moral dilemmas are connected — and what your votes reveal.',
+    date: '2026-05-11',
+    readingTime: 7,
+    tags: ['free will', 'moral philosophy', 'compatibilism', 'Strawson', 'moral responsibility'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'memory-erase', 'innocent-juror'],
+    alternateSlug: 'libero-arbitrio-e-responsabilita-morale',
+    content: [
+      {
+        type: 'p',
+        text: 'You are facing the trolley problem. A runaway trolley is speeding toward five people. You can pull a lever and divert it — but someone on the side track will die. You decide. You pull. Or you do not.',
+      },
+      {
+        type: 'p',
+        text: 'Here is the uncomfortable follow-up question: was that actually your choice?',
+      },
+      {
+        type: 'p',
+        text: 'Your decision was shaped by your upbringing, your culture, the specific words used to frame the scenario, the mood you were in when you read it, the neural firing patterns laid down by every experience you have ever had. If all of those causes determined your answer — in what sense did you freely choose anything at all?',
+      },
+      {
+        type: 'h2',
+        text: 'The problem determinism poses for moral responsibility',
+      },
+      {
+        type: 'p',
+        text: 'Determinism is the thesis that every event — including every human choice — is the inevitable result of prior causes operating under natural laws. Physics moves forward in one direction. Your brain is physical. Therefore, the argument goes, every decision you have ever made was fixed by the state of the universe before you were born.',
+      },
+      {
+        type: 'p',
+        text: 'If determinism is true, moral responsibility seems to be in trouble. We typically hold people responsible only when they could have done otherwise. A driver who has a sudden seizure and hits a pedestrian is not blameworthy — they could not have done otherwise. But if determinism is true, no one ever could have done otherwise. Does that mean no one is ever really blameworthy?',
+      },
+      {
+        type: 'h2',
+        text: 'Three ways philosophers have responded',
+      },
+      {
+        type: 'p',
+        text: '**Hard determinism** bites the bullet: yes, moral responsibility in the traditional sense is an illusion. Our practices of blame, punishment, and praise assume a kind of freedom that physics does not allow. We should replace them with purely forward-looking practices — not punishment for past choices, but treatment and prevention of future harm.',
+      },
+      {
+        type: 'p',
+        text: '**Libertarian free will** (in the philosophical sense, unrelated to politics) insists that humans are genuinely exempt from causal determination. Some philosophers appeal to quantum indeterminacy in neural processes; others, like Kant, argued that as rational agents we stand partially outside the causal order. On this view, we do have free will — but the scientific account of it remains contested.',
+      },
+      {
+        type: 'p',
+        text: '**Compatibilism** offers the third path — and it is the position most academic philosophers today accept. Compatibilists argue that free will and determinism are not actually in conflict. They redefine "free will" not as freedom from causation, but as a specific kind of causation: acting from your own desires, values, and reasoning rather than from external compulsion or internal dysfunction.',
+      },
+      {
+        type: 'h2',
+        text: 'Compatibilism: what it means to act freely',
+      },
+      {
+        type: 'p',
+        text: 'On the compatibilist view, you act freely when your action flows from your own character — your values, your deliberation, your will. You act unfreely when something overrides that process: a gun to your head, a compulsion you cannot control, a manipulation you are unaware of.',
+      },
+      {
+        type: 'p',
+        text: 'A driver who runs a red light because of a medical seizure is not responsible. A driver who runs a red light because they were in a hurry is responsible — even if their impatience was itself caused by prior events. What matters is the quality of the causal pathway: does it run through the person\'s own reasoning and values, or around them?',
+      },
+      {
+        type: 'p',
+        text: 'This might sound like a technicality — but it maps onto a real moral intuition. We do treat compelled and uncompelled actions differently. We do distinguish the person who helps a stranger because they want to from the person who does it at gunpoint. Compatibilism tries to articulate why that distinction matters even in a deterministic world.',
+      },
+      {
+        type: 'h2',
+        text: 'Strawson\'s insight: reactive attitudes are what moral responsibility really is',
+      },
+      {
+        type: 'p',
+        text: 'In 1962, philosopher P.F. Strawson published "Freedom and Resentment" — arguably the most influential paper on moral responsibility of the twentieth century. His argument changed how the debate is framed.',
+      },
+      {
+        type: 'p',
+        text: 'Strawson observed that most discussions of free will focus on a metaphysical question: is the agent the ultimate cause of their action? He argued this was the wrong question. What actually grounds our responsibility practices is something far more immediate: our reactive attitudes.',
+      },
+      {
+        type: 'p',
+        text: 'Reactive attitudes are the feelings we have toward others as moral agents: resentment when someone wrongs us, gratitude when someone helps us, indignation on behalf of a third party, love, anger, contempt, admiration. These are not philosophical conclusions — they are the fabric of human relationships.',
+      },
+      {
+        type: 'p',
+        text: 'Strawson\'s key move: holding someone responsible just is maintaining these reactive attitudes toward them. When we treat someone as responsible, we feel resentment or gratitude depending on what they do. When we suspend responsibility — in cases of compulsion, psychosis, or ignorance — we shift to what Strawson called the "objective stance": we view the person as a system to be managed, treated, or constrained, rather than as an agent to be responded to.',
+      },
+      {
+        type: 'h2',
+        text: 'Why we cannot sustainably adopt the objective stance toward everyone',
+      },
+      {
+        type: 'p',
+        text: 'Strawson\'s deeper point was this: you could not, even in principle, consistently adopt the objective stance toward all human beings. It would dissolve the very possibility of human relationships. Love requires caring whether someone wanted to help you. Friendship requires the possibility of betrayal. Moral community requires reactive attitudes as its foundation.',
+      },
+      {
+        type: 'p',
+        text: 'The hard determinist who says moral responsibility is an illusion is not making an error in argument — they may be metaphysically correct. But they cannot live as if the conclusion were true. They will still feel resentment when lied to. They will still feel gratitude when helped. The reactive attitudes are not beliefs that can be updated by philosophical argument — they are part of what it means to engage with other persons at all.',
+      },
+      {
+        type: 'p',
+        text: 'This is what Strawson called the "participant stance." To participate in human life is already to hold people responsible, in the sense that matters — not because we have settled the metaphysics of causation, but because that is what it means to treat someone as a person rather than as a mechanism.',
+      },
+      {
+        type: 'h2',
+        text: 'What this means for moral dilemmas',
+      },
+      {
+        type: 'p',
+        text: 'When SplitVote shows that 68% of people pull the trolley lever and 32% refuse — what does that split tell us? Not simply that people made different arithmetic calculations. It tells us that people hold different views about what responsibility requires, who bears it, and how much weight we should place on the distinction between doing and allowing harm.',
+      },
+      {
+        type: 'p',
+        text: 'The person who refuses to pull the lever is not necessarily saying the math is wrong. They may be saying: pulling that lever makes me causally responsible for a death in a way that standing still does not — and that difference matters to their sense of themselves as a moral agent. This is the reactive attitude in action: not cool calculation, but a felt sense of what kind of person they are and what they could live with.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote: pull the lever or let it be? →',
+        href: '/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Implications for punishment and forgiveness',
+      },
+      {
+        type: 'p',
+        text: 'The free will debate has direct consequences for how we think about criminal justice. If people\'s choices are fully determined by genetics, upbringing, and circumstance — what justifies punishment beyond deterrence and public protection? The retributive view — that people deserve punishment for freely chosen wrongs — loses its foundation.',
+      },
+      {
+        type: 'p',
+        text: 'Compatibilists argue that retribution is still warranted when the wrong flowed through the person\'s own reasoning and values — when it was their choice in the sense that matters, even if determined. Hard determinists argue for purely consequentialist criminal justice: not punishment but treatment, rehabilitation, and prevention.',
+      },
+      {
+        type: 'p',
+        text: 'Strawson\'s framework adds a third lens: whether we can forgive someone depends not on metaphysics but on whether they show genuine regret, understanding, and change. Forgiveness is the suspension of resentment — but it is warranted by what the person does, not by whether they could have done otherwise in some absolute sense.',
+      },
+      {
+        type: 'h2',
+        text: 'Are you responsible for the vote you cast?',
+      },
+      {
+        type: 'p',
+        text: 'Back to the trolley dilemma. Your vote was shaped by everything that made you who you are. A compatibilist would say: yes, that is exactly why it was your choice. Your character, your values, your reasoning — these are not external constraints on your freedom. They are your freedom. The choice expressed who you are.',
+      },
+      {
+        type: 'p',
+        text: 'The question the dilemma leaves open is whether the character that chose was one you endorse — whether, on reflection, you stand by what your gut decided. That is the real work of moral reasoning: not discovering the right answer from outside yourself, but examining whether the values that drove your answer are the ones you actually want to hold.',
+      },
+      {
+        type: 'cta',
+        label: 'Discover your moral personality type →',
+        href: '/personality',
+      },
+      {
+        type: 'cta',
+        label: 'Doing vs allowing harm: why the distinction matters →',
+        href: '/blog/doing-vs-allowing-harm',
+      },
+      {
+        type: 'cta',
+        label: 'Moral emotions: when your gut feeling is your moral compass →',
+        href: '/blog/moral-emotions-gut-feeling-moral-compass',
+      },
+      {
+        type: 'disclaimer',
+        text: 'References to P.F. Strawson\'s "Freedom and Resentment" (1962), philosophical compatibilism, and the free will debate are for educational and contextual purposes. Philosophical positions described represent major schools of thought; attribution is to their respective authors. SplitVote is an entertainment and reflection platform, not a scientific study or a philosophical authority. Voting data described is illustrative.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -6684,6 +6858,180 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'I riferimenti al Modello Intuizionista Sociale di Jonathan Haidt, alla ricerca a doppio processo di Joshua Greene e alla tassonomia delle emozioni di Paul Ekman sono a scopo contestuale ed educativo. La ricerca citata è attribuita ai suoi autori originali. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico. Le associazioni di archetipi descritte sono pattern illustrativi basati su dati di voto aggregati, non valutazioni della personalità clinicamente validate.',
+      },
+    ],
+  },
+  // G16
+  {
+    slug: 'libero-arbitrio-e-responsabilita-morale',
+    locale: 'it',
+    title: 'Libero arbitrio e responsabilità morale: le tue scelte contano davvero?',
+    seoTitle: 'Libero Arbitrio e Responsabilità Morale — Compatibilismo, Strawson e Dilemmi Morali',
+    description:
+      'Se il tuo cervello è stato modellato da geni ed esperienza, sei davvero libero? Il dibattito sul libero arbitrio non è solo accademico — determina se la responsabilità morale abbia senso.',
+    seoDescription:
+      'Esplora il dibattito sul libero arbitrio attraverso il compatibilismo e gli atteggiamenti reattivi di P.F. Strawson. Scopri come determinismo, responsabilità e dilemmi morali si intrecciano.',
+    date: '2026-05-11',
+    readingTime: 7,
+    tags: ['libero arbitrio', 'filosofia morale', 'compatibilismo', 'Strawson', 'responsabilità morale'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'memory-erase', 'innocent-juror'],
+    alternateSlug: 'free-will-and-moral-responsibility',
+    content: [
+      {
+        type: 'p',
+        text: 'Stai affrontando il problema del carrello. Un tram impazzito corre verso cinque persone. Puoi tirare una leva e deviarlo — ma sulla via laterale c\'è qualcuno che morrà. Decidi. Tiri la leva. Oppure no.',
+      },
+      {
+        type: 'p',
+        text: 'Ecco la domanda scomoda che segue: era davvero una tua scelta?',
+      },
+      {
+        type: 'p',
+        text: 'La tua decisione è stata plasmata dalla tua educazione, dalla tua cultura, dalle parole precise con cui il dilemma era formulato, dall\'umore in cui ti trovavi mentre lo leggevi, dai pattern neurali costruiti da ogni esperienza che hai mai vissuto. Se tutte queste cause hanno determinato la tua risposta — in che senso hai scelto liberamente qualcosa?',
+      },
+      {
+        type: 'h2',
+        text: 'Il problema che il determinismo pone alla responsabilità morale',
+      },
+      {
+        type: 'p',
+        text: 'Il determinismo è la tesi per cui ogni evento — inclusa ogni scelta umana — è il risultato inevitabile di cause precedenti che operano secondo leggi naturali. La fisica procede in un\'unica direzione. Il cervello è fisico. Quindi, dice l\'argomento, ogni decisione che hai mai preso era fissata dallo stato dell\'universo prima che tu nascessi.',
+      },
+      {
+        type: 'p',
+        text: 'Se il determinismo è vero, la responsabilità morale sembra in pericolo. Di norma riteniamo le persone responsabili solo quando avrebbero potuto agire diversamente. Un automobilista che ha un improvviso attacco epilettico e investe un pedone non è colpevole — non avrebbe potuto fare altrimenti. Ma se il determinismo è vero, nessuno avrebbe mai potuto fare altrimenti. Significa che nessuno è mai davvero colpevole di nulla?',
+      },
+      {
+        type: 'h2',
+        text: 'Tre risposte filosofiche al problema',
+      },
+      {
+        type: 'p',
+        text: '**Il determinismo forte** accetta la conclusione: sì, la responsabilità morale tradizionale è un\'illusione. Le nostre pratiche di biasimo, punizione e lode presuppongono una libertà che la fisica non permette. Dovremmo sostituirle con pratiche orientate al futuro — non punizione per le scelte passate, ma trattamento e prevenzione dei danni futuri.',
+      },
+      {
+        type: 'p',
+        text: '**Il libertarismo del libero arbitrio** (nel senso filosofico, senza relazione con la politica) insiste sul fatto che gli esseri umani siano genuinamente esenti dalla determinazione causale. Alcuni filosofi si appellano all\'indeterminazione quantistica nei processi neurali; altri, come Kant, sostenevano che in quanto agenti razionali siamo parzialmente al di fuori dell\'ordine causale. In questa prospettiva il libero arbitrio esiste — ma la sua spiegazione scientifica rimane controversa.',
+      },
+      {
+        type: 'p',
+        text: '**Il compatibilismo** offre la terza via — ed è la posizione accettata dalla maggioranza dei filosofi accademici oggi. I compatibilisti sostengono che libero arbitrio e determinismo non siano davvero in conflitto. Ridefiniscono il "libero arbitrio" non come libertà dalla causazione, ma come un tipo specifico di causazione: agire secondo i propri desideri, valori e ragionamento, anziché per coercizione esterna o disfunzione interna.',
+      },
+      {
+        type: 'h2',
+        text: 'Compatibilismo: cosa significa agire liberamente',
+      },
+      {
+        type: 'p',
+        text: 'Nella prospettiva compatibilista, agisci liberamente quando la tua azione fluisce dal tuo stesso carattere — i tuoi valori, la tua deliberazione, la tua volontà. Agisci in modo non libero quando qualcosa bypassa quel processo: una pistola puntata alla testa, una compulsione che non riesci a controllare, una manipolazione di cui non sei consapevole.',
+      },
+      {
+        type: 'p',
+        text: 'Un automobilista che brucia un rosso a causa di un attacco epilettico non è responsabile. Un automobilista che lo brucia perché era di fretta lo è — anche se la sua impazienza era essa stessa causata da eventi precedenti. Ciò che conta è la qualità del percorso causale: passa attraverso il ragionamento e i valori della persona, oppure li aggira?',
+      },
+      {
+        type: 'p',
+        text: 'Può sembrare una sottigliezza tecnica — ma corrisponde a un\'intuizione morale reale. Trattiamo in modo diverso le azioni compiute sotto coercizione e quelle compiute liberamente. Distinguiamo chi aiuta uno sconosciuto perché lo vuole da chi lo fa sotto minaccia. Il compatibilismo cerca di spiegare perché questa distinzione conti anche in un mondo deterministico.',
+      },
+      {
+        type: 'h2',
+        text: 'L\'intuizione di Strawson: gli atteggiamenti reattivi come fondamento della responsabilità morale',
+      },
+      {
+        type: 'p',
+        text: 'Nel 1962, il filosofo P.F. Strawson pubblicò "Freedom and Resentment" — probabilmente il saggio più influente sulla responsabilità morale del Novecento. Il suo argomento cambiò il modo in cui questo dibattito viene impostato.',
+      },
+      {
+        type: 'p',
+        text: 'Strawson osservò che la maggior parte delle discussioni sul libero arbitrio si concentra su una domanda metafisica: l\'agente è la causa ultima della propria azione? Sostenne che questa era la domanda sbagliata. Ciò che fonda realmente le nostre pratiche di responsabilità è qualcosa di molto più immediato: gli atteggiamenti reattivi.',
+      },
+      {
+        type: 'p',
+        text: 'Gli atteggiamenti reattivi sono i sentimenti che proviamo verso gli altri in quanto agenti morali: risentimento quando qualcuno ci fa un torto, gratitudine quando qualcuno ci aiuta, indignazione per conto di una terza parte, amore, rabbia, disprezzo, ammirazione. Non sono conclusioni filosofiche — sono il tessuto delle relazioni umane.',
+      },
+      {
+        type: 'p',
+        text: 'La mossa chiave di Strawson: ritenere qualcuno responsabile significa proprio mantenere questi atteggiamenti reattivi nei suoi confronti. Quando trattiamo qualcuno come responsabile, proviamo risentimento o gratitudine in base a ciò che fa. Quando sospendiamo la responsabilità — nei casi di coercizione, psicosi o ignoranza — passiamo a quella che Strawson chiamava la "prospettiva oggettiva": consideriamo la persona come un sistema da gestire, trattare o contenere, piuttosto che come un agente cui rispondere.',
+      },
+      {
+        type: 'h2',
+        text: 'Perché non possiamo adottare stabilmente la prospettiva oggettiva verso tutti',
+      },
+      {
+        type: 'p',
+        text: 'Il punto più profondo di Strawson era questo: non potresti, nemmeno in linea di principio, adottare in modo coerente la prospettiva oggettiva verso tutti gli esseri umani. Questo dissolverebbe la stessa possibilità delle relazioni umane. L\'amore richiede che ci importi se qualcuno ha voluto aiutarti. L\'amicizia richiede la possibilità del tradimento. La comunità morale ha come fondamento gli atteggiamenti reattivi.',
+      },
+      {
+        type: 'p',
+        text: 'Il determinista forte che dice che la responsabilità morale è un\'illusione non sbaglia nel ragionamento — potrebbe avere ragione metafisicamente. Ma non può vivere come se questa conclusione fosse vera. Proverà ancora risentimento quando viene ingannato. Proverà ancora gratitudine quando viene aiutato. Gli atteggiamenti reattivi non sono credenze aggiornabili con argomenti filosofici — sono parte di ciò che significa relazionarsi con le altre persone.',
+      },
+      {
+        type: 'p',
+        text: 'Questa è quella che Strawson chiamava la "prospettiva partecipante". Partecipare alla vita umana significa già ritenere le persone responsabili, nel senso che conta — non perché abbiamo risolto la metafisica della causazione, ma perché è questo che significa trattare qualcuno come una persona piuttosto che come un meccanismo.',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa significa per i dilemmi morali',
+      },
+      {
+        type: 'p',
+        text: 'Quando SplitVote mostra che il 68% delle persone tira la leva del carrello e il 32% si rifiuta — cosa ci dice quella divisione? Non semplicemente che le persone hanno fatto calcoli aritmetici diversi. Ci dice che le persone hanno visioni diverse su cosa richiede la responsabilità, chi la porta e quanto peso dare alla distinzione tra fare e permettere un danno.',
+      },
+      {
+        type: 'p',
+        text: 'Chi si rifiuta di tirare la leva non sta necessariamente dicendo che la matematica è sbagliata. Potrebbe stare dicendo: tirare quella leva mi rende causalmente responsabile di una morte in un modo in cui stare fermo non lo fa — e questa differenza conta per il loro senso di sé come agenti morali. Questo è l\'atteggiamento reattivo in azione: non un calcolo freddo, ma un senso vissuto di che tipo di persona si è e con cosa si può convivere.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota: tirare la leva o non farlo? →',
+        href: '/it/play/trolley',
+      },
+      {
+        type: 'h2',
+        text: 'Implicazioni per punizione e perdono',
+      },
+      {
+        type: 'p',
+        text: 'Il dibattito sul libero arbitrio ha conseguenze dirette su come pensiamo alla giustizia penale. Se le scelte delle persone sono completamente determinate da genetica, educazione e circostanze — cosa giustifica la punizione al di là della deterrenza e della protezione pubblica? La visione retributiva — che le persone meritino la punizione per i torti liberamente scelti — perde il suo fondamento.',
+      },
+      {
+        type: 'p',
+        text: 'I compatibilisti sostengono che la retribuzione sia ancora giustificata quando il torto è fluito attraverso il ragionamento e i valori della persona — quando era una sua scelta nel senso che conta, anche se determinata. I deterministi forti chiedono una giustizia penale puramente consequenzialista: non punizione ma trattamento, riabilitazione e prevenzione.',
+      },
+      {
+        type: 'p',
+        text: 'La prospettiva di Strawson aggiunge una terza lente: se possiamo perdonare qualcuno dipende non dalla metafisica ma dal fatto che mostri genuino rimpianto, comprensione e cambiamento. Il perdono è la sospensione del risentimento — ma è giustificato da ciò che la persona fa, non dal fatto che avrebbe potuto agire diversamente in senso assoluto.',
+      },
+      {
+        type: 'h2',
+        text: 'Sei responsabile del voto che hai espresso?',
+      },
+      {
+        type: 'p',
+        text: 'Torniamo al dilemma del carrello. Il tuo voto è stato plasmato da tutto ciò che ti ha reso quello che sei. Un compatibilista direbbe: sì, è esattamente per questo che era una tua scelta. Il tuo carattere, i tuoi valori, il tuo ragionamento — non sono vincoli esterni alla tua libertà. Sono la tua libertà. La scelta ha espresso chi sei.',
+      },
+      {
+        type: 'p',
+        text: 'La domanda che il dilemma lascia aperta è se il carattere che ha scelto sia uno che approvi — se, a rifletterci, tu stia dietro a ciò che il tuo istinto ha deciso. Questo è il vero lavoro del ragionamento morale: non scoprire la risposta giusta da fuori di te stesso, ma esaminare se i valori che hanno guidato la tua risposta siano quelli che vuoi davvero avere.',
+      },
+      {
+        type: 'cta',
+        label: 'Scopri il tuo tipo di personalità morale →',
+        href: '/it/personality',
+      },
+      {
+        type: 'cta',
+        label: 'Causare vs permettere il danno: perché la distinzione conta →',
+        href: '/it/blog/causare-vs-permettere-danno',
+      },
+      {
+        type: 'cta',
+        label: 'Emozioni morali: quando l\'istinto è la tua bussola morale →',
+        href: '/it/blog/emozioni-morali-istinto-bussola-morale',
+      },
+      {
+        type: 'disclaimer',
+        text: 'I riferimenti a "Freedom and Resentment" di P.F. Strawson (1962), al compatibilismo filosofico e al dibattito sul libero arbitrio sono a scopo educativo e contestuale. Le posizioni filosofiche descritte rappresentano le principali correnti di pensiero; l\'attribuzione è ai rispettivi autori. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico né un\'autorità filosofica. I dati di voto descritti sono indicativi.',
       },
     ],
   },
