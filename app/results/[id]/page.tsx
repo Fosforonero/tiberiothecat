@@ -50,10 +50,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      images: [`/api/og?id=${params.id}`],
+      images: [`${BASE_URL}/api/dilemma-result-card?id=${params.id}`],
       url: `${BASE_URL}/results/${params.id}`,
     },
-    twitter: { card: 'summary_large_image', title, description },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${BASE_URL}/api/dilemma-result-card?id=${params.id}`],
+    },
   }
 }
 
