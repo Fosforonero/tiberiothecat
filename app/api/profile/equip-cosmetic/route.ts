@@ -9,6 +9,7 @@
  *   { kind: 'frame', productId: 'frame_gold' | null }    // null = unequip
  *   { kind: 'glow',  productId: 'glow_fire'  | null }
  *   { kind: 'name_color', slug: 'aurora' | null }        // requires name_color_bundle owned
+ *   { kind: 'pixie_avatar', enabled: boolean }            // true = use Pixie as avatar
  *
  * Returns:
  *   200 { ok: true, equipped: { ... } }
@@ -25,14 +26,20 @@ import { type ProductId } from '@/lib/purchases'
 export const dynamic = 'force-dynamic'
 
 type Body =
-  | { kind: 'frame';      productId: string | null }
-  | { kind: 'glow';       productId: string | null }
-  | { kind: 'name_color'; slug:      string | null }
+  | { kind: 'frame';        productId: string | null }
+  | { kind: 'glow';         productId: string | null }
+  | { kind: 'name_color';   slug:      string | null }
+  | { kind: 'pixie_avatar'; enabled:   boolean }
 
 function isBody(value: unknown): value is Body {
   if (typeof value !== 'object' || value === null) return false
   const v = value as { kind?: unknown }
-  return v.kind === 'frame' || v.kind === 'glow' || v.kind === 'name_color'
+  return (
+    v.kind === 'frame' ||
+    v.kind === 'glow' ||
+    v.kind === 'name_color' ||
+    v.kind === 'pixie_avatar'
+  )
 }
 
 export async function POST(req: NextRequest) {
@@ -70,7 +77,7 @@ export async function POST(req: NextRequest) {
   const owned = new Set<ProductId>((purchases ?? []).map(p => p.product_id as ProductId))
 
   // ── Per-kind validation + update payload ─────────────────────────────
-  const updatePayload: Record<string, string | null> = {}
+  const updatePayload: Record<string, string | boolean | null> = {}
 
   if (body.kind === 'frame') {
     if (body.productId === null) {
@@ -106,6 +113,11 @@ export async function POST(req: NextRequest) {
     } else {
       updatePayload.name_color = body.slug
     }
+  }
+
+  if (body.kind === 'pixie_avatar') {
+    // No purchase required — anyone can use their equipped Pixie as avatar.
+    updatePayload.use_pixie_avatar = Boolean(body.enabled)
   }
 
   // ── Persist ──────────────────────────────────────────────────────────

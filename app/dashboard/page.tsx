@@ -19,6 +19,8 @@ import type { CompanionSpecies, PixieXpMap } from '@/lib/companion'
 import { ownedMarketSpeciesFromPurchases, type PurchaseRow, type ProductId } from '@/lib/purchases'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
 import CosmeticPicker from '@/components/CosmeticPicker'
+import { getSpeciesStage } from '@/lib/companion'
+import { getPixieImagePath } from '@/lib/pixie'
 import { STREAK_MILESTONES, getStreakProgress } from '@/lib/badges'
 import { getLevelInfo } from '@/lib/missions'
 
@@ -70,6 +72,7 @@ interface Profile {
   streak_days: number | null
   companion_species: string | null
   pixie_xp: Record<string, number> | null
+  use_pixie_avatar: boolean | null
 }
 
 const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
@@ -104,7 +107,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes, referralWeekRes, referralAllRes, purchasesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, avatar_emoji, is_premium, role, votes_count, equipped_frame, equipped_glow, name_color, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp')
+      .select('display_name, email, avatar_emoji, is_premium, role, votes_count, equipped_frame, equipped_glow, name_color, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp, use_pixie_avatar')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -172,6 +175,11 @@ export default async function DashboardPage() {
   const streakDays = profile?.streak_days ?? 0
   const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
   const pixieXp: PixieXpMap = (profile?.pixie_xp as PixieXpMap) ?? {}
+
+  // Pixie avatar — derive image URL for the equipped species at its current stage
+  const usePixieAvatar = profile?.use_pixie_avatar ?? false
+  const pixieStage = getSpeciesStage(pixieXp, companionSpecies)
+  const pixieSrc = getPixieImagePath(companionSpecies, pixieStage)
 
   // Level info derived from XP — surfaces "Lv. 3 · Philosopher" in hero
   const levelInfo = getLevelInfo(xp)
@@ -335,6 +343,8 @@ export default async function DashboardPage() {
         nameColor={profile?.name_color ?? null}
         avatarEmoji={profile?.avatar_emoji ?? null}
         displayName={profile?.display_name ?? (locale === 'it' ? 'Tu' : 'You')}
+        usePixieAvatar={usePixieAvatar}
+        pixieSrc={pixieSrc}
         locale={locale}
       />
 

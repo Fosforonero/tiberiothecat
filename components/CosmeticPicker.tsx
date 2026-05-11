@@ -1,18 +1,19 @@
 'use client'
 
 /**
- * CosmeticPicker — dashboard widget for equipping/unequipping owned cosmetics.
+ * CosmeticPicker — dashboard widget for equipping/unequipping owned cosmetics
+ * and toggling the Pixie profile picture.
  *
- * Server gathers `ownedProductIds`, current `equipped_frame`, `equipped_glow`,
- * `name_color` and passes them in. The widget:
+ * Server gathers `ownedProductIds`, current equipped values, and passes them
+ * in. The widget:
+ *   - Shows a "Profile Picture" toggle: emoji vs Pixie illustration
  *   - Shows only owned frames/glows (locked = "Buy in store")
  *   - Lets user pick one frame, one glow (or none)
  *   - Shows the 8 name colors only if name_color_bundle is owned
  *   - Calls /api/profile/equip-cosmetic and refreshes the dashboard
  *
- * If the user owns nothing in any category, that category is hidden.
- * If the user owns nothing at all, the widget renders a soft empty state
- * pointing to the store.
+ * If the user owns nothing in any category and has no Pixie to set, the widget
+ * renders a soft empty state pointing to the store.
  */
 
 import { useState } from 'react'
@@ -33,6 +34,10 @@ interface Props {
   nameColor:     string | null
   avatarEmoji:   string | null
   displayName:   string
+  /** Whether the user currently uses their Pixie as profile picture. */
+  usePixieAvatar: boolean
+  /** Pre-computed URL for the user's current Pixie at their current stage. */
+  pixieSrc: string | null
   locale: 'en' | 'it'
 }
 
@@ -40,6 +45,9 @@ const COPY = {
   en: {
     title: '🎨 Cosmetics',
     sub: 'Equip what you own. Frame, glow, name color.',
+    avatarTitle: 'Profile picture',
+    avatarEmoji: 'Emoji',
+    avatarPixie: 'My Pixie',
     framesTitle: 'Frames',
     glowsTitle: 'Glows',
     colorsTitle: 'Name color',
@@ -57,6 +65,9 @@ const COPY = {
   it: {
     title: '🎨 Cosmetici',
     sub: 'Equipaggia ciò che possiedi. Cornice, glow, colore del nome.',
+    avatarTitle: 'Foto profilo',
+    avatarEmoji: 'Emoji',
+    avatarPixie: 'Il mio Pixie',
     framesTitle: 'Cornici',
     glowsTitle: 'Glow',
     colorsTitle: 'Colore nome',
@@ -75,7 +86,7 @@ const COPY = {
 
 export default function CosmeticPicker({
   ownedProductIds, equippedFrame, equippedGlow, nameColor,
-  avatarEmoji, displayName, locale,
+  avatarEmoji, displayName, usePixieAvatar, pixieSrc, locale,
 }: Props) {
   const copy = COPY[locale]
   const router = useRouter()
@@ -85,11 +96,13 @@ export default function CosmeticPicker({
   const ownedGlows  = (Object.keys(GLOWS)  as GlowId[]).filter(id => owned.has(id))
   const hasNameBundle = owned.has('name_color_bundle')
 
-  const hasAny = ownedFrames.length > 0 || ownedGlows.length > 0 || hasNameBundle
+  // The Pixie avatar toggle is always available (no purchase required)
+  const hasAny = true // widget always shows at minimum the avatar toggle
 
   const [frameSel, setFrameSel] = useState<FrameId | null>(equippedFrame as FrameId | null)
   const [glowSel,  setGlowSel]  = useState<GlowId  | null>(equippedGlow  as GlowId  | null)
   const [colorSel, setColorSel] = useState<NameColorSlug | null>(nameColor as NameColorSlug | null)
+  const [pixieAvatarSel, setPixieAvatarSel] = useState<boolean>(usePixieAvatar)
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState<string | null>(null)
 
@@ -127,29 +140,18 @@ export default function CosmeticPicker({
     setColorSel(slug)
     void persist({ kind: 'name_color', slug })
   }
-
-  // Empty state
-  if (!hasAny) {
-    return (
-      <section className="mb-8 rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-6 text-center">
-        <h2 className="text-lg font-black mb-2">{copy.title}</h2>
-        <div className="text-3xl mb-3 opacity-70">🎨</div>
-        <p className="font-bold text-white text-sm mb-1">{copy.empty.title}</p>
-        <p className="text-xs text-[var(--muted)] mb-4">{copy.empty.body}</p>
-        <Link
-          href={copy.storeHref}
-          className="inline-block rounded-full bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-300 text-xs font-bold px-4 py-2 transition-colors"
-        >
-          {copy.empty.cta}
-        </Link>
-      </section>
-    )
+  function pickPixieAvatar(enabled: boolean) {
+    setPixieAvatarSel(enabled)
+    void persist({ kind: 'pixie_avatar', enabled })
   }
 
-  // Live preview state — used so the user sees the result before round-trip
+  // Live preview state
   const previewFrame = frameSel ? FRAMES[frameSel] : null
   const previewGlow  = glowSel  ? GLOWS[glowSel]  : null
   const previewColor = colorSel ? NAME_COLORS[colorSel] : null
+  const previewPixieSrc = pixieAvatarSel ? pixieSrc : null
+
+  void hasAny // always renders
 
   return (
     <section className="mb-8 rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5">
@@ -160,7 +162,12 @@ export default function CosmeticPicker({
 
       {/* Live preview */}
       <div className="mb-5 flex items-center gap-4 rounded-xl bg-[#0a0a1a]/60 p-4 border border-white/5">
-        <CosmeticAvatar emoji={avatarEmoji} frame={previewFrame} size="lg" />
+        <CosmeticAvatar
+          emoji={avatarEmoji}
+          pixieSrc={previewPixieSrc}
+          frame={previewFrame}
+          size="lg"
+        />
         <div className="flex-1 min-w-0">
           <p className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-bold mb-1">{copy.preview}</p>
           <CosmeticName
@@ -172,7 +179,43 @@ export default function CosmeticPicker({
         </div>
       </div>
 
-      {/* Frames */}
+      {/* ── Profile picture ── */}
+      <div className="mb-5">
+        <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-bold mb-2">{copy.avatarTitle}</h3>
+        <div className="flex flex-wrap gap-2">
+          <PickerChip
+            active={!pixieAvatarSel}
+            onClick={() => pickPixieAvatar(false)}
+            disabled={saving}
+            label={copy.avatarEmoji}
+            preview={
+              <span className="text-base leading-none">
+                {avatarEmoji ?? '🌍'}
+              </span>
+            }
+          />
+          <PickerChip
+            active={pixieAvatarSel}
+            onClick={() => pickPixieAvatar(true)}
+            disabled={saving || !pixieSrc}
+            label={copy.avatarPixie}
+            preview={
+              pixieSrc
+                ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={pixieSrc}
+                    alt=""
+                    className="w-5 h-5 object-contain"
+                  />
+                )
+                : <span className="text-base leading-none opacity-40">✨</span>
+            }
+          />
+        </div>
+      </div>
+
+      {/* ── Frames ── */}
       {ownedFrames.length > 0 && (
         <div className="mb-5">
           <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-bold mb-2">{copy.framesTitle}</h3>
@@ -197,7 +240,7 @@ export default function CosmeticPicker({
         </div>
       )}
 
-      {/* Glows */}
+      {/* ── Glows ── */}
       {ownedGlows.length > 0 && (
         <div className="mb-5">
           <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-bold mb-2">{copy.glowsTitle}</h3>
@@ -224,7 +267,7 @@ export default function CosmeticPicker({
         </div>
       )}
 
-      {/* Name colors */}
+      {/* ── Name colors ── */}
       {hasNameBundle && (
         <div className="mb-2">
           <h3 className="text-xs uppercase tracking-widest text-[var(--muted)] font-bold mb-2">{copy.colorsTitle}</h3>
@@ -248,6 +291,23 @@ export default function CosmeticPicker({
               />
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ── Store CTA (when no cosmetics owned beyond avatar toggle) ── */}
+      {ownedFrames.length === 0 && ownedGlows.length === 0 && !hasNameBundle && (
+        <div className="mt-4 rounded-xl border border-white/5 bg-white/2 px-4 py-3 flex items-center justify-between gap-3">
+          <p className="text-xs text-[var(--muted)]">
+            {locale === 'it'
+              ? 'Sblocca cornici, glow e colori dal negozio.'
+              : 'Unlock frames, glows and colors from the store.'}
+          </p>
+          <Link
+            href={copy.storeHref}
+            className="flex-shrink-0 rounded-full bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-300 text-xs font-bold px-3 py-1.5 transition-colors"
+          >
+            {locale === 'it' ? 'Store →' : 'Store →'}
+          </Link>
         </div>
       )}
 

@@ -9,6 +9,12 @@ import type { ProductDef } from '@/lib/purchases'
 interface Props {
   product: ProductDef
   owned: boolean
+  /** True if this is the currently equipped Pixie (shows "✓ Equipped" state). */
+  isEquipped?: boolean
+  /** Called when the user clicks Equip on an owned Pixie card. */
+  onEquip?: () => void
+  /** True while any equip request is in flight (disables all equip buttons). */
+  equipLoading?: boolean
   /** True if user is logged in. Drives login redirect vs checkout call. */
   isLoggedIn: boolean
   /** Optional — for Pixie cards, show "💎 Included with Premium" hint if user has active sub. */
@@ -19,6 +25,8 @@ interface Props {
 const COPY = {
   en: {
     owned: '✓ Owned',
+    equip: 'Equip',
+    equipped: '✓ Equipped',
     buy: 'Buy now',
     loading: 'Loading…',
     loginRequired: 'Log in to buy',
@@ -30,6 +38,8 @@ const COPY = {
   },
   it: {
     owned: '✓ Acquistato',
+    equip: 'Equipaggia',
+    equipped: '✓ Equipaggiato',
     buy: 'Acquista',
     loading: 'Caricamento…',
     loginRequired: 'Accedi per acquistare',
@@ -43,23 +53,24 @@ const COPY = {
 
 function formatPrice(cents: number, locale: 'en' | 'it'): string {
   const eur = (cents / 100).toFixed(2)
-  // Italian locale uses comma decimal separator
   return locale === 'it' ? `€${eur.replace('.', ',')}` : `€${eur}`
 }
 
-export default function ProductCard({ product, owned, isLoggedIn, isPremium = false, locale }: Props) {
+export default function ProductCard({
+  product, owned, isEquipped = false, onEquip, equipLoading = false,
+  isLoggedIn, isPremium = false, locale,
+}: Props) {
   const copy = COPY[locale]
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showStub, setShowStub] = useState(false)
 
-  // For Pixie products: pull species def for rarity badge + preview image
   const speciesDef = product.unlocksSpecies ? COMPANION_MAP[product.unlocksSpecies] : null
   const previewImg = product.unlocksSpecies
-    ? getPixieImagePath(product.unlocksSpecies, 3) // stage 3 (Explorer) is the iconic mid-form
+    ? getPixieImagePath(product.unlocksSpecies, 3)
     : null
-
+  const isPixie = product.type === 'pixie'
   const isComingSoon = !!product.comingSoon
 
   async function handleBuy() {
@@ -94,12 +105,21 @@ export default function ProductCard({ product, owned, isLoggedIn, isPremium = fa
   }
 
   return (
-    <div className="group relative flex flex-col rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/70 p-4 transition-all hover:border-blue-500/30 hover:bg-[#0a0a1a]/80">
+    <div className={`group relative flex flex-col rounded-2xl border bg-[#0d0d1a]/70 p-4 transition-all hover:bg-[#0a0a1a]/80 ${
+      isEquipped
+        ? 'border-blue-500/50 shadow-[0_0_20px_rgba(77,159,255,0.15)]'
+        : 'border-[var(--border)] hover:border-blue-500/30'
+    }`}>
 
       {/* Owned ribbon */}
-      {owned && (
+      {owned && !isEquipped && (
         <div className="absolute -top-2 -right-2 z-10 rounded-full bg-emerald-500 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-emerald-500/30">
           {copy.owned}
+        </div>
+      )}
+      {isEquipped && (
+        <div className="absolute -top-2 -right-2 z-10 rounded-full bg-blue-500 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-blue-500/30">
+          {copy.equipped}
         </div>
       )}
 
@@ -145,7 +165,22 @@ export default function ProductCard({ product, owned, isLoggedIn, isPremium = fa
       <div className="mt-auto flex items-center justify-between gap-2">
         <span className="text-lg font-black text-white">{formatPrice(product.priceCents, locale)}</span>
 
-        {owned ? (
+        {owned && isPixie ? (
+          // Owned Pixie: show Equip / Equipped button
+          isEquipped ? (
+            <span className="text-xs font-bold text-blue-400">{copy.equipped}</span>
+          ) : (
+            <button
+              type="button"
+              onClick={onEquip}
+              disabled={equipLoading}
+              className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-xs font-black uppercase tracking-wide text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/40 hover:scale-105 disabled:opacity-50 disabled:cursor-wait"
+            >
+              {equipLoading ? copy.loading : copy.equip}
+            </button>
+          )
+        ) : owned ? (
+          // Owned non-Pixie cosmetic
           <span className="text-xs font-bold text-emerald-400">{copy.owned}</span>
         ) : isComingSoon ? (
           <span className="text-xs font-bold text-white/40">{copy.comingSoon}</span>
@@ -181,7 +216,7 @@ export default function ProductCard({ product, owned, isLoggedIn, isPremium = fa
         <p className="mt-2 text-[11px] text-red-400">{error}</p>
       )}
 
-      {/* Stub modal — appears when checkout API returns 501 (Sprint 3 not deployed yet) */}
+      {/* Stub modal */}
       {showStub && (
         <div className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-black/70 backdrop-blur-sm p-4">
           <div className="text-center">
@@ -192,7 +227,7 @@ export default function ProductCard({ product, owned, isLoggedIn, isPremium = fa
               onClick={() => setShowStub(false)}
               className="rounded-full bg-white/10 hover:bg-white/20 px-3 py-1.5 text-[10px] font-bold text-white transition-colors"
             >
-              {locale === 'it' ? 'OK' : 'OK'}
+              OK
             </button>
           </div>
         </div>

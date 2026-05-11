@@ -13,6 +13,7 @@ import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import StoreClient from '@/components/store/StoreClient'
 import type { ProductId, PurchaseRow } from '@/lib/purchases'
+import type { CompanionSpecies } from '@/lib/companion'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://splitvote.io'
@@ -47,10 +48,11 @@ export default async function StorePage({ searchParams }: { searchParams: Search
 
   let isPremium = false
   let ownedProductIds: ProductId[] = []
+  let currentSpecies: CompanionSpecies = 'spark'
 
   if (user) {
     const [profileRes, purchasesRes] = await Promise.all([
-      supabase.from('profiles').select('is_premium, role').eq('id', user.id).single(),
+      supabase.from('profiles').select('is_premium, role, companion_species').eq('id', user.id).single(),
       supabase.from('user_purchases').select('product_id, product_type, status, purchased_at')
         .eq('user_id', user.id).eq('status', 'completed'),
     ])
@@ -61,6 +63,7 @@ export default async function StorePage({ searchParams }: { searchParams: Search
       role: (profileRes.data?.role ?? 'user') as UserRole,
     })
     isPremium = ents.effectivePremium
+    currentSpecies = (profileRes.data?.companion_species ?? 'spark') as CompanionSpecies
 
     if (!purchasesRes.error && purchasesRes.data) {
       ownedProductIds = (purchasesRes.data as unknown as PurchaseRow[]).map(r => r.product_id)
@@ -78,6 +81,7 @@ export default async function StorePage({ searchParams }: { searchParams: Search
       isLoggedIn={!!user}
       isPremium={isPremium}
       ownedProductIds={ownedProductIds}
+      currentSpecies={currentSpecies}
       locale="en"
       initialTab={initialTab}
     />

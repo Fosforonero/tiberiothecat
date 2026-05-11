@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { PRODUCT_BY_ID, PRODUCT_CATALOG, type ProductId } from '@/lib/purchases'
+import type { CompanionSpecies } from '@/lib/companion'
 import ProductCard from './ProductCard'
 
 type Tab = 'premium' | 'pixies' | 'cosmetics'
@@ -12,6 +13,8 @@ interface Props {
   isLoggedIn: boolean
   isPremium: boolean
   ownedProductIds: ProductId[]
+  /** Currently equipped Pixie species — used to show "Equipped" state on cards. */
+  currentSpecies: CompanionSpecies
   locale: 'en' | 'it'
   /** Optional deep-link to a specific tab (?tab=pixies). */
   initialTab?: Tab
@@ -108,7 +111,7 @@ const COPY = {
   },
 } as const
 
-export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, locale, initialTab = 'pixies' }: Props) {
+export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, currentSpecies, locale, initialTab = 'pixies' }: Props) {
   const copy = COPY[locale]
   const router = useRouter()
   const pathname = usePathname()
@@ -116,7 +119,27 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, lo
   const [tab, setTab] = useState<Tab>(initialTab)
   const [premiumLoading, setPremiumLoading] = useState(false)
   const [premiumError, setPremiumError] = useState<string | null>(null)
+  const [equippedSpecies, setEquippedSpecies] = useState<CompanionSpecies>(currentSpecies)
+  const [equipLoading, setEquipLoading] = useState(false)
   const ownedSet = new Set(ownedProductIds)
+
+  async function handleEquip(species: CompanionSpecies) {
+    if (species === equippedSpecies || equipLoading) return
+    setEquipLoading(true)
+    try {
+      const res = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companionSpecies: species }),
+      })
+      if (res.ok) {
+        setEquippedSpecies(species)
+        router.refresh()
+      }
+    } finally {
+      setEquipLoading(false)
+    }
+  }
 
   // ── Post-purchase success banner ────────────────────────────────────────
   // After Stripe redirects back with ?purchased=pixie_crown&session_id=...
@@ -324,6 +347,9 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, lo
                 key={p.id}
                 product={p}
                 owned={ownedSet.has(p.id)}
+                isEquipped={!!p.unlocksSpecies && equippedSpecies === p.unlocksSpecies}
+                onEquip={p.unlocksSpecies ? () => handleEquip(p.unlocksSpecies!) : undefined}
+                equipLoading={equipLoading}
                 isLoggedIn={isLoggedIn}
                 isPremium={isPremium}
                 locale={locale}

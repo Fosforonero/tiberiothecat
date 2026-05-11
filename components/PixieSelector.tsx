@@ -218,8 +218,8 @@ export default function PixieSelector({
                     : 'border-white/5 bg-white/2 opacity-40 hover:opacity-60',
               ].join(' ')}
             >
-              {/* Image */}
-              <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0">
+              {/* Image — fills the card width so the Pixie dominates the card */}
+              <div className="relative w-full aspect-square flex items-center justify-center">
                 {!hasImgError ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -229,7 +229,7 @@ export default function PixieSelector({
                     onError={() => setImgErrors(prev => ({ ...prev, [c.id]: true }))}
                   />
                 ) : (
-                  <span className="text-3xl">{c.stageEmoji[stage - 1]}</span>
+                  <span className="text-5xl">{c.stageEmoji[stage - 1]}</span>
                 )}
 
                 {/* Lock overlay */}

@@ -1,8 +1,12 @@
 /**
- * CosmeticAvatar — renders an emoji avatar wrapped in an optional cosmetic frame.
+ * CosmeticAvatar — renders an avatar (emoji or Pixie illustration) wrapped in
+ * an optional cosmetic frame.
  *
  * Pure presentational component. Reads no DB — receives the frame def from
  * the parent (use lib/cosmetics.ts → getEquippedCosmetics() to resolve it).
+ *
+ * When `pixieSrc` is provided the Pixie illustration is shown instead of the
+ * emoji. The frame (if any) is applied on top of either mode.
  *
  * Sizing: pass one of the named sizes (sm/md/lg/xl) for consistency, or
  * provide custom Tailwind classes via `className` (e.g. for the hero).
@@ -13,8 +17,13 @@ import type { FrameDef } from '@/lib/cosmetics'
 type Size = 'sm' | 'md' | 'lg' | 'xl'
 
 interface Props {
-  /** Avatar emoji to render in the center. Defaults to 🌍. */
+  /** Avatar emoji to render in the center when no pixieSrc. Defaults to 🌍. */
   emoji?: string | null
+  /**
+   * URL of the Pixie illustration to use as the profile picture.
+   * When set the emoji is hidden and the image fills the avatar circle.
+   */
+  pixieSrc?: string | null
   /** Equipped frame def, or null if no frame. */
   frame: FrameDef | null
   size?: Size
@@ -32,8 +41,39 @@ const SIZE_MAP: Record<Size, { outer: string; inner: string; emoji: string }> = 
   xl: { outer: 'w-24 h-24', inner: 'w-[5.25rem] h-[5.25rem]', emoji: 'text-5xl' },
 }
 
+/** Inner content: Pixie image or emoji. */
+function AvatarContent({
+  pixieSrc,
+  emoji,
+  emojiClass,
+  ariaLabel,
+}: {
+  pixieSrc?: string | null
+  emoji?: string | null
+  emojiClass: string
+  ariaLabel?: string
+}) {
+  if (pixieSrc) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={pixieSrc}
+        alt={ariaLabel ?? 'Pixie avatar'}
+        className="w-full h-full object-contain rounded-full"
+        draggable={false}
+      />
+    )
+  }
+  return (
+    <span className={emojiClass} aria-hidden={ariaLabel ? 'true' : undefined}>
+      {emoji ?? '🌍'}
+    </span>
+  )
+}
+
 export default function CosmeticAvatar({
   emoji = '🌍',
+  pixieSrc,
   frame,
   size = 'md',
   innerBg = 'bg-[#0d0d1a]',
@@ -46,13 +86,16 @@ export default function CosmeticAvatar({
   if (!frame) {
     return (
       <div
-        className={`${sizing.outer} rounded-full ${innerBg} border border-white/10 flex items-center justify-center ${className}`}
+        className={`${sizing.outer} rounded-full ${innerBg} border border-white/10 flex items-center justify-center overflow-hidden ${className}`}
         role={ariaLabel ? 'img' : undefined}
         aria-label={ariaLabel}
       >
-        <span className={sizing.emoji} aria-hidden={ariaLabel ? 'true' : undefined}>
-          {emoji ?? '🌍'}
-        </span>
+        <AvatarContent
+          pixieSrc={pixieSrc}
+          emoji={emoji}
+          emojiClass={sizing.emoji}
+          ariaLabel={ariaLabel}
+        />
       </div>
     )
   }
@@ -65,10 +108,13 @@ export default function CosmeticAvatar({
       role={ariaLabel ? 'img' : undefined}
       aria-label={ariaLabel}
     >
-      <div className={`${sizing.inner} rounded-full ${innerBg} flex items-center justify-center`}>
-        <span className={sizing.emoji} aria-hidden={ariaLabel ? 'true' : undefined}>
-          {emoji ?? '🌍'}
-        </span>
+      <div className={`${sizing.inner} rounded-full ${innerBg} flex items-center justify-center overflow-hidden`}>
+        <AvatarContent
+          pixieSrc={pixieSrc}
+          emoji={emoji}
+          emojiClass={sizing.emoji}
+          ariaLabel={ariaLabel}
+        />
       </div>
     </div>
   )
