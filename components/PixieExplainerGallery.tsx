@@ -35,6 +35,30 @@ const EN_UNLOCK: Record<string, string> = {
   devil:   '💎 Coming to Pixie Market',
 }
 
+/** Italian translations for each species description (source of truth: lib/companion.ts). */
+const IT_DESCRIPTIONS: Record<string, string> = {
+  spark:   'Un curioso essere di energia che ama le scelte audaci.',
+  blip:    'Una creatura digitale glitchata che si nutre di dati e dilemmi.',
+  momo:    'Uno spirito allegro della foresta che soppesa ogni decisione con cura.',
+  shade:   "Un'entità lunare misteriosa che prospera nell'ambiguità morale.",
+  orbit:   "Un viaggiatore cosmico che ha visto ogni dilemma dell'universo.",
+  heart:   'Una creatura calda ed empatica che sente ogni dilemma nel profondo.',
+  robot:   'Una macchina logica che calcola il risultato morale ottimale.',
+  crown:   "Uno spirito regale che affronta ogni dilemma con saggezza e autorità.",
+  diamond: "Un'entità cristallina di rara chiarezza che vede la verità morale con precisione.",
+  galaxy:  'Un\'entità cosmica che porta interi sistemi stellari al suo passaggio.',
+  angel:   'Un essere celeste di pura luce morale che cerca sempre la via più alta.',
+  devil:   "Uno spirito caotico che prospera nell'ambiguità morale e mette alla prova ogni limite.",
+}
+
+/** Italian rarity labels. */
+const IT_RARITY: Record<string, string> = {
+  common:    'comune',
+  rare:      'raro',
+  epic:      'epico',
+  legendary: 'leggendario',
+}
+
 /**
  * Public explainer gallery. Stages 1-3 visible, 4-6 hidden as mystery cards.
  * Excludes admin-only species.
@@ -48,6 +72,8 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
       {species.map(c => {
         const rarityBadge = RARITY_STYLES[c.rarity] ?? RARITY_STYLES.common
         const unlockHint = IT ? IT_UNLOCK[c.id] : EN_UNLOCK[c.id]
+        const description = IT ? (IT_DESCRIPTIONS[c.id] ?? c.description) : c.description
+        const rarityLabel = IT ? (IT_RARITY[c.rarity] ?? c.rarity) : c.rarity
         const isPremium = c.access === 'premium'
 
         return (
@@ -63,7 +89,7 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                     {c.name.replace('Pixie ', '')}
                   </h3>
                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>
-                    {c.rarity}
+                    {rarityLabel}
                   </span>
                   {isPremium && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-300">
@@ -72,7 +98,7 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                   )}
                 </div>
                 <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">
-                  {c.description}
+                  {description}
                 </p>
                 <p className="text-[11px] text-white/40 mt-1.5">{unlockHint}</p>
               </div>
