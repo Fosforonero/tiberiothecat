@@ -58,6 +58,20 @@ export default async function TrendingPage() {
     .sort((a, b) => b.total - a.total)
     .slice(0, 10)
 
+  // ── Most Divisive (closest to 50/50 split, min 20 votes) ──────
+  const mostDivisive = allScenarios
+    .map(s => {
+      const v = voteDetail.get(s.id) ?? { a: 0, b: 0 }
+      return { ...s, a: v.a, b: v.b, total: v.a + v.b }
+    })
+    .filter(s => s.total >= 20)
+    .sort((a, b) => {
+      const dA = Math.abs((a.a / a.total) * 100 - 50)
+      const dB = Math.abs((b.a / b.total) * 100 - 50)
+      return dA - dB
+    })
+    .slice(0, 8)
+
   // ── Top categories (aggregate vote count per category) ────────
   const catMeta = new Map(
     CATEGORIES.filter(c => c.value !== 'all').map(c => [c.value, { emoji: c.emoji, label: c.label }])
@@ -129,6 +143,55 @@ export default async function TrendingPage() {
                       {s.total >= 10 && (
                         <span className="text-xs text-white/30">{splitA}% / {splitB}%</span>
                       )}
+                      {s.total >= 20 && Math.abs(splitA - 50) <= 5 && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-400 border border-purple-500/30">⚡ 50/50</span>
+                      )}
+                    </div>
+                    <p className="text-sm font-semibold text-[var(--text)] leading-snug mb-2">{s.question}</p>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/play/${s.id}`}
+                        className="text-xs bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-full transition-colors"
+                      >
+                        Vote
+                      </Link>
+                      <Link
+                        href={`/results/${s.id}`}
+                        className="text-xs text-[var(--muted)] hover:text-white transition-colors"
+                      >
+                        See results →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Most Divisive ── */}
+      {mostDivisive.length > 0 && (
+        <section className="mb-14">
+          <h2 className="text-xl font-black tracking-tight mb-2 flex items-center gap-2">
+            <span>⚡</span> Most Divisive
+          </h2>
+          <p className="text-sm text-[var(--muted)] mb-5">
+            The world can&apos;t decide. These dilemmas split humanity almost perfectly in half.
+          </p>
+          <div className="space-y-3">
+            {mostDivisive.map((s) => {
+              const splitA = Math.round((s.a / s.total) * 100)
+              const splitB = 100 - splitA
+              return (
+                <div key={s.id} className="flex items-start gap-3 rounded-2xl bg-[var(--surface)] border border-purple-500/20 p-4 hover:border-purple-500/40 transition-colors">
+                  <span className="text-2xl flex-shrink-0">{s.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                        ⚡ {splitA}% / {splitB}%
+                      </span>
+                      <span className="text-xs text-white/40">{s.total.toLocaleString()} votes</span>
                     </div>
                     <p className="text-sm font-semibold text-[var(--text)] leading-snug mb-2">{s.question}</p>
                     <div className="flex items-center gap-3">
