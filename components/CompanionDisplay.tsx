@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   COMPANION_MAP,
   STAGE_LABELS,
@@ -53,7 +54,10 @@ export default function CompanionDisplay({
   const [imgError, setImgError] = useState(false)
   const [xpPulse, setXpPulse] = useState(false)
   const [showLevelUp, setShowLevelUp] = useState(false)
+  const [showLightbox, setShowLightbox] = useState(false)
   const prefersReducedMotion = useRef(false)
+
+  const closeLightbox = useCallback(() => setShowLightbox(false), [])
 
   useEffect(() => { setImgError(false) }, [species, stage])
 
@@ -71,6 +75,19 @@ export default function CompanionDisplay({
     window.addEventListener('sv:pixie-xp', handler)
     return () => window.removeEventListener('sv:pixie-xp', handler)
   }, [compact])
+
+  // Lightbox: Escape key + scroll lock
+  useEffect(() => {
+    if (!showLightbox) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeLightbox() }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [showLightbox, closeLightbox])
 
   // Level-up detection: compare current stage against sessionStorage last-seen stage
   useEffect(() => {
@@ -139,16 +156,19 @@ export default function CompanionDisplay({
       </div>
 
       <div className="flex items-center gap-5">
-        {/* Companion visual */}
+        {/* Companion visual — click to open lightbox */}
         <div className="relative flex-shrink-0">
-          <div
-            className="w-20 h-20 rounded-2xl flex items-center justify-center text-5xl overflow-hidden"
+          <button
+            type="button"
+            aria-label={IT ? 'Vedi il tuo Pixie ingrandito' : 'View your Pixie enlarged'}
+            onClick={() => setShowLightbox(true)}
+            className="w-20 h-20 rounded-2xl flex items-center justify-center text-5xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-white/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
             style={{
               background: 'rgba(255,255,255,0.03)',
               border: '1px solid rgba(255,255,255,0.06)',
               animation: xpPulse ? 'pixie-xp-pulse 1s ease-out forwards' : undefined,
               boxShadow: xpPulse ? undefined : stage >= 4 ? '0 0 24px rgba(99,102,241,0.25)' : undefined,
-              transition: xpPulse ? undefined : 'box-shadow 0.3s ease',
+              transition: xpPulse ? undefined : 'box-shadow 0.3s ease, outline 0.15s',
             }}
           >
             {!imgError ? (
@@ -162,9 +182,9 @@ export default function CompanionDisplay({
             ) : (
               emoji
             )}
-          </div>
+          </button>
           {/* Stage badge */}
-          <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-black text-white border-2 border-[#0d0d1a]">
+          <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-black text-white border-2 border-[#0d0d1a] pointer-events-none">
             {stage}
           </div>
         </div>
@@ -216,6 +236,83 @@ export default function CompanionDisplay({
         </p>
       )}
     </div>
+
+    {/* Lightbox — enlarged view of the equipped Pixie (close only) */}
+    {showLightbox && createPortal(
+      <>
+        {/* Backdrop */}
+        <button
+          type="button"
+          aria-label={IT ? 'Chiudi' : 'Close'}
+          onClick={closeLightbox}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1200,
+            background: 'rgba(0,0,0,0.82)',
+            backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+            border: 'none', cursor: 'default',
+          }}
+        />
+        {/* Image + close */}
+        <div
+          aria-label={companion.name}
+          style={{
+            position: 'fixed',
+            top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1201,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', gap: '16px',
+          }}
+        >
+          <div style={{
+            width: 'min(280px, calc(100vw - 64px))',
+            height: 'min(280px, calc(100vw - 64px))',
+            borderRadius: '28px',
+            background: 'rgba(255,255,255,0.03)',
+            border: `1px solid ${stage >= 4 ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.1)'}`,
+            boxShadow: stage >= 4 ? '0 0 60px rgba(99,102,241,0.3)' : '0 0 40px rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden',
+          }}>
+            {!imgError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={getPixieImagePath(species, stage)}
+                alt={companion.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <span style={{ fontSize: '96px' }}>{emoji}</span>
+            )}
+          </div>
+          {/* Species name + stage */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '16px', fontWeight: 900, color: 'white', marginBottom: '4px' }}>
+              {companion.name}
+            </p>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>
+              {IT ? 'Stadio' : 'Stage'} {stage} · {stageLabel}
+            </p>
+          </div>
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={closeLightbox}
+            style={{
+              padding: '10px 28px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.15)',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.7)',
+              fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+            }}
+          >
+            {IT ? 'Chiudi' : 'Close'}
+          </button>
+        </div>
+      </>,
+      document.body,
+    )}
 
     {showLevelUp && enableLevelUpModal && userId && (
       <PixieLevelUpModal

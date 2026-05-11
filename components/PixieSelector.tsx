@@ -12,6 +12,7 @@ import {
   type PixieXpMap,
 } from '@/lib/companion'
 import { getPixieImagePath } from '@/lib/pixie'
+import PixieDetailModal from './PixieDetailModal'
 
 interface Props {
   currentSpecies: CompanionSpecies
@@ -86,10 +87,15 @@ export default function PixieSelector({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [imgErrors, setImgErrors] = useState<Partial<Record<CompanionSpecies, boolean>>>({})
+  /** Species whose detail modal is currently open (null = closed). */
+  const [modalSpecies, setModalSpecies] = useState<CompanionSpecies | null>(null)
 
-  async function handleSelect(species: CompanionSpecies) {
+  /**
+   * Called from PixieDetailModal when the user confirms "Equip this Pixie".
+   * On success, closes the modal and refreshes server data.
+   */
+  async function handleEquip(species: CompanionSpecies) {
     if (species === selected || saving) return
-    if (!isSpeciesUnlocked(species, votesCount, streakDays, isPremium, isAdmin)) return
 
     setSaving(true)
     setError(null)
@@ -103,6 +109,7 @@ export default function PixieSelector({
 
       if (res.ok) {
         setSelected(species)
+        setModalSpecies(null) // close modal on success
         router.refresh()
       } else {
         const data = await res.json().catch(() => ({}))
@@ -114,6 +121,10 @@ export default function PixieSelector({
       setSaving(false)
     }
   }
+
+  const modalCompanion = modalSpecies
+    ? visibleSpecies.find(c => c.id === modalSpecies) ?? null
+    : null
 
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
@@ -132,22 +143,11 @@ export default function PixieSelector({
       {/* Sub-label */}
       <p className="text-xs text-[var(--muted)] mb-4">
         {IT
-          ? 'Ogni Pixie mantiene il proprio livello — puoi cambiarli quando vuoi.'
-          : 'Each Pixie keeps its own level — switch anytime without losing progress.'}
+          ? 'Tocca un Pixie per vederlo nel dettaglio e scegliere se equipaggiarlo.'
+          : 'Tap a Pixie to preview it and choose whether to equip it.'}
       </p>
 
-      {/* Error */}
-      {error && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="text-red-400 text-xs bg-red-900/20 rounded p-2 border border-red-500/20 mb-3"
-        >
-          {error}
-        </div>
-      )}
-
-      {/* Species grid */}
+      {/* Species grid — clicking opens the detail modal for any card */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
         {visibleSpecies.map(c => {
           const unlocked = isSpeciesUnlocked(c.id, votesCount, streakDays, isPremium, isAdmin)
@@ -156,25 +156,23 @@ export default function PixieSelector({
           const stage = getSpeciesStage(pixieXp, c.id)
           const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
           const hasImgError = imgErrors[c.id]
-          const unlockHint = IT ? IT_UNLOCK[c.id] : EN_UNLOCK[c.id]
           const rarityBadge = RARITY_STYLES[c.rarity] ?? RARITY_STYLES.common
 
           return (
             <button
               key={c.id}
               type="button"
-              disabled={!unlocked || saving}
-              onClick={() => handleSelect(c.id)}
-              aria-label={`${unlocked ? (IT ? 'Scegli' : 'Select') : (IT ? 'Bloccato' : 'Locked')}: ${c.name}`}
+              onClick={() => setModalSpecies(c.id)}
+              aria-label={`${c.name} — ${unlocked ? (IT ? 'Vedi dettagli' : 'View details') : (IT ? 'Bloccato' : 'Locked')}`}
               aria-pressed={isActive}
               className={[
-                'flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-center min-h-[44px]',
+                'flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-center min-h-[44px] cursor-pointer',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60',
                 isActive
                   ? 'border-blue-500/60 bg-blue-500/10 shadow-[0_0_16px_rgba(77,159,255,0.2)]'
                   : unlocked
-                    ? 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5 cursor-pointer'
-                    : 'border-white/5 bg-white/2 opacity-40 cursor-not-allowed',
+                    ? 'border-[var(--border)] bg-[#0a0a1a]/40 hover:border-blue-500/30 hover:bg-blue-500/5'
+                    : 'border-white/5 bg-white/2 opacity-40 hover:opacity-60',
               ].join(' ')}
             >
               {/* Image */}
@@ -235,7 +233,9 @@ export default function PixieSelector({
                   {stageLabel}
                 </p>
               ) : (
-                <p className="text-[9px] text-white/30 leading-tight">{unlockHint}</p>
+                <p className="text-[9px] text-white/30 leading-tight">
+                  {IT ? IT_UNLOCK[c.id] : EN_UNLOCK[c.id]}
+                </p>
               )}
             </button>
           )
@@ -247,6 +247,24 @@ export default function PixieSelector({
           ? 'Vota con un Pixie equipaggiato per farlo crescere.'
           : 'Vote with a Pixie equipped to grow it.'}
       </p>
+
+      {/* Detail modal */}
+      {modalCompanion && (
+        <PixieDetailModal
+          companion={modalCompanion}
+          stage={getSpeciesStage(pixieXp, modalCompanion.id)}
+          isCurrentSpecies={selected === modalCompanion.id}
+          isUnlocked={isSpeciesUnlocked(modalCompanion.id, votesCount, streakDays, isPremium, isAdmin)}
+          unlockHint={IT ? IT_UNLOCK[modalCompanion.id] : EN_UNLOCK[modalCompanion.id]}
+          pixieXp={pixieXp}
+          votesCount={votesCount}
+          locale={locale}
+          saving={saving}
+          error={error}
+          onEquip={() => handleEquip(modalCompanion.id)}
+          onClose={() => { setModalSpecies(null); setError(null) }}
+        />
+      )}
     </div>
   )
 }
