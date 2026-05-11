@@ -328,7 +328,6 @@ export default function VoteClientPage({
         url: `${BASE_URL}${localePrefix}/results/${scenario.id}`,
       },
     ],
-    dateCreated: '2026-01-01',
     inLanguage: localePrefix === '/it' ? 'it' : 'en',
     author: { '@type': 'Organization', name: 'SplitVote', url: BASE_URL },
   }
