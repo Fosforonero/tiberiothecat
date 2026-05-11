@@ -121,11 +121,13 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
   const [premiumError, setPremiumError] = useState<string | null>(null)
   const [equippedSpecies, setEquippedSpecies] = useState<CompanionSpecies>(currentSpecies)
   const [equipLoading, setEquipLoading] = useState(false)
+  const [equipError, setEquipError] = useState<string | null>(null)
   const ownedSet = new Set(ownedProductIds)
 
   async function handleEquip(species: CompanionSpecies) {
     if (species === equippedSpecies || equipLoading) return
     setEquipLoading(true)
+    setEquipError(null)
     try {
       const res = await fetch('/api/profile/update', {
         method: 'POST',
@@ -135,7 +137,12 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
       if (res.ok) {
         setEquippedSpecies(species)
         router.refresh()
+      } else {
+        const data: { error?: string } = await res.json().catch(() => ({}))
+        setEquipError(data.error ?? (locale === 'it' ? 'Equipaggiamento fallito.' : 'Equip failed.'))
       }
+    } catch {
+      setEquipError(locale === 'it' ? 'Errore di rete.' : 'Network error.')
     } finally {
       setEquipLoading(false)
     }
@@ -197,6 +204,26 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
+
+      {/* ── Equip error banner ── */}
+      {equipError && (
+        <div className="mb-6 rounded-2xl border border-red-500/40 bg-red-500/10 p-4 flex items-start gap-3">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-red-500/20 text-lg">
+            ⚠️
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-red-300">{equipError}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setEquipError(null)}
+            aria-label="Dismiss"
+            className="text-white/40 hover:text-white text-xl leading-none flex-shrink-0"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* ── Post-purchase success banner ── */}
       {purchasedProduct && !dismissedSuccess && (

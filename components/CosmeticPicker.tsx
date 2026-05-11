@@ -306,7 +306,7 @@ export default function CosmeticPicker({
             href={copy.storeHref}
             className="flex-shrink-0 rounded-full bg-fuchsia-500/15 hover:bg-fuchsia-500/25 text-fuchsia-300 text-xs font-bold px-3 py-1.5 transition-colors"
           >
-            {locale === 'it' ? 'Store →' : 'Store →'}
+            {locale === 'it' ? 'Vai allo store →' : 'Visit store →'}
           </Link>
         </div>
       )}

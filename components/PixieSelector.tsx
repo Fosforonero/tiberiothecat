@@ -101,6 +101,13 @@ const IT_STAGE_LABELS: Record<number, string> = {
   6: 'Ultra Leggendario',
 }
 
+const IT_RARITY: Record<string, string> = {
+  common: 'comune',
+  rare: 'raro',
+  epic: 'epico',
+  legendary: 'leggendario',
+}
+
 export default function PixieSelector({
   currentSpecies,
   votesCount,
@@ -270,7 +277,7 @@ export default function PixieSelector({
                 </span>
               ) : (
                 <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>
-                  {c.rarity}
+                  {IT ? (IT_RARITY[c.rarity] ?? c.rarity) : c.rarity}
                 </span>
               )}
 

@@ -54,12 +54,17 @@ function AvatarContent({
   ariaLabel?: string
 }) {
   if (pixieSrc) {
+    // Inset the image slightly (~92%) so the Pixie head/body doesn't get
+    // clipped by the rounded-full mask of the parent disc. Many Pixie sprites
+    // have asymmetric extents (wings, hats, tails) — object-contain centers
+    // them, and the small inset prevents corners from being cut off.
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={pixieSrc}
         alt={ariaLabel ?? 'Pixie avatar'}
-        className="w-full h-full object-contain rounded-full"
+        className="object-contain"
+        style={{ width: '92%', height: '92%' }}
         draggable={false}
       />
     )

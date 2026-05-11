@@ -27,6 +27,10 @@ const IT_STAGE_LABELS: Record<number, string> = {
   4: 'Campione',  5: 'Leggendario', 6: 'Ultra Leggendario',
 }
 
+const IT_RARITY: Record<string, string> = {
+  common: 'comune', rare: 'raro', epic: 'epico', legendary: 'leggendario',
+}
+
 interface Props {
   companion: CompanionDef
   /** Pre-computed stage for this species (from PixieSelector's getSpeciesStage call). */
@@ -208,7 +212,7 @@ export default function PixieDetailModal({
               {companion.name.replace('Pixie ', '')}
             </h3>
             <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>
-              {companion.rarity}
+              {IT ? (IT_RARITY[companion.rarity] ?? companion.rarity) : companion.rarity}
             </span>
             {isPremium && (
               <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-300">
