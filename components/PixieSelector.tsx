@@ -29,54 +29,62 @@ interface Props {
 }
 
 const IT_UNLOCK: Record<CompanionSpecies, string> = {
+  // Free — sbloccate con attività
   spark:     'Sempre disponibile',
   blip:      'Sempre disponibile',
-  momo:      'Sblocca con 10 voti',
+  momo:      'Sblocca con 50 voti',
   shade:     'Sblocca con 7 giorni di streak',
-  orbit:     'Sblocca con 100 voti',
-  heart:     '💎 Pixie Market',
-  robot:     '💎 Pixie Market',
-  crown:     '💎 Pixie Market',
-  diamond:   '💎 Pixie Market',
-  galaxy:    '💎 Pixie Market',
-  angel:     '💎 Pixie Market',
-  devil:     '💎 Pixie Market',
-  fuoco:     '💎 Pixie Market',
-  banana:    '💎 Pixie Market',
-  caffe:     '💎 Pixie Market',
-  hologram:  '💎 Pixie Market',
-  ice:       '💎 Pixie Market',
-  leaf:      '💎 Pixie Market',
-  moonlight: '💎 Pixie Market',
-  scintille: '💎 Pixie Market',
-  triste:    '💎 Pixie Market',
+  banana:    'Sblocca con 100 voti',
+  leaf:      'Sblocca con 200 voti',
+  orbit:     'Sblocca con 300 voti',
+  ice:       'Sblocca con 500 voti',
+  // Premium — incluse con abbonamento
+  heart:     '💎 Incluso con Premium',
+  robot:     '💎 Incluso con Premium',
+  fuoco:     '💎 Incluso con Premium',
+  caffe:     '💎 Incluso con Premium',
+  hologram:  '💎 Incluso con Premium',
+  moonlight: '💎 Incluso con Premium',
+  triste:    '💎 Incluso con Premium',
+  // Market — acquisto individuale
+  crown:     '🛒 Acquista al Pixie Market — €3,99',
+  diamond:   '🛒 Acquista al Pixie Market — €3,99',
+  galaxy:    '🛒 Acquista al Pixie Market — €3,99',
+  angel:     '🛒 Acquista al Pixie Market — €3,99',
+  devil:     '🛒 Acquista al Pixie Market — €3,99',
+  scintille: '🛒 Acquista al Pixie Market — €4,99',
+  // Admin
   overseer:  '🔒 Solo admin',
   void:      '🔒 Solo admin',
   voidcore:  '🔒 Solo admin',
 }
 
 const EN_UNLOCK: Record<CompanionSpecies, string> = {
+  // Free — earned via activity
   spark:     'Always available',
   blip:      'Always available',
-  momo:      'Unlock at 10 votes',
+  momo:      'Unlock at 50 votes',
   shade:     'Unlock at 7-day streak',
-  orbit:     'Unlock at 100 votes',
-  heart:     '💎 Pixie Market',
-  robot:     '💎 Pixie Market',
-  crown:     '💎 Pixie Market',
-  diamond:   '💎 Pixie Market',
-  galaxy:    '💎 Pixie Market',
-  angel:     '💎 Pixie Market',
-  devil:     '💎 Pixie Market',
-  fuoco:     '💎 Pixie Market',
-  banana:    '💎 Pixie Market',
-  caffe:     '💎 Pixie Market',
-  hologram:  '💎 Pixie Market',
-  ice:       '💎 Pixie Market',
-  leaf:      '💎 Pixie Market',
-  moonlight: '💎 Pixie Market',
-  scintille: '💎 Pixie Market',
-  triste:    '💎 Pixie Market',
+  banana:    'Unlock at 100 votes',
+  leaf:      'Unlock at 200 votes',
+  orbit:     'Unlock at 300 votes',
+  ice:       'Unlock at 500 votes',
+  // Premium — included with subscription
+  heart:     '💎 Included with Premium',
+  robot:     '💎 Included with Premium',
+  fuoco:     '💎 Included with Premium',
+  caffe:     '💎 Included with Premium',
+  hologram:  '💎 Included with Premium',
+  moonlight: '💎 Included with Premium',
+  triste:    '💎 Included with Premium',
+  // Market — one-time purchase
+  crown:     '🛒 Buy in Pixie Market — €3.99',
+  diamond:   '🛒 Buy in Pixie Market — €3.99',
+  galaxy:    '🛒 Buy in Pixie Market — €3.99',
+  angel:     '🛒 Buy in Pixie Market — €3.99',
+  devil:     '🛒 Buy in Pixie Market — €3.99',
+  scintille: '🛒 Buy in Pixie Market — €4.99',
+  // Admin
   overseer:  '🔒 Admin only',
   void:      '🔒 Admin only',
   voidcore:  '🔒 Admin only',
@@ -181,6 +189,7 @@ export default function PixieSelector({
         {visibleSpecies.map(c => {
           const unlocked = isSpeciesUnlocked(c.id, votesCount, streakDays, isPremium, isAdmin)
           const isPremiumSpecies = c.access === 'premium'
+          const isMarketSpecies = c.access === 'market'
           const isActive = selected === c.id
           const stage = getSpeciesStage(pixieXp, c.id)
           const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
@@ -251,6 +260,10 @@ export default function PixieSelector({
               {isPremiumSpecies && !unlocked ? (
                 <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-300">
                   💎 premium
+                </span>
+              ) : isMarketSpecies && !unlocked ? (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300">
+                  🛒 market
                 </span>
               ) : (
                 <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>

@@ -10,51 +10,57 @@ interface Props {
 }
 
 const IT_UNLOCK: Record<string, string> = {
+  // Free — voti / streak
   spark:     'Sempre disponibile',
   blip:      'Sempre disponibile',
-  momo:      'Sblocca con 10 voti',
+  momo:      'Sblocca con 50 voti',
   shade:     'Sblocca con 7 giorni di streak',
-  orbit:     'Sblocca con 100 voti',
-  heart:     '💎 In arrivo nel Pixie Market',
-  robot:     '💎 In arrivo nel Pixie Market',
-  crown:     '💎 In arrivo nel Pixie Market',
-  diamond:   '💎 In arrivo nel Pixie Market',
-  galaxy:    '💎 In arrivo nel Pixie Market',
-  angel:     '💎 In arrivo nel Pixie Market',
-  devil:     '💎 In arrivo nel Pixie Market',
-  fuoco:     '💎 In arrivo nel Pixie Market',
-  banana:    '💎 In arrivo nel Pixie Market',
-  caffe:     '💎 In arrivo nel Pixie Market',
-  hologram:  '💎 In arrivo nel Pixie Market',
-  ice:       '💎 In arrivo nel Pixie Market',
-  leaf:      '💎 In arrivo nel Pixie Market',
-  moonlight: '💎 In arrivo nel Pixie Market',
-  scintille: '💎 In arrivo nel Pixie Market',
-  triste:    '💎 In arrivo nel Pixie Market',
+  banana:    'Sblocca con 100 voti',
+  leaf:      'Sblocca con 200 voti',
+  orbit:     'Sblocca con 300 voti',
+  ice:       'Sblocca con 500 voti',
+  // Premium — abbonamento
+  heart:     '💎 Incluso con Premium',
+  robot:     '💎 Incluso con Premium',
+  fuoco:     '💎 Incluso con Premium',
+  caffe:     '💎 Incluso con Premium',
+  hologram:  '💎 Incluso con Premium',
+  moonlight: '💎 Incluso con Premium',
+  triste:    '💎 Incluso con Premium',
+  // Market — acquisto singolo
+  crown:     '🛒 Pixie Market — €3,99',
+  diamond:   '🛒 Pixie Market — €3,99',
+  galaxy:    '🛒 Pixie Market — €3,99',
+  angel:     '🛒 Pixie Market — €3,99',
+  devil:     '🛒 Pixie Market — €3,99',
+  scintille: '🛒 Pixie Market — €4,99',
 }
 
 const EN_UNLOCK: Record<string, string> = {
+  // Free — votes / streak
   spark:     'Always available',
   blip:      'Always available',
-  momo:      'Unlocks at 10 votes',
+  momo:      'Unlocks at 50 votes',
   shade:     'Unlocks at 7-day streak',
-  orbit:     'Unlocks at 100 votes',
-  heart:     '💎 Coming to Pixie Market',
-  robot:     '💎 Coming to Pixie Market',
-  crown:     '💎 Coming to Pixie Market',
-  diamond:   '💎 Coming to Pixie Market',
-  galaxy:    '💎 Coming to Pixie Market',
-  angel:     '💎 Coming to Pixie Market',
-  devil:     '💎 Coming to Pixie Market',
-  fuoco:     '💎 Coming to Pixie Market',
-  banana:    '💎 Coming to Pixie Market',
-  caffe:     '💎 Coming to Pixie Market',
-  hologram:  '💎 Coming to Pixie Market',
-  ice:       '💎 Coming to Pixie Market',
-  leaf:      '💎 Coming to Pixie Market',
-  moonlight: '💎 Coming to Pixie Market',
-  scintille: '💎 Coming to Pixie Market',
-  triste:    '💎 Coming to Pixie Market',
+  banana:    'Unlocks at 100 votes',
+  leaf:      'Unlocks at 200 votes',
+  orbit:     'Unlocks at 300 votes',
+  ice:       'Unlocks at 500 votes',
+  // Premium — subscription
+  heart:     '💎 Included with Premium',
+  robot:     '💎 Included with Premium',
+  fuoco:     '💎 Included with Premium',
+  caffe:     '💎 Included with Premium',
+  hologram:  '💎 Included with Premium',
+  moonlight: '💎 Included with Premium',
+  triste:    '💎 Included with Premium',
+  // Market — one-time purchase
+  crown:     '🛒 Pixie Market — €3.99',
+  diamond:   '🛒 Pixie Market — €3.99',
+  galaxy:    '🛒 Pixie Market — €3.99',
+  angel:     '🛒 Pixie Market — €3.99',
+  devil:     '🛒 Pixie Market — €3.99',
+  scintille: '🛒 Pixie Market — €4.99',
 }
 
 /** Italian translations for each species description (source of truth: lib/companion.ts). */
@@ -108,6 +114,7 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
         const description = IT ? (IT_DESCRIPTIONS[c.id] ?? c.description) : c.description
         const rarityLabel = IT ? (IT_RARITY[c.rarity] ?? c.rarity) : c.rarity
         const isPremium = c.access === 'premium'
+        const isMarket = c.access === 'market'
 
         return (
           <button
@@ -130,6 +137,11 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                   {isPremium && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-300">
                       💎 premium
+                    </span>
+                  )}
+                  {isMarket && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300">
+                      🛒 market
                     </span>
                   )}
                 </div>
