@@ -166,28 +166,42 @@ export async function POST(req: NextRequest) {
       .update({ status: 'refunded', updated_at: new Date().toISOString() })
       .eq('id', purchase.id)
 
-    // Remove item from pixie_xp.owned and deduct XP
-    if (isPixieItemId(purchase.product_id)) {
+    // Reverse cosmetic state + deduct XP
+    if (isCosmeticItemId(purchase.product_id)) {
+      const item = COSMETIC_MAP[purchase.product_id]
+
       const { data: profile } = await admin
         .from('profiles')
         .select('pixie_xp, xp')
         .eq('id', purchase.user_id)
         .single()
 
-      const currentPixieXp = (profile?.pixie_xp ?? {}) as Record<string, unknown>
-      const ownedItems      = Array.isArray(currentPixieXp.owned) ? currentPixieXp.owned as string[] : []
-      const item            = PIXIE_ITEM_MAP[purchase.product_id]
-      const currentXp       = (profile?.xp ?? 0) as number
+      const currentXp = (profile?.xp ?? 0) as number
+      const profileUpdate: Record<string, unknown> = {
+        xp: Math.max(0, currentXp - item.xpBonus),
+      }
+
+      if (item.category === 'pixie') {
+        const currentPixieXp = (profile?.pixie_xp ?? {}) as Record<string, unknown>
+        const ownedItems     = Array.isArray(currentPixieXp.owned) ? currentPixieXp.owned as string[] : []
+        profileUpdate.pixie_xp = {
+          ...currentPixieXp,
+          owned: ownedItems.filter(i => i !== purchase.product_id),
+        }
+      } else if (item.category === 'frame') {
+        profileUpdate.equipped_frame = null
+      } else if (item.category === 'glow') {
+        profileUpdate.equipped_glow = null
+      } else if (item.category === 'name_color') {
+        profileUpdate.name_color = null
+      }
 
       await admin
         .from('profiles')
-        .update({
-          pixie_xp: { ...currentPixieXp, owned: ownedItems.filter(i => i !== purchase.product_id) },
-          xp:       Math.max(0, currentXp - item.xpBonus),
-        })
+        .update(profileUpdate)
         .eq('id', purchase.user_id)
 
-      console.log(`↩️ Refund: user=${purchase.user_id.slice(0, 8)} ← "${purchase.product_id}"`)
+      console.log(`↩️ Refund [${item.category}]: user=${purchase.user_id.slice(0, 8)} ← "${purchase.product_id}"`)
     }
   }
 
