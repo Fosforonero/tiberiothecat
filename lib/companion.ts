@@ -371,15 +371,15 @@ const owns = (owned: CompanionSpecies[] | undefined, id: CompanionSpecies): bool
   Array.isArray(owned) && owned.includes(id)
 
 const UNLOCK_REQUIREMENTS: Record<CompanionSpecies, UnlockFn> = {
-  // ── Free — unlocked by activity (votes / streak) ────────────────
+  // ── Free — unlocked by activity (votes / streak), admins bypass ──
   spark:    () => true,
   blip:     () => true,
-  momo:     (votes) => votes >= 50,
-  shade:    (_, streak) => streak >= 7,
-  banana:   (votes) => votes >= 100,
-  leaf:     (votes) => votes >= 200,
-  orbit:    (votes) => votes >= 300,
-  ice:      (votes) => votes >= 500,
+  momo:     (votes, _s, _p, isAdmin) => !!isAdmin || votes >= 50,
+  shade:    (_, streak, _p, isAdmin) => !!isAdmin || streak >= 7,
+  banana:   (votes, _s, _p, isAdmin) => !!isAdmin || votes >= 100,
+  leaf:     (votes, _s, _p, isAdmin) => !!isAdmin || votes >= 200,
+  orbit:    (votes, _s, _p, isAdmin) => !!isAdmin || votes >= 300,
+  ice:      (votes, _s, _p, isAdmin) => !!isAdmin || votes >= 500,
 
   // ── Premium — included with active subscription ─────────────────
   heart:    (_, _s, isPremium) => !!isPremium,
