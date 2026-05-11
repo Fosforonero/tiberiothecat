@@ -261,6 +261,19 @@ nav, main, footer {
   border-width: 0;
 }
 
+/* ── Cosmetic frame animations (Sprint 4 — Pixie Market cosmetics) ─── */
+@keyframes frame-rainbow {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes frame-holo {
+  0%   { background-position: 0%   50%; filter: hue-rotate(0deg); }
+  50%  { background-position: 100% 50%; filter: hue-rotate(20deg); }
+  100% { background-position: 0%   50%; filter: hue-rotate(0deg); }
+}
+
 /* ── Reduced motion ─────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .bg-orbs::before,
@@ -278,5 +291,10 @@ nav, main, footer {
   }
   .btn-neon-blue:active {
     transform: none;
+  }
+  /* Cosmetic frames: animations off, gradient stays static */
+  .animate-\[frame-rainbow_4s_linear_infinite\],
+  .animate-\[frame-holo_3s_ease-in-out_infinite\] {
+    animation: none !important;
   }
 }

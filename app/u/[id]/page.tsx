@@ -5,6 +5,9 @@ import Link from 'next/link'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import { getCompanionStage, getSpeciesVotes, type CompanionSpecies, type PixieXpMap } from '@/lib/companion'
 import ProfileShareButton from '@/components/ProfileShareButton'
+import CosmeticAvatar from '@/components/CosmeticAvatar'
+import CosmeticName from '@/components/CosmeticName'
+import { getEquippedCosmetics } from '@/lib/cosmetics'
 
 const BASE = 'https://splitvote.io'
 
@@ -65,7 +68,7 @@ export default async function PublicProfilePage({ params }: Props) {
   const [profileRes, badgesRes] = await Promise.all([
     admin
       .from('profiles')
-      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at, companion_species, xp, streak_days')
+      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at, companion_species, xp, streak_days, equipped_frame, equipped_glow, name_color')
       .eq('id', params.id)
       .single(),
     admin
@@ -93,6 +96,11 @@ export default async function PublicProfilePage({ params }: Props) {
   const avatar = profile.avatar_emoji ?? '🌍'
   const joinDate = new Date(profile.created_at).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
   const votesCount = profile.votes_count ?? 0
+  const equippedCosmetics = getEquippedCosmetics(profile as {
+    equipped_frame?: string | null
+    equipped_glow?: string | null
+    name_color?: string | null
+  })
   const companionSpecies = ((profile as Record<string, unknown>).companion_species as CompanionSpecies | null) ?? 'spark'
   const xp = ((profile as Record<string, unknown>).xp as number | null) ?? 0
 
@@ -112,8 +120,22 @@ export default async function PublicProfilePage({ params }: Props) {
 
       {/* ── Profile hero ── */}
       <div className="rounded-3xl border border-[var(--border)] bg-[#0d0d1a]/60 p-8 mb-8 text-center">
-        <div className="text-7xl mb-4">{avatar}</div>
-        <h1 className="text-3xl font-black text-white mb-2">{displayName}</h1>
+        <div className="mx-auto mb-4 w-24 h-24 flex items-center justify-center">
+          <CosmeticAvatar
+            emoji={avatar}
+            frame={equippedCosmetics.frame}
+            size="xl"
+            ariaLabel={`${displayName} avatar`}
+          />
+        </div>
+        <h1 className="text-3xl font-black text-white mb-2">
+          <CosmeticName
+            name={displayName}
+            glow={equippedCosmetics.glow}
+            nameColor={equippedCosmetics.nameColor}
+            className="text-3xl font-black"
+          />
+        </h1>
         <div className="flex items-center justify-center gap-2 flex-wrap mb-2">
           <span className="text-xs text-[var(--muted)] border border-white/10 px-2.5 py-0.5 rounded-full">
             👁 Public Profile

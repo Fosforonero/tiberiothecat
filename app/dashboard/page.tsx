@@ -9,13 +9,16 @@ import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import BadgeSection from './BadgeSection'
 import OnboardingModal from './OnboardingModal'
 import CompanionDisplay from '@/components/CompanionDisplay'
+import CosmeticName from '@/components/CosmeticName'
 import DailyMissions from '@/components/DailyMissions'
 import PixieSelector from '@/components/PixieSelector'
 import ProfileShareButton from '@/components/ProfileShareButton'
 import MobileStickyHUD from '@/components/MobileStickyHUD'
 import MobileFloatingVoteCTA from '@/components/MobileFloatingVoteCTA'
 import type { CompanionSpecies, PixieXpMap } from '@/lib/companion'
-import { ownedMarketSpeciesFromPurchases, type PurchaseRow } from '@/lib/purchases'
+import { ownedMarketSpeciesFromPurchases, type PurchaseRow, type ProductId } from '@/lib/purchases'
+import { getEquippedCosmetics } from '@/lib/cosmetics'
+import CosmeticPicker from '@/components/CosmeticPicker'
 import { STREAK_MILESTONES, getStreakProgress } from '@/lib/badges'
 import { getLevelInfo } from '@/lib/missions'
 
@@ -54,10 +57,13 @@ interface UserBadge {
 interface Profile {
   display_name: string | null
   email: string | null
+  avatar_emoji: string | null
   is_premium: boolean
   role: string | null
   votes_count: number
   equipped_frame: string | null
+  equipped_glow: string | null
+  name_color: string | null
   equipped_badge: string | null
   onboarding_done: boolean
   xp: number | null
@@ -98,7 +104,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes, referralWeekRes, referralAllRes, purchasesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, role, votes_count, equipped_frame, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp')
+      .select('display_name, email, avatar_emoji, is_premium, role, votes_count, equipped_frame, equipped_glow, name_color, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -154,9 +160,12 @@ export default async function DashboardPage() {
 
   // Derive owned market-tier Pixies from completed one-time purchases.
   // purchasesRes.error is non-fatal — if table doesn't exist (pre-v16), the list stays empty.
-  const ownedMarketItems = purchasesRes.error
-    ? []
-    : ownedMarketSpeciesFromPurchases((purchasesRes.data ?? []) as unknown as PurchaseRow[])
+  const purchases = purchasesRes.error ? [] : ((purchasesRes.data ?? []) as unknown as PurchaseRow[])
+  const ownedMarketItems = ownedMarketSpeciesFromPurchases(purchases)
+  const ownedProductIds: ProductId[] = purchases.map(p => p.product_id)
+
+  // Equipped cosmetics — resolved from profile columns (validated via lib/cosmetics)
+  const equippedCosmetics = getEquippedCosmetics(profile)
 
   const votesCount = profile?.votes_count ?? 0
   const xp = profile?.xp ?? 0
@@ -233,7 +242,14 @@ export default async function DashboardPage() {
       <div className="mb-10 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h1 className="text-3xl font-black text-white mb-1">
-            {IT ? 'Ciao' : 'Hey'}, {profile?.display_name?.split(' ')[0] ?? (IT ? 'amico' : 'there')} 👋
+            {IT ? 'Ciao' : 'Hey'}{' '}
+            <CosmeticName
+              name={profile?.display_name?.split(' ')[0] ?? (IT ? 'amico' : 'there')}
+              glow={equippedCosmetics.glow}
+              nameColor={equippedCosmetics.nameColor}
+              className="text-3xl font-black"
+            />
+            {' '}👋
           </h1>
           <p className="text-[var(--muted)] text-sm truncate">{profile?.email ?? user.email}</p>
 
@@ -310,6 +326,17 @@ export default async function DashboardPage() {
         </div>
         <span className="text-fuchsia-300 font-bold text-sm transition-transform group-hover:translate-x-1">→</span>
       </Link>
+
+      {/* ── Cosmetic Picker (owned frames/glows/colors) ── */}
+      <CosmeticPicker
+        ownedProductIds={ownedProductIds}
+        equippedFrame={profile?.equipped_frame ?? null}
+        equippedGlow={profile?.equipped_glow ?? null}
+        nameColor={profile?.name_color ?? null}
+        avatarEmoji={profile?.avatar_emoji ?? null}
+        displayName={profile?.display_name ?? (locale === 'it' ? 'Tu' : 'You')}
+        locale={locale}
+      />
 
       {/* ── Daily Missions ── */}
       <DailyMissions

@@ -110,15 +110,17 @@ export const PRODUCT_CATALOG: ProductDef[] = [
     unlocksSpecies: 'scintille',
   },
 
-  // ── Cosmetics (reserved; comingSoon hides them in the store UI) ─────────
-  { id: 'frame_gold',    type: 'frame', name: 'Gold Frame',    tagline: 'A regal gold border for your profile.',                priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_GOLD',    comingSoon: true },
-  { id: 'frame_rainbow', type: 'frame', name: 'Rainbow Frame', tagline: 'A vibrant rainbow border that shifts with hover.',     priceCents: 299, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_RAINBOW', comingSoon: true },
-  { id: 'frame_pulse',   type: 'frame', name: 'Pulse Frame',   tagline: 'An animated pulsing border that draws attention.',     priceCents: 399, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_PULSE',   comingSoon: true },
-  { id: 'frame_holo',    type: 'frame', name: 'Holo Frame',    tagline: 'A holographic border with prismatic shifts.',          priceCents: 399, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_HOLO',    comingSoon: true },
-  { id: 'glow_fire',     type: 'glow',  name: 'Fire Glow',     tagline: 'A fiery glow on your display name.',                   priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_FIRE',     comingSoon: true },
-  { id: 'glow_frost',    type: 'glow',  name: 'Frost Glow',    tagline: 'A cool icy glow on your display name.',                priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_FROST',    comingSoon: true },
-  { id: 'glow_aurora',   type: 'glow',  name: 'Aurora Glow',   tagline: 'A shifting aurora glow on your display name.',         priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_AURORA',   comingSoon: true },
-  { id: 'name_color_bundle', type: 'bundle', name: 'All Name Colors', tagline: '8 premium name colors. Save vs buying singles.', priceCents: 499, stripePriceEnvVar: 'STRIPE_PRICE_NAME_COLOR_BUNDLE', comingSoon: true },
+  // ── Cosmetics (Sprint 4) ─────────────────────────────────────────────
+  // Like the Pixie Market, each missing env var renders as "coming soon"
+  // in the store UI (graceful per-product rollout).
+  { id: 'frame_gold',    type: 'frame', name: 'Gold Frame',    tagline: 'A regal gold border for your profile.',            priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_GOLD' },
+  { id: 'frame_rainbow', type: 'frame', name: 'Rainbow Frame', tagline: 'A vibrant rainbow border that shifts continuously.', priceCents: 299, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_RAINBOW' },
+  { id: 'frame_pulse',   type: 'frame', name: 'Pulse Frame',   tagline: 'An animated pulsing border that draws attention.',  priceCents: 399, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_PULSE' },
+  { id: 'frame_holo',    type: 'frame', name: 'Holo Frame',    tagline: 'A holographic border with prismatic shifts.',       priceCents: 399, stripePriceEnvVar: 'STRIPE_PRICE_FRAME_HOLO' },
+  { id: 'glow_fire',     type: 'glow',  name: 'Fire Glow',     tagline: 'A fiery glow on your display name.',                priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_FIRE' },
+  { id: 'glow_frost',    type: 'glow',  name: 'Frost Glow',    tagline: 'A cool icy glow on your display name.',             priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_FROST' },
+  { id: 'glow_aurora',   type: 'glow',  name: 'Aurora Glow',   tagline: 'A shifting aurora glow on your display name.',      priceCents: 199, stripePriceEnvVar: 'STRIPE_PRICE_GLOW_AURORA' },
+  { id: 'name_color_bundle', type: 'bundle', name: 'All Name Colors', tagline: '8 premium name colors. Save vs buying singles.', priceCents: 499, stripePriceEnvVar: 'STRIPE_PRICE_NAME_COLOR_BUNDLE' },
 ]
 
 export const PRODUCT_BY_ID: Record<ProductId, ProductDef> = Object.fromEntries(
