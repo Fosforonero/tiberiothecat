@@ -1,23 +1,36 @@
 // ── Companion species definitions ────────────────────────────────
-export type CompanionSpecies = 'spark' | 'blip' | 'momo' | 'shade' | 'orbit'
+export type CompanionAccess = 'free' | 'premium' | 'admin'
+
+export type CompanionSpecies =
+  | 'spark' | 'blip' | 'momo' | 'shade' | 'orbit'   // free
+  | 'heart' | 'robot' | 'crown' | 'diamond'           // premium
+  | 'galaxy' | 'angel' | 'devil'                      // premium
+  | 'overseer' | 'void'                               // admin-only
 
 export interface CompanionDef {
   id: CompanionSpecies
   name: string
   description: string
   rarity: 'common' | 'rare' | 'epic' | 'legendary'
+  /** Controls visibility and entitlement:
+   *  - free:    available to all based on votes/streak
+   *  - premium: paid via market (shown in store with lock)
+   *  - admin:   only visible to admin users, never in public store
+   */
+  access: CompanionAccess
   unlockCondition: string
-  // Emoji per stage 1-6
   stageEmoji: [string, string, string, string, string, string]
   color: string
 }
 
 export const COMPANIONS: CompanionDef[] = [
+  // ── Free ──────────────────────────────────────────────────────────
   {
     id: 'spark',
     name: 'Pixie Spark',
     description: 'A curious little energy being who loves bold choices.',
     rarity: 'common',
+    access: 'free',
     unlockCondition: 'Available to all users',
     stageEmoji: ['⚡', '⚡', '🌟', '💫', '✨', '🌟'],
     color: 'text-yellow-400',
@@ -27,6 +40,7 @@ export const COMPANIONS: CompanionDef[] = [
     name: 'Pixie Glitch',
     description: 'A glitchy digital creature that feeds on data and dilemmas.',
     rarity: 'common',
+    access: 'free',
     unlockCondition: 'Available to all users',
     stageEmoji: ['🔮', '🔮', '💎', '🌀', '🌐', '💠'],
     color: 'text-purple-400',
@@ -36,6 +50,7 @@ export const COMPANIONS: CompanionDef[] = [
     name: 'Pixie Leaf',
     description: 'A cheerful forest spirit who weighs every decision carefully.',
     rarity: 'rare',
+    access: 'free',
     unlockCondition: 'Earn the 10 Votes badge',
     stageEmoji: ['🍄', '🍄', '🌿', '🌲', '🌳', '🍃'],
     color: 'text-green-400',
@@ -45,6 +60,7 @@ export const COMPANIONS: CompanionDef[] = [
     name: 'Pixie Moonlight',
     description: 'A mysterious lunar entity who thrives in moral ambiguity.',
     rarity: 'epic',
+    access: 'free',
     unlockCondition: 'Maintain a 7-day streak',
     stageEmoji: ['🌑', '🌒', '🌓', '🌔', '🌕', '🌙'],
     color: 'text-blue-400',
@@ -54,15 +70,118 @@ export const COMPANIONS: CompanionDef[] = [
     name: 'Pixie Hologram',
     description: 'A cosmic wanderer who has seen every dilemma in the universe.',
     rarity: 'legendary',
+    access: 'free',
     unlockCondition: 'Reach 100 votes',
     stageEmoji: ['🪐', '🪐', '🌌', '☄️', '🌠', '💿'],
     color: 'text-orange-400',
+  },
+
+  // ── Premium (market) ───────────────────────────────────────────────
+  {
+    id: 'heart',
+    name: 'Pixie Heart',
+    description: 'A warm, empathetic creature who feels every dilemma deeply.',
+    rarity: 'epic',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['❤️', '❤️', '💝', '💖', '💗', '💞'],
+    color: 'text-pink-400',
+  },
+  {
+    id: 'robot',
+    name: 'Pixie Bot',
+    description: 'A logical machine who calculates the optimal moral outcome.',
+    rarity: 'epic',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['🤖', '🤖', '⚙️', '🔧', '💻', '🦾'],
+    color: 'text-sky-400',
+  },
+  {
+    id: 'crown',
+    name: 'Pixie Crown',
+    description: 'A regal spirit who approaches every dilemma with wisdom and authority.',
+    rarity: 'legendary',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['👑', '👑', '✨', '💛', '🌟', '✨'],
+    color: 'text-yellow-300',
+  },
+  {
+    id: 'diamond',
+    name: 'Pixie Diamond',
+    description: 'A crystalline entity of rare clarity who sees moral truth with precision.',
+    rarity: 'legendary',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['💎', '💎', '🔷', '💠', '🌀', '✨'],
+    color: 'text-cyan-300',
+  },
+  {
+    id: 'galaxy',
+    name: 'Pixie Galaxy',
+    description: 'A cosmic entity who carries entire star systems in its wake.',
+    rarity: 'legendary',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['🌌', '🌌', '🪐', '☄️', '🌠', '✨'],
+    color: 'text-violet-400',
+  },
+  {
+    id: 'angel',
+    name: 'Pixie Angel',
+    description: 'A celestial being of pure moral light who always seeks the higher path.',
+    rarity: 'legendary',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['😇', '😇', '✨', '💫', '🌟', '⭐'],
+    color: 'text-amber-200',
+  },
+  {
+    id: 'devil',
+    name: 'Pixie Devil',
+    description: 'A chaotic spirit who thrives in moral ambiguity and tests every boundary.',
+    rarity: 'legendary',
+    access: 'premium',
+    unlockCondition: 'Available in the Pixie Market',
+    stageEmoji: ['😈', '😈', '🔥', '⚡', '💀', '🌋'],
+    color: 'text-red-400',
+  },
+
+  // ── Admin-only (never in public store) ────────────────────────────
+  {
+    id: 'overseer',
+    name: 'Pixie Overseer',
+    description: 'An all-seeing entity who watches over every dilemma from above.',
+    rarity: 'legendary',
+    access: 'admin',
+    unlockCondition: 'Admin only',
+    stageEmoji: ['👁️', '👁️', '🔵', '💎', '🌀', '✨'],
+    color: 'text-blue-300',
+  },
+  {
+    id: 'void',
+    name: 'Pixie Void',
+    description: 'An entity of pure darkness born from the abyss of impossible choices.',
+    rarity: 'legendary',
+    access: 'admin',
+    unlockCondition: 'Admin only',
+    stageEmoji: ['🌑', '🌑', '⚫', '🕳️', '💜', '🌌'],
+    color: 'text-purple-300',
   },
 ]
 
 export const COMPANION_MAP: Record<CompanionSpecies, CompanionDef> = Object.fromEntries(
   COMPANIONS.map(c => [c.id, c])
 ) as Record<CompanionSpecies, CompanionDef>
+
+/**
+ * Returns the species visible to the user in the selector / store.
+ * Admin species are hidden unless isAdmin is true.
+ */
+export function getVisibleSpecies(isAdmin = false): CompanionDef[] {
+  return COMPANIONS.filter(c => c.access !== 'admin' || isAdmin)
+}
 
 // Stage thresholds (based on votes_count)
 export function getCompanionStage(votesCount: number): 1 | 2 | 3 | 4 | 5 | 6 {
@@ -122,30 +241,56 @@ export function votesToNextStageForSpecies(xpMap: PixieXpMap, species: Companion
   return votesToNextStage(getSpeciesVotes(xpMap, species))
 }
 
-/** Unlock conditions (in sync with CompanionDef.unlockCondition strings). */
-const UNLOCK_REQUIREMENTS: Record<CompanionSpecies, (votes: number, streak: number) => boolean> = {
-  spark: () => true,
-  blip:  () => true,
-  momo:  (votes) => votes >= 10,
-  shade: (_, streak) => streak >= 7,
-  orbit: (votes) => votes >= 100,
+// ── Unlock logic ──────────────────────────────────────────────────────────────
+
+type UnlockFn = (votes: number, streak: number, isPremium?: boolean, isAdmin?: boolean) => boolean
+
+const UNLOCK_REQUIREMENTS: Record<CompanionSpecies, UnlockFn> = {
+  // Free — unlocked by activity
+  spark:    () => true,
+  blip:     () => true,
+  momo:     (votes) => votes >= 10,
+  shade:    (_, streak) => streak >= 7,
+  orbit:    (votes) => votes >= 100,
+  // Premium — unlocked by purchase (isPremium entitlement handled externally)
+  heart:    (_, _s, isPremium) => !!isPremium,
+  robot:    (_, _s, isPremium) => !!isPremium,
+  crown:    (_, _s, isPremium) => !!isPremium,
+  diamond:  (_, _s, isPremium) => !!isPremium,
+  galaxy:   (_, _s, isPremium) => !!isPremium,
+  angel:    (_, _s, isPremium) => !!isPremium,
+  devil:    (_, _s, isPremium) => !!isPremium,
+  // Admin-only
+  overseer: (_, _s, _p, isAdmin) => !!isAdmin,
+  void:     (_, _s, _p, isAdmin) => !!isAdmin,
 }
 
 /**
  * Returns the species that the user has unlocked.
- * `heart` and `robot` are premium/future — not included here.
+ * Pass isPremium / isAdmin to gate premium and admin species accordingly.
  */
-export function getUnlockedSpecies(votesCount: number, streakDays: number): CompanionSpecies[] {
+export function getUnlockedSpecies(
+  votesCount: number,
+  streakDays: number,
+  isPremium = false,
+  isAdmin = false,
+): CompanionSpecies[] {
   return COMPANIONS
     .map(c => c.id)
-    .filter(id => UNLOCK_REQUIREMENTS[id]?.(votesCount, streakDays) ?? false)
+    .filter(id => UNLOCK_REQUIREMENTS[id]?.(votesCount, streakDays, isPremium, isAdmin) ?? false)
 }
 
-/** Returns true if the given species is unlocked for the user. */
+/**
+ * Returns true if the given species is unlocked for the user.
+ * Backward-compatible: isPremium/isAdmin default to false, so existing
+ * callers continue to work (premium/admin species return false for non-entitled users).
+ */
 export function isSpeciesUnlocked(
   species: CompanionSpecies,
   votesCount: number,
   streakDays: number,
+  isPremium = false,
+  isAdmin = false,
 ): boolean {
-  return UNLOCK_REQUIREMENTS[species]?.(votesCount, streakDays) ?? false
+  return UNLOCK_REQUIREMENTS[species]?.(votesCount, streakDays, isPremium, isAdmin) ?? false
 }

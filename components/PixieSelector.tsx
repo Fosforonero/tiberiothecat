@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  COMPANIONS,
   RARITY_STYLES,
   STAGE_LABELS,
   isSpeciesUnlocked,
   getSpeciesStage,
+  getVisibleSpecies,
   type CompanionSpecies,
   type PixieXpMap,
 } from '@/lib/companion'
@@ -21,22 +21,42 @@ interface Props {
   /** Per-species accumulated votes. Falls back to stage 1 if absent. */
   pixieXp: PixieXpMap
   locale?: string
+  isPremium?: boolean
+  isAdmin?: boolean
 }
 
 const IT_UNLOCK: Record<CompanionSpecies, string> = {
-  spark: 'Sempre disponibile',
-  blip:  'Sempre disponibile',
-  momo:  'Sblocca con 10 voti',
-  shade: 'Sblocca con 7 giorni di streak',
-  orbit: 'Sblocca con 100 voti',
+  spark:    'Sempre disponibile',
+  blip:     'Sempre disponibile',
+  momo:     'Sblocca con 10 voti',
+  shade:    'Sblocca con 7 giorni di streak',
+  orbit:    'Sblocca con 100 voti',
+  heart:    '💎 Pixie Market',
+  robot:    '💎 Pixie Market',
+  crown:    '💎 Pixie Market',
+  diamond:  '💎 Pixie Market',
+  galaxy:   '💎 Pixie Market',
+  angel:    '💎 Pixie Market',
+  devil:    '💎 Pixie Market',
+  overseer: '🔒 Solo admin',
+  void:     '🔒 Solo admin',
 }
 
 const EN_UNLOCK: Record<CompanionSpecies, string> = {
-  spark: 'Always available',
-  blip:  'Always available',
-  momo:  'Unlock at 10 votes',
-  shade: 'Unlock at 7-day streak',
-  orbit: 'Unlock at 100 votes',
+  spark:    'Always available',
+  blip:     'Always available',
+  momo:     'Unlock at 10 votes',
+  shade:    'Unlock at 7-day streak',
+  orbit:    'Unlock at 100 votes',
+  heart:    '💎 Pixie Market',
+  robot:    '💎 Pixie Market',
+  crown:    '💎 Pixie Market',
+  diamond:  '💎 Pixie Market',
+  galaxy:   '💎 Pixie Market',
+  angel:    '💎 Pixie Market',
+  devil:    '💎 Pixie Market',
+  overseer: '🔒 Admin only',
+  void:     '🔒 Admin only',
 }
 
 const IT_STAGE_LABELS: Record<number, string> = {
@@ -54,9 +74,13 @@ export default function PixieSelector({
   streakDays,
   pixieXp,
   locale = 'en',
+  isPremium = false,
+  isAdmin = false,
 }: Props) {
   const IT = locale === 'it'
   const router = useRouter()
+
+  const visibleSpecies = getVisibleSpecies(isAdmin)
 
   const [selected, setSelected] = useState<CompanionSpecies>(currentSpecies)
   const [saving, setSaving] = useState(false)
@@ -65,7 +89,7 @@ export default function PixieSelector({
 
   async function handleSelect(species: CompanionSpecies) {
     if (species === selected || saving) return
-    if (!isSpeciesUnlocked(species, votesCount, streakDays)) return
+    if (!isSpeciesUnlocked(species, votesCount, streakDays, isPremium, isAdmin)) return
 
     setSaving(true)
     setError(null)
@@ -125,8 +149,9 @@ export default function PixieSelector({
 
       {/* Species grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-        {COMPANIONS.map(c => {
-          const unlocked = isSpeciesUnlocked(c.id, votesCount, streakDays)
+        {visibleSpecies.map(c => {
+          const unlocked = isSpeciesUnlocked(c.id, votesCount, streakDays, isPremium, isAdmin)
+          const isPremiumSpecies = c.access === 'premium'
           const isActive = selected === c.id
           const stage = getSpeciesStage(pixieXp, c.id)
           const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
@@ -193,10 +218,16 @@ export default function PixieSelector({
                 {c.name.replace('Pixie ', '')}
               </p>
 
-              {/* Rarity badge */}
-              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>
-                {c.rarity}
-              </span>
+              {/* Rarity / access badge */}
+              {isPremiumSpecies && !unlocked ? (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md border border-yellow-500/40 bg-yellow-500/10 text-yellow-300">
+                  💎 premium
+                </span>
+              ) : (
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${rarityBadge}`}>
+                  {c.rarity}
+                </span>
+              )}
 
               {/* Stage label for unlocked / unlock hint for locked */}
               {unlocked ? (

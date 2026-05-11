@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
-import { isSpeciesUnlocked, type CompanionSpecies } from '@/lib/companion'
+import { COMPANIONS, isSpeciesUnlocked, type CompanionSpecies } from '@/lib/companion'
 
-const VALID_SPECIES: CompanionSpecies[] = ['spark', 'blip', 'momo', 'shade', 'orbit']
+// All known species IDs — validated at runtime, entitlement checked below
+const VALID_SPECIES = new Set<string>(COMPANIONS.map(c => c.id))
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -98,12 +99,14 @@ export async function POST(req: NextRequest) {
 
   if (companionSpecies !== undefined) {
     const species = String(companionSpecies) as CompanionSpecies
-    if (!VALID_SPECIES.includes(species)) {
+    if (!VALID_SPECIES.has(species)) {
       return NextResponse.json({ error: 'Invalid species' }, { status: 400 })
     }
-    const votes = currentProfile?.votes_count ?? 0
+    const votes  = currentProfile?.votes_count ?? 0
     const streak = currentProfile?.streak_days ?? 0
-    if (!isSpeciesUnlocked(species, votes, streak)) {
+    const isPremiumUser = ents.effectivePremium ?? false
+    const isAdminUser   = ents.isAdmin ?? false
+    if (!isSpeciesUnlocked(species, votes, streak, isPremiumUser, isAdminUser)) {
       return NextResponse.json({ error: 'Species not yet unlocked' }, { status: 403 })
     }
     updatePayload.companion_species = species
