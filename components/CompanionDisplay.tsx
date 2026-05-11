@@ -44,11 +44,15 @@ export default function CompanionDisplay({
 }: Props) {
   const IT = locale === 'it'
   const companion = COMPANION_MAP[species] ?? COMPANION_MAP['spark']
-  // Use per-species vote count when available; fall back to global votesCount.
-  // Guard: an empty pixieXp map {} is truthy but has no species keys yet —
-  // in that case treat as 0 and fall back to votesCount so the stage stays correct.
-  const speciesVotes = pixieXp ? getSpeciesVotes(pixieXp, species) : 0
-  const effectiveVotes = speciesVotes > 0 ? speciesVotes : votesCount
+  // Per-species XP is authoritative once any species has data.
+  // Guard: an empty map {} means the per-species system hasn't kicked in yet for
+  // this user (migration not yet applied) — fall back to global votesCount so the
+  // stage doesn't suddenly reset to 1 for existing users.
+  // Once the map has any key at all, use per-species votes for every species,
+  // even if a newly-equipped species sits at 0.
+  const hasPerSpeciesTracking = Boolean(pixieXp && Object.keys(pixieXp).length > 0)
+  const speciesVotes = hasPerSpeciesTracking ? getSpeciesVotes(pixieXp!, species) : 0
+  const effectiveVotes = hasPerSpeciesTracking ? speciesVotes : votesCount
   const stage = getCompanionStage(effectiveVotes)
 
   const [imgError, setImgError] = useState(false)

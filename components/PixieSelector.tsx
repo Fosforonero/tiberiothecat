@@ -7,6 +7,7 @@ import {
   STAGE_LABELS,
   isSpeciesUnlocked,
   getSpeciesStage,
+  getSpeciesVotes,
   getVisibleSpecies,
   type CompanionSpecies,
   type PixieXpMap,
@@ -157,6 +158,8 @@ export default function PixieSelector({
           const stageLabel = IT ? (IT_STAGE_LABELS[stage] ?? STAGE_LABELS[stage]) : STAGE_LABELS[stage]
           const hasImgError = imgErrors[c.id]
           const rarityBadge = RARITY_STYLES[c.rarity] ?? RARITY_STYLES.common
+          // Per-species vote count — shown on unlocked cards so each Pixie's own XP is visible at a glance.
+          const speciesVoteCount = getSpeciesVotes(pixieXp, c.id)
 
           return (
             <button
@@ -229,9 +232,15 @@ export default function PixieSelector({
 
               {/* Stage label for unlocked / unlock hint for locked */}
               {unlocked ? (
-                <p className={`text-[9px] leading-tight ${isActive ? 'text-blue-300/80' : 'text-white/40'}`}>
-                  {stageLabel}
-                </p>
+                <>
+                  <p className={`text-[9px] leading-tight ${isActive ? 'text-blue-300/80' : 'text-white/40'}`}>
+                    {stageLabel}
+                  </p>
+                  {/* Per-species vote count — each Pixie's own XP, independent of other species */}
+                  <p className={`text-[8px] leading-tight tabular-nums ${isActive ? 'text-blue-200/50' : 'text-white/25'}`}>
+                    {speciesVoteCount.toLocaleString()} {IT ? 'voti' : 'votes'}
+                  </p>
+                </>
               ) : (
                 <p className="text-[9px] text-white/30 leading-tight">
                   {IT ? IT_UNLOCK[c.id] : EN_UNLOCK[c.id]}

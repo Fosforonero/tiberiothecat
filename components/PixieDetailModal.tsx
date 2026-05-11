@@ -56,9 +56,15 @@ export default function PixieDetailModal({
   const isPremium = companion.access === 'premium'
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({})
 
-  // Per-species vote progress
+  // Per-species vote progress.
+  // Same guard as CompanionDisplay: if the XP map has no keys yet (empty {})
+  // the tracking migration hasn't fired — fall back to votesCount for the
+  // currently-equipped species only. For any other species, 0 is the correct answer.
+  const hasPerSpeciesTracking = Boolean(pixieXp && Object.keys(pixieXp).length > 0)
   const speciesVotes = getSpeciesVotes(pixieXp, companion.id as CompanionSpecies)
-  const effectiveVotes = speciesVotes > 0 ? speciesVotes : (isCurrentSpecies ? votesCount : 0)
+  const effectiveVotes = hasPerSpeciesTracking
+    ? speciesVotes
+    : (isCurrentSpecies ? votesCount : 0)
   const isMaxStage = stage === 6
   const currentThreshold = STAGE_THRESHOLDS[stage - 1]
   const nextThreshold = isMaxStage ? effectiveVotes : STAGE_THRESHOLDS[stage]
