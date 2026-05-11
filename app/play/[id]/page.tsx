@@ -85,25 +85,33 @@ export default async function PlayPage({ params, searchParams }: Props) {
     // Non-blocking
   }
 
-  // Collect voted IDs + check existing vote for current dilemma (single Supabase query)
+  // Collect voted IDs + check existing vote + streak status (parallel Supabase queries)
   let existingVote: { choice: 'A' | 'B'; canChangeUntil: string } | null = null
   let votedIds = new Set<string>()
   let userDetected = false
+  let streakDays = 0
+  let streakAtRisk = false
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
       userDetected = true
-      const { data: allVotedRows } = await supabase
-        .from('dilemma_votes')
-        .select('dilemma_id, choice, can_change_until')
-        .eq('user_id', user.id)
-      if (allVotedRows) {
-        votedIds = new Set(allVotedRows.map(r => r.dilemma_id))
-        const row = allVotedRows.find(r => r.dilemma_id === params.id)
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+      const [votesResult, profileResult] = await Promise.all([
+        supabase.from('dilemma_votes').select('dilemma_id, choice, can_change_until').eq('user_id', user.id),
+        supabase.from('profiles').select('streak_days, streak_last_date').eq('id', user.id).single(),
+      ])
+      if (votesResult.data) {
+        votedIds = new Set(votesResult.data.map(r => r.dilemma_id))
+        const row = votesResult.data.find(r => r.dilemma_id === params.id)
         if (row) {
           existingVote = { choice: row.choice as 'A' | 'B', canChangeUntil: row.can_change_until }
         }
+      }
+      const prof = profileResult.data
+      if (prof && (prof.streak_days ?? 0) >= 2 && prof.streak_last_date === yesterday) {
+        streakDays = prof.streak_days as number
+        streakAtRisk = true
       }
     }
   } catch {
@@ -208,6 +216,8 @@ export default async function PlayPage({ params, searchParams }: Props) {
         pathCategoryLabel={pathCategoryLabel}
         pathCategoryEmoji={pathCategoryEmoji}
         nextPathId={nextPathId}
+        streakDays={streakDays}
+        streakAtRisk={streakAtRisk}
       />
       <RelatedDilemmas current={scenario} all={allScenarios} />
       <AdSlot slot={SLOT_PLAY} className="max-w-2xl mx-auto px-4 pb-8" />

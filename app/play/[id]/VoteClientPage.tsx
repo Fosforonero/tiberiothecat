@@ -28,6 +28,8 @@ interface Props {
   pathCategoryLabel?: string
   pathCategoryEmoji?: string
   nextPathId?: string | null
+  streakDays?: number
+  streakAtRisk?: boolean
 }
 
 function getCookie(name: string): string | null {
@@ -85,6 +87,7 @@ const EN_COPY = {
   revealHint:          'Vote to reveal how the world splits.',
   changeVote:          'Switch to this',
   challengeFriend:     'Challenge a friend →',
+  streakAtRisk:        (n: number) => `🔥 Your ${n}-day streak ends tonight! Vote to save it.`,
 }
 
 const IT_COPY = {
@@ -116,6 +119,7 @@ const IT_COPY = {
   revealHint:          'Vota per scoprire come si divide il mondo.',
   changeVote:          'Cambia con questa',
   challengeFriend:     'Sfida un amico →',
+  streakAtRisk:        (n: number) => `🔥 Il tuo streak di ${n} giorni finisce stanotte! Vota per salvarlo.`,
 }
 
 export default function VoteClientPage({
@@ -132,8 +136,11 @@ export default function VoteClientPage({
   pathCategoryLabel,
   pathCategoryEmoji,
   nextPathId,
+  streakDays = 0,
+  streakAtRisk = false,
 }: Props) {
   const [pendingOption, setPendingOption] = useState<'a' | 'b' | null>(null)
+  const [streakBannerDismissed, setStreakBannerDismissed] = useState(false)
   const [graceSecsLeft, setGraceSecsLeft] = useState(0)
   const [submittedOption, setSubmittedOption] = useState<'a' | 'b' | null>(null)
   const [loading, setLoading] = useState(false)
@@ -369,6 +376,23 @@ export default function VoteClientPage({
           <div className="mb-6 rounded-2xl border border-orange-500/30 bg-orange-500/10 px-5 py-4 text-center">
             <p className="text-orange-400 font-black text-lg mb-0.5">{copy.challengeTitle}</p>
             <p className="text-[var(--muted)] text-sm">{copy.challengeText}</p>
+          </div>
+        )}
+
+        {/* ── Streak-at-risk banner ── */}
+        {streakAtRisk && !existingVote && !submittedOption && !streakBannerDismissed && (
+          <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-3.5 flex items-center gap-3">
+            <p className="flex-1 text-sm font-semibold text-amber-300 leading-snug">
+              {copy.streakAtRisk(streakDays)}
+            </p>
+            <button
+              type="button"
+              onClick={() => setStreakBannerDismissed(true)}
+              aria-label={localePrefix === '/it' ? 'Chiudi' : 'Dismiss'}
+              className="text-amber-400/50 hover:text-amber-300 transition-colors text-xl leading-none flex-shrink-0"
+            >
+              ×
+            </button>
           </div>
         )}
 
