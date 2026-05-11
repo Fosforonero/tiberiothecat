@@ -6,6 +6,7 @@ import { getPixieImagePath } from '@/lib/pixie'
 import { sharePixieLevelUp } from '@/lib/share-pixie'
 import { STAGE_LABELS, COMPANION_MAP } from '@/lib/companion'
 import type { CompanionSpecies } from '@/lib/companion'
+import { track } from '@/lib/gtag'
 
 const IT_STAGE_LABELS: Record<number, string> = {
   1: 'Cucciolo',
@@ -61,7 +62,9 @@ export default function PixieLevelUpModal({ species, stage, xp, locale, userId, 
     const profileUrl = `${origin}/u/${userId}`
     const companionDef = COMPANION_MAP[species as CompanionSpecies]
     const speciesName = companionDef?.name ?? 'Pixie'
+    track('pixie_share_clicked', { species, stage, locale, source: 'levelup_modal' })
     const result = await sharePixieLevelUp({ species, speciesName, stage, stageLabel, profileUrl, locale })
+    track('pixie_share_result', { species, stage, locale, result, source: 'levelup_modal' })
     setShareState(result)
     if (result !== 'error') {
       setTimeout(() => setShareState('idle'), 2200)

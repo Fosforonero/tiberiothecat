@@ -14,8 +14,8 @@ export async function sharePixieLevelUp(opts: SharePixieOptions): Promise<ShareR
 
   const text =
     locale === 'it'
-      ? `Il mio ${speciesName} ha raggiunto lo Stadio ${stage} — ${stageLabel} su SplitVote! 🎉`
-      : `My ${speciesName} just reached Stage ${stage} — ${stageLabel} on SplitVote! 🎉`
+      ? `Il mio Pixie ${speciesName} è appena evoluto allo Stadio ${stage} — ${stageLabel} su SplitVote! 🎉\nVota dilemmi morali impossibili e cresci il tuo 👇`
+      : `My ${speciesName} Pixie just evolved to Stage ${stage} — ${stageLabel} on SplitVote! 🎉\nVote on impossible moral dilemmas and grow your own 👇`
 
   const title =
     locale === 'it'
