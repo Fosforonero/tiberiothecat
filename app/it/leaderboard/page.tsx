@@ -9,6 +9,18 @@ export const metadata: Metadata = {
     canonical: 'https://splitvote.io/it/leaderboard',
     languages: { 'en': 'https://splitvote.io/leaderboard' },
   },
+  openGraph: {
+    title: 'Classifica | SplitVote',
+    description: 'I pensatori morali più attivi su SplitVote — classificati per dilemmi votati, streak e badge.',
+    url: 'https://splitvote.io/it/leaderboard',
+    siteName: 'SplitVote',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Classifica | SplitVote',
+    description: 'I pensatori morali più attivi su SplitVote — classificati per dilemmi votati, streak e badge.',
+  },
 }
 
 export const revalidate = 600

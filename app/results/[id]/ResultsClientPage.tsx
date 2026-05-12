@@ -372,7 +372,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   const copyLink = () => {
     navigator.clipboard.writeText(shareUrl)
     setCopied(true)
-    track('copy_link_clicked', { scenario_id: scenario.id, locale })
+    track('share_clicked', { target: 'copy_link', scenario_id: scenario.id, locale })
     trackServerEvent('copy_result_link')
     setTimeout(() => setCopied(false), 2000)
   }
@@ -421,14 +421,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   }
 
   const handleWebShare = async () => {
-    track('share_clicked', { target: 'web_share', scenario_id: scenario.id, locale })
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: scenario.question, text: webShareText, url: shareUrl })
+        track('share_clicked', { target: 'web_share', scenario_id: scenario.id, locale })
         trackServerEvent('share_result')
       } catch { /* user cancelled — do not track */ }
     } else {
       await navigator.clipboard.writeText(`${webShareText}\n${shareUrl}`)
+      track('share_clicked', { target: 'copy_link', scenario_id: scenario.id, locale })
       setWebShareCopied(true)
       trackServerEvent('copy_result_link')
       setTimeout(() => setWebShareCopied(false), 2000)
@@ -1044,6 +1045,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           </div>
           <a
             href={isIT ? '/login?locale=it' : '/login'}
+            onClick={() => track('signup_cta_clicked', { source: 'results', locale })}
             className="flex-shrink-0 w-full sm:w-auto text-center text-sm font-bold px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-colors neon-glow-blue min-h-[48px] flex items-center justify-center"
           >
             {copy.anonCTAButton}

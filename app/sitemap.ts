@@ -149,6 +149,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE}/leaderboard`,
+      lastModified: now,
+      changeFrequency: 'hourly' as const,
+      priority: 0.85,
+    },
+    {
       url: `${BASE}/personality`,
       lastModified: now,
       changeFrequency: 'weekly' as const,
@@ -178,6 +184,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'daily' as const,
       priority: 0.8,
+    },
+    {
+      url: `${BASE}/it/leaderboard`,
+      lastModified: now,
+      changeFrequency: 'hourly' as const,
+      priority: 0.80,
     },
     {
       url: `${BASE}/it/personality`,

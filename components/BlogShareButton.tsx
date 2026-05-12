@@ -21,7 +21,9 @@ export default function BlogShareButton({ title, text, url, locale, slug, target
     e.preventDefault()
     e.stopPropagation()
     const result = await shareQuestion({ title, text, url })
-    track('share_clicked', { target, slug, locale })
+    if (result !== 'cancelled') {
+      track('share_clicked', { target: result === 'copied' ? 'copy_link' : target, slug, locale })
+    }
     if (result === 'copied') {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)

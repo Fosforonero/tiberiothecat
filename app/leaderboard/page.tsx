@@ -9,6 +9,18 @@ export const metadata: Metadata = {
     canonical: 'https://splitvote.io/leaderboard',
     languages: { 'it-IT': 'https://splitvote.io/it/leaderboard' },
   },
+  openGraph: {
+    title: 'Leaderboard | SplitVote',
+    description: 'The most dedicated moral thinkers on SplitVote — ranked by votes, streaks, and badges.',
+    url: 'https://splitvote.io/leaderboard',
+    siteName: 'SplitVote',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Leaderboard | SplitVote',
+    description: 'The most dedicated moral thinkers on SplitVote — ranked by votes, streaks, and badges.',
+  },
 }
 
 export const revalidate = 600 // refresh every 10 minutes

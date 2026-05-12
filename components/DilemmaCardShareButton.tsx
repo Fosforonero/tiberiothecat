@@ -26,8 +26,14 @@ export default function DilemmaCardShareButton({ question, playHref, scenarioId,
       locale === 'it'
         ? `"${question}" — Tu cosa sceglieresti?`
         : `"${question}" — What would you choose?`
-    track('share_clicked', { target: 'dilemma_card', scenario_id: scenarioId, locale })
     const result = await shareQuestion({ title: question, text, url })
+    if (result !== 'cancelled') {
+      track('share_clicked', {
+        target: result === 'copied' ? 'copy_link' : 'dilemma_card',
+        scenario_id: scenarioId,
+        locale,
+      })
+    }
     if (result === 'copied') {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
