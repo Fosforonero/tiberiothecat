@@ -1,14 +1,18 @@
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getScenario } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
-import BadgeSection from './BadgeSection'
-import OnboardingModal from './OnboardingModal'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import DailyMissions from '@/components/DailyMissions'
 import PixieSelector from '@/components/PixieSelector'
 import type { CompanionSpecies } from '@/lib/companion'
+
+// Lazy-load heavy/conditional client components — skips their JS on first paint
+const OnboardingModal = dynamic(() => import('./OnboardingModal'), { ssr: false })
+const BadgeSection    = dynamic(() => import('./BadgeSection'),    { ssr: false })
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -78,6 +82,10 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login?redirect=/dashboard')
+
+  // Locale from cookie (set by language toggle / IT route)
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('lang-pref')?.value === 'it' ? 'it' : 'en'
 
   // Fetch all data in parallel
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
@@ -198,6 +206,7 @@ export default async function DashboardPage() {
         species={companionSpecies}
         votesCount={votesCount}
         xp={xp}
+        locale={locale}
       />
 
       {/* ── Cosmetici (Pixie Skins + Avatar toggle) ── */}
@@ -215,6 +224,7 @@ export default async function DashboardPage() {
         userId={user.id}
         xp={xp}
         streakDays={streakDays}
+        locale={locale}
       />
 
       {/* ── Premium status ── */}
@@ -250,7 +260,7 @@ export default async function DashboardPage() {
 
       {/* ── Badge collection (with equip toggle) ── */}
       {userBadges.length > 0 && (
-        <BadgeSection initialBadges={userBadges as unknown as Parameters<typeof BadgeSection>[0]['initialBadges']} />
+        <BadgeSection initialBadges={userBadges as unknown as UserBadge[]} />
       )}
 
       {/* ── Answer History ── */}

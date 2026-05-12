@@ -1,5 +1,18 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+
+/**
+ * Cookie-free anon client — safe for ISR/SSG pages that serve public data.
+ * Does NOT read request cookies, so Next.js can cache the response normally.
+ * RLS still applies (anon key); auth state is NOT available.
+ */
+export function createPublicClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
+}
 
 export async function createClient() {
   const cookieStore = await cookies()

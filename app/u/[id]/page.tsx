@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import CompanionDisplay from '@/components/CompanionDisplay'
@@ -19,7 +19,7 @@ const RARITY_STYLES: Record<string, string> = {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const admin = await createClient()
+  const admin = createPublicClient()
   const { data } = await admin
     .from('profiles')
     .select('display_name, votes_count, avatar_emoji')
@@ -39,12 +39,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export const dynamic = 'force-dynamic'
+// Public profile — ISR: revalidate every hour (no per-user content here)
+export const revalidate = 3600
 
 export default async function PublicProfilePage({ params }: Props) {
-  // Public profile — uses anon client (RLS must allow SELECT on profiles/user_badges for anon)
-  // This removes the dependency on SUPABASE_SERVICE_ROLE_KEY for a public-facing page.
-  const admin = await createClient()
+  // Public profile — uses anon client (no cookies, ISR-safe)
+  // RLS must allow SELECT on profiles/user_badges for anon role.
+  const admin = createPublicClient()
 
   const [profileRes, badgesRes] = await Promise.all([
     admin

@@ -11,7 +11,8 @@ interface Props {
   params: { slug: string }
 }
 
-export const dynamic = 'force-dynamic'
+// Blog articles don't contain per-user content — ISR 1 hour is safe
+export const revalidate = 3600
 
 export function generateStaticParams() {
   return getPostsByLocale('it').map((p) => ({ slug: p.slug }))
