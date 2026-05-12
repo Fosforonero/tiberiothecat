@@ -1,6 +1,7 @@
 # SplitVote — Launch Audit
 
 > Audit completo dello stato del progetto al 27 Aprile 2026.
+> Ultimo aggiornamento: 12 Maggio 2026 — Sprint A/B/C + launch fixes.
 > Aggiornare ad ogni sprint significativo.
 
 ---
@@ -535,7 +536,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 - [ ] Prerequisito: crescita organica misurabile prima di submission Apple/Google
 
 ### DNS & Infrastructure
-- [ ] Cloudflare: redirect www → non-www (301) — rischio duplicate content SEO
+- [x] **Redirect www → non-www — ✅ 12 Maggio 2026** — `vercel.json` permanent 301 da `www.splitvote.io` → `splitvote.io` (Cloudflare è DNS-only, redirect gestito da Vercel)
 - [ ] Cloudflare Email Routing: test forward alias tutti gli indirizzi @splitvote.io
 - [ ] Resend DNS: SPF + DKIM verificati per outbound email
 - [ ] DMARC record: `v=DMARC1; p=quarantine; rua=mailto:hello@splitvote.io`
