@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 13 May 2026 (post Sprints E / F-B / G / SEO / I / H)
+Last updated: 13 May 2026 (post Sprints M / N / O / Q / R / S / T / U — afternoon session)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
@@ -10,23 +10,83 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
 - **Branch:** `main`
 - **Local vs remote:** **in sync** — all commits pushed
-- **Last pushed:** `8198753` — all commits pushed, main in sync
+- **Last pushed:** `fbbe41d` — all commits pushed, main in sync
 
 ### Recent commits
 | Hash | Description |
 |---|---|
+| `fbbe41d` | feat(sprint-t+u): XP+level on public profile, leaderboard metadata updated |
+| `10998fa` | feat(sprint-s): streak saved toast on /play after voting when streak at risk |
+| `28a9260` | feat(sprint-q): hreflang alternates on EN category pages |
+| `acbe29a` | feat(sprint-n): sticky "See Results" CTA on /play after first vote |
+| `d943bc5` | feat(sprint-o): +50 XP pill on DailyDilemma vote card |
+| `2ea200a` | fix(sprint-m): challenge_friend mission via challenge_link_copied event |
 | `8198753` | feat(sprint-h): elevate streak to first-class dashboard retention signal |
 | `433ec8c` | perf(sprint-i): swap getDynamicScenarios → getCachedDynamicScenarios in IT results page |
 | `3051718` | feat(Sprint G): sticky "Next dilemma" — all screen sizes + slide-up after reveal |
 | `f09b5b6` | refactor(Sprint F-B): centralize locale detection in useLocale() hook |
-| `2e2e667` | fix(seo): fix Dataset structured data — license, creator, hasPart → variableMeasured |
-| `113f43b` | perf(Sprint E): restore ISR on homepage, /it, /trending, and category pages |
-| `99cb198` | docs: update CURRENT_HANDOFF — Sprint D, leaderboard, GA4, Vercel deploy fix |
-| `7f7cbf8` | fix(config): correct www redirect source pattern for Vercel (`/:path*`) |
 
 ---
 
-## 2. What changed today (13 May 2026)
+## 2. What changed today (13 May 2026) — afternoon session
+
+### Sprint U — XP + Level on Public Profile
+- `app/u/[id]/page.tsx`:
+  - Added `import { getLevelInfo } from '@/lib/missions'`
+  - Computed `streakDays` and `levelInfo` from profile data
+  - Expanded stats grid from 2-col (xs) to `grid-cols-2 sm:grid-cols-4` — now shows 4 cards
+  - New stat card: **Lv.N** (color from `levelInfo.color`) + XP count
+  - New stat card: **streak** — orange border/bg + 🔥 when active, muted dash when zero
+
+### Sprint T — Leaderboard Metadata Update
+- `app/leaderboard/page.tsx` + `app/it/leaderboard/page.tsx`:
+  - Updated `metadata.description` (EN + IT) to mention XP alongside votes and streaks
+  - Minor OG/twitter copy parity
+
+### Sprint S — "Streak Saved!" Toast on /play
+- `app/play/[id]/VoteClientPage.tsx`:
+  - Added `streakSaved` state
+  - When `streakAtRisk && streakDays > 0`: shows full-screen overlay toast (🔥, orange, EN/IT) then redirects after 1.2 s
+  - Non-streak votes redirect immediately as before
+
+### Sprint R — Top XP Leaderboard Section
+- `app/leaderboard/page.tsx` + `app/it/leaderboard/page.tsx`:
+  - Extended `ProfileRow` type with `xp: number | null`
+  - Added third Supabase query: `xp desc`, `gt('xp', 0)`, limit 50
+  - New "⚡ Top XP — Missions & Engagement" section (purple accent, `hover:border-purple-500/30`)
+  - IT copy: "⚡ Top XP — Missioni & Impegno"
+
+### Sprint Q — hreflang on EN Category Pages
+- `app/category/[category]/page.tsx`:
+  - Added full `languages` block to `alternates`: `en`, `it-IT`, `x-default`
+  - Matches IT category page pattern for Search Console hreflang parity
+
+### Sprint O — +50 XP Pill on DailyDilemma
+- `components/DailyDilemma.tsx`:
+  - Yellow XP pill (`+50 XP`) shown only when `mounted && !isVoted` — disappears after voting
+  - Inline style: `text-yellow-300 bg-yellow-500/15 border-yellow-500/30`
+
+### Sprint N — Sticky "See Results" CTA on /play
+- `app/play/[id]/VoteClientPage.tsx`:
+  - After voting: sticky bottom bar slides up after 250 ms delay
+  - Shows "See Results →" (EN) / "Vedi Risultati →" (IT), links to results page
+  - Respects `prefers-reduced-motion` (appears instantly)
+  - `env(safe-area-inset-bottom)` for iPhone notch
+  - GA4: `see_results_clicked` event on tap
+
+### Sprint M — challenge_friend Mission Fix
+- **Root cause**: `challenge_friend` mission required `referral_visit` events (someone else clicking the user's referral link) — not in user's direct control, mission was effectively impossible.
+- **Fix**: switched to `challenge_link_copied` event fired client-side when user taps "Copy Challenge" in `copyChallenge()`.
+- `app/results/[id]/ResultsClientPage.tsx`: added `trackServerEvent('challenge_link_copied')` in `copyChallenge()`
+- `app/api/missions/route.ts`: added `CHALLENGE_EVENT_TYPES`, `countChallengeEventsToday()`, wired into `challenge_friend` + `share_and_challenge` progress
+- `app/api/missions/complete/route.ts`: both mission completion checks now use `challenge_link_copied` events
+
+### Sprint P — Blog Workflow (no-op)
+- GenerateDraftPanel + BlogDraftQueue already wired in admin "Blog" tab with full approve/reject/publish flow. EN+IT blog pages already read from `blog:published`. No code changes were needed.
+
+---
+
+## 3. What changed earlier today (13 May 2026) — morning session
 
 ### Sprint H — Dashboard Streak Retention UI
 - `components/DailyMissions.tsx`: replaced small inline streak text with a prominent orange banner card (fire icon, day count, "keep streak alive" copy, EN/IT)
@@ -137,6 +197,13 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 | useLocale() hook | ✅ centralized locale detection across 7 components (Sprint F-B) |
 | Sticky next-dilemma CTA | ✅ all screen sizes, slide-up animation (Sprint G) |
 | Dashboard streak UI | ✅ prominent banner + orange stat card (Sprint H) |
+| challenge_friend mission | ✅ fires on challenge_link_copied (Sprint M) |
+| Sticky "See Results" on /play | ✅ slide-up after vote, GA4 tracked (Sprint N) |
+| +50 XP pill on DailyDilemma | ✅ shown pre-vote, disappears after (Sprint O) |
+| hreflang EN category pages | ✅ en / it-IT / x-default alternates (Sprint Q) |
+| Top XP leaderboard section | ✅ EN+IT, purple accent, limit 50 (Sprint R) |
+| Streak saved toast on /play | ✅ 🔥 overlay → redirect after 1.2s (Sprint S) |
+| Public profile XP + level | ✅ Lv.N card + streak card in stats grid (Sprint U) |
 | AdSense slots | ⚠️ slot IDs not set — needs real IDs from Matteo |
 | Stripe Premium live QA | ⚠️ Preview OK; live checkout with real card pending |
 | AdSense account approval | ⚠️ check status in Google AdSense dashboard |
@@ -191,35 +258,38 @@ Note: `migration_v18` (use_pixie_avatar column) was already run on production pe
 ## 7. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — post 13 Maggio 2026 (pomeriggio/sera).
+Ripartenza sessione SplitVote — post 13 Maggio 2026 (sera/fix session).
 
 Leggi prima:
 - CLAUDE.md
 - CURRENT_HANDOFF.md
-- git log --oneline -10
+- git log --oneline -15
 - git status --short
 
 State:
-- main in sync con origin — tutto pushato (last: 8198753)
-- Sprint E / F-B / G / SEO / I / H tutti completati e pushati
-- Build Vercel dovrebbe essere avviato automaticamente su 8198753
+- main in sync con origin — tutto pushato (last: fbbe41d)
+- Sprint M / N / O / Q / R / S / T / U tutti completati e pushati nel pomeriggio
 
-Sprint completati oggi:
-- Sprint E: ISR ripristinato su 6 pagine EN (getCachedDynamicScenarios + revalidate:3600)
-- SEO fix: Dataset structured data corretto EN+IT (variableMeasured + license + creator)
-- Sprint F-B: hook useLocale() centralizzato in 7 componenti
-- Sprint G: sticky "Next dilemma" CTA — tutte le dimensioni + slide-up animation
-- Sprint I: IT results page — parity fix getCachedDynamicScenarios
-- Sprint H: dashboard streak — banner prominente + stat card arancione
+Sprint completati oggi (pomeriggio):
+- Sprint M: challenge_friend mission ora funziona via challenge_link_copied
+- Sprint N: sticky "See Results" CTA su /play dopo il voto (slide-up, GA4)
+- Sprint O: pill +50 XP su DailyDilemma pre-voto
+- Sprint Q: hreflang alternates EN category pages
+- Sprint R: sezione "Top XP" in leaderboard EN+IT
+- Sprint S: toast "Streak saved!" su /play quando streak a rischio
+- Sprint T: metadata leaderboard aggiornati con menzione XP
+- Sprint U: stat card XP+level e streak su profilo pubblico /u/[id]
 
-Priorità sessione prossima:
+Priorità sessione prossima (fix):
 1. Stripe live QA — splitvote.io/profile → checkout reale → verifica is_premium + webhook (HUMAN_ONLY)
 2. AdSense slot IDs e approvazione account (HUMAN_ONLY)
-3. Nuovi sprint da ROADMAP (pm-orchestrator per suggerimento)
+3. Fix specifici (il PM ha detto "il resto della giornata facciamo i fix") — chiedere a Matteo quali fix vuole affrontare
+4. pm-orchestrator per nuovi sprint se i fix sono esauriti
 
 HUMAN_ONLY:
 - Stripe live checkout QA (carta reale)
 - AdSense slot IDs e verifica approvazione
 - Backup configuration (Upstash + Supabase)
+- Resend DNS verification
 - git push senza esplicito GO
 ```
