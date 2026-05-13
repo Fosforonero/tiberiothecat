@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 13 May 2026 (post Sprints M / N / O / Q / R / S / T / U — afternoon session)
+Last updated: 13 May 2026 (post Sprints M–U + Fixes Y/Z — end of day)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
@@ -10,11 +10,13 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
 - **Branch:** `main`
 - **Local vs remote:** **in sync** — all commits pushed
-- **Last pushed:** `fbbe41d` — all commits pushed, main in sync
+- **Last pushed:** `4e636d1` — all commits pushed, main in sync
 
 ### Recent commits
 | Hash | Description |
 |---|---|
+| `4e636d1` | fix(ux): mission targets → /trending; leaderboard back-nav on profile (Fix Y+Z) |
+| `1c95380` | docs: update CURRENT_HANDOFF — Sprints M/N/O/Q/R/S/T/U (13 May afternoon) |
 | `fbbe41d` | feat(sprint-t+u): XP+level on public profile, leaderboard metadata updated |
 | `10998fa` | feat(sprint-s): streak saved toast on /play after voting when streak at risk |
 | `28a9260` | feat(sprint-q): hreflang alternates on EN category pages |
@@ -23,12 +25,28 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 | `2ea200a` | fix(sprint-m): challenge_friend mission via challenge_link_copied event |
 | `8198753` | feat(sprint-h): elevate streak to first-class dashboard retention signal |
 | `433ec8c` | perf(sprint-i): swap getDynamicScenarios → getCachedDynamicScenarios in IT results page |
-| `3051718` | feat(Sprint G): sticky "Next dilemma" — all screen sizes + slide-up after reveal |
-| `f09b5b6` | refactor(Sprint F-B): centralize locale detection in useLocale() hook |
 
 ---
 
-## 2. What changed today (13 May 2026) — afternoon session
+## 2. What changed today (13 May 2026) — end of day
+
+### Fix Y — Back-nav leaderboard → public profile
+- `app/u/[id]/page.tsx`: reads `searchParams.from`, renders `← Leaderboard` (en) / `← Classifica` (it) when arriving from the leaderboard, fallback to `← SplitVote` otherwise
+- `app/leaderboard/page.tsx`: user links now carry `?from=leaderboard`
+- `app/it/leaderboard/page.tsx`: user links carry `?from=it-leaderboard`
+
+### Fix Z — Mission deep-link targets
+- `components/DailyMissions.tsx`: `vote_3` and `vote_2_categories` now link to `/trending` (en) / `/it/trending` (it) instead of `/moral-dilemmas` SEO landing — direct path to voting reduces friction for mission completion
+
+### Sprints W / V / X — already implemented, no-op
+- Confirmed during code review that the pm-orchestrator candidates were already shipped:
+  - Sprint W (DailyDilemma full-card click): absolute overlay `Link` already present in `components/DailyDilemma.tsx` (added in Sprint O)
+  - Sprint V (Mission deep links): `MISSION_TARGETS` map + `<Link>` rendering already in `components/DailyMissions.tsx`
+  - Sprint X (Blog 2-col grid + share): `BlogGrid` already uses `md:grid-cols-2 lg:grid-cols-3`; `BlogShareButton` already on cards and on article page (`components/BlogArticle.tsx`)
+
+---
+
+## 2b. What changed today (13 May 2026) — afternoon session
 
 ### Sprint U — XP + Level on Public Profile
 - `app/u/[id]/page.tsx`:
@@ -204,6 +222,8 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 | Top XP leaderboard section | ✅ EN+IT, purple accent, limit 50 (Sprint R) |
 | Streak saved toast on /play | ✅ 🔥 overlay → redirect after 1.2s (Sprint S) |
 | Public profile XP + level | ✅ Lv.N card + streak card in stats grid (Sprint U) |
+| Leaderboard → profile back-nav | ✅ ← Leaderboard / ← Classifica via ?from= param (Fix Y) |
+| Mission deep-link targets | ✅ vote_3 / vote_2_categories → /trending (Fix Z) |
 | AdSense slots | ⚠️ slot IDs not set — needs real IDs from Matteo |
 | Stripe Premium live QA | ⚠️ Preview OK; live checkout with real card pending |
 | AdSense account approval | ⚠️ check status in Google AdSense dashboard |
@@ -258,7 +278,7 @@ Note: `migration_v18` (use_pixie_avatar column) was already run on production pe
 ## 7. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — post 13 Maggio 2026 (sera/fix session).
+Ripartenza sessione SplitVote — 14 Maggio 2026 (post end-of-day 13 Mag).
 
 Leggi prima:
 - CLAUDE.md
@@ -267,29 +287,33 @@ Leggi prima:
 - git status --short
 
 State:
-- main in sync con origin — tutto pushato (last: fbbe41d)
-- Sprint M / N / O / Q / R / S / T / U tutti completati e pushati nel pomeriggio
+- main in sync con origin — tutto pushato (last: 4e636d1)
+- Sprint M / N / O / Q / R / S / T / U + Fix Y/Z tutti completati e pushati
 
-Sprint completati oggi (pomeriggio):
-- Sprint M: challenge_friend mission ora funziona via challenge_link_copied
-- Sprint N: sticky "See Results" CTA su /play dopo il voto (slide-up, GA4)
-- Sprint O: pill +50 XP su DailyDilemma pre-voto
-- Sprint Q: hreflang alternates EN category pages
-- Sprint R: sezione "Top XP" in leaderboard EN+IT
-- Sprint S: toast "Streak saved!" su /play quando streak a rischio
-- Sprint T: metadata leaderboard aggiornati con menzione XP
-- Sprint U: stat card XP+level e streak su profilo pubblico /u/[id]
+Lavoro shippato ieri (13 Mag):
+- Mattina:  E / F-B / G / SEO / I / H (ISR perf, useLocale hook, sticky next, streak banner)
+- Pomeriggio: M / N / O / Q / R / S / T / U (challenge fix, sticky see results, +50 XP pill,
+              hreflang EN category, Top XP leaderboard, streak toast, XP+level profile)
+- Sera:     Fix Y (back-nav leaderboard→profilo) + Fix Z (mission targets → /trending)
+- Confermato: Sprint W / V / X erano già implementati (pm-orchestrator su docs stale)
 
-Priorità sessione prossima (fix):
-1. Stripe live QA — splitvote.io/profile → checkout reale → verifica is_premium + webhook (HUMAN_ONLY)
-2. AdSense slot IDs e approvazione account (HUMAN_ONLY)
-3. Fix specifici (il PM ha detto "il resto della giornata facciamo i fix") — chiedere a Matteo quali fix vuole affrontare
-4. pm-orchestrator per nuovi sprint se i fix sono esauriti
+Priorità sessione prossima:
+1. 🔴 Stripe live QA — splitvote.io/profile → checkout con carta reale → verifica is_premium=true
+   in Supabase + PRO badge in UI + webhook processed. Unico blocker revenue. (HUMAN_ONLY)
+2. 🔴 AdSense — slot IDs reali (NEXT_PUBLIC_ADSENSE_SLOT_HOME/PLAY/RESULTS) + check
+   approval su dashboard.google.com/adsense. (HUMAN_ONLY)
+3. 🟡 Stripe cosmetics — 14 price IDs store (STRIPE_PRICE_PIXIE_*). (HUMAN_ONLY)
+4. 🟡 Backup config — Upstash auto-backup + Supabase PITR + Resend SPF/DKIM. (HUMAN_ONLY)
+5. ⚪ Nuovi sprint code: lanciare pm-orchestrator per candidati freschi dopo aver verificato
+   lo stato. NB: ROADMAP.md ha modifiche locali PM non committate — NON toccare. CURRENT_HANDOFF
+   è la fonte di verità più aggiornata sul codice.
 
-HUMAN_ONLY:
+HUMAN_ONLY (mai senza GO esplicito):
 - Stripe live checkout QA (carta reale)
 - AdSense slot IDs e verifica approvazione
-- Backup configuration (Upstash + Supabase)
-- Resend DNS verification
+- Backup configuration (Upstash + Supabase + Resend DNS)
+- Cloudflare Email Routing setup
 - git push senza esplicito GO
+- Modifiche a ROADMAP.md / PRODUCT_STRATEGY.md / scripts/generate-pixie-assets.mjs
+  (local PM changes, lasciare intatti)
 ```
