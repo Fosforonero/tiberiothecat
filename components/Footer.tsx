@@ -1,7 +1,7 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { SOCIAL_LINKS } from '@/lib/social-links'
+import { useLocale } from '@/hooks/useLocale'
 
 function InstagramIcon() {
   return (
@@ -44,8 +44,7 @@ function LinkedInIcon() {
 }
 
 export default function Footer() {
-  const pathname = usePathname()
-  const isIT = pathname.startsWith('/it')
+  const { isIT } = useLocale()
 
   return (
     <footer className="text-center text-[var(--muted)] text-xs py-10 mt-16">

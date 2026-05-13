@@ -1,10 +1,10 @@
 'use client'
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useLocale } from '@/hooks/useLocale'
 
 export default function LocaleAwareLogo() {
-  const pathname = usePathname()
-  const href = pathname.startsWith('/it') ? '/it' : '/'
+  const { prefix } = useLocale()
+  const href = prefix || '/'
   return (
     <Link href={href} className="flex-shrink-0 flex items-center group" aria-label="SplitVote home">
       {/* eslint-disable-next-line @next/next/no-img-element */}

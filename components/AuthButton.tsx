@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import { Settings, Star, LayoutDashboard, LogOut, User } from 'lucide-react'
+import { useLocale } from '@/hooks/useLocale'
 import { createClient } from '@/lib/supabase/client'
 import { isRoleAtLeast } from '@/lib/admin-auth'
 import type { UserRole } from '@/lib/admin-auth'
@@ -19,8 +19,7 @@ interface AuthState {
 }
 
 export default function AuthButton() {
-  const pathname = usePathname()
-  const isIT = pathname?.startsWith('/it') ?? false
+  const { isIT } = useLocale()
   const loginHref = isIT ? '/login?locale=it' : '/login'
 
   const [auth, setAuth] = useState<AuthState>({

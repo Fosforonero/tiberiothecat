@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
+import { useLocale } from '@/hooks/useLocale'
 import {
   Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap,
   HelpCircle, Compass, UserPlus, Home, BookOpen,
@@ -18,8 +18,7 @@ export default function MobileMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   const [dvhSupported, setDvhSupported] = useState(false)
   const [isShortViewport, setIsShortViewport] = useState(false)
-  const pathname = usePathname()
-  const isIT = pathname.startsWith('/it')
+  const { isIT } = useLocale()
   const close = () => setOpen(false)
 
   useEffect(() => {

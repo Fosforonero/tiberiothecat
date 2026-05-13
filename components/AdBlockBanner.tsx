@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import { usePathname } from 'next/navigation'
+import { useLocale } from '@/hooks/useLocale'
 
 const STORAGE_KEY = 'sv_adblock_dismissed_at'
 const RESHOW_AFTER_DAYS = 30
@@ -91,8 +91,7 @@ function detectAdBlock(): Promise<boolean> {
 
 export default function AdBlockBanner() {
   const [visible, setVisible] = useState(false)
-  const pathname = usePathname()
-  const isIT = pathname.startsWith('/it')
+  const { isIT } = useLocale()
 
   useEffect(() => {
     if (!shouldShowBanner()) return

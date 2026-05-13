@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { useLocale } from '@/hooks/useLocale'
 
 const CONSENT_KEY = 'sv_cookie_consent'  // 'granted' | 'denied' | 'custom' (backward compat)
 const PREFS_KEY = 'sv_cookie_prefs'      // JSON: { analytics: boolean, ads: boolean }
@@ -53,8 +53,7 @@ export default function CookieConsent() {
   const [visible, setVisible] = useState(false)
   const [customizing, setCustomizing] = useState(false)
   const [prefs, setPrefs] = useState<CookiePrefs>({ analytics: false, ads: false })
-  const pathname = usePathname()
-  const isIT = pathname.startsWith('/it')
+  const { isIT } = useLocale()
 
   useEffect(() => {
     const saved = loadSavedPrefs()

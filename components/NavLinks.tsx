@@ -1,8 +1,8 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { TrendingUp, Compass, BookOpen } from 'lucide-react'
+import { useLocale } from '@/hooks/useLocale'
 
 /**
  * Top-level header nav (lg+ only). Trimmed to 3 items for mobile-first IA:
@@ -72,8 +72,7 @@ const IT_LINKS: NavItem[] = [
 ]
 
 export default function NavLinks() {
-  const pathname = usePathname()
-  const isIT = pathname.startsWith('/it')
+  const { isIT, pathname } = useLocale()
   const links = isIT ? IT_LINKS : EN_LINKS
 
   return (
