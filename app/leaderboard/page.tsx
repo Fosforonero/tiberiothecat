@@ -82,7 +82,7 @@ export default async function LeaderboardPage() {
           {voters.map((user, i) => (
             <Link
               key={user.id}
-              href={`/u/${user.id}`}
+              href={`/u/${user.id}?from=leaderboard`}
               className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 px-4 py-3 hover:border-blue-500/30 transition-colors group"
             >
               {/* Rank */}
@@ -138,7 +138,7 @@ export default async function LeaderboardPage() {
           {streaks.map((user, i) => (
             <Link
               key={user.id}
-              href={`/u/${user.id}`}
+              href={`/u/${user.id}?from=leaderboard`}
               className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 px-4 py-3 hover:border-orange-500/30 transition-colors group"
             >
               <span className="w-8 text-center flex-shrink-0">
@@ -180,7 +180,7 @@ export default async function LeaderboardPage() {
           {topXp.map((user, i) => (
             <Link
               key={user.id}
-              href={`/u/${user.id}`}
+              href={`/u/${user.id}?from=leaderboard`}
               className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 px-4 py-3 hover:border-purple-500/30 transition-colors group"
             >
               <span className="w-8 text-center flex-shrink-0">

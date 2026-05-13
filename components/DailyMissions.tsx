@@ -16,11 +16,11 @@ interface Props {
 type LocaleTargets = { en: string; it: string }
 
 const MISSION_TARGETS: Partial<Record<MissionId, LocaleTargets>> = {
-  vote_3:            { en: '/moral-dilemmas',  it: '/it/dilemmi-morali' },
-  vote_2_categories: { en: '/moral-dilemmas',  it: '/it/dilemmi-morali' },
-  challenge_friend:  { en: '/trending',         it: '/it/trending' },
-  share_result:      { en: '/trending',         it: '/it/trending' },
-  daily_dilemma:     { en: '/',                it: '/it' },
+  vote_3:            { en: '/trending',  it: '/it/trending' },
+  vote_2_categories: { en: '/trending',  it: '/it/trending' },
+  challenge_friend:  { en: '/trending',  it: '/it/trending' },
+  share_result:      { en: '/trending',  it: '/it/trending' },
+  daily_dilemma:     { en: '/',         it: '/it' },
 }
 
 function getMissionTarget(id: MissionId, locale: string): string | undefined {

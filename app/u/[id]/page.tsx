@@ -11,7 +11,7 @@ import { getLevelInfo } from '@/lib/missions'
 
 const BASE = 'https://splitvote.io'
 
-interface Props { params: { id: string } }
+interface Props { params: { id: string }; searchParams?: { from?: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const admin = createPublicClient()
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Public profile — ISR: revalidate every hour (no per-user content here)
 export const revalidate = 3600
 
-export default async function PublicProfilePage({ params }: Props) {
+export default async function PublicProfilePage({ params, searchParams }: Props) {
   // Public profile — uses anon client (no cookies, ISR-safe)
   // RLS must allow SELECT on profiles/user_badges for anon role.
   const admin = createPublicClient()
@@ -64,6 +64,15 @@ export default async function PublicProfilePage({ params }: Props) {
     is_equipped: boolean
     badges: { name: string; emoji: string; rarity: string; description: string }
   }[])
+
+  // Back-link: restore leaderboard context if user arrived from there
+  const fromParam  = searchParams?.from
+  const backHref   = fromParam === 'leaderboard'    ? '/leaderboard'
+                   : fromParam === 'it-leaderboard' ? '/it/leaderboard'
+                   : '/'
+  const backLabel  = fromParam === 'leaderboard'    ? '← Leaderboard'
+                   : fromParam === 'it-leaderboard' ? '← Classifica'
+                   : '← SplitVote'
 
   const displayName    = profile.display_name ?? 'Anonymous Voter'
   const avatarEmoji    = profile.avatar_emoji ?? '🌍'
@@ -92,8 +101,8 @@ export default async function PublicProfilePage({ params }: Props) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-16">
       {/* Back */}
-      <Link href="/" className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
-        ← SplitVote
+      <Link href={backHref} className="text-sm text-[var(--muted)] hover:text-white transition-colors mb-8 inline-block">
+        {backLabel}
       </Link>
 
       {/* ── Profile hero ── */}
