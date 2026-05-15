@@ -3743,6 +3743,179 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'frontier-ai-guardrails-ethical-dilemmas',
+    locale: 'en',
+    title: 'Frontier AI Guardrails: Who Should Decide What Gets Released?',
+    seoTitle: 'Frontier AI Guardrails: Ethical Dilemmas About Model Testing, Safety and Power',
+    description:
+      'Governments and AI labs are moving toward pre-release safety testing for powerful models. The hard question is not whether safety matters - it is who gets to decide.',
+    seoDescription:
+      'Explore the ethical dilemmas behind frontier AI guardrails: government testing, international coordination, model release delays, transparency and the risk of political control.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['ai ethics', 'frontier AI', 'technology policy', 'current events'],
+    relatedDilemmaIds: ['self-driving-crash', 'robot-judge', 'ai-replaces-jobs', 'brain-upload'],
+    alternateSlug: 'guardrail-ai-frontiera-dilemmi-etici',
+    content: [
+      {
+        type: 'p',
+        text: 'In May 2026, frontier AI safety moved from an abstract debate into a practical governance question. Reports described major AI labs giving government agencies access to unreleased models for safety testing, while US and Chinese officials discussed guardrails for the most powerful systems.',
+      },
+      {
+        type: 'p',
+        text: 'That sounds sensible at first. If a model could help attackers find vulnerabilities, automate scams, design dangerous systems or destabilize public institutions, testing it before release seems responsible. But the moment governments get early access, a second dilemma appears: safety oversight can become political leverage.',
+      },
+      {
+        type: 'h2',
+        text: 'The real dilemma is not safety vs innovation',
+      },
+      {
+        type: 'p',
+        text: 'The easy version of the debate says one side wants safety and the other wants speed. The real version is harder. Most serious people want both: models that are useful enough to advance science and productivity, and constrained enough not to create preventable harm.',
+      },
+      {
+        type: 'p',
+        text: 'The conflict is about authority. Should the company that built the model decide when it is safe? Should a national agency have veto power? Should international rivals share protocols? Should the public know when a model failed a dangerous-capability test?',
+      },
+      {
+        type: 'h2',
+        text: 'Why pre-release testing is ethically uncomfortable',
+      },
+      {
+        type: 'list',
+        items: [
+          'Government access can reveal genuine safety problems before millions of people use a model.',
+          'The same access can create surveillance, censorship or favoritism risks if oversight is politicized.',
+          'International guardrails can reduce catastrophic misuse, but they can also become tools of strategic competition.',
+          'Transparency helps public trust, but publishing failed tests may teach attackers what works.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'How this fits SplitVote',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote is built for exactly this kind of question: not "is AI good or bad?", but "which risk are you willing to accept?" A model released too early may cause harm. A model blocked too easily may concentrate power in governments and incumbent companies. Both sides can be reasonable. Both sides have a cost.',
+      },
+      {
+        type: 'p',
+        text: 'That is why the best AI ethics questions are not technical quizzes. They are legitimacy questions: who gets authority, who carries liability, and who has to live with the consequences when the system fails?',
+      },
+      {
+        type: 'h2',
+        text: 'Six questions worth voting on',
+      },
+      {
+        type: 'list',
+        items: [
+          'Should governments be allowed to delay the launch of a frontier AI model after a failed safety test?',
+          'Should rival countries share AI safety protocols even when they compete economically and militarily?',
+          'Should private labs disclose failed safety evaluations to the public?',
+          'Should smaller AI labs face the same pre-release testing rules as the biggest companies?',
+          'Should an international body inspect frontier AI labs, or would that expose too many secrets?',
+          'If one country refuses AI guardrails, should others slow down anyway?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Vote on AI ethics dilemmas →',
+        href: '/ai-ethics-dilemmas',
+      },
+      {
+        type: 'cta',
+        label: 'See what is trending →',
+        href: '/trending',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Current-events context based on May 2026 reporting about frontier AI testing and US-China AI guardrail discussions. SplitVote scenarios are hypothetical and for reflection, not policy advice.',
+      },
+    ],
+  },
+  {
+    slug: 'bodyoids-brainless-organs-bioethics',
+    locale: 'en',
+    title: 'Bodyoids and Brainless Organs: The Bioethics of Bodies Without Minds',
+    seoTitle: 'Bodyoids and Brainless Organs: Bioethics Dilemmas About Identity, Transplants and Dignity',
+    description:
+      'If medicine could grow human-like biological systems without consciousness, would they be life-saving tools, moral patients, or something in between?',
+    seoDescription:
+      'Explore the bioethics of bodyoids, lab-grown organ systems without brains, and the hard moral questions around consciousness, dignity, identity and transplant access.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['bioethics', 'bodyoids', 'medical ethics', 'current events'],
+    relatedDilemmaIds: ['organ-harvest', 'cure-secret', 'brain-upload', 'memory-erase'],
+    alternateSlug: 'bodyoids-organi-senza-cervello-bioetica',
+    content: [
+      {
+        type: 'p',
+        text: 'A recent Wired Italia article described the idea of growing body-like biological systems for organs while avoiding the development of a brain. The promise is obvious: fewer transplant shortages, fewer patients dying while they wait, and new ways to test treatments without risking conscious subjects.',
+      },
+      {
+        type: 'p',
+        text: 'The discomfort is just as obvious. If something is biologically human but has no mind, what exactly is it? A medical tool? A body? A patient? A category our ethics is not yet ready to name?',
+      },
+      {
+        type: 'h2',
+        text: 'Why consciousness changes the question',
+      },
+      {
+        type: 'p',
+        text: 'Most moral systems treat conscious experience as ethically central. Pain, fear, preference, memory and awareness are why harming a person is not like damaging an object. If a biological system truly cannot feel, want or experience anything, many people will see it as closer to tissue than to a person.',
+      },
+      {
+        type: 'p',
+        text: 'But human biology still carries symbolic and moral weight. A brainless human-like body would challenge the line between "organ source" and "human remains", between therapy and manufacture, between biological identity and mental identity.',
+      },
+      {
+        type: 'h2',
+        text: 'The access problem',
+      },
+      {
+        type: 'p',
+        text: 'Even if the science became safe and the moral status question were resolved, another problem would remain: who gets access? If custom-grown organ systems are expensive, they could turn survival into a luxury product. A technology built to reduce suffering could widen inequality if only the wealthy can use it first.',
+      },
+      {
+        type: 'h2',
+        text: 'The dignity problem',
+      },
+      {
+        type: 'p',
+        text: 'Some people will argue that dignity depends on consciousness. Others will argue that human biological form deserves respect even without awareness. This is the core bodyoids dilemma: can moral identity be separated from biological identity, and if it can, who gets to draw the boundary?',
+      },
+      {
+        type: 'h2',
+        text: 'Six questions worth voting on',
+      },
+      {
+        type: 'list',
+        items: [
+          'If a lab-grown body system has no awareness, is it ethical to grow it for transplant organs?',
+          'Should human-like biology receive legal protection even without consciousness?',
+          'Should wealthy patients be allowed to fund personal organ-growing systems?',
+          'Should society ban experiments that separate biological identity from mental identity?',
+          'Should families be allowed to reject organs grown from human-like biological systems?',
+          'Should public health systems fund bodyoid-derived organs if they are cheaper than traditional transplants?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Explore bioethics dilemmas →',
+        href: '/blog/bioethics-when-medicine-forces-impossible-choices',
+      },
+      {
+        type: 'cta',
+        label: 'Browse morality dilemmas →',
+        href: '/category/morality',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Current-events context based on Wired Italia reporting about bodyoids and organ-growing proposals. SplitVote scenarios are hypothetical and for reflection, not medical or legal advice.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -7420,6 +7593,179 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'I riferimenti alla ricerca di Darley e Latané sullo spettatore (1968) e al caso Kitty Genovese sono a scopo educativo e contestuale. La narrativa originale dei 38 testimoni è stata parzialmente rivista da giornalismo d\'inchiesta e ricerche storiche successive; la ricerca psicologica che ha ispirato rimane fondamentale nel campo. SplitVote è una piattaforma di intrattenimento e riflessione, non uno studio scientifico. I dati di voto descritti sono indicativi.',
+      },
+    ],
+  },
+  {
+    slug: 'guardrail-ai-frontiera-dilemmi-etici',
+    locale: 'it',
+    title: 'Guardrail per l’AI di frontiera: chi decide cosa può essere rilasciato?',
+    seoTitle: 'Guardrail AI di Frontiera: Dilemmi Etici su Test, Sicurezza e Potere',
+    description:
+      'Governi e laboratori AI stanno andando verso test di sicurezza prima del rilascio dei modelli più potenti. La domanda difficile non è se la sicurezza conti, ma chi decide.',
+    seoDescription:
+      'Esplora i dilemmi etici dei guardrail per l’AI di frontiera: test governativi, coordinamento internazionale, rinvii al rilascio, trasparenza e rischio di controllo politico.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['etica AI', 'AI di frontiera', 'politica tecnologica', 'attualità'],
+    relatedDilemmaIds: ['self-driving-crash', 'robot-judge', 'ai-replaces-jobs', 'brain-upload'],
+    alternateSlug: 'frontier-ai-guardrails-ethical-dilemmas',
+    content: [
+      {
+        type: 'p',
+        text: 'Nel maggio 2026, la sicurezza dell’AI di frontiera è passata da dibattito astratto a problema pratico di governance. Diversi report hanno descritto laboratori AI che danno ad agenzie governative accesso a modelli non ancora rilasciati per test di sicurezza, mentre funzionari statunitensi e cinesi discutevano guardrail per i sistemi più potenti.',
+      },
+      {
+        type: 'p',
+        text: 'A prima vista sembra ragionevole. Se un modello può aiutare attaccanti a trovare vulnerabilità, automatizzare truffe, progettare sistemi pericolosi o destabilizzare istituzioni pubbliche, testarlo prima del rilascio è responsabile. Ma appena i governi ottengono accesso anticipato, nasce un secondo dilemma: la supervisione di sicurezza può diventare leva politica.',
+      },
+      {
+        type: 'h2',
+        text: 'Il vero dilemma non è sicurezza contro innovazione',
+      },
+      {
+        type: 'p',
+        text: 'La versione facile del dibattito dice che una parte vuole sicurezza e l’altra vuole velocità. La versione reale è più difficile. Quasi tutti gli attori seri vogliono entrambe: modelli abbastanza utili da far avanzare scienza e produttività, ma abbastanza vincolati da evitare danni prevenibili.',
+      },
+      {
+        type: 'p',
+        text: 'Il conflitto riguarda l’autorità. Deve decidere l’azienda che ha costruito il modello? Un’agenzia nazionale deve avere potere di veto? Rivali internazionali dovrebbero condividere protocolli? Il pubblico deve sapere quando un modello fallisce un test su capacità pericolose?',
+      },
+      {
+        type: 'h2',
+        text: 'Perché i test prima del rilascio sono scomodi',
+      },
+      {
+        type: 'list',
+        items: [
+          'L’accesso governativo può rivelare problemi reali prima che milioni di persone usino un modello.',
+          'Lo stesso accesso può creare rischi di sorveglianza, censura o favoritismi se la supervisione diventa politica.',
+          'I guardrail internazionali possono ridurre abusi catastrofici, ma possono anche diventare strumenti di competizione strategica.',
+          'La trasparenza aiuta la fiducia pubblica, ma pubblicare test falliti può insegnare agli attaccanti cosa funziona.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Perché è perfetto per SplitVote',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote serve proprio a questo tipo di domanda: non "l’AI è buona o cattiva?", ma "quale rischio sei disposto ad accettare?". Un modello rilasciato troppo presto può causare danni. Un modello bloccato troppo facilmente può concentrare potere in governi e aziende dominanti. Entrambe le posizioni possono essere ragionevoli. Entrambe hanno un costo.',
+      },
+      {
+        type: 'p',
+        text: 'Per questo le migliori domande sull’etica AI non sono quiz tecnici. Sono domande di legittimità: chi riceve autorità, chi porta responsabilità, e chi vive con le conseguenze quando il sistema fallisce?',
+      },
+      {
+        type: 'h2',
+        text: 'Sei domande da votare',
+      },
+      {
+        type: 'list',
+        items: [
+          'I governi dovrebbero poter ritardare il lancio di un modello AI dopo un test di sicurezza fallito?',
+          'Paesi rivali dovrebbero condividere protocolli di sicurezza AI anche se competono economicamente e militarmente?',
+          'I laboratori privati dovrebbero pubblicare i test di sicurezza falliti?',
+          'I piccoli laboratori AI dovrebbero avere le stesse regole dei giganti?',
+          'Un organismo internazionale dovrebbe ispezionare i laboratori AI di frontiera?',
+          'Se un Paese rifiuta i guardrail, gli altri dovrebbero rallentare comunque?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Vota dilemmi sull’etica AI →',
+        href: '/it/dilemmi-etici-intelligenza-artificiale',
+      },
+      {
+        type: 'cta',
+        label: 'Vedi i dilemmi di tendenza →',
+        href: '/it/trending',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contesto di attualità basato su report di maggio 2026 sui test dei modelli AI di frontiera e sulle discussioni USA-Cina sui guardrail. Gli scenari SplitVote sono ipotetici e pensati per riflessione, non come consulenza politica.',
+      },
+    ],
+  },
+  {
+    slug: 'bodyoids-organi-senza-cervello-bioetica',
+    locale: 'it',
+    title: 'Bodyoids e organi senza cervello: la bioetica dei corpi senza mente',
+    seoTitle: 'Bodyoids e Organi Senza Cervello: Dilemmi Bioetici su Identità, Trapianti e Dignità',
+    description:
+      'Se la medicina potesse coltivare sistemi biologici simili al corpo umano ma senza coscienza, sarebbero strumenti salvavita, pazienti morali o qualcosa nel mezzo?',
+    seoDescription:
+      'Esplora la bioetica dei bodyoids, sistemi di organi coltivati senza cervello, e i dilemmi su coscienza, dignità, identità e accesso ai trapianti.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['bioetica', 'bodyoids', 'etica medica', 'attualità'],
+    relatedDilemmaIds: ['organ-harvest', 'cure-secret', 'brain-upload', 'memory-erase'],
+    alternateSlug: 'bodyoids-brainless-organs-bioethics',
+    content: [
+      {
+        type: 'p',
+        text: 'Un recente articolo di Wired Italia ha raccontato l’idea di coltivare sistemi biologici simili a corpi per ottenere organi, evitando però lo sviluppo di un cervello. La promessa è evidente: meno carenza di trapianti, meno pazienti che muoiono in lista d’attesa, nuovi modi per testare terapie senza rischiare soggetti coscienti.',
+      },
+      {
+        type: 'p',
+        text: 'Il disagio è altrettanto evidente. Se qualcosa è biologicamente umano ma non ha mente, che cos’è? Uno strumento medico? Un corpo? Un paziente? Una categoria che la nostra etica non sa ancora nominare?',
+      },
+      {
+        type: 'h2',
+        text: 'Perché la coscienza cambia la domanda',
+      },
+      {
+        type: 'p',
+        text: 'La maggior parte dei sistemi morali considera l’esperienza cosciente eticamente centrale. Dolore, paura, preferenze, memoria e consapevolezza sono ciò che rende ferire una persona diverso dal danneggiare un oggetto. Se un sistema biologico davvero non può sentire, volere o vivere nulla, molti lo vedranno più vicino a un tessuto che a una persona.',
+      },
+      {
+        type: 'p',
+        text: 'Ma la biologia umana conserva comunque peso simbolico e morale. Un corpo umanoide senza cervello metterebbe in crisi la linea tra "fonte di organi" e "resti umani", tra terapia e produzione, tra identità biologica e identità mentale.',
+      },
+      {
+        type: 'h2',
+        text: 'Il problema dell’accesso',
+      },
+      {
+        type: 'p',
+        text: 'Anche se la scienza diventasse sicura e la questione dello status morale fosse risolta, resterebbe un altro problema: chi può accedervi? Se i sistemi personalizzati per coltivare organi sono costosi, potrebbero trasformare la sopravvivenza in un prodotto di lusso. Una tecnologia nata per ridurre la sofferenza potrebbe aumentare la disuguaglianza.',
+      },
+      {
+        type: 'h2',
+        text: 'Il problema della dignità',
+      },
+      {
+        type: 'p',
+        text: 'Alcuni diranno che la dignità dipende dalla coscienza. Altri diranno che la forma biologica umana merita rispetto anche senza consapevolezza. Questo è il cuore del dilemma sui bodyoids: si può separare l’identità morale dall’identità biologica? E se sì, chi traccia il confine?',
+      },
+      {
+        type: 'h2',
+        text: 'Sei domande da votare',
+      },
+      {
+        type: 'list',
+        items: [
+          'Se un sistema corporeo coltivato in laboratorio non ha coscienza, è etico usarlo per organi da trapianto?',
+          'Una biologia simile a quella umana dovrebbe ricevere tutele legali anche senza coscienza?',
+          'I pazienti ricchi dovrebbero poter finanziare sistemi personali per coltivare organi?',
+          'La società dovrebbe vietare esperimenti che separano identità biologica e identità mentale?',
+          'Le famiglie dovrebbero poter rifiutare organi ottenuti da sistemi biologici umanoidi?',
+          'I sistemi sanitari pubblici dovrebbero finanziare organi da bodyoids se costano meno dei trapianti tradizionali?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Esplora i dilemmi di bioetica →',
+        href: '/it/blog/bioetica-quando-la-medicina-impone-scelte-impossibili',
+      },
+      {
+        type: 'cta',
+        label: 'Sfoglia i dilemmi morali →',
+        href: '/it/category/morality',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contesto di attualità basato sul reportage di Wired Italia sui bodyoids e sulle proposte di coltivazione di organi. Gli scenari SplitVote sono ipotetici e pensati per riflessione, non come consulenza medica o legale.',
       },
     ],
   },
