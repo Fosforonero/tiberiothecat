@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getDynamicScenarios, getDraftScenarios } from '@/lib/dynamic-scenarios'
+import { getAdminScenarioSnapshot, getRedisScenarioConfigStatus } from '@/lib/dynamic-scenarios'
 import { requireAdmin } from '@/lib/admin-guard'
 
 export const runtime = 'nodejs'
@@ -23,12 +23,21 @@ export async function GET(request: NextRequest) {
   const locale      = request.nextUrl.searchParams.get('locale') as 'en' | 'it' | null
   const limitParam  = parseInt(request.nextUrl.searchParams.get('limit') ?? '30', 10)
   const limit       = Math.min(Math.max(1, isNaN(limitParam) ? 30 : limitParam), 250)
+  const redisConfig = getRedisScenarioConfigStatus()
+
+  if (!redisConfig.configured) {
+    return NextResponse.json({
+      error: 'Redis configuration missing in this environment',
+      redisConfig,
+      missing: [
+        !redisConfig.hasUrl ? 'KV_REST_API_URL' : null,
+        !redisConfig.hasToken ? 'KV_REST_API_TOKEN' : null,
+      ].filter(Boolean),
+    }, { status: 500 })
+  }
 
   try {
-    const [approved, drafts] = await Promise.all([
-      getDynamicScenarios(),
-      getDraftScenarios(),
-    ])
+    const { approved, drafts, rawTypes } = await getAdminScenarioSnapshot()
 
     // Aggregate counts computed from full sets BEFORE any locale filter or limit slice.
     const approvedByLocale = {
@@ -90,6 +99,8 @@ export async function GET(request: NextRequest) {
       autoPublishedApproved,
       locale:               locale ?? 'all',
       categoryBreakdown,
+      redisConfig,
+      redisRawTypes:        rawTypes,
       results,
     })
   } catch (err) {

@@ -217,7 +217,13 @@ export default function CronDebug() {
     setError(null)
     try {
       const res = await fetch('/api/admin/dilemmas?limit=250')
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        const details = body?.missing?.length
+          ? ` Missing: ${body.missing.join(', ')}.`
+          : ''
+        throw new Error(`${body?.error ?? `HTTP ${res.status}`}.${details}`)
+      }
       const json = await res.json()
       setData(json)
     } catch (e) {

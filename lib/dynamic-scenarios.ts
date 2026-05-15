@@ -15,6 +15,24 @@ const MAX_DRAFTS       = 120
 const APPROVE_LOCK_KEY = 'dynamic:approve-lock'
 const LOCK_TTL_MS      = 5000
 
+export function getRedisScenarioConfigStatus() {
+  let host: string | null = null
+
+  try {
+    const url = process.env.KV_REST_API_URL
+    host = url ? new URL(url).host : null
+  } catch {
+    host = 'invalid-url'
+  }
+
+  return {
+    configured: Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN),
+    hasUrl: Boolean(process.env.KV_REST_API_URL),
+    hasToken: Boolean(process.env.KV_REST_API_TOKEN),
+    host,
+  }
+}
+
 function parseScenarioList(raw: unknown): DynamicScenario[] {
   if (Array.isArray(raw)) return raw as DynamicScenario[]
 
@@ -28,6 +46,30 @@ function parseScenarioList(raw: unknown): DynamicScenario[] {
   }
 
   return []
+}
+
+export async function getAdminScenarioSnapshot(): Promise<{
+  approved: DynamicScenario[]
+  drafts: DynamicScenario[]
+  rawTypes: { approved: string; drafts: string }
+}> {
+  const [rawApproved, rawDrafts] = await Promise.all([
+    redis.get<DynamicScenario[] | string>(DYNAMIC_KEY),
+    redis.get<DynamicScenario[] | string>(DRAFTS_KEY),
+  ])
+
+  const approved = parseScenarioList(rawApproved)
+    .map(s => ({ ...s, status: s.status ?? 'approved' as DilemmaStatus }))
+  const drafts = parseScenarioList(rawDrafts)
+
+  return {
+    approved,
+    drafts,
+    rawTypes: {
+      approved: Array.isArray(rawApproved) ? 'array' : typeof rawApproved,
+      drafts: Array.isArray(rawDrafts) ? 'array' : typeof rawDrafts,
+    },
+  }
 }
 
 export class ApproveLockError extends Error {
