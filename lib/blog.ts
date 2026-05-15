@@ -8,6 +8,38 @@ export type SectionType =
   | { type: 'cta'; label: string; href: string }
   | { type: 'disclaimer'; text: string }
 
+// External-image attribution metadata. Required when the image is sourced from a
+// third party (Pexels, Unsplash, Wikimedia/CC, etc.). Omit `attribution` entirely
+// for project-owned assets (e.g. /og-default.png).
+//
+// License allowlist (PM rule): CC0 / public domain, CC BY, Pexels, Unsplash.
+// Disallowed: CC BY-NC, CC BY-ND, unclear licenses, images with trademarks/logos,
+// recognizable private people.
+export interface BlogImageAttribution {
+  creator:    string         // photographer / artist display name
+  creatorUrl?: string        // optional profile URL
+  source:     string         // platform name, e.g. "Unsplash", "Pexels", "Wikimedia Commons"
+  sourceUrl:  string         // original page URL where the image was downloaded
+  license:    string         // e.g. "Unsplash License", "Pexels License", "CC BY 4.0", "CC0"
+  licenseUrl: string         // license terms URL
+  creditText: string         // ready-to-display credit line (used in JSON-LD + UI caption)
+}
+
+export interface BlogImage {
+  src:    string             // path under /public, e.g. '/blog/trolley-illustration.jpg'
+  alt:    string             // descriptive alt text
+  width:  number             // pixel width (required for next/image and ImageObject)
+  height: number             // pixel height
+  /**
+   * Render the image as a hero `<figure>` at the top of the article body.
+   * Default `false` (omit) — used for fallback social cards (`/og-default.png`)
+   * that should appear in JSON-LD / OG / Twitter only, not inside the article.
+   * Set `true` for genuine editorial illustrations.
+   */
+  showInArticle?: boolean
+  attribution?: BlogImageAttribution
+}
+
 export interface BlogPost {
   slug: string
   locale: 'en' | 'it'
@@ -16,10 +48,14 @@ export interface BlogPost {
   description: string
   seoDescription: string
   date: string
+  /** ISO date of last meaningful edit; defaults to `date` when missing. */
+  dateModified?: string
   readingTime: number
   tags: string[]
   relatedDilemmaIds: string[]
   alternateSlug?: string
+  /** Optional hero/social image with license attribution. Falls back to /og-default.png. */
+  image?: BlogImage
   content: SectionType[]
 }
 
@@ -92,6 +128,12 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'trolley-problem-explained',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — The Trolley Problem explained',
+      width:  1200,
+      height: 630,
+    },
     locale: 'en',
     title: 'The Trolley Problem, Explained',
     seoTitle: 'The Trolley Problem Explained — History, Variants & What People Choose',
@@ -1450,6 +1492,12 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'ai-ethics-what-40-million-people-chose',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — AI ethics and what 40 million people chose',
+      width:  1200,
+      height: 630,
+    },
     locale: 'en',
     title: 'AI Ethics: What 40 Million People Said About Self-Driving Car Crashes',
     seoTitle: 'AI Ethics Dilemmas: The Moral Machine Study & What 40 Million People Chose',
@@ -2421,6 +2469,12 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'bioethics-when-medicine-forces-impossible-choices',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — Bioethics: when medicine forces impossible choices',
+      width:  1200,
+      height: 630,
+    },
     locale: 'en',
     title: 'Bioethics — When Medicine Forces the Impossible Choices',
     seoTitle: 'Bioethics: When Medicine Forces the Hardest Moral Choices',
@@ -3760,6 +3814,12 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'problema-del-carrello-spiegato',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — Il problema del carrello spiegato',
+      width:  1200,
+      height: 630,
+    },
     locale: 'it',
     title: 'Il problema del carrello spiegato semplice',
     seoTitle: 'Il problema del carrello spiegato — storia, varianti e cosa scelgono le persone',
@@ -5112,6 +5172,12 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'ia-etica-40-milioni-scelte',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — Etica dell\'IA: cosa hanno scelto 40 milioni di persone',
+      width:  1200,
+      height: 630,
+    },
     locale: 'it',
     title: "Etica dell'IA: Cosa Hanno Scelto 40 Milioni di Persone sugli Incidenti delle Auto Autonome",
     seoTitle: "Dilemmi Etici dell'Intelligenza Artificiale: Lo Studio Moral Machine e le Scelte di 40 Milioni di Persone",
@@ -6083,6 +6149,12 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'bioetica-quando-la-medicina-impone-scelte-impossibili',
+    image: {
+      src:    '/og-default.png',
+      alt:    'SplitVote — Bioetica: quando la medicina impone scelte impossibili',
+      width:  1200,
+      height: 630,
+    },
     locale: 'it',
     title: 'Bioetica — Quando la Medicina Impone le Scelte più Difficili',
     seoTitle: 'Bioetica: Quando la Medicina Ci Mette di Fronte alle Scelte più Difficili',
@@ -7375,4 +7447,31 @@ export function getAlternateUrl(post: BlogPost): string | null {
 export function postUrl(post: BlogPost): string {
   const prefix = post.locale === 'it' ? '/it' : ''
   return `${BASE}${prefix}/blog/${post.slug}`
+}
+
+// Default hero/social image used when a post does not provide its own.
+// /og-default.png is a project-owned asset — no external attribution needed.
+const DEFAULT_BLOG_IMAGE: BlogImage = {
+  src:    '/og-default.png',
+  alt:    'SplitVote — moral dilemmas voted by the world',
+  width:  1200,
+  height: 630,
+}
+
+/**
+ * Returns the hero image for a post: the post-defined image if present, otherwise
+ * the default SplitVote OG card. The returned object always has `src/alt/width/height`;
+ * `attribution` is preserved only when explicitly set on the post.
+ */
+export function getBlogImage(post: BlogPost): BlogImage {
+  return post.image ?? DEFAULT_BLOG_IMAGE
+}
+
+/**
+ * Resolves a possibly-relative image src against the canonical base URL so it can
+ * be used in absolute contexts (JSON-LD, OG, Twitter). Pass-through for absolute URLs.
+ */
+export function absoluteBlogImageUrl(src: string): string {
+  if (/^https?:\/\//i.test(src)) return src
+  return `${BASE}${src.startsWith('/') ? '' : '/'}${src}`
 }

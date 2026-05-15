@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { BlogPost } from '@/lib/blog'
-import { postUrl } from '@/lib/blog'
+import { postUrl, getBlogImage } from '@/lib/blog'
 import { scenarios } from '@/lib/scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import BlogShareButton from '@/components/BlogShareButton'
@@ -28,6 +28,12 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
     .map((s) => post.locale === 'it' ? translateScenarioToItalian(s) : s)
   const blogIndexHref = localePrefix ? `${localePrefix}/blog` : '/blog'
   const backLabel = localePrefix === '/it' ? '← Blog' : '← Blog'
+  const heroImage = getBlogImage(post)
+  // Render the in-article hero ONLY when the post explicitly opts in via
+  // `image.showInArticle === true`. Pilots that use `/og-default.png` for
+  // JSON-LD / OG / Twitter only must omit (or set false) this flag, so the
+  // generic social card never appears as an editorial illustration.
+  const showHero = post.image?.showInArticle === true
 
   return (
     <article className="max-w-2xl mx-auto px-4 py-16">
@@ -38,6 +44,56 @@ export default function BlogArticle({ post, localePrefix = '' }: Props) {
       >
         {backLabel}
       </Link>
+
+      {/* Hero image (+ visible attribution when image is externally licensed) */}
+      {showHero && (
+        <figure className="mb-10 -mx-4 sm:mx-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={heroImage.src}
+            alt={heroImage.alt}
+            width={heroImage.width}
+            height={heroImage.height}
+            className="w-full h-auto rounded-2xl border border-[var(--border)]"
+            loading="eager"
+          />
+          {heroImage.attribution && (
+            <figcaption className="text-xs text-[var(--muted)] mt-2 px-4 sm:px-0">
+              {post.locale === 'it' ? 'Foto: ' : 'Photo: '}
+              {heroImage.attribution.creatorUrl ? (
+                <a
+                  href={heroImage.attribution.creatorUrl}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                  className="underline hover:text-white"
+                >
+                  {heroImage.attribution.creator}
+                </a>
+              ) : (
+                heroImage.attribution.creator
+              )}
+              {' '}— <a
+                href={heroImage.attribution.sourceUrl}
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+                className="underline hover:text-white"
+              >
+                {heroImage.attribution.source}
+              </a>
+              {' ('}
+              <a
+                href={heroImage.attribution.licenseUrl}
+                rel="noopener noreferrer nofollow license"
+                target="_blank"
+                className="underline hover:text-white"
+              >
+                {heroImage.attribution.license}
+              </a>
+              {')'}
+            </figcaption>
+          )}
+        </figure>
+      )}
 
       {/* Header */}
       <header className="mb-10">

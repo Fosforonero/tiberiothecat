@@ -1,0 +1,207 @@
+{
+  "slug": "bioethics-bodyoids",
+  "date": "2026-05-15",
+  "title": "Bioethics — Lab-grown organ sacks (bodyoids)",
+  "trendOrigin": "manual",
+  "summary": "External reporting (Wired IT/EN, Springer 2025) discusses research and startup interest in growing functional human-organ structures without sentient or self-aware brain tissue. The framing splits people along familiar bioethics axes: utility (less animal testing, more transplants) vs. dignity of the human body, autonomy (consent for stem-cell-derived tissue) vs. access (who can afford them), and where the line sits between a single replacement organ and something closer to a 'spare body'. None of the proposed dilemmas state that the technology currently works in humans; they all use hypothetical framing.",
+  "sources": [
+    {
+      "title": "Startup vuole coltivare sacchi di organi senza cervello: il rischio di separare identità biologica e identità mentale",
+      "url": "https://www.wired.it/article/startup-uole-coltivare-sacchi-organi-senza-cervello-rischio-separare-identita-biologica-identita-mentale/",
+      "publisher": "Wired Italia"
+    },
+    {
+      "title": "A Billionaire-Backed Startup Wants to Grow Organ Sacks to Replace Animal Testing",
+      "url": "https://www.wired.com/story/a-billionaire-backed-startup-wants-to-grow-organ-sacks-to-replace-animal-testing/",
+      "publisher": "Wired"
+    },
+    {
+      "title": "Bodyoids and the ethics of growing human tissue without sentience",
+      "url": "https://link.springer.com/article/10.1007/s13347-025-01022-z",
+      "publisher": "Philosophy & Technology (Springer, 2025)"
+    }
+  ],
+  "riskLevel": "high",
+  "riskFlags": [
+    "bioethics",
+    "human-body-dignity",
+    "stem-cells-consent",
+    "wealth-access",
+    "moral-disgust",
+    "identity-philosophy"
+  ],
+  "guardrails": [
+    "Do not name R3 Bio or any specific company / investor in the public dilemma text.",
+    "Do not state or imply the technology currently works in humans — always use 'if it were proven that…' or 'a future where…' framing.",
+    "Do not claim with certainty that lab-grown organ structures feel no suffering — frame as conditional ('if it were demonstrated that they have no awareness…').",
+    "No horror, body-horror, or shock tone — neutral bioethics framing only.",
+    "No accusation of persons, companies, investors or research groups.",
+    "Maintain EN/IT semantic parity — IT must convey the same dilemma, not a softer or stronger version.",
+    "If the dilemma touches end-of-life or sentience, pair the public framing with the existing bioethics disclaimer ('Educational perspective, not professional advice.').",
+    "Do not use real patient or donor stories. All scenarios are hypothetical."
+  ],
+  "candidateCategory": "morality",
+  "alternateCategories": ["technology", "survival", "society"],
+  "candidateSearchIntent": "ethical dilemmas about lab-grown organs, organ sacks, bodyoids, consent for stem cells, fair access to medical biotech",
+  "saturationKeywords": [
+    "organ",
+    "organi",
+    "transplant",
+    "trapianto",
+    "stem cell",
+    "cellule staminali",
+    "donor",
+    "donatore",
+    "bioethic",
+    "bioetica",
+    "cloning",
+    "clonare",
+    "euthanasia",
+    "eutanasia"
+  ],
+  "dilemmasEN": [
+    {
+      "id": "bodyoids-replace-animal-testing",
+      "question": "A future where lab-grown organ structures, if proven non-sentient, could fully replace animal testing — but only by treating those structures as ordinary lab tools.",
+      "optionA": "Use them. Less animal suffering is worth it.",
+      "optionB": "Refuse. Once we normalize 'tool bodies', the line keeps moving.",
+      "emoji": "🧫",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-transplants-vs-dignity",
+      "question": "If lab-grown organs could save thousands of patients each year, but doing so means routinely culturing partial human bodies, would you accept the trade-off?",
+      "optionA": "Yes. Saving lives outweighs the discomfort.",
+      "optionB": "No. The dignity of the human body is not a renewable resource.",
+      "emoji": "🫀",
+      "category": "morality"
+    },
+    {
+      "id": "stem-cells-consent-scope",
+      "question": "Stem cells donated for one study are later used to grow a partial organ structure. The donor never agreed to that specific use.",
+      "optionA": "Allow it. Broad consent unlocks research that saves lives.",
+      "optionB": "Block it. Consent should travel with the cells, use by use.",
+      "emoji": "🧬",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-disgust-vs-suffering",
+      "question": "A new medical option clearly reduces total suffering but feels viscerally disturbing to most people.",
+      "optionA": "Approve it. Moral disgust is not a reliable guide.",
+      "optionB": "Reject it. If most people are repulsed, that signal matters.",
+      "emoji": "🌀",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-access-only-rich",
+      "question": "Lab-grown organs become available, but their cost makes them realistic only for wealthy patients. Public systems cannot afford them.",
+      "optionA": "Allow private access. A few saved lives is better than none.",
+      "optionB": "Pause adoption. Unequal access to bodies is a line worth holding.",
+      "emoji": "💰",
+      "category": "society"
+    },
+    {
+      "id": "medical-research-vs-immortality-projects",
+      "question": "The same biotech funds medical research for ordinary patients and 'extreme life-extension' projects for a small elite.",
+      "optionA": "Accept the mix. Elite funding accelerates research for everyone.",
+      "optionB": "Force a split. Public health and immortality projects should not share infrastructure.",
+      "emoji": "⏳",
+      "category": "society"
+    },
+    {
+      "id": "mental-vs-biological-identity",
+      "question": "If a partial human body could be grown without any awareness, would 'identity' still belong only to the mind it never had?",
+      "optionA": "Yes. No mind, no person — identity is purely mental.",
+      "optionB": "No. A human body, even without awareness, still belongs to humanity.",
+      "emoji": "🪞",
+      "category": "technology"
+    },
+    {
+      "id": "single-organ-vs-spare-body",
+      "question": "Growing a single organ in isolation feels acceptable to most people, but growing a connected set of organs together feels different. Where should the line stand?",
+      "optionA": "Single organs only. Anything more is too close to a spare body.",
+      "optionB": "Allow connected sets. If no awareness exists, the structure is irrelevant.",
+      "emoji": "🧩",
+      "category": "morality"
+    }
+  ],
+  "dilemmasIT": [
+    {
+      "id": "bodyoids-replace-animal-testing",
+      "question": "Un futuro in cui strutture di organi coltivate in laboratorio, se dimostrate prive di coscienza, potrebbero sostituire del tutto la sperimentazione animale — ma solo trattandole come normali strumenti di laboratorio.",
+      "optionA": "Usarle. Meno sofferenza animale vale il prezzo.",
+      "optionB": "Rifiutare. Una volta normalizzati i 'corpi-strumento', il confine continua a spostarsi.",
+      "emoji": "🧫",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-transplants-vs-dignity",
+      "question": "Se organi coltivati in laboratorio potessero salvare migliaia di pazienti ogni anno, ma significasse coltivare regolarmente corpi umani parziali, accetteresti il compromesso?",
+      "optionA": "Sì. Salvare vite vale più del disagio.",
+      "optionB": "No. La dignità del corpo umano non è una risorsa rinnovabile.",
+      "emoji": "🫀",
+      "category": "morality"
+    },
+    {
+      "id": "stem-cells-consent-scope",
+      "question": "Cellule staminali donate per uno studio vengono poi usate per coltivare una struttura organica parziale. Il donatore non aveva mai acconsentito a quell'uso specifico.",
+      "optionA": "Permetterlo. Un consenso ampio sblocca ricerca che salva vite.",
+      "optionB": "Bloccarlo. Il consenso deve seguire le cellule, uso per uso.",
+      "emoji": "🧬",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-disgust-vs-suffering",
+      "question": "Una nuova opzione medica riduce chiaramente la sofferenza totale, ma per la maggior parte delle persone è viscerale e disturbante.",
+      "optionA": "Approvarla. Il disgusto morale non è una bussola affidabile.",
+      "optionB": "Rifiutarla. Se la maggior parte delle persone è respinta, quel segnale conta.",
+      "emoji": "🌀",
+      "category": "morality"
+    },
+    {
+      "id": "bodyoids-access-only-rich",
+      "question": "Organi coltivati in laboratorio diventano disponibili, ma il loro costo li rende realistici solo per pazienti ricchi. La sanità pubblica non può permetterseli.",
+      "optionA": "Permettere l'accesso privato. Qualche vita salvata è meglio di nessuna.",
+      "optionB": "Sospendere l'adozione. L'accesso diseguale ai corpi è una linea da difendere.",
+      "emoji": "💰",
+      "category": "society"
+    },
+    {
+      "id": "medical-research-vs-immortality-projects",
+      "question": "La stessa biotech finanzia ricerca medica per pazienti comuni e progetti di 'estensione estrema della vita' per una piccola élite.",
+      "optionA": "Accettare la miscela. I fondi dell'élite accelerano la ricerca per tutti.",
+      "optionB": "Imporre una separazione. Sanità pubblica e progetti di immortalità non dovrebbero condividere infrastrutture.",
+      "emoji": "⏳",
+      "category": "society"
+    },
+    {
+      "id": "mental-vs-biological-identity",
+      "question": "Se un corpo umano parziale potesse essere coltivato senza alcuna consapevolezza, l'identità apparterrebbe ancora soltanto alla mente che non ha mai avuto?",
+      "optionA": "Sì. Senza mente, nessuna persona — l'identità è puramente mentale.",
+      "optionB": "No. Un corpo umano, anche senza coscienza, appartiene comunque all'umanità.",
+      "emoji": "🪞",
+      "category": "technology"
+    },
+    {
+      "id": "single-organ-vs-spare-body",
+      "question": "Coltivare un singolo organo isolato sembra accettabile alla maggior parte delle persone, ma coltivare un insieme di organi collegati tra loro dà una sensazione diversa. Dove dovrebbe stare il confine?",
+      "optionA": "Solo organi singoli. Qualunque cosa di più è troppo vicina a un corpo di ricambio.",
+      "optionB": "Permettere insiemi collegati. Se non c'è consapevolezza, la struttura è irrilevante.",
+      "emoji": "🧩",
+      "category": "morality"
+    }
+  ],
+  "suggestedWorkflow": {
+    "primary": "admin_draft",
+    "alternates": ["seed_batch", "blog"],
+    "notes": "Risk level is HIGH (bioethics + body dignity + access fairness). Recommended flow: paste each dilemma manually as admin draft in /admin → Dynamic Dilemmas, then approve only after editorial review against the guardrails above. Do NOT route through seed_batch automated generation: AI rewriting risks losing the hedged phrasing ('if it were proven that…') that keeps the topic legally and ethically safe. A secondary blog article (cluster: bioethics) referencing 2–3 of these dilemmas would strengthen the existing /bioethics landing-page candidate flagged in reports/blog-cluster-gaps-2026-05-10.md."
+  },
+  "internalRefs": [
+    "reports/blog-cluster-gaps-2026-05-10.md → bioethics cluster (was CRITICAL, sources added 10 May 2026)",
+    "lib/research-sources.ts → sep-bioethics, sep-euthanasia (cluster: bioethics)",
+    "lib/scenarios.ts → existing static bioethics-adjacent scenarios (organ-harvest, mercy-kill, steal-medicine, cure-secret)",
+    "lib/content-seed-packs.ts → health-bioethics pack (existing, AI-generation only)",
+    "PRODUCT_STRATEGY.md → Picoclaw + SplitVote Content Intelligence Direction",
+    "ROADMAP.md → Current-events dilemma workflow (priority #6, 30 Apr 2026)"
+  ]
+}
