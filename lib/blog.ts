@@ -3916,6 +3916,212 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'moral-injury-when-values-break',
+    locale: 'en',
+    title: 'Moral Injury: When Survival Means Betraying Your Values',
+    seoTitle: 'Moral Injury Explained — Ethical Dilemmas About Guilt, Shame and Betrayal',
+    description:
+      'Moral injury happens when a person acts, witnesses, or fails to prevent something that violates deeply held values. It is one of the most powerful frames for modern ethical dilemmas.',
+    seoDescription:
+      'Learn what moral injury is, how it differs from ordinary guilt, and why it creates powerful ethical dilemmas about work, family, loyalty and self-forgiveness.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['moral injury', 'psychology', 'guilt', 'ethics'],
+    relatedDilemmaIds: ['whistleblower', 'cover-accident', 'report-friend', 'innocent-juror'],
+    alternateSlug: 'ferita-morale-quando-i-valori-si-spezzano',
+    content: [
+      {
+        type: 'p',
+        text: 'Some choices do not only create consequences. They change how a person sees themselves. Moral injury is the psychological and social pain that can follow when someone does, witnesses, or fails to prevent something that violates deeply held values.',
+      },
+      {
+        type: 'p',
+        text: 'The concept is often discussed in military, health-care and first-responder contexts, but the structure appears in ordinary life too: lying to protect a job, staying silent during cruelty, enforcing a rule you believe is wrong, or choosing survival over a value you thought was non-negotiable.',
+      },
+      {
+        type: 'h2',
+        text: 'Why guilt is not the whole story',
+      },
+      {
+        type: 'p',
+        text: 'Guilt says: I did something wrong. Shame says: I am wrong because of what I did. Moral injury often contains both, plus anger, betrayal, disgust, spiritual doubt or the feeling that self-forgiveness is no longer available.',
+      },
+      {
+        type: 'p',
+        text: 'That is what makes it such strong material for moral dilemmas. The question is not simply "what produces the best outcome?" It is also "what kind of person will I be after I choose this?"',
+      },
+      {
+        type: 'h2',
+        text: 'Six dilemmas this unlocks',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your boss asks you to deceive a client to save everyone’s jobs. Do you do it?',
+          'A hospital protocol forces you to deny care to someone who will suffer. Do you break it?',
+          'You stayed silent while a friend was publicly humiliated. Do you confess later?',
+          'A family member asks you to hide a crime because exposing it would destroy the family.',
+          'You followed an order that harmed someone. Do you blame yourself or the system?',
+          'You can repair the damage only by admitting what you did. Do you accept the consequences?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Vote on moral dilemmas →',
+        href: '/category/morality',
+      },
+      {
+        type: 'cta',
+        label: 'Loyalty vs honesty →',
+        href: '/blog/loyalty-vs-honesty-when-they-collide',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational and reflective content, not mental-health advice or diagnosis. Context informed by the National Center for PTSD materials on moral injury.',
+      },
+    ],
+  },
+  {
+    slug: 'limerence-love-obsession-dilemmas',
+    locale: 'en',
+    title: 'Limerence: When Love Feels Like a Moral Trap',
+    seoTitle: 'Limerence Explained — Romantic Obsession, Uncertainty and Ethical Dilemmas',
+    description:
+      'Limerence is intense romantic fixation under uncertainty. For SplitVote, it creates hard dilemmas about honesty, commitment, boundaries and emotional responsibility.',
+    seoDescription:
+      'Explore limerence through ethical dilemmas: romantic obsession, ambiguity, emotional dependency, confession, commitment and boundaries.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['limerence', 'relationships', 'psychology', 'romantic obsession'],
+    relatedDilemmaIds: ['love-or-career', 'truth-friend', 'sibling-secret', 'memory-erase'],
+    alternateSlug: 'limerence-amore-ossessione-dilemmi',
+    content: [
+      {
+        type: 'p',
+        text: 'Limerence is a word for the obsessive, hope-driven form of romantic fixation that can appear when attraction is intense and reciprocation is uncertain. Dorothy Tennov popularized the term in 1979 to describe a state that can feel involuntary, consuming and painfully dependent on signs from another person.',
+      },
+      {
+        type: 'p',
+        text: 'It is not a diagnosis on SplitVote. It is a useful frame for a familiar moral problem: what do you owe yourself, your partner, and the person you are fixated on when your feelings become larger than your actual relationship?',
+      },
+      {
+        type: 'h2',
+        text: 'Why uncertainty is the engine',
+      },
+      {
+        type: 'p',
+        text: 'A clear yes or no can be painful, but ambiguity is often more addictive. A delayed reply, a warm smile, a vague promise or a half-open door can keep the mind searching for evidence. The dilemma is that hope can feel morally innocent while quietly becoming harmful.',
+      },
+      {
+        type: 'h2',
+        text: 'Where ethics enters',
+      },
+      {
+        type: 'p',
+        text: 'The ethical question is not whether the feeling is real. It is what you do with it. Do you confess and risk burdening someone? Do you hide it from a partner? Do you cut contact even if that seems cold? Do you keep accepting attention from someone you know is emotionally dependent on you?',
+      },
+      {
+        type: 'h2',
+        text: 'Six dilemmas this unlocks',
+      },
+      {
+        type: 'list',
+        items: [
+          'You are in a stable relationship but obsessed with someone else. Do you confess?',
+          'Someone gives you ambiguous romantic signals for months. Do you ask directly or disappear?',
+          'You realize a friend is emotionally dependent on your attention. Do you set a hard boundary?',
+          'Your partner admits limerence for another person but says nothing happened. Do you stay?',
+          'You can end the fixation only by cutting off someone who did nothing wrong. Do you do it?',
+          'You know someone is idealizing you. Do you correct the fantasy even if it hurts them?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Explore relationship dilemmas →',
+        href: '/category/relationships',
+      },
+      {
+        type: 'cta',
+        label: 'Try moral personality →',
+        href: '/personality',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational and reflective content, not relationship or mental-health advice. Context informed by Dorothy Tennov’s concept of limerence and later psychology literature.',
+      },
+    ],
+  },
+  {
+    slug: 'ambiguous-loss-grief-without-closure',
+    locale: 'en',
+    title: 'Ambiguous Loss: The Pain of Losing Someone Who Is Not Really Gone',
+    seoTitle: 'Ambiguous Loss Explained — Grief Without Closure and Ethical Dilemmas',
+    description:
+      'Ambiguous loss is grief without a clean ending: someone is physically absent but psychologically present, or physically present but emotionally gone.',
+    seoDescription:
+      'Understand ambiguous loss through moral dilemmas about closure, loyalty, hope, dementia, estrangement, disappearance and unresolved grief.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['ambiguous loss', 'grief', 'psychology', 'relationships'],
+    relatedDilemmaIds: ['memory-erase', 'cure-secret', 'sibling-secret', 'love-or-career'],
+    alternateSlug: 'perdita-ambigua-dolore-senza-chiusura',
+    content: [
+      {
+        type: 'p',
+        text: 'Ambiguous loss is grief without a clear ending. Pauline Boss coined the term for losses where the person is physically absent but psychologically present, or physically present but psychologically absent. There is no clean goodbye, no stable category, no simple ritual that tells everyone what happened.',
+      },
+      {
+        type: 'p',
+        text: 'The concept fits missing persons, estrangement, dementia, addiction, long-term coma, vanished relationships and families waiting for answers after disaster or war. The person is gone and not gone at the same time.',
+      },
+      {
+        type: 'h2',
+        text: 'Why closure can be the wrong demand',
+      },
+      {
+        type: 'p',
+        text: 'Many cultures treat closure as the goal of grief. Ambiguous loss resists that. Sometimes there is no final fact to accept. The moral pressure becomes: how long should you remain loyal to uncertainty? When does hope become self-harm? When does moving on become betrayal?',
+      },
+      {
+        type: 'h2',
+        text: 'Why this becomes a dilemma',
+      },
+      {
+        type: 'p',
+        text: 'Ambiguous loss forces choices under incomplete information. You may need to sell a home, start a new relationship, stop visiting, make medical decisions, or tell a child a story that is not fully certain. Every option can feel disloyal to one version of reality.',
+      },
+      {
+        type: 'h2',
+        text: 'Six dilemmas this unlocks',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your missing partner may still be alive. Do you start a new life?',
+          'A parent with dementia no longer recognizes you. Do you keep visiting every week?',
+          'A sibling cut off contact years ago. Do you stop trying to reach them?',
+          'Your family wants a memorial without proof of death. Do you agree?',
+          'A loved one returns after years away and asks to be welcomed back. Do you reopen the door?',
+          'You can protect yourself only by accepting a closure you cannot prove. Do you do it?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Explore everyday ethical dilemmas →',
+        href: '/blog/ethical-dilemmas-everyday-life',
+      },
+      {
+        type: 'cta',
+        label: 'Browse relationship dilemmas →',
+        href: '/category/relationships',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational and reflective content, not grief counseling or mental-health advice. Context informed by Pauline Boss’s work on ambiguous loss.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -7766,6 +7972,212 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contesto di attualità basato sul reportage di Wired Italia sui bodyoids e sulle proposte di coltivazione di organi. Gli scenari SplitVote sono ipotetici e pensati per riflessione, non come consulenza medica o legale.',
+      },
+    ],
+  },
+  {
+    slug: 'ferita-morale-quando-i-valori-si-spezzano',
+    locale: 'it',
+    title: 'Ferita morale: quando sopravvivere significa tradire i propri valori',
+    seoTitle: 'Ferita Morale Spiegata — Dilemmi Etici su Colpa, Vergogna e Tradimento',
+    description:
+      'La ferita morale nasce quando una persona agisce, assiste o non riesce a impedire qualcosa che viola valori profondi. È una cornice potente per dilemmi etici moderni.',
+    seoDescription:
+      'Scopri cos’è la ferita morale, come si distingue dalla colpa ordinaria, e perché crea dilemmi su lavoro, famiglia, lealtà e perdono di sé.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['ferita morale', 'psicologia', 'colpa', 'etica'],
+    relatedDilemmaIds: ['whistleblower', 'cover-accident', 'report-friend', 'innocent-juror'],
+    alternateSlug: 'moral-injury-when-values-break',
+    content: [
+      {
+        type: 'p',
+        text: 'Alcune scelte non producono solo conseguenze. Cambiano il modo in cui una persona vede se stessa. La ferita morale è il dolore psicologico e sociale che può seguire quando qualcuno fa, vede o non riesce a impedire qualcosa che viola valori profondi.',
+      },
+      {
+        type: 'p',
+        text: 'Il concetto è spesso discusso in contesti militari, sanitari e di primo soccorso, ma la struttura compare anche nella vita ordinaria: mentire per proteggere un lavoro, restare zitti davanti alla crudeltà, applicare una regola che si ritiene ingiusta, scegliere la sopravvivenza invece di un valore che sembrava non negoziabile.',
+      },
+      {
+        type: 'h2',
+        text: 'Perché la colpa non basta a spiegare tutto',
+      },
+      {
+        type: 'p',
+        text: 'La colpa dice: ho fatto qualcosa di sbagliato. La vergogna dice: sono sbagliato per ciò che ho fatto. La ferita morale spesso contiene entrambe, insieme a rabbia, tradimento, disgusto, dubbio spirituale o la sensazione che perdonarsi non sia più possibile.',
+      },
+      {
+        type: 'p',
+        text: 'Per questo è una materia fortissima per i dilemmi morali. La domanda non è solo "quale scelta produce il risultato migliore?". È anche "che persona sarò dopo aver scelto?".',
+      },
+      {
+        type: 'h2',
+        text: 'Sei dilemmi che apre',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo capo ti chiede di ingannare un cliente per salvare tutti i posti di lavoro. Lo fai?',
+          'Un protocollo ospedaliero ti costringe a negare cure a qualcuno che soffrirà. Lo infrangi?',
+          'Sei rimasto in silenzio mentre un amico veniva umiliato. Confessi dopo?',
+          'Un familiare ti chiede di nascondere un reato perché denunciarlo distruggerebbe la famiglia.',
+          'Hai seguito un ordine che ha danneggiato qualcuno. Incolpi te stesso o il sistema?',
+          'Puoi riparare il danno solo ammettendo ciò che hai fatto. Accetti le conseguenze?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Vota dilemmi morali →',
+        href: '/it/category/morality',
+      },
+      {
+        type: 'cta',
+        label: 'Lealtà contro onestà →',
+        href: '/it/blog/lealta-vs-onesta-quando-si-scontrano',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo e riflessivo, non consulenza psicologica né diagnosi. Contesto informato dai materiali del National Center for PTSD sulla ferita morale.',
+      },
+    ],
+  },
+  {
+    slug: 'limerence-amore-ossessione-dilemmi',
+    locale: 'it',
+    title: 'Limerence: quando l’amore sembra una trappola morale',
+    seoTitle: 'Limerence Spiegata — Ossessione Romantica, Incertezza e Dilemmi Etici',
+    description:
+      'La limerence è una fissazione romantica intensa alimentata dall’incertezza. Per SplitVote crea dilemmi su sincerità, impegno, confini e responsabilità emotiva.',
+    seoDescription:
+      'Esplora la limerence attraverso dilemmi etici: ossessione romantica, ambiguità, dipendenza emotiva, confessione, impegno e confini.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['limerence', 'relazioni', 'psicologia', 'ossessione romantica'],
+    relatedDilemmaIds: ['love-or-career', 'truth-friend', 'sibling-secret', 'memory-erase'],
+    alternateSlug: 'limerence-love-obsession-dilemmas',
+    content: [
+      {
+        type: 'p',
+        text: 'Limerence è una parola per descrivere una fissazione romantica ossessiva, alimentata dalla speranza, che può comparire quando l’attrazione è intensa e la reciprocità è incerta. Dorothy Tennov rese popolare il termine nel 1979 per descrivere uno stato che può sembrare involontario, totalizzante e dolorosamente dipendente dai segnali dell’altra persona.',
+      },
+      {
+        type: 'p',
+        text: 'Su SplitVote non è una diagnosi. È una cornice utile per un problema morale familiare: cosa devi a te stesso, al tuo partner e alla persona per cui sei fissato quando i tuoi sentimenti diventano più grandi della relazione reale?',
+      },
+      {
+        type: 'h2',
+        text: 'Perché l’incertezza è il motore',
+      },
+      {
+        type: 'p',
+        text: 'Un sì o un no chiaro può fare male, ma l’ambiguità spesso crea più dipendenza. Una risposta in ritardo, un sorriso caldo, una promessa vaga o una porta lasciata socchiusa possono tenere la mente alla ricerca di prove. Il dilemma è che la speranza può sembrare moralmente innocente mentre diventa dannosa.',
+      },
+      {
+        type: 'h2',
+        text: 'Dove entra l’etica',
+      },
+      {
+        type: 'p',
+        text: 'La domanda etica non è se il sentimento sia reale. È cosa ne fai. Confessi rischiando di caricare l’altra persona? Lo nascondi al partner? Tagli i contatti anche se sembra crudele? Continui ad accettare attenzioni da qualcuno che sai dipendere emotivamente da te?',
+      },
+      {
+        type: 'h2',
+        text: 'Sei dilemmi che apre',
+      },
+      {
+        type: 'list',
+        items: [
+          'Hai una relazione stabile ma sei ossessionato da un’altra persona. Lo confessi?',
+          'Qualcuno ti manda segnali romantici ambigui per mesi. Chiedi chiarezza o sparisci?',
+          'Capisci che un amico dipende emotivamente dalla tua attenzione. Metti un limite netto?',
+          'Il tuo partner ammette una limerence per un’altra persona ma dice che non è successo nulla. Resti?',
+          'Puoi spegnere la fissazione solo tagliando una persona che non ha fatto niente di male. Lo fai?',
+          'Sai che qualcuno ti sta idealizzando. Correggi la fantasia anche se gli farà male?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Esplora i dilemmi sulle relazioni →',
+        href: '/it/category/relationships',
+      },
+      {
+        type: 'cta',
+        label: 'Scopri la tua personalità morale →',
+        href: '/it/personality',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo e riflessivo, non consulenza relazionale o psicologica. Contesto informato dal concetto di limerence di Dorothy Tennov e dalla letteratura psicologica successiva.',
+      },
+    ],
+  },
+  {
+    slug: 'perdita-ambigua-dolore-senza-chiusura',
+    locale: 'it',
+    title: 'Perdita ambigua: il dolore di perdere qualcuno che non è davvero andato via',
+    seoTitle: 'Perdita Ambigua Spiegata — Lutto Senza Chiusura e Dilemmi Etici',
+    description:
+      'La perdita ambigua è un lutto senza finale netto: qualcuno è fisicamente assente ma psicologicamente presente, oppure fisicamente presente ma emotivamente assente.',
+    seoDescription:
+      'Capisci la perdita ambigua attraverso dilemmi morali su chiusura, lealtà, speranza, demenza, allontanamento, scomparsa e lutto irrisolto.',
+    date: '2026-05-15',
+    readingTime: 6,
+    tags: ['perdita ambigua', 'lutto', 'psicologia', 'relazioni'],
+    relatedDilemmaIds: ['memory-erase', 'cure-secret', 'sibling-secret', 'love-or-career'],
+    alternateSlug: 'ambiguous-loss-grief-without-closure',
+    content: [
+      {
+        type: 'p',
+        text: 'La perdita ambigua è un lutto senza finale chiaro. Pauline Boss coniò il termine per descrivere perdite in cui la persona è fisicamente assente ma psicologicamente presente, oppure fisicamente presente ma psicologicamente assente. Non c’è un addio pulito, nessuna categoria stabile, nessun rituale semplice che dica a tutti cosa è successo.',
+      },
+      {
+        type: 'p',
+        text: 'Il concetto si adatta a persone scomparse, allontanamenti familiari, demenza, dipendenze, coma di lungo periodo, relazioni svanite e famiglie che aspettano risposte dopo disastri o guerre. La persona c’è e non c’è allo stesso tempo.',
+      },
+      {
+        type: 'h2',
+        text: 'Perché la chiusura può essere la richiesta sbagliata',
+      },
+      {
+        type: 'p',
+        text: 'Molte culture trattano la chiusura come l’obiettivo del lutto. La perdita ambigua resiste a questo schema. A volte non esiste un fatto finale da accettare. La pressione morale diventa: per quanto tempo devi restare leale all’incertezza? Quando la speranza diventa autolesionismo? Quando andare avanti diventa tradimento?',
+      },
+      {
+        type: 'h2',
+        text: 'Perché diventa un dilemma',
+      },
+      {
+        type: 'p',
+        text: 'La perdita ambigua costringe a scegliere con informazioni incomplete. Potresti dover vendere una casa, iniziare una nuova relazione, smettere di visitare qualcuno, prendere decisioni mediche o raccontare a un figlio una storia non del tutto certa. Ogni opzione può sembrare sleale verso una versione della realtà.',
+      },
+      {
+        type: 'h2',
+        text: 'Sei dilemmi che apre',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo partner scomparso potrebbe essere ancora vivo. Ricominci una vita nuova?',
+          'Un genitore con demenza non ti riconosce più. Continui a visitarlo ogni settimana?',
+          'Un fratello ha tagliato i contatti anni fa. Smetti di cercarlo?',
+          'La tua famiglia vuole un memoriale senza prova della morte. Accetti?',
+          'Una persona amata torna dopo anni e chiede di essere riaccolta. Riapri la porta?',
+          'Puoi proteggerti solo accettando una chiusura che non puoi dimostrare. Lo fai?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Esplora dilemmi etici quotidiani →',
+        href: '/it/blog/dilemmi-etici-vita-quotidiana',
+      },
+      {
+        type: 'cta',
+        label: 'Sfoglia i dilemmi sulle relazioni →',
+        href: '/it/category/relationships',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo e riflessivo, non consulenza sul lutto o sulla salute mentale. Contesto informato dal lavoro di Pauline Boss sulla perdita ambigua.',
       },
     ],
   },
