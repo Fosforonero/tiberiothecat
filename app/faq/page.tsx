@@ -5,7 +5,14 @@ import JsonLd from '@/components/JsonLd'
 export const metadata: Metadata = {
   title: 'FAQ — How SplitVote Works',
   description: 'Frequently asked questions about SplitVote — what it is, how voting works, how we count results, your privacy, premium features, and the data we publish.',
-  alternates: { canonical: 'https://splitvote.io/faq' },
+  alternates: {
+    canonical: 'https://splitvote.io/faq',
+    languages: {
+      en:          'https://splitvote.io/faq',
+      'it-IT':     'https://splitvote.io/it/faq',
+      'x-default': 'https://splitvote.io/faq',
+    },
+  },
   openGraph: {
     title: 'SplitVote FAQ — How does it work?',
     description: 'What SplitVote is, how voting and results work, what we do with your data, and what premium unlocks.',

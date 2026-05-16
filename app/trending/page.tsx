@@ -11,7 +11,14 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Top Dilemmas & Trending | SplitVote',
   description: 'All-time most voted moral dilemmas, top categories by total votes, and today\'s fresh AI-generated questions.',
-  alternates: { canonical: 'https://splitvote.io/trending' },
+  alternates: {
+    canonical: 'https://splitvote.io/trending',
+    languages: {
+      en:          'https://splitvote.io/trending',
+      'it-IT':     'https://splitvote.io/it/trending',
+      'x-default': 'https://splitvote.io/trending',
+    },
+  },
   openGraph: {
     title: 'Top Dilemmas & Trending — SplitVote',
     description: 'All-time most voted moral dilemmas and today\'s fresh AI questions. See how the world votes.',

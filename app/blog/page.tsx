@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${BASE}/blog`,
     languages: {
-      en: `${BASE}/blog`,
-      it: `${BASE}/it/blog`,
+      en:          `${BASE}/blog`,
+      'it-IT':     `${BASE}/it/blog`,
       'x-default': `${BASE}/blog`,
     },
   },
