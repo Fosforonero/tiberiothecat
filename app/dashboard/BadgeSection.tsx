@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { RARITY_STYLES } from '@/lib/rarity'
 
 interface Badge {
   badge_id: string
@@ -15,6 +14,12 @@ interface Badge {
   }
 }
 
+const RARITY_STYLES: Record<string, string> = {
+  common:    'border-slate-500/40 bg-slate-500/10 text-slate-300',
+  rare:      'border-blue-500/40  bg-blue-500/10  text-blue-300',
+  epic:      'border-purple-500/40 bg-purple-500/10 text-purple-300',
+  legendary: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-300',
+}
 
 const EQUIP_RING: Record<string, string> = {
   common:    'ring-slate-400',
@@ -51,13 +56,13 @@ export default function BadgeSection({ initialBadges }: { initialBadges: Badge[]
     }
   }
 
-  const equippedBadge = badges.find(b => b.is_equipped)
+  const equippedBadge = badges.find(b => b.is_equipped && b.badges != null)
 
   return (
     <div className="mb-10">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-black text-white">🏆 Your Badges</h2>
-        {equippedBadge && (
+        {equippedBadge && equippedBadge.badges && (
           <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
             <span>Equipped:</span>
             <span className="text-white font-semibold">
@@ -68,7 +73,7 @@ export default function BadgeSection({ initialBadges }: { initialBadges: Badge[]
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {badges.map(b => {
+        {badges.filter(b => b.badges != null).map(b => {
           const isEquipped = b.is_equipped
           const rarityStyle = RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common
           const ringStyle = EQUIP_RING[b.badges.rarity] ?? EQUIP_RING.common

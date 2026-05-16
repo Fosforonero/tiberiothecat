@@ -253,8 +253,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Badge collection (with equip toggle) ── */}
-      {userBadges.length > 0 && (
-        <BadgeSection initialBadges={userBadges as unknown as Parameters<typeof BadgeSection>[0]['initialBadges']} />
+      {userBadges.filter(b => b.badges != null).length > 0 && (
+        <BadgeSection initialBadges={userBadges.filter(b => b.badges != null) as unknown as Parameters<typeof BadgeSection>[0]['initialBadges']} />
       )}
 
       {/* ── Answer History ── */}
