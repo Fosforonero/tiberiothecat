@@ -99,8 +99,12 @@ export function publishedDraftToPost(draft: BlogDraft, locale: 'en' | 'it'): Blo
     seoDescription: article.seoDescription,
     date: draft.publishedAt ?? draft.approvedAt ?? draft.generatedAt,
     readingTime: Math.max(1, Math.ceil(words / 200)),
-    tags: article.keywords,
-    relatedDilemmaIds: article.relatedDilemmaIds,
+    // Defensive defaults — Redis drafts may legitimately omit these
+    // (e.g. an auto-generated article without keyword extraction). Returning
+    // empty arrays prevents `.includes` / `.map` / `.join` crashes downstream
+    // in BlogArticle + page-level JSON-LD generation.
+    tags: Array.isArray(article.keywords) ? article.keywords : [],
+    relatedDilemmaIds: Array.isArray(article.relatedDilemmaIds) ? article.relatedDilemmaIds : [],
     alternateSlug,
     content: sections,
   }
