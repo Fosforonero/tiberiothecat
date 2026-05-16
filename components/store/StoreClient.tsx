@@ -217,7 +217,7 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
           <button
             type="button"
             onClick={() => setEquipError(null)}
-            aria-label="Dismiss"
+            aria-label={locale === 'it' ? 'Chiudi' : 'Dismiss'}
             className="text-white/40 hover:text-white text-xl leading-none flex-shrink-0"
           >
             ×
@@ -244,7 +244,7 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
           <button
             type="button"
             onClick={() => setDismissedSuccess(true)}
-            aria-label="Dismiss"
+            aria-label={locale === 'it' ? 'Chiudi' : 'Dismiss'}
             className="text-white/40 hover:text-white text-xl leading-none flex-shrink-0"
           >
             ×
@@ -263,7 +263,7 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
           <button
             type="button"
             onClick={() => setDismissedCancel(true)}
-            aria-label="Dismiss"
+            aria-label={locale === 'it' ? 'Chiudi' : 'Dismiss'}
             className="text-white/40 hover:text-white text-xl leading-none flex-shrink-0"
           >
             ×

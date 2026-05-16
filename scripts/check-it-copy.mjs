@@ -28,6 +28,11 @@ const FILES_TO_CHECK = [
   'components/DailyMissions.tsx',
   'components/CompanionDisplay.tsx',
   'app/personality/PersonalityClient.tsx',
+  // Pixie + Store surfaces — added 2026-05-15 after PM reported mixed-locale UI
+  'components/PixieSelector.tsx',
+  'components/CosmeticPicker.tsx',
+  'components/store/StoreClient.tsx',
+  'components/MobileStickyHUD.tsx',
 ]
 
 // Strings to check. Each entry specifies:
@@ -56,6 +61,9 @@ const CHECKS = [
   // Dashboard missions / companion (check absence of EN-only strings NOT in ternary)
   { str: "Today's Missions",             file: 'components/DailyMissions.tsx',    asLiteral: true  },
   { str: 'Your Companion',               file: 'components/CompanionDisplay.tsx', asLiteral: true  },
+  // Pixie + Store accessibility labels (added 2026-05-15)
+  { str: '"Dismiss"',                    file: 'components/store/StoreClient.tsx', asLiteral: false },
+  { str: '"Go to your Pixie"',           file: 'components/MobileStickyHUD.tsx',   asLiteral: false },
 ]
 
 // How many lines above/below the match to look for `IT ?` guard

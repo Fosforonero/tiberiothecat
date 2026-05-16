@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
+import Link from 'next/link'
 import { getPixieImagePath } from '@/lib/pixie'
 import {
   getCompanionStage,
@@ -116,9 +117,11 @@ export default function MobileStickyHUD({
 
         <div className="px-3 pt-2 pb-2.5 max-w-3xl mx-auto" style={{ paddingLeft: 'max(12px, env(safe-area-inset-left))', paddingRight: 'max(12px, env(safe-area-inset-right))' }}>
           <div className="flex items-center gap-2.5">
-            {/* Pixie thumbnail */}
-            <div
-              className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0"
+            {/* Pixie thumbnail — clickable, navigates to the Pixie page */}
+            <Link
+              href={IT ? '/it/pixie' : '/pixie'}
+              aria-label={IT ? 'Vai al tuo Pixie' : 'Go to your Pixie'}
+              className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-white/20 transition-shadow"
               style={{
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px solid rgba(255,255,255,0.08)',
@@ -133,9 +136,9 @@ export default function MobileStickyHUD({
                   onError={() => setImgError(true)}
                 />
               ) : (
-                <span className="text-lg">⚡</span>
+                <span className="text-lg" aria-hidden="true">⚡</span>
               )}
-            </div>
+            </Link>
 
             {/* Center: level + title (truncates), XP bar below */}
             <div className="flex-1 min-w-0">

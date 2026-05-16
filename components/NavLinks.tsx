@@ -1,16 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Compass, BookOpen } from 'lucide-react'
+import { TrendingUp, Compass, Sparkles, BookOpen } from 'lucide-react'
 import { useLocale } from '@/hooks/useLocale'
 
 /**
- * Top-level header nav (lg+ only). Trimmed to 3 items for mobile-first IA:
- * categories, business, and other secondary destinations live in the
- * burger drawer (`MobileMenu.tsx`) and footer.
+ * Top-level header nav (lg+ only). 4 items, mobile-first IA: categories,
+ * business and other secondary destinations live in the burger drawer
+ * (`MobileMenu.tsx`) and footer.
  *
  * Invariants:
- * - Same 3 items in EN and IT (parity).
+ * - Same items in EN and IT (parity).
  * - Active state visible (current page is highlighted).
  * - Hidden below lg breakpoint (drawer takes over).
  */
@@ -39,6 +39,13 @@ const EN_LINKS: NavItem[] = [
     activeColor: 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30',
   },
   {
+    href: '/pixie',
+    label: 'Pixie',
+    icon: Sparkles,
+    color: 'text-[var(--muted)] hover:text-pink-300 hover:bg-pink-500/10 hover:border-pink-500/20',
+    activeColor: 'text-pink-300 bg-pink-500/15 border-pink-500/30',
+  },
+  {
     href: '/blog',
     label: 'Blog',
     icon: BookOpen,
@@ -61,6 +68,13 @@ const IT_LINKS: NavItem[] = [
     icon: Compass,
     color: 'text-[var(--muted)] hover:text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-500/20',
     activeColor: 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30',
+  },
+  {
+    href: '/it/pixie',
+    label: 'Pixie',
+    icon: Sparkles,
+    color: 'text-[var(--muted)] hover:text-pink-300 hover:bg-pink-500/10 hover:border-pink-500/20',
+    activeColor: 'text-pink-300 bg-pink-500/15 border-pink-500/30',
   },
   {
     href: '/it/blog',
