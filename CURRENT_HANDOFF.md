@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 13 May 2026 (post Sprints M–U + Fixes Y/Z — end of day)
+Last updated: 15 May 2026 (post SEO discovery + dashboard recovery + Pixie polish — end of day)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
@@ -9,10 +9,24 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 ## 1. Production State
 
 - **Branch:** `main`
-- **Local vs remote:** **in sync** — all commits pushed
-- **Last pushed:** `4e636d1` — all commits pushed, main in sync
+- **Local vs remote:** **in sync** — all commits below pushed
+- **Last pushed:** `29430a9` — all commits pushed, main in sync
 
-### Recent commits
+### Recent commits — session 15 May 2026 (10 commits)
+| Hash | Description |
+|---|---|
+| `29430a9` | perf(pixie): migrate <img> to next/Image across 5 components |
+| `cc6d733` | fix(ux+perf): pixie thumbnail breathing room + code-split modals |
+| `968d5d1` | fix(dashboard): error boundary + force-dynamic + defensive logging |
+| `7d130fa` | fix(seo): STATIC_LAST_MOD fallback per ?? now residuals in sitemap |
+| `b8f0efc` | fix(seo): stable sitemap lastModified for static pages |
+| `f6bb4c7` | fix(ux+i18n): Pixie nav discoverability + complete IT aria-labels in store |
+| `1561717` | feat(store): unify /store with new client, admin bypass, fix Stripe webhook |
+| `8f74cd4` | fix(seo): extend reciprocal hreflang to /trending + /faq, unify it-IT tag |
+| `84c77ca` | fix(seo): add reciprocal hreflang + crawlable IT link on home EN |
+| `19ca6bc` | feat: add opportunity packs and blog structured data (BlogPosting JSON-LD) |
+
+### Earlier commits — session 13 May 2026 (Sprints M–U + Fixes Y/Z)
 | Hash | Description |
 |---|---|
 | `4e636d1` | fix(ux): mission targets → /trending; leaderboard back-nav on profile (Fix Y+Z) |
@@ -28,7 +42,51 @@ Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
 ---
 
-## 2. What changed today (13 May 2026) — end of day
+## 1b. What changed today (15 May 2026) — SEO + Dashboard + Pixie polish
+
+### SEO discovery sprint (5 commits)
+- **Home EN hreflang reciproci + crawlable IT link** (`84c77ca`): `app/page.tsx` ora dichiara `alternates.languages` + rende un `<a href="/it" hrefLang="it">Vai alla versione italiana →</a>` server-rendered nel JSX. Root cause `/it` "Unknown to Google" chiusa.
+- **`/trending` + `/faq` hreflang reciproci** (`8f74cd4`): aggiunte `alternates.languages` mancanti + unificato `it` → `it-IT` su `/blog` EN+IT.
+- **Sitemap freshness** (`b8f0efc` + `7d130fa`): introdotta const `STATIC_LAST_MOD = new Date('2026-05-15')` per le pagine statiche; sostituito `lastModified: now` con date stabile (Google deprioritizza crawl quando ogni URL dice "modified just now" ad ogni fetch). Mantenuti timestamp reali per AI scenarios (`approvedAt/generatedAt`) e blog post (`post.date`).
+- **Live now:** sitemap.xml mostra 236 URL su `2026-05-15T00:00:00.000Z` + altri con date reali; nessun timestamp `now`-style residuo dopo `7d130fa`.
+
+### Dashboard recovery (1 commit)
+- **`968d5d1`** fix(dashboard): Application error "Digest 2512231454" → graceful error boundary
+  - Nuovo `app/dashboard/error.tsx`: UI EN/IT fallback con retry button + digest visibile
+  - Aggiunto `export const dynamic = 'force-dynamic'` su `app/dashboard/page.tsx` (era senza directive, default era ISR — questo causava "vedo sempre gli stessi quesiti votati")
+  - Aggiunto logging difensivo `[dashboard]` su ogni query Supabase + catch branches per `user_purchases` e `getDynamicScenarios`. Vercel logs ora identificano la root cause vera del digest specifico.
+  - Renamed `import dynamic from 'next/dynamic'` → `nextDynamic` per evitare shadow con `export const dynamic`.
+
+### Pixie polish (2 commits)
+- **`cc6d733`** fix(ux+perf): pixie thumbnail breathing room + code-split modals
+  - `MobileStickyHUD` thumb: +`p-0.5` padding interno
+  - `CompanionDisplay` main avatar: +`p-1.5` padding nel button 80×80
+  - `CompanionDisplay` compact thumb: +`p-0.5` padding
+  - `PixieLevelUpModal` + `PixieDetailModal` ora code-split via `next/dynamic` + `ssr:false` (~45KB combinati uscono dal bundle iniziale)
+- **`29430a9`** perf(pixie): `<img>` → `next/Image` su 5 componenti
+  - Pixie PNG sono 256×256, `next/Image` ora gestisce srcset + AVIF/WebP + lazy loading nativo
+  - `priority` su MobileStickyHUD (sticky, sempre visibile) e CompanionDisplay hero (LCP-critical)
+
+### Store + admin bypass (1 commit — sprint del PM)
+- **`1561717`** feat(store): `/store` ora usa lo stesso client di `/it/store` (legacy retired); admin vede tutti i prodotti unlocked in store + dashboard; equip APIs (pixie/cosmetic/toggle) accettano admin bypass; webhook Stripe one_time_purchase scrive `product_type`, `stripe_payment_intent_id`, `status='completed'` in `user_purchases`.
+
+### Opportunity packs + BlogPosting JSON-LD (1 commit)
+- **`19ca6bc`** feat: scripts/generate-opportunity-pack.mjs + content-output bioethics-bodyoids pack + BlogPosting schema + ImageObject + OG/Twitter `summary_large_image` su blog EN+IT.
+
+### What I deferred (PM has uncommitted blog content)
+- **`lib/blog.ts` split** (7k righe → posts-en/posts-it/api): rinviato perché PM ha 4 nuovi articoli (bodyoids, frontier-ai, moral-injury, limerence) non committati nello stesso file → alto rischio merge conflict. Da fare dopo che PM committa i posts.
+- **Internal linking sui 4 nuovi articoli**: stesso file, stesso rischio. Riprendere dopo commit PM.
+
+### PM action SQL fornito (HUMAN_ONLY)
+```sql
+UPDATE profiles SET role = 'admin'
+WHERE email = 'alphablacklady83@gmail.com' AND role <> 'super_admin';
+```
+Da eseguire in Supabase SQL Editor per dare admin normale all'utente segnalato.
+
+---
+
+## 2. What changed 13 May 2026 — end of day
 
 ### Fix Y — Back-nav leaderboard → public profile
 - `app/u/[id]/page.tsx`: reads `searchParams.from`, renders `← Leaderboard` (en) / `← Classifica` (it) when arriving from the leaderboard, fallback to `← SplitVote` otherwise
