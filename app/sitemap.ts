@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next'
 import { scenarios, CATEGORIES } from '@/lib/scenarios'
-import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { getPostsByLocale } from '@/lib/blog'
 import { getPublishedBlogDrafts, getPublishedPostsForLocale } from '@/lib/blog-published'
 import { getIndexableITTopics, getIndexableTopics } from '@/lib/seo-topics'
@@ -15,22 +14,15 @@ const BASE = 'https://splitvote.io'
 // where available.
 const STATIC_LAST_MOD = new Date('2026-05-16')
 
+// AI-generated dynamic scenarios are intentionally NOT listed in the sitemap.
+// They can be pruned from Redis when retention rolls over, which produced
+// 404 churn in Google Search Console (8 URLs as of 16 May 2026). Crawl
+// budget is better spent on durable surfaces (static scenarios, blog).
+// Googlebot still discovers AI scenarios via internal links (RelatedDilemmas
+// on /play and /results, plus /trending) — they remain indexable, just not
+// volunteered for crawl.
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date()
-
-  // Fetch AI-generated dilemmas from Redis (cron job generates these daily)
-  let dynamicScenarios: Array<{ id: string; generatedAt: string; locale: string }> = []
-  try {
-    const dynamic = await getDynamicScenarios()
-    dynamicScenarios = dynamic.map((s) => ({
-      id:          s.id,
-      generatedAt: s.generatedAt,
-      locale:      s.locale,
-    }))
-  } catch {
-    // Redis unavailable — sitemap falls back to static only
-  }
-
   // Static scenario pages — EN + IT
   const scenarioRoutes = scenarios.flatMap((s) => [
     {
@@ -58,28 +50,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
   ])
-
-  // AI-generated scenario pages — locale-aware URLs, real generatedAt timestamp
-  const dynamicRoutes = dynamicScenarios.flatMap(({ id, generatedAt, locale }) => {
-    const lastMod = generatedAt ? new Date(generatedAt) : now
-    const isIT = locale === 'it'
-    const playUrl    = isIT ? `${BASE}/it/play/${id}`    : `${BASE}/play/${id}`
-    const resultsUrl = isIT ? `${BASE}/it/results/${id}` : `${BASE}/results/${id}`
-    return [
-      {
-        url: playUrl,
-        lastModified: lastMod,
-        changeFrequency: 'weekly' as const,
-        priority: isIT ? 0.72 : 0.75,
-      },
-      {
-        url: resultsUrl,
-        lastModified: lastMod,
-        changeFrequency: 'daily' as const,
-        priority: isIT ? 0.82 : 0.85,
-      },
-    ]
-  })
 
   // Category pages
   const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').map((c) => ({
@@ -234,9 +204,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.68,
     },
     ...blogPostRoutes,
-    // Static dilemmas
+    // Static dilemmas (durable surface — AI dilemmas intentionally excluded;
+    // discovered via internal links instead)
     ...scenarioRoutes,
-    // AI-generated dilemmas (updates daily, real timestamps)
-    ...dynamicRoutes,
   ]
 }
