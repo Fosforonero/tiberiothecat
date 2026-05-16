@@ -1,0 +1,149 @@
+-- migration_v20_security_hardening.sql
+--
+-- ⚠️  PROPOSAL — NOT YET REVIEWED OR APPLIED ⚠️
+--
+-- Addresses residual findings from Supabase security advisor as of 16 May 2026
+-- (see CURRENT_HANDOFF.md §1a → "Altri security advisor"):
+--
+--   1. `dilemma_feedback_stats` view is SECURITY DEFINER (ERROR)
+--   2. 7 functions have a mutable `search_path` (WARN)
+--   3. `poll_votes` policy "Anyone can insert votes" with `WITH CHECK = true` (WARN)
+--   4. 9 SECURITY DEFINER functions callable from anon/authenticated (WARN — needs audit)
+--   5. `auth.leaked_password_protection` disabled (WARN — toggle in Supabase Auth UI, not SQL)
+--
+-- This file is intentionally split into independent sections that can be
+-- applied separately. Review each block, fill in the TODO function names from
+-- the live security advisor output, and run sections one at a time so each
+-- can be rolled back independently if something misbehaves.
+--
+-- Run with service_role access (Supabase SQL Editor with admin privileges).
+-- Verify each section with the SELECT queries embedded after every step.
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- ── 1. dilemma_feedback_stats view: SECURITY DEFINER → security_invoker
+-- ═════════════════════════════════════════════════════════════════════════════
+-- A SECURITY DEFINER view runs with the owner's privileges, bypassing the
+-- caller's RLS. For a stats view exposed to admin pages, security_invoker is
+-- safer: the view obeys the caller's RLS on the underlying tables.
+--
+-- Postgres 15+ syntax. If on PG 14 or older, recreate the view without the
+-- option (default in older versions runs as invoker anyway).
+
+ALTER VIEW public.dilemma_feedback_stats
+  SET (security_invoker = true);
+
+-- Verify:
+--   SELECT relname,
+--          (SELECT option_value FROM pg_options_to_table(c.reloptions)
+--           WHERE option_name = 'security_invoker') AS security_invoker
+--   FROM pg_class c WHERE relname = 'dilemma_feedback_stats';
+--   -- Expected: security_invoker = 'true'
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- ── 2. Functions with mutable search_path: pin to (public, pg_temp)
+-- ═════════════════════════════════════════════════════════════════════════════
+-- A mutable search_path on SECURITY DEFINER functions allows shadow-schema
+-- attacks (a malicious user redefines a table/function in their schema to
+-- intercept the SECURITY DEFINER call). Pinning the search_path closes this
+-- vector at zero behavioural cost.
+--
+-- TODO before applying — get exact list from advisor:
+--   Supabase dashboard → Database → Linter → "function_search_path_mutable"
+--   Paste the names below, drop the comment markers, then run.
+
+-- Known functions (from CURRENT_HANDOFF references — verify completeness):
+-- ALTER FUNCTION public.award_mission_xp(...)            SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.increment_user_vote_count(...)   SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.claim_user_badge(...)            SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.<NAME_FROM_ADVISOR_4>(...)       SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.<NAME_FROM_ADVISOR_5>(...)       SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.<NAME_FROM_ADVISOR_6>(...)       SET search_path = public, pg_temp;
+-- ALTER FUNCTION public.<NAME_FROM_ADVISOR_7>(...)       SET search_path = public, pg_temp;
+
+-- Verify after applying:
+--   SELECT proname, proconfig
+--   FROM pg_proc
+--   WHERE pronamespace = 'public'::regnamespace
+--     AND prosecdef = true;
+--   -- Expected: every row has proconfig containing 'search_path=public, pg_temp'
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- ── 3. poll_votes "Anyone can insert votes" policy: review or restrict
+-- ═════════════════════════════════════════════════════════════════════════════
+-- The policy "Anyone can insert votes" with `WITH CHECK = true` lets anonymous
+-- clients write directly to poll_votes. If poll voting is intentionally open
+-- (mirror of dilemma_votes anonymous flow), leave as-is and document below.
+-- If poll voting should go through the server API, drop the policy.
+--
+-- DECISION TODO — pick ONE:
+--
+-- Option A (leave open — only if poll voting must work anonymously without API):
+--   No SQL change. Add a comment justifying it:
+--     COMMENT ON POLICY "Anyone can insert votes" ON public.poll_votes IS
+--       'Intentional: poll voting is anonymous. Rate limiting + dedup happens at
+--        the API edge via Redis. RLS only enforces structure, not access.';
+--
+-- Option B (lock down — requires server route to mediate inserts):
+--   DROP POLICY "Anyone can insert votes" ON public.poll_votes;
+--   -- Then write `app/api/polls/[id]/vote/route.ts` that uses the admin
+--   -- client (service role) to insert, with auth + rate limit checks.
+--   -- Without this server route, poll voting breaks for all users.
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- ── 4. SECURITY DEFINER functions callable from anon/authenticated: audit
+-- ═════════════════════════════════════════════════════════════════════════════
+-- 9 functions are flagged. SECURITY DEFINER + grant to anon/authenticated is
+-- the intended pattern for server-mediated DB ops (award_mission_xp,
+-- increment_user_vote_count, etc.) BUT each grant must be intentional and
+-- documented.
+--
+-- AUDIT TODO — list each function and its purpose, then either:
+--   (a) Confirm intent → add a SQL COMMENT to document why anon needs it.
+--   (b) Revoke the grant if it's not needed.
+--
+-- List the current grants:
+--   SELECT
+--     p.proname,
+--     p.prosecdef AS security_definer,
+--     r.rolname   AS granted_to,
+--     pg_get_function_identity_arguments(p.oid) AS signature
+--   FROM pg_proc p
+--   JOIN pg_namespace n ON n.oid = p.pronamespace
+--   JOIN aclexplode(p.proacl) ax ON true
+--   JOIN pg_roles r ON r.oid = ax.grantee
+--   WHERE n.nspname = 'public'
+--     AND p.prosecdef = true
+--     AND r.rolname IN ('anon', 'authenticated')
+--   ORDER BY p.proname, r.rolname;
+--
+-- Example revoke (only if a function should NOT be anon-callable):
+--   REVOKE EXECUTE ON FUNCTION public.<NAME>(<SIG>) FROM anon;
+--   REVOKE EXECUTE ON FUNCTION public.<NAME>(<SIG>) FROM authenticated;
+--
+-- Example documentation (preferred when intent is correct):
+--   COMMENT ON FUNCTION public.award_mission_xp(...) IS
+--     'Server-mediated XP award. SECURITY DEFINER required so the function can
+--      bypass profiles RLS to update xp. Anon grant rejected via uid()/role
+--      check inside the function body.';
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- ── 5. auth.leaked_password_protection — NOT a SQL migration
+-- ═════════════════════════════════════════════════════════════════════════════
+-- This setting lives in the Supabase dashboard, not in SQL.
+--   Supabase dashboard → Authentication → Settings → Password protection
+--   → Enable "Leaked password protection"
+--
+-- Effect: signups/password changes are checked against the HIBP breached
+-- password list. No code change required; works transparently with existing
+-- supabase-js auth methods.
+
+-- ═════════════════════════════════════════════════════════════════════════════
+-- Apply order recommended
+-- ═════════════════════════════════════════════════════════════════════════════
+-- 1. Section 1 (view) — zero risk, instantly reversible.
+-- 2. Section 2 (search_path) — zero behavioural change if function logic is
+--    correct; tighten in a single batch once advisor list is filled in.
+-- 3. Section 4 (audit) — pure documentation step; no DB state change unless
+--    you choose to revoke.
+-- 4. Section 3 (poll_votes) — decision pending; do not apply blindly.
+-- 5. Section 5 (HIBP) — dashboard toggle, no SQL.

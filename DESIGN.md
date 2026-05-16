@@ -492,7 +492,7 @@ Each checkmark: `text-green-400`.
   - Touch targets: `minHeight: 44px` standard, `40px` compact on `isShortViewport` (≤700px)
   - Touch targets always ≥ 40px even in compact mode; 44px standard
 - `AuthButton` (anonymous): renders login link with `User` icon, `btn-neon-blue` styling
-  - **Ambiguity note:** `btn-neon-blue` class is used in AuthButton but not defined in `globals.css`. Resolve with: `bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 neon-glow-blue` if this button appears unstyled.
+  - `btn-neon-blue` is defined in `globals.css:162` — sets `cursor: pointer; outline: none`, `:focus-visible` neon ring, `:active` scale 0.97. Color/glow come from the Tailwind classes composed alongside it (`text-blue-400 border-blue-500/30 bg-blue-500/10 neon-glow-blue`).
 - `AuthButton` (logged in): avatar emoji `w-8 h-8 rounded-lg hover:bg-white/10`; premium "Pro" badge `text-yellow-400 border-yellow-500/30 bg-yellow-500/10`; admin gear icon `text-red-400`
 
 ### 5.9 Footer
@@ -675,7 +675,7 @@ When writing code for any UI/UX sprint, follow these rules without exception:
 
 14. **Share safety.** Aggregate share text never includes the user's own vote choice. Use `webShareText` pattern from `ResultsClientPage` as the canonical model.
 
-15. **`btn-neon-blue` ambiguity.** This class is used in `AuthButton` but not defined in `globals.css`. If encountered, apply the equivalent inline: `bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 neon-glow-blue`. Resolve in a dedicated token cleanup sprint.
+15. **`btn-neon-blue` is a real utility.** Defined in `globals.css:162` (focus-visible ring + active scale). Pair with Tailwind color classes for the visible state; do not rewrite inline.
 
 ---
 
@@ -774,7 +774,7 @@ const shareText = `I voted for "${userChoice}" — what would you choose?`
 
 | Item | Location | Status | Notes |
 |---|---|---|---|
-| `btn-neon-blue` undefined | `AuthButton.tsx:60` | Open | Used but not in `globals.css`. Likely resolved at runtime via Tailwind JIT from another class. Verify — if broken, resolve inline as noted in Section 8 rule 15. |
+| ~~`btn-neon-blue` undefined~~ | `AuthButton.tsx:65` | ✅ Resolved 16 May 2026 — class defined in `globals.css:162`; doc stale, not the code. |
 | `canStillChange` no interactive affordance | `VoteClientPage.tsx:380–470` | Known gap (C sprint) | "Can change for Xh Ym" copy exists; clicking the other option does nothing. Sprint C adds the button. |
 | `DilemmaCard` no voted state | All ISR pages | Known gap (B sprint) | Requires `VotedDilemmaCard` client wrapper. Sprint B adds it. |
 | `app/it/trending` empty state technical copy | `app/it/trending/page.tsx` | Known gap (D sprint) | "cron" and "6:00 UTC" are user-facing. Sprint D replaces with user-friendly copy. |

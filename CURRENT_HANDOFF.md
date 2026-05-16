@@ -1,8 +1,44 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 16 May 2026 (post dashboard FK fix + build break + Supabase RLS root cause analysis)
+Last updated: 16 May 2026 (post project-wide audit + hardening proposals)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+
+## 0. Session 16 May (afternoon) — audit + hardening pass
+
+Project-wide audit ran on top of the morning's v19 work. No production code
+shipped this session — only docs, proposals, and scaffold. Every change below
+is reversible / local-only until the PM gives a commit GO.
+
+**Files changed (uncommitted):**
+
+| File | Change | Why |
+|---|---|---|
+| [components/PixieSelector.tsx](components/PixieSelector.tsx) | Added `isAdmin?: boolean` prop + `ALL_OWNABLE_IDS` constant + `effectiveOwnedIds = isAdmin ? ALL_OWNABLE_IDS : ownedIds` everywhere a `.includes()` check runs | PM bug: super_admin (and admin) did not see the cosmetics section unlocked on the dashboard. The `/store` page already bypasses admin (line 36); the in-dashboard PixieSelector did not. Now mirrors the same admin bypass. |
+| [app/dashboard/page.tsx](app/dashboard/page.tsx) | Imported `getUserEntitlements` + `UserRole`. Added `role` to `Profile` type + the `profiles` SELECT. Computed `entitlements`. Passes `isAdmin={entitlements.isAdmin}` to PixieSelector. | Wires the admin bypass through to the cosmetics UI. |
+| [README.md](README.md) | Migration table extended v15 → v19; v19 row marked `⏳ Pending (proposed 16 May 2026)` | Table was stuck at v14; v15-v18 already applied but undocumented; v19 needs a row |
+| [DESIGN.md](DESIGN.md) | Removed stale "btn-neon-blue undefined" ambiguity in §5.8, §8 rule 15, §"Known Ambiguities". Class is defined in `globals.css:162` | Doc was incorrect; verified the utility exists |
+| [supabase/migration_v20_security_hardening.sql](supabase/migration_v20_security_hardening.sql) | **PROPOSAL — not applied** | Addresses remaining Supabase advisor findings: `dilemma_feedback_stats` SECURITY DEFINER view, 7 functions with mutable `search_path`, `poll_votes` open-insert policy, 9 SECURITY DEFINER functions callable from anon. Includes verification queries + per-section apply-or-skip decisions. |
+| [vitest.config.ts](vitest.config.ts) | New | Vitest scaffold. `@/` alias, node env, v8 coverage on `lib/**/*.ts`. |
+| [tests/unit/safe-redirect.test.ts](tests/unit/safe-redirect.test.ts) | New | 8 unit-test cases on `lib/safe-redirect.ts` as the pattern for follow-on tests. |
+| [tests/README.md](tests/README.md) | New | Install instructions for vitest + priority list of next libs to cover (entitlements, admin-guard, redis, missions/complete, events/track, quality-gates). |
+| [reports/disaster-recovery-runbook.md](reports/disaster-recovery-runbook.md) | New | DR runbook covering 7 incident scenarios + a one-time mitigations checklist (PITR, Upstash backups, Redis snapshot to storage, Resend DNS, Vercel branch protection, Sentry decision). |
+| `reports/dilemma-visibility-audit-2026-05-07.md` | Moved → `reports/archive/` | > 7 days old, archive per CLAUDE.md hygiene rule. |
+| `reports/blog-cluster-gaps-2026-05-09.md` | Moved → `reports/archive/` | Same. |
+
+**Deps installed:** `vitest@^4.1.6` + `@vitest/coverage-v8@^4.1.6` as
+devDependencies. Scripts wired in `package.json`: `npm test`, `npm run
+test:watch`, `npm run test:coverage`. 8/8 tests passing on
+`tests/unit/safe-redirect.test.ts`.
+
+**Audit summary (separate from CURRENT_HANDOFF):**
+
+The audit produced a prioritised list inside the chat — top three blockers
+remain v19 apply (PM action in Supabase), Stripe live QA (carta reale),
+AdSense slot IDs + approval status.
+
+---
+
 
 ---
 

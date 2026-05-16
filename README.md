@@ -169,6 +169,11 @@ Migrations are in `supabase/`. Apply them in order via the **SQL Editor** in the
 | `migration_v12_user_polls_rls_hardening.sql` | Enable RLS on `user_polls`, remove client INSERT policy — all inserts via server API | ✅ Applied |
 | `migration_v13_user_polls_no_client_update.sql` | Drop residual UPDATE client policy on `user_polls` — no client-side edit feature exists | ✅ Applied |
 | `migration_v14_streak_milestone_badges.sql` | Streak milestone badges (streak_15, streak_30) + backfill + updated `increment_user_vote_count` DB function | ✅ Applied |
+| `migration_v15_role_management.sql` | `profiles.role` column + `role_audit_log` + anti-escalation trigger; bootstrap super_admin/admin | ✅ Applied |
+| `migration_v16_user_purchases.sql` | `user_purchases` table for Stripe one-time purchases (Pixie Market + cosmetics) | ✅ Applied |
+| `migration_v17_cosmetics.sql` | `profiles.equipped_glow` + `profiles.name_color` columns | ✅ Applied |
+| `migration_v18_pixie_avatar.sql` | `profiles.use_pixie_avatar` boolean flag | ✅ Applied |
+| `migration_v19_badges_rls_and_fk_hardening.sql` | SELECT policy on `badges` (fix dashboard empty collection) + `user_badges.badge_id` FK → `ON DELETE CASCADE` | ⏳ Pending (proposed 16 May 2026) |
 
 To apply: Supabase dashboard → SQL Editor → New query → paste file contents → Run.
 

@@ -18,7 +18,10 @@
     "content:intelligence": "node scripts/content-intelligence-report.mjs",
     "content:opportunity-pack": "node scripts/generate-opportunity-pack.mjs",
     "load:smoke": "k6 run tests/load/splitvote-smoke-load.js",
-    "load:spike": "k6 run tests/load/splitvote-spike-load.js"
+    "load:spike": "k6 run tests/load/splitvote-spike-load.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.51.0",
@@ -37,11 +40,13 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitest/coverage-v8": "^4.1.6",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   }
 }
