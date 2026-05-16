@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     .select('id')
     .eq('user_id', user.id)
     .eq('product_id', itemId)
-    .eq('status', 'purchased')
+    .eq('status', 'completed')
     .maybeSingle()
 
   if (existing) {

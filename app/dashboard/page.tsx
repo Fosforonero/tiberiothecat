@@ -8,6 +8,9 @@ import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import DailyMissions from '@/components/DailyMissions'
 import PixieSelector from '@/components/PixieSelector'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
+import { ALL_PRODUCT_IDS } from '@/lib/purchases'
 import type { CompanionSpecies } from '@/lib/companion'
 import { RARITY_STYLES } from '@/lib/rarity'
 
@@ -51,6 +54,7 @@ interface Profile {
   display_name: string | null
   email: string | null
   is_premium: boolean
+  role: UserRole | null
   votes_count: number
   equipped_frame: string | null
   equipped_glow: string | null
@@ -127,7 +131,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_glow, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp, use_pixie_avatar, name_color')
+      .select('display_name, email, is_premium, role, votes_count, equipped_frame, equipped_glow, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp, use_pixie_avatar, name_color')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -158,6 +162,11 @@ export default async function DashboardPage() {
   const xp = profile?.xp ?? 0
   const streakDays = profile?.streak_days ?? 0
   const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
+  const entitlements = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
+  })
 
   // Pixie Store data
   const pixieXp        = (profile?.pixie_xp ?? {}) as Record<string, unknown>
@@ -165,22 +174,24 @@ export default async function DashboardPage() {
   const activePixieId  = typeof pixieXp.active === 'string' ? pixieXp.active : null
 
   // Fetch user's purchased pixie items from user_purchases as fallback
-  let purchasedPixieIds: string[] = pixieOwnedIds
-  try {
-    const admin = createAdminClient()
-    const { data: purchases } = await admin
-      .from('user_purchases')
-      .select('product_id')
-      .eq('user_id', user.id)
-      .eq('status', 'purchased')
-    if (purchases) {
-      purchasedPixieIds = Array.from(new Set([
-        ...pixieOwnedIds,
-        ...purchases.map((p: { product_id: string }) => p.product_id),
-      ]))
+  let purchasedPixieIds: string[] = entitlements.isAdmin ? ALL_PRODUCT_IDS : pixieOwnedIds
+  if (!entitlements.isAdmin) {
+    try {
+      const admin = createAdminClient()
+      const { data: purchases } = await admin
+        .from('user_purchases')
+        .select('product_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+      if (purchases) {
+        purchasedPixieIds = Array.from(new Set([
+          ...pixieOwnedIds,
+          ...purchases.map((p: { product_id: string }) => p.product_id),
+        ]))
+      }
+    } catch {
+      // fallback to pixie_xp.owned
     }
-  } catch {
-    // fallback to pixie_xp.owned
   }
 
   const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
@@ -265,7 +276,7 @@ export default async function DashboardPage() {
       />
 
       {/* ── Premium status ── */}
-      {profile?.is_premium ? (
+      {entitlements.effectivePremium ? (
         <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5 mb-8 flex items-center gap-4">
           <div className="text-2xl">⭐</div>
           <div>

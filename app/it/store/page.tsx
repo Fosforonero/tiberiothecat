@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import StoreClient from '@/components/store/StoreClient'
-import type { ProductId, PurchaseRow } from '@/lib/purchases'
+import { ALL_PRODUCT_IDS, type ProductId, type PurchaseRow } from '@/lib/purchases'
 import type { CompanionSpecies } from '@/lib/companion'
 import type { Metadata } from 'next'
 
@@ -60,9 +60,11 @@ export default async function ItStorePage({ searchParams }: { searchParams: Sear
     isPremium = ents.effectivePremium
     currentSpecies = (profileRes.data?.companion_species ?? 'spark') as CompanionSpecies
 
-    if (!purchasesRes.error && purchasesRes.data) {
-      ownedProductIds = (purchasesRes.data as unknown as PurchaseRow[]).map(r => r.product_id)
-    }
+    ownedProductIds = ents.isAdmin
+      ? ALL_PRODUCT_IDS
+      : (!purchasesRes.error && purchasesRes.data
+          ? (purchasesRes.data as unknown as PurchaseRow[]).map(r => r.product_id)
+          : [])
   }
 
   const validTabs = new Set(['premium', 'pixies', 'cosmetics'])

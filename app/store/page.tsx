@@ -1,33 +1,58 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
-import StoreClient from './StoreClient'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
+import StoreClient from '@/components/store/StoreClient'
+import { ALL_PRODUCT_IDS, type ProductId, type PurchaseRow } from '@/lib/purchases'
+import type { CompanionSpecies } from '@/lib/companion'
 
 export const metadata = { title: 'Cosmetics Store | SplitVote' }
 export const dynamic = 'force-dynamic'
 
-export default async function StorePage() {
+interface SearchParams { tab?: string }
+
+export default async function StorePage({ searchParams }: { searchParams: SearchParams }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) redirect('/login?redirect=/store')
+  let isPremium = false
+  let ownedProductIds: ProductId[] = []
+  let currentSpecies: CompanionSpecies = 'spark'
 
-  // Get user's existing purchases
-  let admin: ReturnType<typeof createAdminClient>
-  try {
-    admin = createAdminClient()
-  } catch {
-    // Fallback: show store without purchase data
-    return <StoreClient ownedIds={[]} />
+  if (user) {
+    const [profileRes, purchasesRes] = await Promise.all([
+      supabase.from('profiles').select('is_premium, role, companion_species').eq('id', user.id).single(),
+      supabase.from('user_purchases').select('product_id, product_type, status, purchased_at')
+        .eq('user_id', user.id).eq('status', 'completed'),
+    ])
+
+    const ents = getUserEntitlements({
+      email: user.email,
+      is_premium: profileRes.data?.is_premium ?? false,
+      role: (profileRes.data?.role ?? 'user') as UserRole,
+    })
+
+    isPremium = ents.effectivePremium
+    currentSpecies = (profileRes.data?.companion_species ?? 'spark') as CompanionSpecies
+    ownedProductIds = ents.isAdmin
+      ? ALL_PRODUCT_IDS
+      : (!purchasesRes.error && purchasesRes.data
+          ? (purchasesRes.data as unknown as PurchaseRow[]).map(r => r.product_id)
+          : [])
   }
 
-  const { data: purchases } = await admin
-    .from('user_purchases')
-    .select('product_id')
-    .eq('user_id', user.id)
-    .eq('status', 'purchased')
+  const validTabs = new Set(['premium', 'pixies', 'cosmetics'])
+  const initialTab = validTabs.has(searchParams.tab ?? '')
+    ? (searchParams.tab as 'premium' | 'pixies' | 'cosmetics')
+    : 'pixies'
 
-  const ownedIds = (purchases ?? []).map(p => p.product_id)
-
-  return <StoreClient ownedIds={ownedIds} />
+  return (
+    <StoreClient
+      isLoggedIn={!!user}
+      isPremium={isPremium}
+      ownedProductIds={ownedProductIds}
+      currentSpecies={currentSpecies}
+      locale="en"
+      initialTab={initialTab}
+    />
+  )
 }

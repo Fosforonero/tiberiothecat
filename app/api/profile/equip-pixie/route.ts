@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isPixieItemId } from '@/lib/cosmetics-store'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,25 +28,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server config error' }, { status: 500 })
   }
 
-  // Verify the user owns this item
-  const { data: purchase } = await admin
-    .from('user_purchases')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('product_id', itemId)
-    .eq('status', 'purchased')
-    .maybeSingle()
-
-  if (!purchase) {
-    return NextResponse.json({ error: 'Item not owned' }, { status: 403 })
-  }
-
-  // Get current pixie_xp
   const { data: profile } = await admin
     .from('profiles')
-    .select('pixie_xp')
+    .select('is_premium, role, pixie_xp')
     .eq('id', user.id)
     .single()
+
+  const entitlements = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
+  })
+
+  if (!entitlements.isAdmin) {
+    const { data: purchase } = await admin
+      .from('user_purchases')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('product_id', itemId)
+      .eq('status', 'completed')
+      .maybeSingle()
+
+    if (!purchase) {
+      return NextResponse.json({ error: 'Item not owned' }, { status: 403 })
+    }
+  }
 
   const currentPixieXp = (profile?.pixie_xp ?? {}) as Record<string, unknown>
   const ownedItems = Array.isArray(currentPixieXp.owned) ? currentPixieXp.owned as string[] : []

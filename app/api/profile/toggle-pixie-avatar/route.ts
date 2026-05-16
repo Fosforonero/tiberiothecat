@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,16 +25,31 @@ export async function POST(req: NextRequest) {
 
   // If enabling, verify user owns at least one pixie skin
   if (enabled) {
-    const { data: purchase } = await admin
-      .from('user_purchases')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('status', 'purchased')
-      .limit(1)
-      .maybeSingle()
+    const { data: profile } = await admin
+      .from('profiles')
+      .select('is_premium, role')
+      .eq('id', user.id)
+      .single()
 
-    if (!purchase) {
-      return NextResponse.json({ error: 'No Pixie skin owned' }, { status: 403 })
+    const entitlements = getUserEntitlements({
+      email: user.email,
+      is_premium: profile?.is_premium ?? false,
+      role: (profile?.role ?? 'user') as UserRole,
+    })
+
+    if (!entitlements.isAdmin) {
+      const { data: purchase } = await admin
+        .from('user_purchases')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('product_type', 'pixie')
+        .eq('status', 'completed')
+        .limit(1)
+        .maybeSingle()
+
+      if (!purchase) {
+        return NextResponse.json({ error: 'No Pixie skin owned' }, { status: 403 })
+      }
     }
   }
 

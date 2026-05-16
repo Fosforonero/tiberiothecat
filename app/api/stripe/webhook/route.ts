@@ -2,9 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isCosmeticItemId, COSMETIC_MAP } from '@/lib/cosmetics-store'
+import {
+  PRODUCT_BY_ID,
+  findProductByStripePriceId,
+  type ProductId,
+} from '@/lib/purchases'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+function isProductId(value: unknown): value is ProductId {
+  return typeof value === 'string' && value in PRODUCT_BY_ID
+}
+
+function paymentIntentId(value: Stripe.PaymentIntent | string | null): string | null {
+  if (!value) return null
+  return typeof value === 'string' ? value : value.id
+}
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -72,12 +86,63 @@ export async function POST(req: NextRequest) {
       console.log(`✅ Name change: user=${userId.slice(0, 8)} → "${newName}" (change #${currentChanges + 1})`)
     }
 
+    // ── One-time catalog purchase (current Store flow) ───────────────────────
+    if (type === 'one_time_purchase') {
+      const productId = session.metadata?.productId
+      const paymentIntent = paymentIntentId(session.payment_intent)
+
+      if (!userId || !isProductId(productId) || !paymentIntent) {
+        console.warn('[webhook] one_time_purchase: missing or invalid metadata', session.metadata)
+        return NextResponse.json({ received: true })
+      }
+
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 })
+      const stripePriceId = lineItems.data[0]?.price?.id
+      const product = PRODUCT_BY_ID[productId]
+      const verifiedProduct = stripePriceId ? findProductByStripePriceId(stripePriceId) : null
+
+      if (!verifiedProduct || verifiedProduct.id !== productId) {
+        console.error('[webhook] one_time_purchase: Stripe price mismatch', {
+          sessionId: session.id,
+          productId,
+          stripePriceId,
+        })
+        return NextResponse.json({ error: 'Price/product mismatch' }, { status: 400 })
+      }
+
+      const { error: purchaseError } = await admin
+        .from('user_purchases')
+        .upsert(
+          {
+            user_id:                  userId,
+            product_id:               productId,
+            product_type:             product.type,
+            stripe_payment_intent_id: paymentIntent,
+            stripe_session_id:        session.id,
+            amount_cents:             session.amount_total ?? product.priceCents,
+            currency:                 session.currency ?? 'eur',
+            status:                   'completed',
+            purchased_at:             new Date().toISOString(),
+            refunded_at:              null,
+          },
+          { onConflict: 'user_id,product_id' },
+        )
+
+      if (purchaseError) {
+        console.error('[webhook] Failed to upsert one_time_purchase:', purchaseError)
+        return NextResponse.json({ error: 'DB insert failed' }, { status: 500 })
+      }
+
+      console.log(`✅ One-time purchase: user=${userId.slice(0, 8)} → "${productId}"`)
+    }
+
     // ── Cosmetic purchase (pixie_purchase legacy + cosmetic_purchase) ──────────
     if (type === 'pixie_purchase' || type === 'cosmetic_purchase') {
       const productId = session.metadata?.productId
       const category  = session.metadata?.category ?? 'pixie'
+      const paymentIntent = paymentIntentId(session.payment_intent)
 
-      if (!userId || !productId || !isCosmeticItemId(productId)) {
+      if (!userId || !productId || !isCosmeticItemId(productId) || !paymentIntent) {
         console.warn('[webhook] cosmetic_purchase: missing or invalid metadata', session.metadata)
         return NextResponse.json({ received: true })
       }
@@ -89,15 +154,18 @@ export async function POST(req: NextRequest) {
         .from('user_purchases')
         .upsert(
           {
-            user_id:           userId,
-            product_id:        productId,
-            stripe_session_id: session.id,
-            stripe_charge_id:  session.payment_intent as string | null,
-            amount_cents:      session.amount_total ?? item.priceCents,
-            currency:          session.currency ?? 'eur',
-            status:            'purchased',
+            user_id:                  userId,
+            product_id:               productId,
+            product_type:             item.category,
+            stripe_payment_intent_id: paymentIntent,
+            stripe_session_id:        session.id,
+            amount_cents:             session.amount_total ?? item.priceCents,
+            currency:                 session.currency ?? 'eur',
+            status:                   'completed',
+            purchased_at:             new Date().toISOString(),
+            refunded_at:              null,
           },
-          { onConflict: 'stripe_session_id' }
+          { onConflict: 'user_id,product_id' },
         )
 
       if (purchaseError) {
@@ -154,7 +222,7 @@ export async function POST(req: NextRequest) {
     const { data: purchase } = await admin
       .from('user_purchases')
       .select('id, user_id, product_id, status')
-      .eq('stripe_charge_id', paymentIntent)
+      .eq('stripe_payment_intent_id', paymentIntent)
       .maybeSingle()
 
     if (!purchase || purchase.status === 'refunded') {
@@ -163,7 +231,7 @@ export async function POST(req: NextRequest) {
 
     await admin
       .from('user_purchases')
-      .update({ status: 'refunded', updated_at: new Date().toISOString() })
+      .update({ status: 'refunded', refunded_at: new Date().toISOString() })
       .eq('id', purchase.id)
 
     // Reverse cosmetic state + deduct XP

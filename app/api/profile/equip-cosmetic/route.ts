@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { COSMETIC_MAP, isCosmeticItemId } from '@/lib/cosmetics-store'
+import { getUserEntitlements } from '@/lib/entitlements'
+import type { UserRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,17 +25,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server config error' }, { status: 500 })
   }
 
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('is_premium, role')
+    .eq('id', user.id)
+    .single()
+
+  const entitlements = getUserEntitlements({
+    email: user.email,
+    is_premium: profile?.is_premium ?? false,
+    role: (profile?.role ?? 'user') as UserRole,
+  })
+
   // ── name_color selection (uses owned bundle, picks a specific color) ─────────
   if (nameColor !== undefined) {
-    const { data: bundle } = await admin
-      .from('user_purchases')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('product_id', 'name_color_bundle')
-      .eq('status', 'purchased')
-      .maybeSingle()
+    let ownsNameColorBundle = entitlements.isAdmin
+    if (!ownsNameColorBundle) {
+      const { data: bundle } = await admin
+        .from('user_purchases')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('product_id', 'name_color_bundle')
+        .eq('status', 'completed')
+        .maybeSingle()
+      ownsNameColorBundle = !!bundle
+    }
 
-    if (!bundle) {
+    if (!ownsNameColorBundle) {
       return NextResponse.json({ error: 'Name Color Bundle not owned' }, { status: 403 })
     }
 
@@ -61,16 +79,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Use equip-pixie for pixie skins' }, { status: 400 })
   }
 
-  // Verify ownership
-  const { data: purchase } = await admin
-    .from('user_purchases')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('product_id', itemId)
-    .eq('status', 'purchased')
-    .maybeSingle()
+  let ownsItem = entitlements.isAdmin
+  if (!ownsItem) {
+    const { data: purchase } = await admin
+      .from('user_purchases')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('product_id', itemId)
+      .eq('status', 'completed')
+      .maybeSingle()
+    ownsItem = !!purchase
+  }
 
-  if (!purchase) {
+  if (!ownsItem) {
     return NextResponse.json({ error: 'Item not owned' }, { status: 403 })
   }
 

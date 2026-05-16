@@ -127,6 +127,8 @@ export const PRODUCT_BY_ID: Record<ProductId, ProductDef> = Object.fromEntries(
   PRODUCT_CATALOG.map(p => [p.id, p]),
 ) as Record<ProductId, ProductDef>
 
+export const ALL_PRODUCT_IDS: ProductId[] = PRODUCT_CATALOG.map(p => p.id)
+
 // ── Stripe ↔ catalog helpers ──────────────────────────────────────────────
 
 /**
