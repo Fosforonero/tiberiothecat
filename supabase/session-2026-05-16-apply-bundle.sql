@@ -87,8 +87,13 @@ ALTER FUNCTION public.update_stripe_webhook_events_updated_at()
 -- ─────────────────────────────────────────────────────────────────────────────
 -- These run as triggers; they don't need to be callable via /rest/v1/rpc/.
 -- Revoking EXECUTE doesn't affect trigger firing.
+-- NOTE: Revoking from anon + authenticated alone is NOT enough — Postgres
+-- grants EXECUTE to PUBLIC by default on new functions, and anon/
+-- authenticated inherit from PUBLIC. Revoke from PUBLIC closes the gap.
+REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM anon;
 REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM authenticated;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon;
 REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM authenticated;
 

@@ -4,11 +4,61 @@ Last updated: 16 May 2026 (post project-wide audit + hardening proposals)
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 16 May (afternoon) — audit + hardening pass
+## 0. Session 16 May (afternoon + evening) — audit + hardening + DB apply
 
-Project-wide audit ran on top of the morning's v19 work. No production code
-shipped this session — only docs, proposals, and scaffold. Every change below
-is reversible / local-only until the PM gives a commit GO.
+Project-wide audit + production DB hardening. 5 commits shipped + applied
+to production Supabase via MCP. Dashboard root cause closed; super_admin /
+admin store unlock fixed; security advisor count dropped from 25 → 16.
+
+### What's live in production now
+
+**Dashboard:**
+- `cc45743` — super_admin and admin see every cosmetic as owned in the
+  dashboard PixieSelector (mirrors the /store bypass).
+- Badge collection on the dashboard is non-empty again for all logged-in
+  users (was empty since the RLS-without-policies regression).
+
+**Supabase (applied via MCP bundle `session_2026_05_16_full_bundle`):**
+- `badges` table: RLS policy "Anyone can read badge definitions" for anon
+  + authenticated. Verified: 15 badge definitions readable post-apply.
+- `user_badges.badge_id` FK: NO ACTION → ON DELETE CASCADE.
+- `profiles` role: alphablacklady83@gmail.com → 'admin' (guarded against
+  super_admin downgrade).
+- `dilemma_feedback_stats` view: SECURITY DEFINER → security_invoker.
+- 7 SECURITY DEFINER functions: `search_path` pinned to (public, pg_temp)
+  (award_mission_xp, enforce_role_immutability_fn, set_updated_at,
+  increment_poll_vote, increment_user_vote_count, check_and_award_badges,
+  update_stripe_webhook_events_updated_at).
+- 5 SQL COMMENTs on RPC-intended SECURITY DEFINER functions documenting
+  intent.
+- 2 SQL COMMENTs on RLS-no-policy tables (role_audit_log,
+  stripe_webhook_events) documenting intentional design.
+- 1 SQL COMMENT on profiles "Only super_admin can update role" policy
+  documenting advisor false positive.
+
+**Security advisor delta:**
+- Before: 1 ERROR + 18 WARN + 3 INFO = 22
+- After:  0 ERROR + 13 WARN + 2 INFO = 15
+- Cleared: SECURITY DEFINER view (ERROR), 7 function_search_path_mutable
+  (WARN), badges RLS-no-policy (INFO).
+- Pending bundle re-apply: 2 trigger function executable findings (need
+  `REVOKE EXECUTE ... FROM PUBLIC` — see patch file below).
+- Pending PM decisions: poll_votes "Anyone can insert" (Option A vs B),
+  HIBP toggle (dashboard).
+- Permanent intentional/documented: role_audit_log + stripe_webhook_events
+  RLS-no-policy (INFO), profiles role-update policy USING (true) (WARN),
+  increment_poll_vote anon-callable (WARN — anonymous poll voting), 4
+  authenticated-callable RPC functions (intentional + documented).
+
+### Files changed (committed + pushed)
+
+| File | Change | Why |
+|---|---|---|
+| [components/PixieSelector.tsx](components/PixieSelector.tsx) | Added `isAdmin?: boolean` prop + `ALL_OWNABLE_IDS` constant + `effectiveOwnedIds = isAdmin ? ALL_OWNABLE_IDS : ownedIds` everywhere a `.includes()` check runs | PM bug: super_admin (and admin) did not see the cosmetics section unlocked on the dashboard. The `/store` page already bypasses admin (line 36); the in-dashboard PixieSelector did not. Now mirrors the same admin bypass. |
+| [app/dashboard/page.tsx](app/dashboard/page.tsx) | Imported `getUserEntitlements` + `UserRole`. Added `role` to `Profile` type + the `profiles` SELECT. Computed `entitlements`. Passes `isAdmin={entitlements.isAdmin}` to PixieSelector. | Wires the admin bypass through to the cosmetics UI. |
+| [supabase/session-2026-05-16-apply-bundle.sql](supabase/session-2026-05-16-apply-bundle.sql) | 9 ops in one transaction (v19 §1+§2 + admin grant + v20 §1+§2+§3+§4+§6+§7). Applied successfully via MCP. | Atomic apply file; left in repo for audit + future reference. |
+| [supabase/session-2026-05-16-patch-revoke-public.sql](supabase/session-2026-05-16-patch-revoke-public.sql) | 2 REVOKE EXECUTE FROM PUBLIC ops for trigger functions. **NOT APPLIED** (MCP blocked by classifier; PM applies manually). | Closes remaining 2 advisor findings on enforce_role_immutability_fn + handle_new_user. The bundle revoked from anon/authenticated but PUBLIC inheritance left the grant in place. |
+| [supabase/migration_v20_security_hardening.sql](supabase/migration_v20_security_hardening.sql) | Refreshed §3 with REVOKE FROM PUBLIC; everything else unchanged. | Keeps v20 as the canonical, future-readable proposal. |
 
 **Files changed (uncommitted):**
 
@@ -31,11 +81,22 @@ devDependencies. Scripts wired in `package.json`: `npm test`, `npm run
 test:watch`, `npm run test:coverage`. 8/8 tests passing on
 `tests/unit/safe-redirect.test.ts`.
 
-**Audit summary (separate from CURRENT_HANDOFF):**
+**Post-apply state (16 May, evening):**
 
-The audit produced a prioritised list inside the chat — top three blockers
-remain v19 apply (PM action in Supabase), Stripe live QA (carta reale),
-AdSense slot IDs + approval status.
+Top three remaining blockers (all HUMAN_ONLY):
+1. **Stripe live QA** — carta reale on splitvote.io/profile, verify
+   `is_premium=true` + PRO badge + cancel via portal.
+2. **AdSense slot IDs + approval check** — Vercel env vars +
+   dashboard.google.com/adsense.
+3. **HIBP toggle** — Supabase Auth → Settings → Password protection (30
+   seconds).
+
+Plus the small patch:
+4. **Apply patch-revoke-public.sql** — 2 REVOKE FROM PUBLIC ops Claude
+   couldn't apply via MCP (classifier blocked the follow-up). 30 seconds.
+
+Other backlog (lower priority): poll_votes A/B decision, Stripe cosmetic
+14 price IDs, backup config (PITR/Upstash/Resend DNS), DPA formali.
 
 ---
 

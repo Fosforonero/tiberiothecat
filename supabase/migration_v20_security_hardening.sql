@@ -69,9 +69,14 @@ ALTER FUNCTION public.update_stripe_webhook_events_updated_at()
 --   2. handle_new_user() — auth.users → profiles bootstrap trigger.
 --      Not a callable RPC; calling it directly would create a malformed row.
 
+-- NOTE: Revoking from anon + authenticated alone is NOT enough — Postgres
+-- grants EXECUTE to PUBLIC by default on new functions, and anon/
+-- authenticated inherit from PUBLIC. Revoke from PUBLIC first.
+REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM anon;
 REVOKE EXECUTE ON FUNCTION public.enforce_role_immutability_fn() FROM authenticated;
 
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon;
 REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM authenticated;
 
