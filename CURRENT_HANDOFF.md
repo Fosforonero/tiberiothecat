@@ -1,8 +1,130 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 16 May 2026 (post project-wide audit + hardening proposals)
+Last updated: 16 May 2026 (late) — blog Redis ISR root-cause fix + middleware matcher narrowing
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+
+## 0a. Session 16 May (late evening) — blog Redis ISR + middleware sprint
+
+Two sprints shipped end-to-end. Blog Redis articles now render correctly
+under ISR; public/SEO routes now hit Vercel edge cache. Both verified live.
+
+### Shipped commits
+
+| Hash | Sprint | Description |
+|---|---|---|
+| `edaa63c` | BLOG-REDIS-SEO-01 | fix(blog): make Redis published posts ISR-safe |
+| `bd2d46f` | EDGE-CACHE-HEADERS-01 | perf(middleware): narrow matcher to auth-relevant routes only |
+
+### `edaa63c` — Blog Redis ISR root cause + fix
+
+**Symptom:** Redis-published blog slugs returned 500 on Vercel; static
+slugs from `lib/blog.ts` rendered fine. Multiple defensive patches
+(`tags`/`relatedDilemmaIds`/`body`/`faq` coercions, restoring
+`force-dynamic`, removing `cache()` wrap) papered over the issue without
+addressing root cause.
+
+**Root cause:** the shared `@upstash/redis` client uses `fetch` with
+`cache: 'no-store'` internally. Reading published drafts via that client
+inside `/blog/[slug]/page.tsx` (configured for SSG + ISR via
+`generateStaticParams` + `revalidate=3600`) tripped Next's
+static-to-dynamic guard at runtime for on-demand Redis slugs, surfacing
+as a render error.
+
+**Fix:** replaced the shared Redis client with a direct Upstash REST
+`fetch` + `next: { revalidate: 3600 }` hint in
+[lib/blog-published.ts:15-38](lib/blog-published.ts#L15-L38). The function
+signature stayed identical, so [app/blog/[slug]/page.tsx](app/blog/[slug]/page.tsx)
+and [app/it/blog/[slug]/page.tsx](app/it/blog/[slug]/page.tsx) consume it
+unchanged. `force-dynamic` directives previously bolted on as a safety
+net were removed — those files now have only `export const revalidate = 3600`.
+
+**Deletion-first dividend the safety patches gave to keep:**
+defensive coercions on `tags`, `relatedDilemmaIds`, `body`, `faq` in
+`publishedDraftToPost` were retained as cheap fault tolerance against
+malformed Redis drafts — they're not root cause but produce real value
+against future draft schema drift.
+
+**Sitemap freshness:** [app/sitemap.ts](app/sitemap.ts) now includes
+Redis-published slugs in addition to static blog posts, with a
+`latestBlogModified(locale)` helper feeding the blog index `lastModified`
+so Googlebot re-crawls the index when a new article goes live. Evergreen
+URLs use a `STATIC_LAST_MOD = new Date('2026-05-16')` constant — avoids
+the "every URL modified just now" anti-pattern.
+
+**Verified live on `splitvote.io`** post-deploy:
+- `/blog`, `/it/blog` — 200, render correctly
+- `/blog/bodyoids-brainless-organs-bioethics` (Redis-published) — 200
+- `/it/blog/bodyoids-organi-senza-cervello-bioetica` — 200
+- `/blog/culture-public-trust-and-institutional-dilemmas` — 200
+- `/it/blog/cultura-fiducia-istituzioni-e-dilemmi-pubblici` — 200
+- `/sitemap.xml` — 200, includes static + Redis slugs
+
+### `bd2d46f` — Middleware matcher narrowing
+
+**Symptom:** even after `edaa63c`, blog routes served
+`Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate`
+with persistent `x-vercel-cache: MISS` — origin function was hit on every
+request despite the routes being SSG/ISR.
+
+**Root cause:** [middleware.ts](middleware.ts) had an opt-out matcher
+(`/((?!_next/static|…|asset-extensions).*)`) that matched every non-asset
+request. Even with `NextResponse.next()` early-return inside, the mere
+presence of middleware in the request path disabled Vercel's pure-CDN
+edge cache for the matched routes.
+
+**Fix:** converted to opt-in matcher listing only `/` (for IT
+auto-redirect) and the auth-relevant prefixes already enumerated in
+`AUTH_RELEVANT_PREFIXES`. Defense-in-depth confirmed before changing:
+every protected route (`/dashboard`, `/profile`, `/admin`,
+`/submit-poll`, `/api/admin/*`, etc.) does its own `supabase.auth.getUser()`
+check at the page/handler level. Middleware was layer 2, not the only gate.
+
+**Verified locally with prod build:**
+- Blog routes: `Cache-Control: s-maxage=3600, stale-while-revalidate`
+  + `x-nextjs-cache: HIT` ✓
+- Auth-relevant unauth hits: 307 → `/login?redirect=…` ✓
+- `/api/admin/dilemmas` no-token: 401 ✓
+
+**Verified live (PM confirmed):**
+- Blog routes: `x-vercel-cache: HIT` + `age` grows → edge cache working
+- `cache-control: public, max-age=0, must-revalidate` in the browser
+  response is **expected Vercel behavior** — the `s-maxage=3600` directive
+  is consumed by the edge CDN and stripped from the browser response.
+  `x-vercel-cache: HIT` is the correct success signal, not `s-maxage` in
+  the response header.
+
+### Operational policy (unchanged, restated for clarity)
+
+- **Blog publishing remains manual.** Admin reviews drafts → approves →
+  publishes via the admin queue. No autopublish path exists.
+- **No autopublish of current-events articles.** Quality gates and
+  editorial review are required for every Redis-published slug.
+
+### Open observations (deferred, NOT in this sprint)
+
+- `/play/[id]`, `/results/[id]`, `/category/*` still serve
+  `Cache-Control: private, no-cache, no-store` — different root cause
+  than blog (likely `cookies()`/`force-dynamic` at page level for
+  `existingVote`). Out of scope; candidate for a future sprint
+  (PLAY-EXISTING-VOTE-CLIENT-MOVE-01) if /play TTFB ever becomes a
+  measured problem.
+- Vercel Attack Challenge Mode may be enabled at the project level —
+  blocked all curl/WebFetch verification during this session. PM is
+  running VERCEL-CHALLENGE-SANITY-01 dashboard audit; no code action
+  pending until that returns evidence of real impact (e.g., Googlebot
+  403s in Search Console).
+
+### Next session — top blockers (unchanged, restated)
+
+All HUMAN_ONLY:
+1. **Stripe live QA** — real card on splitvote.io/profile
+2. **AdSense slot IDs + approval check**
+3. **Supabase HIBP toggle** — Auth → Settings → Password protection
+4. **Backup/DR posture** — Upstash auto-backup, Supabase PITR, Resend SPF/DKIM
+5. **`patch-revoke-public.sql`** — applied 16 May afternoon (no longer pending)
+
+---
 
 ## 0. Session 16 May (afternoon + evening) — audit + hardening + DB apply
 
@@ -107,15 +229,21 @@ Other backlog (lower priority): poll_votes A/B decision, Stripe cosmetic
 
 - **Branch:** `main`
 - **Local vs remote:** **in sync** — all commits below pushed
-- **Last pushed:** `4c61022` — all commits pushed, main in sync
+- **Last pushed:** `bd2d46f` — perf(middleware): narrow matcher to auth-relevant routes only
 
-### Recent commits — session 16 May 2026 (4 commits)
+### Recent commits — session 16 May 2026 (10 commits, latest first)
 | Hash | Description |
 |---|---|
-| `4c61022` | fix(types): accept optional votesToday prop in DailyMissions (unblocked Vercel build) |
-| `504b3b8` | fix(dashboard): null guard on b.badges in BadgeSection + page (digest 1932806716) |
-| `7a55801` | fix(dashboard): null guard on b.badges before .map() (digest 2512231454) |
-| _v19 migration_ | **Not committed/applied yet — PM action in Supabase SQL Editor** |
+| `bd2d46f` | perf(middleware): narrow matcher to auth-relevant routes only (EDGE-CACHE-HEADERS-01) |
+| `edaa63c` | fix(blog): make Redis published posts ISR-safe (BLOG-REDIS-SEO-01) |
+| `9ee07f1` | chore(db): apply session bundle to prod + patch REVOKE FROM PUBLIC |
+| `bf3d2d9` | chore(db): populate v20 with real advisor names + expand apply bundle |
+| `d5e6ac9` | chore(db): bundle 4 DB operations for manual apply |
+| `a0d589a` | chore(audit): docs cleanup + v20 proposal + vitest scaffold + DR runbook |
+| `cc45743` | fix(dashboard): admin bypass on PixieSelector — every cosmetic shown as owned |
+| `4c61022` | fix(types): accept optional votesToday prop in DailyMissions |
+| `504b3b8` | fix(dashboard): null guard on b.badges in BadgeSection + page |
+| `7a55801` | fix(dashboard): null guard on b.badges before .map() |
 
 ### Recent commits — session 15 May 2026 (10 commits)
 | Hash | Description |
@@ -476,42 +604,58 @@ Note: `migration_v18` (use_pixie_avatar column) was already run on production pe
 ## 7. Next Session Prompt
 
 ```
-Ripartenza sessione SplitVote — 14 Maggio 2026 (post end-of-day 13 Mag).
+Ripartenza sessione SplitVote — 17 Maggio 2026 (post late-evening 16 Mag).
 
 Leggi prima:
 - CLAUDE.md
-- CURRENT_HANDOFF.md
+- CURRENT_HANDOFF.md (sezione 0a è la verità più recente)
 - git log --oneline -15
 - git status --short
 
 State:
-- main in sync con origin — tutto pushato (last: 4e636d1)
-- Sprint M / N / O / Q / R / S / T / U + Fix Y/Z tutti completati e pushati
+- main in sync con origin — last push: bd2d46f (16 Mag, late)
+- Blog Redis ISR funzionante, edge cache attivo su public/SEO routes
+- DB hardening v19 + v20 §1-§4+§6+§7 applicati; advisor 22 → 11
 
-Lavoro shippato ieri (13 Mag):
-- Mattina:  E / F-B / G / SEO / I / H (ISR perf, useLocale hook, sticky next, streak banner)
-- Pomeriggio: M / N / O / Q / R / S / T / U (challenge fix, sticky see results, +50 XP pill,
-              hreflang EN category, Top XP leaderboard, streak toast, XP+level profile)
-- Sera:     Fix Y (back-nav leaderboard→profilo) + Fix Z (mission targets → /trending)
-- Confermato: Sprint W / V / X erano già implementati (pm-orchestrator su docs stale)
+Lavoro shippato 16 Mag (10 commit):
+- Mattina/pomeriggio: dashboard PixieSelector admin bypass, DB bundle apply,
+  patch REVOKE FROM PUBLIC, vitest scaffold, DR runbook
+- Sera (late):
+  * edaa63c — fix(blog): Upstash REST GET + next.revalidate=3600 invece di
+    @upstash/redis client (no-store incompatibile con ISR fallback)
+  * bd2d46f — perf(middleware): matcher opt-in invece di opt-out → edge cache
+    attivo su /blog, /blog/[slug], /sitemap.xml e altre public routes
 
-Priorità sessione prossima:
-1. 🔴 Stripe live QA — splitvote.io/profile → checkout con carta reale → verifica is_premium=true
-   in Supabase + PRO badge in UI + webhook processed. Unico blocker revenue. (HUMAN_ONLY)
-2. 🔴 AdSense — slot IDs reali (NEXT_PUBLIC_ADSENSE_SLOT_HOME/PLAY/RESULTS) + check
-   approval su dashboard.google.com/adsense. (HUMAN_ONLY)
-3. 🟡 Stripe cosmetics — 14 price IDs store (STRIPE_PRICE_PIXIE_*). (HUMAN_ONLY)
-4. 🟡 Backup config — Upstash auto-backup + Supabase PITR + Resend SPF/DKIM. (HUMAN_ONLY)
-5. ⚪ Nuovi sprint code: lanciare pm-orchestrator per candidati freschi dopo aver verificato
-   lo stato. NB: ROADMAP.md ha modifiche locali PM non committate — NON toccare. CURRENT_HANDOFF
-   è la fonte di verità più aggiornata sul codice.
+Top blocker (tutti HUMAN_ONLY):
+1. 🔴 Stripe live QA — splitvote.io/profile → carta reale → verifica is_premium=true
+2. 🔴 AdSense — slot IDs + approval check su dashboard.google.com/adsense
+3. 🔴 HIBP toggle — Supabase Auth → Settings → Password protection (30s)
+4. 🟡 Backup/DR — Upstash auto-backup + Supabase PITR + Resend SPF/DKIM
+5. 🟡 Stripe cosmetics — 14 price IDs store (STRIPE_PRICE_PIXIE_*)
+
+Open observations (deferred, NOT next sprint blockers):
+- /play/[id], /results/[id], /category/* mantengono no-store cache headers —
+  root cause distinta da blog (probabilmente cookies()/force-dynamic a livello
+  page). Candidato PLAY-EXISTING-VOTE-CLIENT-MOVE-01 se TTFB diventa problema misurato.
+- Vercel Attack Challenge Mode potrebbe essere on a livello progetto (bloccava
+  curl/WebFetch durante verifica). PM running VERCEL-CHALLENGE-SANITY-01 audit.
+
+Operational policy (immutata):
+- Blog publishing rimane MANUALE (admin review → approve → publish)
+- NO autopublish di current-events
+- Vote flow anonimo frictionless (mai login per votare)
 
 HUMAN_ONLY (mai senza GO esplicito):
 - Stripe live checkout QA (carta reale)
-- AdSense slot IDs e verifica approvazione
-- Backup configuration (Upstash + Supabase + Resend DNS)
-- Cloudflare Email Routing setup
+- AdSense slot IDs / approval check
+- HIBP toggle, backup configuration, Cloudflare Email Routing
 - git push senza esplicito GO
 - Modifiche a ROADMAP.md / PRODUCT_STRATEGY.md / scripts/generate-pixie-assets.mjs
   (local PM changes, lasciare intatti)
+
+Framework di lavoro attivo: deletion-first.
+- Prima dimmi cosa NON costruisco / cosa eliminerei
+- Se un workflow non è spiegabile in 5 righe, non automatizzare
+- Se uno stato richiede >3 doc per essere capito, consolidare prima
+- Production fix con safety workaround → root-cause sprint immediatamente dopo
 ```
