@@ -7,6 +7,13 @@ import { getIndexableTopics, getIndexableITTopics } from '@/lib/seo-topics'
 
 const BASE = 'https://splitvote.io'
 
+// Stable lastModified for static pages: bump on major content/layout deploys.
+// Google deprioritises crawl when lastModified == now() on every fetch (looks
+// fake). A stable historical date gives Search Console a real "no change since
+// X" signal. Pages with dynamic data (AI scenarios, blog posts) keep their
+// own real timestamps below.
+const STATIC_LAST_MOD = new Date('2026-05-15')
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
@@ -29,25 +36,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const scenarioRoutes = scenarios.flatMap((s) => [
     {
       url: `${BASE}/play/${s.id}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
     {
       url: `${BASE}/results/${s.id}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.9,
     },
     {
       url: `${BASE}/it/play/${s.id}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.72,
     },
     {
       url: `${BASE}/it/results/${s.id}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.82,
     },
@@ -105,7 +112,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Programmatic SEO topic landing pages — EN
   const topicRoutes = getIndexableTopics().map((t) => ({
     url: `${BASE}/${t.slug}`,
-    lastModified: now,
+    lastModified: STATIC_LAST_MOD,
     changeFrequency: 'monthly' as const,
     priority: 0.80,
   }))
@@ -113,7 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Programmatic SEO topic landing pages — IT
   const topicRoutesIT = getIndexableITTopics().map((t) => ({
     url: `${BASE}/it/${t.slug}`,
-    lastModified: now,
+    lastModified: STATIC_LAST_MOD,
     changeFrequency: 'monthly' as const,
     priority: 0.75,
   }))
@@ -122,13 +129,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').flatMap((c) => [
     {
       url: `${BASE}/category/${c.value}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.85,
     },
     {
       url: `${BASE}/it/category/${c.value}`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.80,
     },
@@ -138,162 +145,162 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Core pages
     {
       url: BASE,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'hourly' as const,
       priority: 1,
     },
     {
       url: `${BASE}/trending`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.9,
     },
     {
       url: `${BASE}/leaderboard`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'hourly' as const,
       priority: 0.85,
     },
     {
       url: `${BASE}/personality`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },
     {
       url: `${BASE}/pixie`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.65,
     },
     {
       url: `${BASE}/store`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     },
     // Italian locale hub pages
     {
       url: `${BASE}/it`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.85,
     },
     {
       url: `${BASE}/it/trending`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'daily' as const,
       priority: 0.8,
     },
     {
       url: `${BASE}/it/leaderboard`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'hourly' as const,
       priority: 0.80,
     },
     {
       url: `${BASE}/it/personality`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.65,
     },
     {
       url: `${BASE}/it/pixie`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     },
     {
       url: `${BASE}/it/store`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.55,
     },
     {
       url: `${BASE}/about`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
     {
       url: `${BASE}/it/about`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.55,
     },
     {
       url: `${BASE}/it/faq`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
     {
       url: `${BASE}/it/privacy`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     {
       url: `${BASE}/it/terms`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     // SEO landing pages
     {
       url: `${BASE}/would-you-rather-questions`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     },
     {
       url: `${BASE}/moral-dilemmas`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     },
     {
       url: `${BASE}/it/domande-would-you-rather`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.80,
     },
     {
       url: `${BASE}/it/dilemmi-morali`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.80,
     },
     // Static pages
     {
       url: `${BASE}/faq`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
     // Legal
     {
       url: `${BASE}/privacy`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     {
       url: `${BASE}/terms`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'monthly' as const,
       priority: 0.3,
     },
     // Blog index pages
     {
       url: `${BASE}/blog`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.75,
     },
     {
       url: `${BASE}/it/blog`,
-      lastModified: now,
+      lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.70,
     },
