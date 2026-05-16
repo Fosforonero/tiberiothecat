@@ -14,6 +14,7 @@ import {
   type PixieXpMap,
 } from '@/lib/companion'
 import { getPixieImagePath } from '@/lib/pixie'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 
 // Code-split: ~17KB modal only loads when level-up actually fires
@@ -123,10 +124,11 @@ export default function CompanionDisplay({
     return (
       <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${rarityStyle}`}>
         {!imgError ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={getPixieImagePath(species, stage)}
             alt=""
+            width={256}
+            height={256}
             className="w-8 h-8 object-contain flex-shrink-0 p-0.5"
             onError={() => setImgError(true)}
           />
@@ -179,12 +181,14 @@ export default function CompanionDisplay({
             }}
           >
             {!imgError ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={getPixieImagePath(species, stage)}
                 alt=""
+                width={256}
+                height={256}
                 className="w-full h-full object-contain"
                 onError={() => setImgError(true)}
+                priority
               />
             ) : (
               emoji
@@ -282,10 +286,11 @@ export default function CompanionDisplay({
             overflow: 'hidden',
           }}>
             {!imgError ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={getPixieImagePath(species, stage)}
                 alt={companion.name}
+                width={256}
+                height={256}
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             ) : (

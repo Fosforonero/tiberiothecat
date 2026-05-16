@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { COMPANIONS, RARITY_STYLES, type CompanionDef } from '@/lib/companion'
 import { getPixieImagePath } from '@/lib/pixie'
 import dynamic from 'next/dynamic'
@@ -172,10 +173,11 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                       }`}
                     >
                       {visible ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={getPixieImagePath(c.id, stage)}
                           alt={`${c.name} stage ${stage}`}
+                          width={256}
+                          height={256}
                           className="w-full h-full object-contain"
                           loading="lazy"
                         />

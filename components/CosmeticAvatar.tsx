@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 /**
  * CosmeticAvatar — renders an avatar (emoji or Pixie illustration) wrapped in
  * an optional cosmetic frame.
@@ -59,10 +61,11 @@ function AvatarContent({
     // have asymmetric extents (wings, hats, tails) — object-contain centers
     // them, and the small inset prevents corners from being cut off.
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={pixieSrc}
         alt={ariaLabel ?? 'Pixie avatar'}
+        width={256}
+        height={256}
         className="object-contain"
         style={{ width: '92%', height: '92%' }}
         draggable={false}

@@ -21,6 +21,7 @@ import {
   type PixieXpMap,
 } from '@/lib/companion'
 import { getPixieImagePath } from '@/lib/pixie'
+import Image from 'next/image'
 
 const IT_STAGE_LABELS: Record<number, string> = {
   1: 'Cucciolo', 2: 'Apprendista', 3: 'Esploratore',
@@ -183,10 +184,11 @@ export default function PixieDetailModal({
             boxShadow: isCurrentSpecies ? '0 0 36px rgba(77,159,255,0.18)' : undefined,
           }}>
             {!imgErrors[heroStage] ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={getPixieImagePath(companion.id, heroStage)}
                 alt={companion.name}
+                width={256}
+                height={256}
                 style={{
                   width: '100%', height: '100%', objectFit: 'contain',
                   filter: !showUnlocked ? 'grayscale(1)' : undefined,
@@ -305,10 +307,11 @@ export default function PixieDetailModal({
                 }}>
                   {visible ? (
                     !imgErrors[s] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={getPixieImagePath(companion.id, s)}
                         alt={`Stage ${s}`}
+                        width={256}
+                        height={256}
                         style={{
                           width: '100%', height: '100%', objectFit: 'contain',
                           filter: !showUnlocked ? 'grayscale(1)' : undefined,

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getPixieImagePath } from '@/lib/pixie'
 import {
   getCompanionStage,
@@ -128,12 +129,14 @@ export default function MobileStickyHUD({
               }}
             >
               {!imgError ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={getPixieImagePath(species, stage)}
                   alt=""
+                  width={256}
+                  height={256}
                   className="w-full h-full object-contain"
                   onError={() => setImgError(true)}
+                  priority
                 />
               ) : (
                 <span className="text-lg" aria-hidden="true">⚡</span>
