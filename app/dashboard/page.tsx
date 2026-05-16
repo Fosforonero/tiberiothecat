@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import dynamic from 'next/dynamic'
+import nextDynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getScenario } from '@/lib/scenarios'
@@ -15,10 +15,14 @@ import type { CompanionSpecies } from '@/lib/companion'
 import { RARITY_STYLES } from '@/lib/rarity'
 
 // Lazy-load heavy/conditional client components — skips their JS on first paint
-const OnboardingModal = dynamic(() => import('./OnboardingModal'), { ssr: false })
-const BadgeSection    = dynamic(() => import('./BadgeSection'),    { ssr: false })
+const OnboardingModal = nextDynamic(() => import('./OnboardingModal'), { ssr: false })
+const BadgeSection    = nextDynamic(() => import('./BadgeSection'),    { ssr: false })
 
 export const metadata = { title: 'Dashboard | SplitVote' }
+
+// Per-user content (vote history, badges, profile) — must not be cached.
+// Forces fresh SSR on every request so the user always sees their latest votes.
+export const dynamic = 'force-dynamic'
 
 type PollStatus = 'pending' | 'approved' | 'rejected' | 'flagged'
 
@@ -158,6 +162,14 @@ export default async function DashboardPage() {
   const dilemmaVotes = (dilemmaVotesRes.data ?? []) as DilemmaVote[]
   const userBadges = (badgesRes.data ?? []) as unknown as UserBadge[]
 
+  // Surface query errors in Vercel function logs so a crashed dashboard can
+  // be diagnosed against the exact Postgres / Supabase error (e.g. a missing
+  // column from a pending migration).
+  if (profileRes.error)      console.error('[dashboard] profile query error:',     profileRes.error.message)
+  if (pollsRes.error)        console.error('[dashboard] user_polls query error:',  pollsRes.error.message)
+  if (dilemmaVotesRes.error) console.error('[dashboard] dilemma_votes query error:', dilemmaVotesRes.error.message)
+  if (badgesRes.error)       console.error('[dashboard] user_badges query error:', badgesRes.error.message)
+
   const votesCount = profile?.votes_count ?? 0
   const xp = profile?.xp ?? 0
   const streakDays = profile?.streak_days ?? 0
@@ -189,8 +201,9 @@ export default async function DashboardPage() {
           ...purchases.map((p: { product_id: string }) => p.product_id),
         ]))
       }
-    } catch {
-      // fallback to pixie_xp.owned
+    } catch (e) {
+      // fallback to pixie_xp.owned; log so we know if migration_v16 is missing
+      console.error('[dashboard] user_purchases lookup failed:', (e as Error).message)
     }
   }
 
@@ -202,8 +215,9 @@ export default async function DashboardPage() {
   try {
     const dynamicList = await getDynamicScenarios()
     dynamicMap = new Map(dynamicList.map(s => [s.id, s]))
-  } catch {
+  } catch (e) {
     // Redis unavailable — only static scenarios resolvable
+    console.error('[dashboard] getDynamicScenarios failed:', (e as Error).message)
   }
 
   // Resolve dilemma titles for the history (no awaits inside the map)
