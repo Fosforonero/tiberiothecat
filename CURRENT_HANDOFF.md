@@ -105,10 +105,28 @@ check at the page/handler level. Middleware was layer 2, not the only gate.
 
 - `/play/[id]`, `/results/[id]`, `/category/*` still serve
   `Cache-Control: private, no-cache, no-store` — different root cause
-  than blog (likely `cookies()`/`force-dynamic` at page level for
-  `existingVote`). Out of scope; candidate for a future sprint
-  (PLAY-EXISTING-VOTE-CLIENT-MOVE-01) if /play TTFB ever becomes a
-  measured problem.
+  than blog. Diagnose (read-only, 16 May late):
+  - **`/play/[id]`** ([app/play/[id]/page.tsx:69](app/play/[id]/page.tsx#L69)):
+    `export const dynamic = 'force-dynamic'` **intentionally set** per
+    CLAUDE.md anti-regression rule. Also reads `cookies()` line 121 to
+    collect `sv_voted_*` anonymous markers, plus `supabase.auth.getUser()`
+    for `existingVote` + streak. Cannot be cached as-is.
+  - **`/results/[id]`** ([app/results/[id]/page.tsx:65,95](app/results/[id]/page.tsx#L65)):
+    has `export const revalidate = 60` (NOT force-dynamic), but line 95
+    calls `cookies()` to scan `sv_voted_*` for anonymous users. The
+    `cookies()` call alone bumps the route to dynamic regardless of the
+    revalidate directive.
+  - **`/category/[category]`** ([app/category/[category]/page.tsx:63](app/category/[category]/page.tsx#L63))
+    and **`/trending`** ([app/trending/page.tsx:9](app/trending/page.tsx#L9)):
+    both have `revalidate = 3600`, **no `cookies()`/`headers()` calls**.
+    Their no-store behavior was likely caused by the middleware matcher
+    pre-`bd2d46f`. Likely already cacheable now — untested.
+  - **Future sprint shape if/when needed (PLAY-EXISTING-VOTE-CLIENT-MOVE-01):**
+    move `votedIds` + `existingVote` + streak from server to client via
+    `/api/me/voted-ids` (exists) + new `/api/me/streak` (or expand
+    existing endpoint). Remove `force-dynamic` from `/play`; remove
+    `cookies()` from `/results`. Risk: flash of "no vote" pre-hydration
+    for logged-in users; possible UX trade for cacheability.
 - Vercel Attack Challenge Mode may be enabled at the project level —
   blocked all curl/WebFetch verification during this session. PM is
   running VERCEL-CHALLENGE-SANITY-01 dashboard audit; no code action
