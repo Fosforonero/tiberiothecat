@@ -11,11 +11,13 @@ interface Props {
   params: { slug: string }
 }
 
-// Blog articles don't contain per-user content — ISR 1 hour is safe.
-// Static slugs from lib/blog.ts are pre-rendered at build time via
-// generateStaticParams. Redis-published slugs resolve on-demand and are
-// cached for `revalidate` seconds. dynamicParams = true (default) lets
-// unknown slugs hit the page body which falls back to Redis.
+// TEMPORARY: force-dynamic restored as a safety net. Two rounds of defensive
+// fixes on publishedDraftToPost (tags/relatedDilemmaIds + body/faq) did not
+// stop a 500 on the first Redis-published article; the surviving crash is
+// somewhere in the SSR render path under ISR. force-dynamic was the PM's
+// original workaround and was known to work. Investigate offline before
+// removing again. Static slugs continue to be SSG via generateStaticParams.
+export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
 export function generateStaticParams() {

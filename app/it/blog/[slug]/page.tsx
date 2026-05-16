@@ -11,11 +11,9 @@ interface Props {
   params: { slug: string }
 }
 
-// Blog articles don't contain per-user content — ISR 1 hour is safe.
-// Static slugs from lib/blog.ts are pre-rendered at build time via
-// generateStaticParams. Redis-published slugs resolve on-demand and are
-// cached for `revalidate` seconds. dynamicParams = true (default) lets
-// unknown slugs hit the page body which falls back to Redis.
+// TEMPORARY: force-dynamic restored as a safety net (matches /blog/[slug]).
+// See app/blog/[slug]/page.tsx for the same comment block + reasoning.
+export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
 export function generateStaticParams() {
