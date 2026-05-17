@@ -62,8 +62,35 @@ interface Props {
   locale?: 'en' | 'it'
 }
 
+function readCookieVotedIds(): Set<string> {
+  const ids = new Set<string>()
+  if (typeof document === 'undefined') return ids
+  for (const c of document.cookie.split('; ')) {
+    const eq = c.indexOf('=')
+    const name = eq === -1 ? c : c.slice(0, eq)
+    if (name.startsWith('sv_voted_')) ids.add(name.slice('sv_voted_'.length))
+  }
+  return ids
+}
+
 export default function DilemmaGrid({ scenarios, locale = 'en' }: Props) {
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all')
+  // Voted IDs resolved post-hydration. SSR renders with empty set so
+  // crawlers see the deterministic input order. CSS `order` on each
+  // grid item handles the reshuffle without re-rendering subtrees.
+  const [votedIds, setVotedIds] = useState<Set<string>>(() => new Set())
+
+  useEffect(() => {
+    const cookieIds = readCookieVotedIds()
+    if (cookieIds.size > 0) setVotedIds(cookieIds)
+    let cancelled = false
+    getServerVotedIds().then((serverIds) => {
+      if (cancelled) return
+      if (serverIds.size === 0 && cookieIds.size === 0) return
+      setVotedIds(new Set([...cookieIds, ...serverIds]))
+    })
+    return () => { cancelled = true }
+  }, [])
 
   const filtered = activeCategory === 'all'
     ? scenarios
@@ -106,15 +133,16 @@ export default function DilemmaGrid({ scenarios, locale = 'en' }: Props) {
         {countText}
       </p>
 
-      {/* Grid */}
+      {/* Grid — voted dilemmas demoted to end via CSS order (post-hydration). */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {filtered.map((scenario) => (
-          <GridCard
-            key={scenario.id}
-            scenario={scenario}
-            locale={locale}
-            playHref={playHref(scenario.id)}
-          />
+          <div key={scenario.id} style={{ order: votedIds.has(scenario.id) ? 1 : 0 }}>
+            <GridCard
+              scenario={scenario}
+              locale={locale}
+              playHref={playHref(scenario.id)}
+            />
+          </div>
         ))}
       </div>
     </>

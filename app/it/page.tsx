@@ -2,7 +2,8 @@ import Link from 'next/link'
 import PersonalityTeaser from '@/components/PersonalityTeaser'
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
-import { getCachedDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getServerVotedIds, freshFirst } from '@/lib/voted-ids'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import DilemmaGrid from '@/components/DilemmaGrid'
@@ -21,7 +22,9 @@ function getDailyScenario(all: Scenario[]): Scenario {
 
 const BASE_URL = 'https://splitvote.io'
 
-export const revalidate = 3600
+// Bypasses Next.js Data Cache to avoid stale dynamic discovery state
+// (same pattern as commit 76ad684 — extended here to IT home).
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Dilemmi Morali — Vota e Confrontati con il Mondo',
@@ -137,7 +140,7 @@ export default async function ItPage() {
   const staticIds = new Set(scenarios.map((s) => s.id))
   let dynamicIT: DynamicScenario[] = []
   try {
-    const allDynamic = await getCachedDynamicScenarios()
+    const allDynamic = await getFreshDynamicScenarios()
     dynamicIT = allDynamic
       .filter((d) => !staticIds.has(d.id) && d.locale === 'it')
       .sort((a, b) => {
@@ -167,25 +170,34 @@ export default async function ItPage() {
     voteMap = new Map(Object.entries(obj))
   } catch { /* Non-blocking */ }
 
-  const trendingITIds = await getCachedTrendingIds(allITPool.map(s => s.id), 6)
+  // Run trending lookup and viewer voted-IDs lookup in parallel — independent.
+  const [trendingITIds, votedIds] = await Promise.all([
+    getCachedTrendingIds(allITPool.map(s => s.id), 6),
+    getServerVotedIds(),
+  ])
   const itScenarioById = new Map(allITPool.map(s => [s.id, s]))
 
   // Accumulate seen IDs in section priority order so the same scenario ID
-  // cannot appear in more than one visible section.
+  // cannot appear in more than one visible section. Each section then gets
+  // freshFirst() so position-0 in every grid is guaranteed unvoted whenever
+  // the section contains any unvoted item.
   const seen = new Set<string>([dailyIT.id])
 
-  const featuredDeduped = featured.filter(s => !seen.has(s.id))
+  const featuredRaw = featured.filter(s => !seen.has(s.id))
+  const featuredDeduped = freshFirst(featuredRaw, votedIds)
   featuredDeduped.forEach(s => seen.add(s.id))
 
-  const trendingIT = trendingITIds
+  const trendingRaw = trendingITIds
     .map(id => itScenarioById.get(id))
     .filter((s): s is Scenario => s !== undefined && !seen.has(s.id))
+  const trendingIT = freshFirst(trendingRaw, votedIds)
   trendingIT.forEach(s => seen.add(s.id))
 
-  const newlyGeneratedIT = [...dynamicIT]
+  const newlyGeneratedRaw = [...dynamicIT]
     .filter(s => !seen.has(s.id))
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
     .slice(0, 6)
+  const newlyGeneratedIT = freshFirst(newlyGeneratedRaw, votedIds)
 
   return (
     <>
