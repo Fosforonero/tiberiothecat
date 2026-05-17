@@ -40,7 +40,7 @@ function renderInline(text: string): React.ReactNode {
         key={`${i}-link`}
         href={href}
         target="_blank"
-        rel="noopener noreferrer nofollow"
+        rel="noopener noreferrer"
         className={className}
       >
         {renderBold(label)}
