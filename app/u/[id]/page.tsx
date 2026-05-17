@@ -11,6 +11,8 @@ import type { PixieItemId } from '@/lib/pixie-store'
 import { RARITY_STYLES, RARITY_ORDER } from '@/lib/rarity'
 import { getLevelInfo } from '@/lib/missions'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
+import { getPixieImagePath } from '@/lib/pixie'
+import { getCompanionStage, getSpeciesVotes, type PixieXpMap } from '@/lib/companion'
 
 const BASE = 'https://splitvote.io'
 
@@ -92,9 +94,21 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const activePixieId  = typeof pixieXp.active === 'string' ? pixieXp.active as PixieItemId : null
   const activePixieItem = activePixieId ? PIXIE_ITEM_MAP[activePixieId] : null
 
-  // Avatar shown in profile hero: Pixie skin if opted-in, else emoji
+  // Avatar shown in profile hero:
+  // - When use_pixie_avatar is on, show the full Pixie SPRITE PNG from the
+  //   user's companion species + stage (not the skin emoji).
+  // - Otherwise, show the user's chosen avatar emoji.
+  // The skin emoji (👑, 💎, 🌌...) is fallback if the sprite image fails.
   const heroAvatar  = usePixieAvatar && activePixieItem ? activePixieItem.emoji : avatarEmoji
   const heroIsPixie = usePixieAvatar && !!activePixieItem
+  const speciesVotes   = pixieXp && Object.keys(pixieXp).length > 0
+    ? getSpeciesVotes(pixieXp as PixieXpMap, companionSpecies)
+    : 0
+  const effectiveVotes = pixieXp && Object.keys(pixieXp).length > 0 ? speciesVotes : votesCount
+  const companionStage = getCompanionStage(effectiveVotes)
+  const heroPixieSrc   = usePixieAvatar
+    ? getPixieImagePath(companionSpecies, companionStage)
+    : null
 
   // Rarity order from lib/rarity.ts — legendary first
   const sortedBadges = [...badges].sort((a, b) =>
@@ -113,10 +127,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
         const cosmetics = getEquippedCosmetics(profile as unknown as { equipped_frame?: string | null; equipped_glow?: string | null; name_color?: string | null })
         return (
           <div className="rounded-3xl border border-[var(--border)] bg-[#0d0d1a]/60 p-8 mb-8 text-center">
-            {/* Avatar: Pixie skin or emoji — wrapped with optional cosmetic frame */}
+            {/* Avatar: Pixie sprite when use_pixie_avatar is on, else emoji — wrapped with optional cosmetic frame */}
             <div className="mb-4 inline-flex items-center justify-center">
               <CosmeticAvatar
                 emoji={heroAvatar}
+                pixieSrc={heroPixieSrc}
                 frame={cosmetics.frame}
                 size="xl"
                 ariaLabel={`${displayName} avatar`}

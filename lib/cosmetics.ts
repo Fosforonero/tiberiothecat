@@ -30,22 +30,26 @@ export interface FrameDef {
   style?: React.CSSProperties
 }
 
+// All frames use `rounded-2xl` (square with soft corners) to match the
+// existing CompanionDisplay avatar style. Round frames (`rounded-full`)
+// were misaligned with the rest of the app — the Pixie sprite art is
+// authored on a square canvas and clips awkwardly when forced circular.
 export const FRAMES: Record<FrameId, FrameDef> = {
   frame_gold: {
     id: 'frame_gold',
-    ringClass: 'p-[3px] rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500',
+    ringClass: 'p-[3px] rounded-2xl bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500',
   },
   frame_rainbow: {
     id: 'frame_rainbow',
-    ringClass: 'p-[3px] rounded-full bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 animate-[frame-rainbow_4s_linear_infinite] bg-[length:200%_200%]',
+    ringClass: 'p-[3px] rounded-2xl bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 animate-[frame-rainbow_4s_linear_infinite] bg-[length:200%_200%]',
   },
   frame_pulse: {
     id: 'frame_pulse',
-    ringClass: 'p-[3px] rounded-full bg-gradient-to-br from-blue-400 to-purple-500 animate-pulse shadow-[0_0_18px_rgba(168,85,247,0.5)]',
+    ringClass: 'p-[3px] rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 animate-pulse shadow-[0_0_18px_rgba(168,85,247,0.5)]',
   },
   frame_holo: {
     id: 'frame_holo',
-    ringClass: 'p-[3px] rounded-full bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400 animate-[frame-holo_3s_ease-in-out_infinite] bg-[length:200%_100%]',
+    ringClass: 'p-[3px] rounded-2xl bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400 animate-[frame-holo_3s_ease-in-out_infinite] bg-[length:200%_100%]',
   },
 }
 

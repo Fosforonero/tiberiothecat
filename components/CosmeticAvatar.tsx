@@ -57,7 +57,7 @@ function AvatarContent({
 }) {
   if (pixieSrc) {
     // Inset the image slightly (~92%) so the Pixie head/body doesn't get
-    // clipped by the rounded-full mask of the parent disc. Many Pixie sprites
+    // clipped by the rounded-2xl mask of the parent disc. Many Pixie sprites
     // have asymmetric extents (wings, hats, tails) — object-contain centers
     // them, and the small inset prevents corners from being cut off.
     return (
@@ -94,7 +94,7 @@ export default function CosmeticAvatar({
   if (!frame) {
     return (
       <div
-        className={`${sizing.outer} rounded-full ${innerBg} border border-white/10 flex items-center justify-center overflow-hidden ${className}`}
+        className={`${sizing.outer} rounded-2xl ${innerBg} border border-white/10 flex items-center justify-center overflow-hidden ${className}`}
         role={ariaLabel ? 'img' : undefined}
         aria-label={ariaLabel}
       >
@@ -116,7 +116,7 @@ export default function CosmeticAvatar({
       role={ariaLabel ? 'img' : undefined}
       aria-label={ariaLabel}
     >
-      <div className={`${sizing.inner} rounded-full ${innerBg} flex items-center justify-center overflow-hidden`}>
+      <div className={`${sizing.inner} rounded-2xl ${innerBg} flex items-center justify-center overflow-hidden`}>
         <AvatarContent
           pixieSrc={pixieSrc}
           emoji={emoji}
