@@ -9,6 +9,7 @@ import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
 import NavLinks from '@/components/NavLinks'
 import LocaleAwareLogo from '@/components/LocaleAwareLogo'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Footer from '@/components/Footer'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
@@ -182,8 +183,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Desktop category links — locale-aware */}
           <NavLinks />
 
-          {/* Right side: auth + mobile menu */}
+          {/* Right side: language switcher + auth + mobile menu */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            <LanguageSwitcher size="sm" />
             <div className="border-l border-[var(--border)] pl-3 hidden sm:block">
               <AuthButton />
             </div>

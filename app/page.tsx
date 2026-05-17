@@ -319,18 +319,8 @@ export default async function HomePage() {
           <AdSlot slot={SLOT_HOME} className="rounded-2xl" />
         </div>
 
-        {/* Crawlable link to Italian site — server-rendered so Googlebot can follow it.
-            Paired with the hreflang declared in metadata above. */}
-        <p className="mt-10 text-center text-xs text-[var(--muted)]">
-          🇮🇹 Italiano?{' '}
-          <Link
-            href="/it"
-            hrefLang="it"
-            className="underline underline-offset-2 hover:text-white transition-colors"
-          >
-            Vai alla versione italiana →
-          </Link>
-        </p>
+        {/* The header LanguageSwitcher is the visible IT/EN affordance now;
+            hreflang link tags in <head> still feed Googlebot for SEO. */}
       </div>
     </>
   )

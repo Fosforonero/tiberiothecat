@@ -9,7 +9,6 @@ import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
-import LangSwitcher from '@/components/LangSwitcher'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import type { Metadata } from 'next'
 import type { Scenario } from '@/lib/scenarios'
@@ -229,9 +228,6 @@ export default async function ItPage() {
             >
               Vedi le tendenze →
             </Link>
-          </div>
-          <div className="mt-6">
-            <LangSwitcher />
           </div>
         </div>
 
