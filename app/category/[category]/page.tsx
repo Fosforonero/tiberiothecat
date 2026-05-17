@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import JsonLd from '@/components/JsonLd'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
+import FreshFirstGrid from '@/components/FreshFirstGrid'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -185,20 +186,23 @@ export default async function CategoryPage({ params }: Props) {
           </div>
         )}
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {allSorted.map((scenario) => (
-            <VotedDilemmaCard
-              key={scenario.id}
-              scenario={scenario}
-              playHref={`/play/${scenario.id}`}
-              resultsHref={`/results/${scenario.id}`}
-              totalVotes={voteMap.get(scenario.id)}
-              badge={'generatedAt' in scenario ? 'ai' : undefined}
-              locale="en"
-            />
-          ))}
-        </div>
+        {/* Grid — voted dilemmas demoted to the end, position 0 always fresh */}
+        <FreshFirstGrid
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          items={allSorted.map((scenario) => ({
+            id: scenario.id,
+            node: (
+              <VotedDilemmaCard
+                scenario={scenario}
+                playHref={`/play/${scenario.id}`}
+                resultsHref={`/results/${scenario.id}`}
+                totalVotes={voteMap.get(scenario.id)}
+                badge={'generatedAt' in scenario ? 'ai' : undefined}
+                locale="en"
+              />
+            ),
+          }))}
+        />
 
         {/* Editorial + FAQ */}
         {content && (

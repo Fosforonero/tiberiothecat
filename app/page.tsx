@@ -1,6 +1,7 @@
 import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
+import { getServerVotedIds, freshFirst } from '@/lib/voted-ids'
 import DilemmaGrid from '@/components/DilemmaGrid'
 import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
@@ -54,16 +55,20 @@ export default async function HomePage() {
   const dailyScenario = getDailyScenario(allScenarios)
 
   // Include daily scenario in the vote batch to avoid a separate fetch.
-  // Run vote batch and trending lookup in parallel — both independent once allScenarios is known.
+  // Run vote batch, trending lookup, and viewer's voted IDs in parallel —
+  // all independent once allScenarios is known.
   const batchIds = [...new Set([dailyScenario.id, ...allScenarios.slice(0, 30).map((s) => s.id)])]
   let voteMap = new Map<string, number>()
   let trendingIds: string[] = []
-  const [voteMapResult, trendingResult] = await Promise.allSettled([
+  let votedIds = new Set<string>()
+  const [voteMapResult, trendingResult, votedIdsResult] = await Promise.allSettled([
     getCachedVotesBatch(batchIds).then(obj => new Map(Object.entries(obj))),
     getCachedTrendingIds(allScenarios.map(s => s.id), 6),
+    getServerVotedIds(),
   ])
   if (voteMapResult.status === 'fulfilled') voteMap = voteMapResult.value
   if (trendingResult.status === 'fulfilled') trendingIds = trendingResult.value
+  if (votedIdsResult.status === 'fulfilled') votedIds = votedIdsResult.value
   const dailyVotes = voteMap.get(dailyScenario.id) ?? 0
   const scenarioById = new Map(allScenarios.map(s => [s.id, s]))
 
@@ -72,21 +77,28 @@ export default async function HomePage() {
   // exempt — it remains the complete list for SEO and category filtering.
   const seen = new Set<string>([dailyScenario.id])
 
-  const trendingNow = trendingIds
+  // Each visible section gets the freshFirst reorder so position-0 in
+  // every grid is guaranteed unvoted whenever the section contains any.
+  // dailyScenario is intentionally NOT reordered — it's a single per-day
+  // pick, not a list.
+  const trendingNowRaw = trendingIds
     .map(id => scenarioById.get(id))
     .filter((s): s is Scenario => s !== undefined && !seen.has(s.id))
+  const trendingNow = freshFirst(trendingNowRaw, votedIds)
   trendingNow.forEach(s => seen.add(s.id))
 
-  const mostVoted = [...allScenarios.slice(0, 30)]
+  const mostVotedRaw = [...allScenarios.slice(0, 30)]
     .filter((s) => (voteMap.get(s.id) ?? 0) > 0 && !seen.has(s.id))
     .sort((a, b) => (voteMap.get(b.id) ?? 0) - (voteMap.get(a.id) ?? 0))
     .slice(0, 6)
+  const mostVoted = freshFirst(mostVotedRaw, votedIds)
   mostVoted.forEach(s => seen.add(s.id))
 
-  const newlyGenerated = [...uniqueDynamic]
+  const newlyGeneratedRaw = [...uniqueDynamic]
     .filter(s => !seen.has(s.id))
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
     .slice(0, 6)
+  const newlyGenerated = freshFirst(newlyGeneratedRaw, votedIds)
 
   // JSON-LD schemas
   const websiteSchema = {

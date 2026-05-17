@@ -8,6 +8,7 @@ import type { Scenario } from '@/lib/scenarios'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
+import FreshFirstGrid from '@/components/FreshFirstGrid'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 
 const BASE_URL = 'https://splitvote.io'
@@ -265,36 +266,42 @@ export default async function ItTrendingPage() {
             <p className="text-sm text-[var(--muted)] mb-5">
               Dilemmi morali ispirati alle notizie e ai trend più caldi in Italia. Nuovi spunti ogni giorno, senza gergo tecnico.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {itDynamic.map((scenario) => (
-                <VotedDilemmaCard
-                  key={scenario.id}
-                  scenario={scenario}
-                  playHref={`/it/play/${scenario.id}`}
-                  resultsHref={`/it/results/${scenario.id}`}
-                  badge="ai"
-                  locale="it"
-                />
-              ))}
-            </div>
+            <FreshFirstGrid
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+              items={itDynamic.map((scenario) => ({
+                id: scenario.id,
+                node: (
+                  <VotedDilemmaCard
+                    scenario={scenario}
+                    playHref={`/it/play/${scenario.id}`}
+                    resultsHref={`/it/results/${scenario.id}`}
+                    badge="ai"
+                    locale="it"
+                  />
+                ),
+              }))}
+            />
           </>
         ) : (
           <>
             <p className="text-sm text-[var(--muted)] mb-5">
               Inizia dai dilemmi più discussi di SplitVote e scopri come si divide il mondo.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {itStaticFallback.map((scenario) => (
-                <VotedDilemmaCard
-                  key={scenario.id}
-                  scenario={scenario}
-                  playHref={`/it/play/${scenario.id}`}
-                  resultsHref={`/it/results/${scenario.id}`}
-                  badge="trending"
-                  locale="it"
-                />
-              ))}
-            </div>
+            <FreshFirstGrid
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+              items={itStaticFallback.map((scenario) => ({
+                id: scenario.id,
+                node: (
+                  <VotedDilemmaCard
+                    scenario={scenario}
+                    playHref={`/it/play/${scenario.id}`}
+                    resultsHref={`/it/results/${scenario.id}`}
+                    badge="trending"
+                    locale="it"
+                  />
+                ),
+              }))}
+            />
           </>
         )}
       </section>

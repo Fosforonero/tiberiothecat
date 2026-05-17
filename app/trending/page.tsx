@@ -5,6 +5,7 @@ import type { Scenario, Category } from '@/lib/scenarios'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
+import FreshFirstGrid from '@/components/FreshFirstGrid'
 
 export const revalidate = 3600
 
@@ -266,18 +267,21 @@ export default async function TrendingPage() {
             ? "Moral dilemmas inspired by today's biggest news and trending topics. New ones every day."
             : "The most debated moral dilemmas on SplitVote. AI-generated ones from today's news appear daily."}
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {displayItems.map((scenario) => (
-            <VotedDilemmaCard
-              key={scenario.id}
-              scenario={scenario}
-              playHref={`/play/${scenario.id}`}
-              resultsHref={`/results/${scenario.id}`}
-              badge={scenario.isDynamic ? 'ai' : 'trending'}
-              locale="en"
-            />
-          ))}
-        </div>
+        <FreshFirstGrid
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+          items={displayItems.map((scenario) => ({
+            id: scenario.id,
+            node: (
+              <VotedDilemmaCard
+                scenario={scenario}
+                playHref={`/play/${scenario.id}`}
+                resultsHref={`/results/${scenario.id}`}
+                badge={scenario.isDynamic ? 'ai' : 'trending'}
+                locale="en"
+              />
+            ),
+          }))}
+        />
       </section>
 
       {/* Back link */}
