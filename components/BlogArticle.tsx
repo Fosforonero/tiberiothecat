@@ -5,7 +5,7 @@ import { scenarios } from '@/lib/scenarios'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
 import BlogShareButton from '@/components/BlogShareButton'
 
-function renderInline(text: string): React.ReactNode {
+function renderBold(text: string): React.ReactNode {
   const parts = text.split(/\*\*(.+?)\*\*/)
   if (parts.length === 1) return text
   return (
@@ -15,6 +15,39 @@ function renderInline(text: string): React.ReactNode {
       )}
     </>
   )
+}
+
+function renderInline(text: string): React.ReactNode {
+  const parts = text.split(/\[([^\]]+)\]\(([^)]+)\)/g)
+  if (parts.length === 1) return renderBold(text)
+
+  const nodes: React.ReactNode[] = []
+  for (let i = 0; i < parts.length; i += 3) {
+    const before = parts[i]
+    const label = parts[i + 1]
+    const href = parts[i + 2]
+    if (before) nodes.push(<span key={`${i}-text`}>{renderBold(before)}</span>)
+    if (!label || !href) continue
+
+    const isInternal = href.startsWith('/')
+    const className = "text-violet-300 underline decoration-violet-400/40 underline-offset-2 hover:text-white"
+    nodes.push(isInternal ? (
+      <Link key={`${i}-link`} href={href} className={className}>
+        {renderBold(label)}
+      </Link>
+    ) : (
+      <a
+        key={`${i}-link`}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        className={className}
+      >
+        {renderBold(label)}
+      </a>
+    ))
+  }
+  return <>{nodes}</>
 }
 
 interface Props {

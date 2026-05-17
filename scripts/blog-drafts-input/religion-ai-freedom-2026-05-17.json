@@ -1,0 +1,144 @@
+{
+  "articles": [
+    {
+      "topic": "AI, religione e dignità umana",
+      "source": {
+        "type": "blog_article",
+        "locale": "en",
+        "slug": "ai-religion-human-dignity-sacred-art",
+        "title": "AI, Religion and Human Dignity: Why Sacred Art Became a Moral Test",
+        "seoTitle": "AI, Religion and Human Dignity: The Sacred Art Dilemma",
+        "seoDescription": "AI is forcing religious communities to ask what makes art, work and worship human. Explore the moral dilemma behind sacred images, dignity and technology.",
+        "keywords": ["AI ethics", "religion", "human dignity", "sacred art", "technology", "moral dilemmas"],
+        "outline": [
+          "Why religion entered the AI debate",
+          "Sacred art is not only an image problem",
+          "Human dignity versus technological access",
+          "Schools, work and spiritual formation",
+          "The SplitVote dilemma",
+          "Sources and dilemmas to vote on"
+        ],
+        "body": "AI ethics is often framed as a technical problem: model safety, hallucinations, copyright, automation, productivity. Religion changes the frame. It asks a more uncomfortable question: what should never be reduced to output?\n\nThat is why the recent Vatican focus on artificial intelligence matters beyond Catholic institutions. The Vatican's creation of an AI study group, reported by [Associated Press](https://apnews.com/article/889c0066f0d5ce784c07abb72b33e24c), puts human dignity at the center of a debate that is often dominated by speed and scale. The official Vatican bulletin described concern for AI's effects on human beings and humanity as a whole in the establishment of an [Inter-Dicasterial Commission on Artificial Intelligence](https://press.vatican.va/content/salastampa/en/bollettino/pubblico/2026/05/16/260516b.html).\n\n## Sacred art is not only an image problem\n\nThe easiest version of the question is practical: if a congregation can generate beautiful sacred images at almost no cost, why not use them?\n\nFor small communities, AI art could mean access. A rural parish, mosque, temple or meditation center may not have money for commissioned art. A generative tool can produce visual material quickly, cheaply and in many styles.\n\nBut sacred art is not just decoration. For many believers, it carries intention, discipline, prayer, tradition and a human hand shaped by devotion. The worry is not merely that AI might make a bad image. The worry is that it might make a good image with no soul behind it.\n\nThat is the moral tension behind this SplitVote question: [Should sacred art be made with AI?](/play/news-20260517-ai-sacred-art-en)\n\n## Human dignity versus technological access\n\nThe strongest argument for AI in religious life is access. If tools help communities teach, translate, serve and create, banning them can look like a luxury position. People with money can keep hiring humans; poorer communities are told to wait.\n\nThe strongest argument against AI is dignity. If every form of human expression becomes cheaper to simulate than to support, society slowly trains itself to value the product over the person. Religious traditions are unusually sensitive to that shift because they often treat the human person as more than a unit of productivity.\n\nPope Leo XIV's broader message on technology, summarized by [Vatican News](https://www.vaticannews.va/en/pope/news/2026-01/pope-leo-xiv-messsage-world-day-social-communications-ai-human.html), frames AI governance as a shared human challenge rather than a problem one sector can solve alone.\n\n## Work, schools and formation\n\nThe same dilemma appears in work. If a religious institution believes AI will displace vulnerable workers, should it oppose the technology publicly, or shape its ethical use from inside the system? Vote here: [Should religious institutions oppose AI over labor harms?](/play/news-20260517-faith-ai-labor-en)\n\nIt also appears in education. A faith school can ban AI tools to protect attention and interior formation, or teach them so students are not unprepared for the world they will enter. Vote here: [Should faith schools ban or teach AI?](/play/news-20260517-ai-faith-school-en)\n\nNeither answer is clean. A ban can protect depth but create ignorance. Adoption can build competence but normalize dependency.\n\n## The real SplitVote question\n\nThe deeper question is not whether AI is useful. It is whether usefulness is enough.\n\nIf sacred art is judged only by visual quality, AI will win often. If education is judged only by efficiency, AI will keep expanding. If work is judged only by output, replacement becomes easy to justify.\n\nReligion presses against that logic. It asks whether some human acts matter because of the person doing them, not just the result produced.\n\nThat makes AI and religion a strong moral dilemma cluster: it is not anti-technology, and it is not blind enthusiasm. It is a test of what we still want to protect when machines become good enough to imitate almost everything.",
+        "relatedDilemmaIds": [
+          "news-20260517-ai-sacred-art-en",
+          "news-20260517-faith-ai-labor-en",
+          "news-20260517-ai-faith-school-en"
+        ],
+        "rationale": "Current, SEO-relevant article connecting AI ethics, religion, sacred art, labor and education to newly published SplitVote dilemmas.",
+        "safetyNotes": [
+          "Avoids adjudicating any religious truth claim.",
+          "Frames sources as public ethics context, not religious or legal advice.",
+          "Uses official or mainstream sources and links to SplitVote voting pages."
+        ],
+        "noveltyScore": 88,
+        "similarItems": [],
+        "warnings": [],
+        "articleKind": "standard"
+      },
+      "translation": {
+        "type": "blog_article",
+        "locale": "it",
+        "slug": "ai-religione-dignita-umana-arte-sacra",
+        "title": "AI, religione e dignità umana: perché l'arte sacra è diventata un test morale",
+        "seoTitle": "AI, religione e dignità umana: il dilemma dell'arte sacra",
+        "seoDescription": "L'AI costringe le comunità religiose a chiedersi cosa rende umani arte, lavoro e culto. Il dilemma morale tra immagini sacre, dignità e tecnologia.",
+        "keywords": ["etica AI", "religione", "dignità umana", "arte sacra", "tecnologia", "dilemmi morali"],
+        "outline": [
+          "Perché la religione è entrata nel dibattito sull'AI",
+          "L'arte sacra non è solo un problema di immagini",
+          "Dignità umana contro accesso tecnologico",
+          "Scuole, lavoro e formazione interiore",
+          "Il dilemma SplitVote",
+          "Fonti e dilemmi da votare"
+        ],
+        "body": "L'etica dell'AI viene spesso presentata come un problema tecnico: sicurezza dei modelli, allucinazioni, copyright, automazione, produttività. La religione cambia il quadro. Fa una domanda più scomoda: cosa non dovrebbe mai essere ridotto a semplice output?\n\nPer questo il recente focus del Vaticano sull'intelligenza artificiale conta anche fuori dal mondo cattolico. La creazione di un gruppo di studio sull'AI, riportata da [Associated Press](https://apnews.com/article/889c0066f0d5ce784c07abb72b33e24c), mette la dignità umana al centro di un dibattito spesso dominato da velocità e scala. Il bollettino ufficiale vaticano parla degli effetti dell'AI sugli esseri umani e sull'umanità nel suo insieme nell'istituzione di una [Commissione interdicasteriale sull'intelligenza artificiale](https://press.vatican.va/content/salastampa/en/bollettino/pubblico/2026/05/16/260516b.html).\n\n## L'arte sacra non è solo un problema di immagini\n\nLa versione più semplice della domanda è pratica: se una comunità può generare immagini sacre belle a costo quasi zero, perché non usarle?\n\nPer le comunità piccole, l'arte AI può significare accesso. Una parrocchia, moschea, tempio o centro spirituale può non avere risorse per commissionare opere. Uno strumento generativo può produrre materiale visivo velocemente, a basso costo e in molti stili.\n\nMa l'arte sacra non è solo decorazione. Per molti credenti porta intenzione, disciplina, preghiera, tradizione e una mano umana formata dalla devozione. Il problema non è solo che l'AI possa produrre un'immagine brutta. È che possa produrre un'immagine bella senza anima dietro.\n\nQuesto è il conflitto morale dietro la domanda SplitVote: [L'arte sacra dovrebbe essere creata con l'AI?](/it/play/news-20260517-ai-sacred-art-it)\n\n## Dignità umana contro accesso tecnologico\n\nL'argomento più forte a favore dell'AI nella vita religiosa è l'accesso. Se gli strumenti aiutano comunità a insegnare, tradurre, servire e creare, vietarli può sembrare una posizione da privilegiati. Chi ha denaro può continuare ad assumere esseri umani; agli altri si chiede di aspettare.\n\nL'argomento più forte contro l'AI è la dignità. Se ogni forma di espressione umana diventa più economica da simulare che da sostenere, la società impara lentamente a valutare il prodotto più della persona. Le tradizioni religiose sono particolarmente sensibili a questo passaggio perché spesso trattano l'essere umano come qualcosa di più di un'unità produttiva.\n\nIl messaggio più ampio di Papa Leone XIV sulla tecnologia, riassunto da [Vatican News](https://www.vaticannews.va/en/pope/news/2026-01/pope-leo-xiv-messsage-world-day-social-communications-ai-human.html), presenta la governance dell'AI come una sfida umana condivisa, non come un problema che un solo settore può risolvere.\n\n## Lavoro, scuole e formazione interiore\n\nLo stesso dilemma appare nel lavoro. Se un'istituzione religiosa crede che l'AI sostituirà lavoratori vulnerabili, dovrebbe opporsi pubblicamente o guidarne l'uso etico dall'interno? Vota qui: [Le istituzioni religiose dovrebbero opporsi all'AI per difendere il lavoro?](/it/play/news-20260517-faith-ai-labor-it)\n\nAppare anche nell'educazione. Una scuola religiosa può vietare gli strumenti AI per proteggere attenzione e formazione interiore, oppure insegnarli perché gli studenti non siano impreparati al mondo che incontreranno. Vota qui: [Le scuole religiose dovrebbero vietare o insegnare l'AI?](/it/play/news-20260517-ai-faith-school-it)\n\nNessuna risposta è pulita. Un divieto può proteggere profondità ma creare ignoranza. L'adozione può costruire competenza ma normalizzare dipendenza.\n\n## Il vero dilemma SplitVote\n\nLa domanda più profonda non è se l'AI sia utile. È se l'utilità basti.\n\nSe l'arte sacra viene giudicata solo per qualità visiva, l'AI vincerà spesso. Se l'educazione viene giudicata solo per efficienza, l'AI continuerà a espandersi. Se il lavoro viene giudicato solo per output, la sostituzione diventa facile da giustificare.\n\nLa religione resiste a questa logica. Chiede se alcuni atti umani contano per la persona che li compie, non solo per il risultato prodotto.\n\nPer questo AI e religione sono un cluster forte di dilemmi morali: non è rifiuto della tecnologia e non è entusiasmo cieco. È un test su ciò che vogliamo ancora proteggere quando le macchine diventano abbastanza brave da imitare quasi tutto.",
+        "relatedDilemmaIds": [
+          "news-20260517-ai-sacred-art-it",
+          "news-20260517-faith-ai-labor-it",
+          "news-20260517-ai-faith-school-it"
+        ],
+        "rationale": "Versione italiana nativa dell'articolo su AI, religione e dignità umana.",
+        "safetyNotes": [
+          "Non prende posizione sulla verità di alcuna religione.",
+          "Inquadra le fonti come contesto di etica pubblica, non come consiglio religioso o legale.",
+          "Usa fonti ufficiali o mainstream e link alle pagine di voto SplitVote."
+        ],
+        "noveltyScore": 88,
+        "similarItems": [],
+        "warnings": [],
+        "articleKind": "standard"
+      },
+      "translationFailed": false
+    },
+    {
+      "topic": "Libertà religiosa, sicurezza pubblica e società pluraliste",
+      "source": {
+        "type": "blog_article",
+        "locale": "en",
+        "slug": "religious-freedom-public-safety-dilemma",
+        "title": "Religious Freedom vs Public Safety: The Dilemma Every Pluralist Society Faces",
+        "seoTitle": "Religious Freedom vs Public Safety: A Moral Dilemma",
+        "seoDescription": "Religious freedom protects conscience, but public safety protects everyone. Explore the moral conflict behind surveillance, pluralism and minority rights.",
+        "keywords": ["religious freedom", "public safety", "pluralism", "civil liberties", "moral dilemmas", "surveillance"],
+        "outline": [
+          "Why religious freedom becomes difficult in plural societies",
+          "The surveillance dilemma",
+          "Minorities, diplomacy and moral cost",
+          "When a legal practice seems harmful",
+          "The SplitVote frame",
+          "Sources and dilemmas to vote on"
+        ],
+        "body": "Religious freedom is easy to defend in the abstract. Almost everyone can say that conscience should be protected and that people should not be punished simply for believing differently.\n\nIt becomes harder when belief turns into public action, political identity, institutional power or security risk. That is where pluralist societies face their sharpest moral test: how much freedom can they protect before safety feels threatened, and how much safety can they demand before freedom becomes hollow?\n\nThe question is not theoretical. A 2026 [Pew Research Center report on religious diversity](https://www.pewresearch.org/religion/2026/02/12/religious-diversity-around-the-world) maps how different societies contain very different mixtures of religious and unaffiliated populations. More diversity can make coexistence richer. It can also make conflict over schools, law, public space and national identity more visible.\n\n## The surveillance dilemma\n\nThe hardest case is security. If a government believes violence may emerge from a small part of a religious ecosystem, it may want closer monitoring of some communities.\n\nThe argument for surveillance is prevention. Waiting until violence happens can mean failing the public. The argument against surveillance is suspicion. Innocent believers may be treated as risks because they share a label, language, clothing or place of worship with people they reject.\n\nThat is the dilemma behind this vote: [Should states monitor religious communities for security?](/play/news-20260517-faith-surveillance-en)\n\n## Minorities, diplomacy and moral cost\n\nReligious freedom also becomes difficult abroad. A government may condemn persecution when it is cheap, but hesitate when the violator is an important ally, trading partner or security partner.\n\nThe U.S. Commission on International Religious Freedom recently urged a new ambassador-at-large nomination, arguing that religious freedom leadership matters in foreign policy. See the [USCIRF release](https://www.uscirf.gov/news-room/releases-statements/uscirf-urges-president-trump-nominate-ambassador-large-international).\n\nBut the moral question is broader than one country. Should any state risk a crucial alliance for people who cannot vote in its elections? Vote here: [Should governments risk alliances for religious freedom?](/play/news-20260517-faith-minority-diplomacy-en)\n\n## When a legal practice seems harmful\n\nThe most divisive cases are not always about persecution. Sometimes a religious practice is legal, sincere and deeply meaningful to insiders, while outsiders see harm, inequality or coercion.\n\nA liberal society cannot protect only popular beliefs. That would not be freedom; it would be majority permission. But no society can allow every practice simply because it is religious. The line has to be drawn somewhere, and every line will anger someone.\n\nVote here: [Should harmful religious practices be restricted?](/play/news-20260517-faith-practice-harm-en)\n\n## The SplitVote frame\n\nReligious freedom versus public safety is not a battle between good and evil. Both sides protect something real.\n\nFreedom protects conscience, minority life and the moral space where people can live according to ultimate commitments. Safety protects bodies, public trust and the right not to be harmed by someone else's certainty.\n\nThe danger is pretending the tradeoff does not exist. If we talk only about freedom, we miss victims. If we talk only about safety, we normalize suspicion.\n\nThat is why these questions belong on SplitVote: they reveal which cost a society is more willing to carry.",
+        "relatedDilemmaIds": [
+          "news-20260517-faith-surveillance-en",
+          "news-20260517-faith-minority-diplomacy-en",
+          "news-20260517-faith-practice-harm-en"
+        ],
+        "rationale": "Evergreen SEO article tying religious freedom, public safety and pluralism to newly published dilemmas.",
+        "safetyNotes": [
+          "Avoids targeting any specific religion as dangerous.",
+          "Frames religious freedom as a general civil liberties dilemma.",
+          "Uses Pew and USCIRF as external context without endorsing policy claims."
+        ],
+        "noveltyScore": 86,
+        "similarItems": [],
+        "warnings": [],
+        "articleKind": "standard"
+      },
+      "translation": {
+        "type": "blog_article",
+        "locale": "it",
+        "slug": "liberta-religiosa-sicurezza-pubblica-dilemma",
+        "title": "Libertà religiosa vs sicurezza pubblica: il dilemma di ogni società pluralista",
+        "seoTitle": "Libertà religiosa vs sicurezza pubblica: un dilemma morale",
+        "seoDescription": "La libertà religiosa protegge la coscienza, ma la sicurezza pubblica protegge tutti. Il dilemma tra sorveglianza, pluralismo e diritti delle minoranze.",
+        "keywords": ["libertà religiosa", "sicurezza pubblica", "pluralismo", "diritti civili", "dilemmi morali", "sorveglianza"],
+        "outline": [
+          "Perché la libertà religiosa diventa difficile nelle società pluraliste",
+          "Il dilemma della sorveglianza",
+          "Minoranze, diplomazia e costo morale",
+          "Quando una pratica legale sembra dannosa",
+          "Il frame SplitVote",
+          "Fonti e dilemmi da votare"
+        ],
+        "body": "La libertà religiosa è facile da difendere in astratto. Quasi tutti possono dire che la coscienza va protetta e che nessuno dovrebbe essere punito solo perché crede in modo diverso.\n\nDiventa più difficile quando la fede diventa azione pubblica, identità politica, potere istituzionale o rischio di sicurezza. È lì che le società pluraliste affrontano il test morale più duro: quanta libertà possono proteggere prima che la sicurezza sembri minacciata, e quanta sicurezza possono chiedere prima che la libertà diventi vuota?\n\nLa domanda non è teorica. Un report 2026 del [Pew Research Center sulla diversità religiosa](https://www.pewresearch.org/religion/2026/02/12/religious-diversity-around-the-world) mostra quanto le società differiscano nella composizione tra gruppi religiosi e persone non affiliate. Più diversità può rendere la convivenza più ricca. Può anche rendere più visibili i conflitti su scuola, legge, spazio pubblico e identità nazionale.\n\n## Il dilemma della sorveglianza\n\nIl caso più difficile è la sicurezza. Se un governo crede che la violenza possa emergere da una piccola parte di un ecosistema religioso, può voler controllare più da vicino alcune comunità.\n\nL'argomento a favore della sorveglianza è la prevenzione. Aspettare che la violenza avvenga può significare tradire il pubblico. L'argomento contro è il sospetto. Credenti innocenti possono essere trattati come rischi perché condividono un'etichetta, una lingua, un abito o un luogo di culto con persone che rifiutano.\n\nQuesto è il dilemma dietro il voto: [Gli Stati dovrebbero sorvegliare comunità religiose per sicurezza?](/it/play/news-20260517-faith-surveillance-it)\n\n## Minoranze, diplomazia e costo morale\n\nLa libertà religiosa diventa difficile anche all'estero. Un governo può condannare persecuzioni quando costa poco, ma esitare quando il responsabile è un alleato importante, un partner commerciale o un partner di sicurezza.\n\nLa Commissione statunitense sulla libertà religiosa internazionale ha recentemente chiesto la nomina di un nuovo ambasciatore, sostenendo che la leadership sulla libertà religiosa conta in politica estera. Vedi il comunicato [USCIRF](https://www.uscirf.gov/news-room/releases-statements/uscirf-urges-president-trump-nominate-ambassador-large-international).\n\nMa la domanda morale è più ampia di un singolo Paese. Uno Stato dovrebbe rischiare un'alleanza cruciale per persone che non votano nelle sue elezioni? Vota qui: [I governi dovrebbero rischiare alleanze per la libertà religiosa?](/it/play/news-20260517-faith-minority-diplomacy-it)\n\n## Quando una pratica legale sembra dannosa\n\nI casi più divisivi non riguardano sempre la persecuzione. A volte una pratica religiosa è legale, sincera e profondamente significativa per chi la vive, mentre gli altri vedono danno, disuguaglianza o coercizione.\n\nUna società liberale non può proteggere solo le convinzioni popolari. Quella non sarebbe libertà, ma permesso della maggioranza. Però nessuna società può permettere ogni pratica solo perché è religiosa. La linea va tracciata da qualche parte, e ogni linea farà arrabbiare qualcuno.\n\nVota qui: [Le pratiche religiose considerate dannose dovrebbero essere limitate?](/it/play/news-20260517-faith-practice-harm-it)\n\n## Il frame SplitVote\n\nLibertà religiosa contro sicurezza pubblica non è una battaglia tra bene e male. Entrambe le parti proteggono qualcosa di reale.\n\nLa libertà protegge coscienza, vita delle minoranze e lo spazio morale in cui le persone possono vivere secondo impegni ultimi. La sicurezza protegge corpi, fiducia pubblica e il diritto a non essere danneggiati dalla certezza altrui.\n\nIl pericolo è fingere che il tradeoff non esista. Se parliamo solo di libertà, perdiamo di vista le vittime. Se parliamo solo di sicurezza, normalizziamo il sospetto.\n\nPer questo queste domande appartengono a SplitVote: mostrano quale costo una società è più disposta a portare.",
+        "relatedDilemmaIds": [
+          "news-20260517-faith-surveillance-it",
+          "news-20260517-faith-minority-diplomacy-it",
+          "news-20260517-faith-practice-harm-it"
+        ],
+        "rationale": "Versione italiana dell'articolo evergreen su libertà religiosa, sicurezza pubblica e pluralismo.",
+        "safetyNotes": [
+          "Non presenta alcuna religione specifica come pericolosa.",
+          "Inquadra la libertà religiosa come dilemma generale sui diritti civili.",
+          "Usa Pew e USCIRF come contesto esterno senza adottare una posizione di policy."
+        ],
+        "noveltyScore": 86,
+        "similarItems": [],
+        "warnings": [],
+        "articleKind": "standard"
+      },
+      "translationFailed": false
+    }
+  ]
+}

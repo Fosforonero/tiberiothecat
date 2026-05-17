@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { publishBlogDraft, getBlogDrafts } from '@/lib/blog-drafts'
 import { requireAdmin } from '@/lib/admin-guard'
 
@@ -28,6 +29,12 @@ export async function POST(
   const translationUrl = draft?.translation
     ? (draft.translation.locale === 'it' ? `/it/blog/${draft.translation.slug}` : `/blog/${draft.translation.slug}`)
     : undefined
+
+  revalidateTag('blog-published')
+  revalidatePath('/blog')
+  revalidatePath('/it/blog')
+  if (liveUrl) revalidatePath(liveUrl)
+  if (translationUrl) revalidatePath(translationUrl)
 
   return NextResponse.json({ ok: true, id: params.id, status: 'published', liveUrl, translationUrl })
 }

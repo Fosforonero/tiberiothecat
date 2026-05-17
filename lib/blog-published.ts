@@ -2,7 +2,7 @@ import type { BlogDraft } from './blog-drafts'
 import type { BlogPost, SectionType } from './blog'
 
 const BLOG_PUBLISHED_KEY = 'blog:published'
-const BLOG_REVALIDATE_SECONDS = 3600
+const BLOG_REVALIDATE_SECONDS = 300
 
 // Public read path for published blog posts.
 //
@@ -22,7 +22,7 @@ export async function getPublishedBlogDrafts(): Promise<BlogDraft[]> {
       `${url.replace(/\/$/, '')}/get/${encodeURIComponent(BLOG_PUBLISHED_KEY)}`,
       {
         headers: { Authorization: `Bearer ${token}` },
-        next: { revalidate: BLOG_REVALIDATE_SECONDS },
+        next: { revalidate: BLOG_REVALIDATE_SECONDS, tags: ['blog-published'] },
       },
     )
     if (!response.ok) return []
