@@ -5,6 +5,7 @@ import {
   RARITY_GRADIENT_BG,
   RARITY_GLOW_SHADOW,
   RARITY_ANIMATION,
+  RARITY_EQUIP_RING,
   type Rarity,
 } from '@/lib/rarity'
 
@@ -18,6 +19,7 @@ describe('rarity lookup tables', () => {
       expect(RARITY_GRADIENT_BG[r], `RARITY_GRADIENT_BG missing ${r}`).toBeDefined()
       expect(RARITY_GLOW_SHADOW[r], `RARITY_GLOW_SHADOW missing ${r}`).toBeDefined()
       expect(RARITY_ANIMATION[r], `RARITY_ANIMATION missing ${r}`).toBeDefined()
+      expect(RARITY_EQUIP_RING[r], `RARITY_EQUIP_RING missing ${r}`).toBeTruthy()
     }
   })
 

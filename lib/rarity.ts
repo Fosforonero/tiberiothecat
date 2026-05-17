@@ -63,3 +63,15 @@ export const RARITY_ANIMATION: Record<Rarity, string> = {
   epic:      'motion-safe:hover:scale-110 motion-safe:transition-transform',
   legendary: 'motion-safe:animate-pulse',
 }
+
+/**
+ * Ring color used when a badge/cosmetic is in the "equipped" state.
+ * Orthogonal to the chip background: equipped state outlines the item
+ * in its rarity color while the chip itself keeps its normal styling.
+ */
+export const RARITY_EQUIP_RING: Record<Rarity, string> = {
+  common:    'ring-slate-400',
+  rare:      'ring-blue-400',
+  epic:      'ring-purple-400',
+  legendary: 'ring-yellow-400',
+}

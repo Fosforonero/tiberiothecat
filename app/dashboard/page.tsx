@@ -20,7 +20,6 @@ import type { UserRole } from '@/lib/admin-auth'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
 import { COSMETIC_MAP, type CosmeticItemId } from '@/lib/cosmetics-store'
 import { getProfilePixieSrc } from '@/lib/pixie'
-import type { CompanionSpecies as CompanionSpeciesType } from '@/lib/companion'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -196,7 +195,7 @@ export default async function DashboardPage() {
         // from the companion species + stage. Stage derivation lives inside
         // getProfilePixieSrc so all surfaces (dashboard, /u/[id], leaderboard)
         // resolve it identically.
-        const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpeciesType
+        const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
         const pixieSrc        = getProfilePixieSrc({
           companion_species: profile?.companion_species,
           use_pixie_avatar:  profile?.use_pixie_avatar,

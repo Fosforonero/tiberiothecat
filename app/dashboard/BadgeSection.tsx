@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import BadgeChip from '@/components/BadgeChip'
-import type { Rarity } from '@/lib/rarity'
+import { RARITY_EQUIP_RING, type Rarity } from '@/lib/rarity'
 
 interface Badge {
   badge_id: string
@@ -14,15 +14,6 @@ interface Badge {
     rarity: string
     description: string
   }
-}
-
-// Ring color shown when a badge is equipped — orthogonal to the rarity
-// chip treatment which is rendered by BadgeChip via lib/rarity.ts.
-const EQUIP_RING: Record<string, string> = {
-  common:    'ring-slate-400',
-  rare:      'ring-blue-400',
-  epic:      'ring-purple-400',
-  legendary: 'ring-yellow-400',
 }
 
 export default function BadgeSection({ initialBadges }: { initialBadges: Badge[] }) {
@@ -72,7 +63,7 @@ export default function BadgeSection({ initialBadges }: { initialBadges: Badge[]
       <div className="grid grid-cols-2 gap-3">
         {badges.filter(b => b.badges != null).map(b => {
           const isEquipped = b.is_equipped
-          const ringStyle = EQUIP_RING[b.badges.rarity] ?? EQUIP_RING.common
+          const ringStyle = RARITY_EQUIP_RING[b.badges.rarity as Rarity] ?? RARITY_EQUIP_RING.common
           return (
             <div
               key={b.badge_id}

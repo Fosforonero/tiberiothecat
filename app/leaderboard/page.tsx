@@ -227,10 +227,20 @@ export default async function LeaderboardPage() {
                   : <span className="text-sm font-bold text-[var(--muted)]">#{i + 1}</span>
                 }
               </span>
-              <span className="text-2xl flex-shrink-0">{user.avatar_emoji ?? '🌍'}</span>
+              <CosmeticAvatar
+                emoji={user.avatar_emoji ?? '🌍'}
+                pixieSrc={getProfilePixieSrc(user)}
+                frame={getEquippedCosmetics(user).frame}
+                size="md"
+                ariaLabel={user.display_name ?? 'Anonymous Voter'}
+              />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white truncate">
-                  {user.display_name ?? 'Anonymous Voter'}
+                  <CosmeticName
+                    name={user.display_name ?? 'Anonymous Voter'}
+                    glow={getEquippedCosmetics(user).glow}
+                    nameColor={getEquippedCosmetics(user).nameColor}
+                  />
                   {user.is_premium && (
                     <span className="ml-1.5 text-[10px] text-yellow-400 border border-yellow-500/30 bg-yellow-500/10 px-1.5 py-0.5 rounded-full align-middle">
                       ⭐ PRO
