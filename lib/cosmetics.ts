@@ -86,32 +86,35 @@ export function isGlowId(value: string | null | undefined): value is GlowId {
 
 // ── Name colors ───────────────────────────────────────────────────────
 // Unlocked as a single bundle (`name_color_bundle`). The user then picks
-// one of 8 slugs. Stored as profiles.name_color (TEXT).
+// one of 8 slugs from PixieSelector. Stored as profiles.name_color (TEXT).
 //
-// Tailwind text-* class for each slug. We don't use raw hex so the design
-// can evolve with the global theme.
+// The slug set MUST stay aligned with NAME_COLORS in lib/cosmetics-store.ts
+// (the picker UI source). The picker writes `value` from that array straight
+// into profiles.name_color, and getEquippedCosmetics() below validates the
+// stored slug against the keys here. A mismatch silently drops the cosmetic
+// — see tests/unit/cosmetics-catalog.test.ts.
 
 export type NameColorSlug =
-  | 'aurora' | 'fire'  | 'frost' | 'gold'
-  | 'rose'   | 'mint'  | 'violet' | 'sky'
+  | 'white'  | 'blue'   | 'purple' | 'green'
+  | 'gold'   | 'pink'   | 'red'    | 'gradient'
 
 export interface NameColorDef {
   slug: NameColorSlug
-  /** Tailwind class. Use bg-clip-text + bg-gradient for gradient slugs. */
+  /** Tailwind class. Gradient slugs use bg-clip-text. */
   className: string
   /** Human-readable label (EN). IT is derived in UI. */
   label: string
 }
 
 export const NAME_COLORS: Record<NameColorSlug, NameColorDef> = {
-  aurora: { slug: 'aurora', className: 'bg-gradient-to-r from-purple-400 via-pink-300 to-cyan-300 bg-clip-text text-transparent', label: 'Aurora' },
-  fire:   { slug: 'fire',   className: 'bg-gradient-to-r from-orange-400 via-red-400 to-rose-500 bg-clip-text text-transparent',    label: 'Fire' },
-  frost:  { slug: 'frost',  className: 'bg-gradient-to-r from-cyan-300 via-sky-300 to-blue-400 bg-clip-text text-transparent',      label: 'Frost' },
-  gold:   { slug: 'gold',   className: 'bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-400 bg-clip-text text-transparent', label: 'Gold' },
-  rose:   { slug: 'rose',   className: 'text-rose-300',   label: 'Rose' },
-  mint:   { slug: 'mint',   className: 'text-emerald-300', label: 'Mint' },
-  violet: { slug: 'violet', className: 'text-violet-300',  label: 'Violet' },
-  sky:    { slug: 'sky',    className: 'text-sky-300',     label: 'Sky' },
+  white:    { slug: 'white',    className: 'text-white',       label: 'White' },
+  blue:     { slug: 'blue',     className: 'text-blue-400',    label: 'Blue' },
+  purple:   { slug: 'purple',   className: 'text-purple-400',  label: 'Purple' },
+  green:    { slug: 'green',    className: 'text-emerald-400', label: 'Green' },
+  gold:     { slug: 'gold',     className: 'text-yellow-400',  label: 'Gold' },
+  pink:     { slug: 'pink',     className: 'text-pink-400',    label: 'Pink' },
+  red:      { slug: 'red',      className: 'text-red-400',     label: 'Red' },
+  gradient: { slug: 'gradient', className: 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent', label: 'Gradient' },
 }
 
 export function isNameColorSlug(value: string | null | undefined): value is NameColorSlug {

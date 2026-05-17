@@ -8,9 +8,13 @@ import OnboardingModal from './OnboardingModal'
 import CompanionDisplay from '@/components/CompanionDisplay'
 import DailyMissions from '@/components/DailyMissions'
 import PixieSelector from '@/components/PixieSelector'
+import CosmeticName from '@/components/CosmeticName'
+import CosmeticAvatar from '@/components/CosmeticAvatar'
 import type { CompanionSpecies } from '@/lib/companion'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
+import { getEquippedCosmetics } from '@/lib/cosmetics'
+import { COSMETIC_MAP, type CosmeticItemId } from '@/lib/cosmetics-store'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -60,7 +64,10 @@ interface Profile {
   use_pixie_avatar: boolean | null
   name_color: string | null
   role: UserRole | null
+  avatar_emoji: string | null
 }
+
+
 
 const STATUS_BADGE: Record<PollStatus, { label: string; classes: string }> = {
   pending:  { label: '⏳ Pending review',  classes: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
@@ -86,7 +93,7 @@ export default async function DashboardPage() {
   const [profileRes, pollsRes, dilemmaVotesRes, badgesRes] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_glow, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp, use_pixie_avatar, name_color, role')
+      .select('display_name, email, is_premium, votes_count, equipped_frame, equipped_glow, equipped_badge, onboarding_done, xp, streak_days, companion_species, pixie_xp, use_pixie_avatar, name_color, role, avatar_emoji')
       .eq('id', user.id)
       .single<Profile>(),
     supabase
@@ -182,27 +189,51 @@ export default async function DashboardPage() {
       {profile && !profile.onboarding_done && <OnboardingModal />}
 
       {/* ── Header ── */}
-      <div className="mb-10 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-white mb-1">
-            Hey, {profile?.display_name?.split(' ')[0] ?? 'there'} 👋
-          </h1>
-          <p className="text-[var(--muted)] text-sm">{profile?.email ?? user.email}</p>
-        </div>
-        {userBadges.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap justify-end mt-1">
-            {userBadges.filter(b => b.badges != null).slice(0, 5).map(b => (
-              <span
-                key={b.badge_id}
-                title={b.badges.name}
-                className={`text-xl px-2.5 py-1 rounded-xl border ${RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common}`}
-              >
-                {b.badges.emoji}
-              </span>
-            ))}
+      {(() => {
+        const cosmetics      = getEquippedCosmetics(profile)
+        const pixieXpRecord  = profile?.pixie_xp as Record<string, unknown> | null
+        const activePixieId  = typeof pixieXpRecord?.active === 'string' ? pixieXpRecord.active as CosmeticItemId : null
+        const headerEmoji    = profile?.use_pixie_avatar && activePixieId
+          ? COSMETIC_MAP[activePixieId]?.emoji ?? profile?.avatar_emoji ?? '🌍'
+          : profile?.avatar_emoji ?? '🌍'
+        return (
+          <div className="mb-10 flex items-start justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-0">
+              <CosmeticAvatar
+                emoji={headerEmoji}
+                frame={cosmetics.frame}
+                size="lg"
+                ariaLabel={profile?.display_name ?? 'You'}
+              />
+              <div className="min-w-0">
+                <h1 className="text-3xl font-black text-white mb-1">
+                  Hey,{' '}
+                  <CosmeticName
+                    name={profile?.display_name?.split(' ')[0] ?? 'there'}
+                    glow={cosmetics.glow}
+                    nameColor={cosmetics.nameColor}
+                  />{' '}
+                  👋
+                </h1>
+                <p className="text-[var(--muted)] text-sm truncate">{profile?.email ?? user.email}</p>
+              </div>
+            </div>
+            {userBadges.length > 0 && (
+              <div className="flex gap-1.5 flex-wrap justify-end mt-1">
+                {userBadges.filter(b => b.badges != null).slice(0, 5).map(b => (
+                  <span
+                    key={b.badge_id}
+                    title={b.badges.name}
+                    className={`text-xl px-2.5 py-1 rounded-xl border ${RARITY_STYLES[b.badges.rarity] ?? RARITY_STYLES.common}`}
+                  >
+                    {b.badges.emoji}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        )
+      })()}
 
       {/* ── Companion ── */}
       <CompanionDisplay

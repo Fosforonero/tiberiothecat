@@ -3,11 +3,14 @@ import { createPublicClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import CompanionDisplay from '@/components/CompanionDisplay'
+import CosmeticAvatar from '@/components/CosmeticAvatar'
+import CosmeticName from '@/components/CosmeticName'
 import type { CompanionSpecies } from '@/lib/companion'
 import { PIXIE_ITEM_MAP } from '@/lib/pixie-store'
 import type { PixieItemId } from '@/lib/pixie-store'
 import { RARITY_STYLES, RARITY_ORDER } from '@/lib/rarity'
 import { getLevelInfo } from '@/lib/missions'
+import { getEquippedCosmetics } from '@/lib/cosmetics'
 
 const BASE = 'https://splitvote.io'
 
@@ -45,7 +48,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const [profileRes, badgesRes] = await Promise.all([
     admin
       .from('profiles')
-      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at, companion_species, xp, streak_days, pixie_xp, use_pixie_avatar')
+      .select('display_name, votes_count, avatar_emoji, is_premium, country_code, created_at, companion_species, xp, streak_days, pixie_xp, use_pixie_avatar, equipped_frame, equipped_glow, name_color')
       .eq('id', params.id)
       .single(),
     admin
@@ -106,21 +109,31 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
       </Link>
 
       {/* ── Profile hero ── */}
-      <div className="rounded-3xl border border-[var(--border)] bg-[#0d0d1a]/60 p-8 mb-8 text-center">
-        {/* Avatar: Pixie skin or emoji */}
-        <div className={`mb-4 inline-flex items-center justify-center ${
-          heroIsPixie
-            ? 'w-24 h-24 rounded-2xl border-2 border-blue-500/40 bg-blue-500/10 text-6xl'
-            : 'text-7xl'
-        }`}>
-          {heroAvatar}
-        </div>
-        {heroIsPixie && activePixieItem && (
-          <p className="text-xs text-blue-400 font-semibold -mt-2 mb-3">
-            {activePixieItem.name} skin
-          </p>
-        )}
-        <h1 className="text-3xl font-black text-white mb-1">{displayName}</h1>
+      {(() => {
+        const cosmetics = getEquippedCosmetics(profile as unknown as { equipped_frame?: string | null; equipped_glow?: string | null; name_color?: string | null })
+        return (
+          <div className="rounded-3xl border border-[var(--border)] bg-[#0d0d1a]/60 p-8 mb-8 text-center">
+            {/* Avatar: Pixie skin or emoji — wrapped with optional cosmetic frame */}
+            <div className="mb-4 inline-flex items-center justify-center">
+              <CosmeticAvatar
+                emoji={heroAvatar}
+                frame={cosmetics.frame}
+                size="xl"
+                ariaLabel={`${displayName} avatar`}
+              />
+            </div>
+            {heroIsPixie && activePixieItem && (
+              <p className="text-xs text-blue-400 font-semibold -mt-2 mb-3">
+                {activePixieItem.name} skin
+              </p>
+            )}
+            <h1 className="text-3xl font-black text-white mb-1">
+              <CosmeticName
+                name={displayName}
+                glow={cosmetics.glow}
+                nameColor={cosmetics.nameColor}
+              />
+            </h1>
         {profile.is_premium && (
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 rounded-full mb-3">
             ⭐ Premium
@@ -160,7 +173,9 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             </div>
           )}
         </div>
-      </div>
+          </div>
+        )
+      })()}
 
       {/* ── Companion ── */}
       <CompanionDisplay

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   PIXIE_ITEMS, COSMETICS_BY_CATEGORY, COSMETIC_MAP,
@@ -100,6 +101,7 @@ export default function PixieSelector({
   onEquip,
 }: Props) {
   const t = COPY[(locale === 'it' ? 'it' : 'en') as Locale]
+  const router = useRouter()
 
   const [activeId,      setActiveId]      = useState<string | null>(initialActive)
   const [equippedFrame, setEquippedFrame] = useState<string | null>(initialFrame)
@@ -133,6 +135,12 @@ export default function PixieSelector({
     setTimeout(() => setMessage(null), 3000)
   }
 
+  // After every successful equip mutation we call router.refresh() so the
+  // server-rendered dashboard (display name + avatar + sibling surfaces)
+  // re-fetches the updated profile row and re-applies the visual cosmetic.
+  // Without it the picker state updates locally but consumer components
+  // upstream stay frozen at SSR-time props.
+
   async function handleEquipPixie(itemId: PixieItemId) {
     setEquipping(itemId)
     try {
@@ -146,6 +154,7 @@ export default function PixieSelector({
       setActiveId(itemId)
       flash(`${COSMETIC_MAP[itemId]?.name ?? itemId} — ${t.equipped}`, true)
       onEquip?.(itemId)
+      router.refresh()
     } catch { flash(t.networkError, false) }
     finally  { setEquipping(null) }
   }
@@ -164,6 +173,7 @@ export default function PixieSelector({
       if (item.category === 'frame') setEquippedFrame(itemId)
       if (item.category === 'glow')  setEquippedGlow(itemId)
       flash(`${item.name} — ${t.equipped}`, true)
+      router.refresh()
     } catch { flash(t.networkError, false) }
     finally  { setEquipping(null) }
   }
@@ -181,6 +191,7 @@ export default function PixieSelector({
       if (!res.ok) { flash(`${data.error ?? 'Error'}`, false); return }
       setNameColor(colorValue)
       flash(`${t.nameColorSection} — ${t.equipped}`, true)
+      router.refresh()
     } catch { flash(t.networkError, false) }
     finally  { setEquipping(null) }
   }
@@ -196,6 +207,7 @@ export default function PixieSelector({
       const data = await res.json()
       if (!res.ok) { flash(`${data.error ?? 'Error'}`, false); return }
       setUsePixie(enabled)
+      router.refresh()
     } catch { flash(t.networkError, false) }
     finally  { setToggling(false) }
   }

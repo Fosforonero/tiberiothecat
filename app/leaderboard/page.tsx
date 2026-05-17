@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createPublicClient } from '@/lib/supabase/server'
+import CosmeticName from '@/components/CosmeticName'
+import CosmeticAvatar from '@/components/CosmeticAvatar'
+import { getEquippedCosmetics } from '@/lib/cosmetics'
 
 export const metadata: Metadata = {
   title: 'Leaderboard | SplitVote',
@@ -27,7 +30,20 @@ export const revalidate = 600 // refresh every 10 minutes
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
-type ProfileRow = { id: string; display_name: string | null; avatar_emoji: string | null; votes_count: number | null; streak_days: number | null; is_premium: boolean; xp: number | null }
+type ProfileRow = {
+  id: string
+  display_name: string | null
+  avatar_emoji: string | null
+  votes_count: number | null
+  streak_days: number | null
+  is_premium: boolean
+  xp: number | null
+  equipped_frame: string | null
+  equipped_glow: string | null
+  name_color: string | null
+}
+
+const COSMETIC_COLS = 'id, display_name, avatar_emoji, votes_count, streak_days, is_premium, xp, equipped_frame, equipped_glow, name_color'
 
 export default async function LeaderboardPage() {
   let voters:  ProfileRow[] = []
@@ -39,18 +55,18 @@ export default async function LeaderboardPage() {
     const [votersRes, streaksRes, xpRes] = await Promise.all([
       supabase
         .from('profiles')
-        .select('id, display_name, avatar_emoji, votes_count, streak_days, is_premium, xp')
+        .select(COSMETIC_COLS)
         .order('votes_count', { ascending: false })
         .limit(50),
       supabase
         .from('profiles')
-        .select('id, display_name, avatar_emoji, votes_count, streak_days, is_premium, xp')
+        .select(COSMETIC_COLS)
         .gt('streak_days', 0)
         .order('streak_days', { ascending: false })
         .limit(50),
       supabase
         .from('profiles')
-        .select('id, display_name, avatar_emoji, votes_count, streak_days, is_premium, xp')
+        .select(COSMETIC_COLS)
         .gt('xp', 0)
         .order('xp', { ascending: false })
         .limit(50),
@@ -93,15 +109,22 @@ export default async function LeaderboardPage() {
                 }
               </span>
 
-              {/* Avatar */}
-              <span className="text-2xl flex-shrink-0">
-                {user.avatar_emoji ?? '🌍'}
-              </span>
+              {/* Avatar with optional cosmetic frame */}
+              <CosmeticAvatar
+                emoji={user.avatar_emoji ?? '🌍'}
+                frame={getEquippedCosmetics(user).frame}
+                size="md"
+                ariaLabel={user.display_name ?? 'Anonymous Voter'}
+              />
 
               {/* Name */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white truncate">
-                  {user.display_name ?? 'Anonymous Voter'}
+                  <CosmeticName
+                    name={user.display_name ?? 'Anonymous Voter'}
+                    glow={getEquippedCosmetics(user).glow}
+                    nameColor={getEquippedCosmetics(user).nameColor}
+                  />
                   {user.is_premium && (
                     <span className="ml-1.5 text-[10px] text-yellow-400 border border-yellow-500/30 bg-yellow-500/10 px-1.5 py-0.5 rounded-full align-middle">
                       ⭐ PRO
@@ -147,10 +170,19 @@ export default async function LeaderboardPage() {
                   : <span className="text-sm font-bold text-[var(--muted)]">#{i + 1}</span>
                 }
               </span>
-              <span className="text-2xl flex-shrink-0">{user.avatar_emoji ?? '🌍'}</span>
+              <CosmeticAvatar
+                emoji={user.avatar_emoji ?? '🌍'}
+                frame={getEquippedCosmetics(user).frame}
+                size="md"
+                ariaLabel={user.display_name ?? 'Anonymous Voter'}
+              />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-white truncate">
-                  {user.display_name ?? 'Anonymous Voter'}
+                  <CosmeticName
+                    name={user.display_name ?? 'Anonymous Voter'}
+                    glow={getEquippedCosmetics(user).glow}
+                    nameColor={getEquippedCosmetics(user).nameColor}
+                  />
                 </p>
                 <p className="text-[11px] text-[var(--muted)]">
                   {(user.votes_count ?? 0).toLocaleString()} total votes
