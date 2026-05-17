@@ -1,29 +1,36 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createPublicClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import CosmeticName from '@/components/CosmeticName'
 import CosmeticAvatar from '@/components/CosmeticAvatar'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
 import { getProfilePixieSrc } from '@/lib/pixie'
 
 export const metadata: Metadata = {
-  title: 'Leaderboard | SplitVote',
-  description: 'The top voters on SplitVote — ranked by dilemmas voted, XP earned, and active streaks.',
+  title: 'Leaderboard — Top Voters, Streaks & XP Champions',
+  description:
+    'See who has voted on the most moral dilemmas on SplitVote — global all-time top voters, longest active voting streaks, and highest XP from completing daily missions. Updated every 10 minutes.',
   alternates: {
     canonical: 'https://splitvote.io/leaderboard',
-    languages: { 'it-IT': 'https://splitvote.io/it/leaderboard' },
+    languages: {
+      en:          'https://splitvote.io/leaderboard',
+      'it-IT':     'https://splitvote.io/it/leaderboard',
+      'x-default': 'https://splitvote.io/leaderboard',
+    },
   },
   openGraph: {
-    title: 'Leaderboard | SplitVote',
-    description: 'The most dedicated moral thinkers on SplitVote — ranked by votes, XP, and streaks.',
+    title: 'SplitVote Leaderboard — Top Voters & Active Streaks',
+    description:
+      'The most dedicated moral thinkers on SplitVote — ranked by votes cast, daily streaks, and XP earned from missions.',
     url: 'https://splitvote.io/leaderboard',
     siteName: 'SplitVote',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Leaderboard | SplitVote',
-    description: 'The most dedicated moral thinkers on SplitVote — ranked by votes, XP, and streaks.',
+    title: 'SplitVote Leaderboard — Top Voters & Streaks',
+    description:
+      'See who is voting most on global moral dilemmas. Ranked by votes, streaks, and XP.',
   },
 }
 
@@ -55,7 +62,13 @@ export default async function LeaderboardPage() {
   let topXp:   ProfileRow[] = []
 
   try {
-    const supabase = createPublicClient()
+    // Service-role admin client — server-only read. The anon client was
+    // returning empty rows on profiles whose RLS policies did not whitelist
+    // anon access to every cosmetic/pixie column we select. SELECT below
+    // is restricted to public-safe columns (display_name, vote counts,
+    // streak, country, cosmetic ids, Pixie state) — NO email, NO subscription,
+    // NO admin role. Same justification as /u/[id]/page.tsx.
+    const supabase = createAdminClient()
     const [votersRes, streaksRes, xpRes] = await Promise.all([
       supabase
         .from('profiles')
@@ -87,7 +100,9 @@ export default async function LeaderboardPage() {
 
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-2">🏆 Leaderboard</h1>
+        <h1 className="text-3xl font-black text-white mb-2">
+          <span aria-hidden="true">🏆</span> Leaderboard
+        </h1>
         <p className="text-[var(--muted)] text-sm">
           The most dedicated moral thinkers on SplitVote. Updated every 10 minutes.
         </p>

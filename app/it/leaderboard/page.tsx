@@ -1,29 +1,37 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createPublicClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import CosmeticName from '@/components/CosmeticName'
 import CosmeticAvatar from '@/components/CosmeticAvatar'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
 import { getProfilePixieSrc } from '@/lib/pixie'
 
 export const metadata: Metadata = {
-  title: 'Classifica | SplitVote',
-  description: 'I votatori più attivi su SplitVote — classificati per dilemmi votati, XP guadagnati e streak attive.',
+  title: 'Classifica — Top Votatori, Streak e Campioni XP',
+  description:
+    'Scopri chi ha votato il maggior numero di dilemmi morali su SplitVote — top votatori globali di sempre, streak quotidiane più lunghe e XP più alti dalle missioni giornaliere. Aggiornata ogni 10 minuti.',
   alternates: {
     canonical: 'https://splitvote.io/it/leaderboard',
-    languages: { 'en': 'https://splitvote.io/leaderboard' },
+    languages: {
+      'it-IT':     'https://splitvote.io/it/leaderboard',
+      en:          'https://splitvote.io/leaderboard',
+      'x-default': 'https://splitvote.io/leaderboard',
+    },
   },
   openGraph: {
-    title: 'Classifica | SplitVote',
-    description: 'I pensatori morali più attivi su SplitVote — classificati per dilemmi votati, XP e streak.',
+    title: 'Classifica SplitVote — Top Votatori e Streak Attive',
+    description:
+      'I pensatori morali più dedicati su SplitVote — classificati per voti, streak giornaliere ed XP guadagnati dalle missioni.',
     url: 'https://splitvote.io/it/leaderboard',
     siteName: 'SplitVote',
     type: 'website',
+    locale: 'it_IT',
   },
   twitter: {
     card: 'summary',
-    title: 'Classifica | SplitVote',
-    description: 'I pensatori morali più attivi su SplitVote — classificati per dilemmi votati, XP e streak.',
+    title: 'Classifica SplitVote — Top Votatori e Streak',
+    description:
+      'Scopri chi vota di più sui dilemmi morali globali. Classificati per voti, streak e XP.',
   },
 }
 
@@ -55,7 +63,8 @@ export default async function LeaderboardPageIT() {
   let topXp:   ProfileRow[] = []
 
   try {
-    const supabase = createPublicClient()
+    // Service-role admin client (see EN counterpart for full rationale).
+    const supabase = createAdminClient()
     const [votersRes, streaksRes, xpRes] = await Promise.all([
       supabase
         .from('profiles')
@@ -86,7 +95,9 @@ export default async function LeaderboardPageIT() {
     <div className="max-w-2xl mx-auto px-4 py-12">
 
       <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-2">🏆 Classifica</h1>
+        <h1 className="text-3xl font-black text-white mb-2">
+          <span aria-hidden="true">🏆</span> Classifica
+        </h1>
         <p className="text-[var(--muted)] text-sm">
           I pensatori morali più attivi su SplitVote. Aggiornata ogni 10 minuti.
         </p>

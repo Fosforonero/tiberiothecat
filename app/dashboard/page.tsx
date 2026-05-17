@@ -137,6 +137,11 @@ export default async function DashboardPage() {
   const pixieXp        = (profile?.pixie_xp ?? {}) as Record<string, unknown>
   const pixieOwnedIds  = Array.isArray(pixieXp.owned) ? pixieXp.owned as string[] : []
   const activePixieId  = typeof pixieXp.active === 'string' ? pixieXp.active : null
+  // Pre-resolve the Pixie sprite URL so both the hero (inside the IIFE)
+  // and the PixieSelector picker (rendered later) reference the same
+  // value — keeps the skin tile preview in sync with the hero avatar.
+  // ignoreToggle: dashboard is the user's private view, sprite always shows.
+  const dashboardPixieSrc = getProfilePixieSrc(profile, { ignoreToggle: true })
 
   // Fetch user's purchased pixie items from user_purchases as fallback
   let purchasedPixieIds: string[] = pixieOwnedIds
@@ -198,12 +203,9 @@ export default async function DashboardPage() {
         // getProfilePixieSrc so all surfaces (dashboard, /u/[id], leaderboard)
         // resolve it identically.
         const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
-        const pixieSrc        = getProfilePixieSrc({
-          companion_species: profile?.companion_species,
-          use_pixie_avatar:  profile?.use_pixie_avatar,
-          pixie_xp:          pixieXpRecord,
-          votes_count:       profile?.votes_count,
-        })
+        // pixieSrc pre-resolved at function scope (`dashboardPixieSrc`) so
+        // the hero avatar and the PixieSelector picker stay in sync.
+        const pixieSrc        = dashboardPixieSrc
         // Emoji fallback: skin emoji if use_pixie_avatar on but image fails,
         // otherwise user's chosen avatar_emoji.
         const headerEmoji    = profile?.use_pixie_avatar && activePixieId
@@ -279,6 +281,7 @@ export default async function DashboardPage() {
         nameColor={profile?.name_color ?? null}
         usePixieAvatar={profile?.use_pixie_avatar ?? false}
         isAdmin={entitlements.isAdmin}
+        pixiePreviewSrc={dashboardPixieSrc}
       />
 
       {/* ── Daily Missions ── */}

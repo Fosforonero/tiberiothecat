@@ -15,14 +15,23 @@ export function getPixieImagePath(species: string, stage: number): string {
  * /u/[id], and leaderboard surfaces. Stage is derived from species-specific
  * vote count when pixie_xp is populated, falling back to the global
  * votes_count for legacy profiles with no pixie_xp.
+ *
+ * Pass `ignoreToggle: true` to bypass the `use_pixie_avatar` gate. The
+ * dashboard uses this — it's the user's own private view, so the Pixie
+ * sprite always shows regardless of whether they want it as their PUBLIC
+ * avatar on /u/[id] and leaderboards.
  */
-export function getProfilePixieSrc(profile: {
-  companion_species?: string | null
-  use_pixie_avatar?: boolean | null
-  pixie_xp?: Record<string, unknown> | null
-  votes_count?: number | null
-} | null | undefined): string | null {
-  if (!profile?.use_pixie_avatar) return null
+export function getProfilePixieSrc(
+  profile: {
+    companion_species?: string | null
+    use_pixie_avatar?: boolean | null
+    pixie_xp?: Record<string, unknown> | null
+    votes_count?: number | null
+  } | null | undefined,
+  options: { ignoreToggle?: boolean } = {},
+): string | null {
+  if (!profile) return null
+  if (!options.ignoreToggle && !profile.use_pixie_avatar) return null
 
   const species = (profile.companion_species as CompanionSpecies | null) ?? 'spark'
   const pixieXp = profile.pixie_xp ?? {}

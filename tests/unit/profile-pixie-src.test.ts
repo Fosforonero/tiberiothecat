@@ -60,4 +60,22 @@ describe('getProfilePixieSrc', () => {
       votes_count: 10,
     })).toBe('/pixie/spark/pixie-spark-stage-2.png')
   })
+
+  it('ignoreToggle returns sprite even when use_pixie_avatar is false', () => {
+    // Dashboard own-view path: user has not opted into public Pixie avatar,
+    // but their private dashboard still shows the sprite.
+    expect(getProfilePixieSrc(
+      {
+        use_pixie_avatar: false,
+        companion_species: 'caffe',
+        pixie_xp: { caffe: 50 },
+        votes_count: 0,
+      },
+      { ignoreToggle: true },
+    )).toBe('/pixie/caffe/pixie-caffe-stage-3.png')
+  })
+
+  it('ignoreToggle still returns null for null profile', () => {
+    expect(getProfilePixieSrc(null, { ignoreToggle: true })).toBeNull()
+  })
 })

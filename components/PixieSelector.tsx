@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   PIXIE_ITEMS, COSMETICS_BY_CATEGORY, COSMETIC_MAP,
   RARITY_STYLES, NAME_COLORS,
@@ -29,6 +30,7 @@ const COPY = {
     currentlyEquipped: 'Currently equipped',
     noSkin:            'No skin equipped',
     skinSection:       'Pixie Skin',
+    skinSectionHint:   'A decorative overlay (👑 💎 ✨) on top of your Pixie species — 6 total.',
     frameSection:      'Profile Frame',
     glowSection:       'Glow',
     nameColorSection:  'Name Color',
@@ -49,6 +51,7 @@ const COPY = {
     currentlyEquipped: 'Attualmente equipaggiata',
     noSkin:            'Nessuna skin equipaggiata',
     skinSection:       'Pixie Skin',
+    skinSectionHint:   'Un overlay decorativo (👑 💎 ✨) sopra alla tua specie Pixie — 6 in totale.',
     frameSection:      'Cornice profilo',
     glowSection:       'Glow',
     nameColorSection:  'Colore nome',
@@ -84,6 +87,13 @@ interface Props {
    * admins can preview and QA the full cosmetic surface.
    */
   isAdmin?:        boolean
+  /**
+   * Resolved Pixie sprite URL for the user's current species + stage.
+   * Used as the background visual in every skin tile so the picker shows
+   * "your Pixie + this skin" rather than just the skin emoji alone.
+   * When null, tiles fall back to rendering the skin emoji.
+   */
+  pixiePreviewSrc?: string | null
   onEquip?:        (itemId: PixieItemId) => void
 }
 
@@ -98,6 +108,7 @@ export default function PixieSelector({
   usePixieAvatar:  initialUsePixie  = false,
   locale           = 'en',
   isAdmin          = false,
+  pixiePreviewSrc  = null,
   onEquip,
 }: Props) {
   const t = COPY[(locale === 'it' ? 'it' : 'en') as Locale]
@@ -269,7 +280,7 @@ export default function PixieSelector({
 
       {/* ── Pixie Skin section ── */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2.5">
+        <div className="flex items-center justify-between mb-1">
           <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
             {t.skinSection}
           </p>
@@ -295,6 +306,7 @@ export default function PixieSelector({
             ))}
           </div>
         </div>
+        <p className="text-[10px] text-slate-500 mb-2.5">{t.skinSectionHint}</p>
 
         {filteredSkins.length === 0 ? (
           <div className="rounded-xl border border-white/5 bg-white/2 px-4 py-6 text-center">
@@ -334,9 +346,31 @@ export default function PixieSelector({
                     }
                   `}
                 >
-                  <span className={`text-3xl ${!owned ? 'grayscale opacity-40' : ''}`}>
-                    {item.emoji}
-                  </span>
+                  {/* Preview: pixie sprite (your current species/stage) with
+                      the skin's identifying emoji as a corner badge.
+                      Fallback to the bare emoji when no sprite source. */}
+                  <div className={`relative w-16 h-16 flex items-center justify-center ${!owned ? 'grayscale opacity-40' : ''}`}>
+                    {pixiePreviewSrc ? (
+                      <Image
+                        src={pixiePreviewSrc}
+                        alt={item.name}
+                        width={128}
+                        height={128}
+                        className="w-full h-full object-contain"
+                        draggable={false}
+                      />
+                    ) : (
+                      <span className="text-3xl" aria-hidden="true">{item.emoji}</span>
+                    )}
+                    {pixiePreviewSrc && (
+                      <span
+                        className="absolute -top-1 -right-1 text-base bg-[#0d0d1a] border border-white/10 rounded-full w-6 h-6 flex items-center justify-center shadow-sm"
+                        aria-hidden="true"
+                      >
+                        {item.emoji}
+                      </span>
+                    )}
+                  </div>
                   <p className={`text-[11px] font-bold leading-tight ${owned ? 'text-white' : 'text-slate-600'}`}>
                     {item.name}
                   </p>

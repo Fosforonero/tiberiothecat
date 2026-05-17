@@ -159,8 +159,13 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
               </span>
             </div>
 
-            {/* Evolution strip: stages 1-3 visible, 4-6 mystery */}
-            <div className="grid grid-cols-6 gap-1.5 sm:gap-2 mt-3">
+            {/* Evolution strip: stages 1-3 visible, 4-6 mystery.
+                Grid is 3-col on mobile and 6-col from md up — mobile tiles
+                are ~2× larger that way, which fixes the "sprite too small +
+                appears cropped" issue PM flagged. Sprite uses scale-110 so
+                the centered character fills more of the tile (the source
+                PNGs ship with transparent padding around the sprite). */}
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5 mt-3">
               {[1, 2, 3, 4, 5, 6].map(stage => {
                 const visible = stage <= 3
                 return (
@@ -178,7 +183,7 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                           alt={`${c.name} stage ${stage}`}
                           width={256}
                           height={256}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain scale-110"
                           loading="lazy"
                         />
                       ) : (
