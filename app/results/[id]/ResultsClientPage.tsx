@@ -123,7 +123,7 @@ const IT_COPY = {
   landslideTitle:    (pct: number) => `🌊 Il ${pct}% dei votanti su SplitVote è d'accordo con te.`,
   landslideDesc:     'Quasi tutti si inclinano in questa direzione. Ma la maggioranza ha sempre ragione?',
   youVoted:          'Hai votato:',
-  majority:          (pct: number, label: string) => `🌍 Il ${pct}% dei votanti su SplitVote ha scelto: `,
+  majority:          (pct: number, label: string) => `🌍 Il ${pct}% dei votanti su SplitVote sceglie: `,
   majorityLabel:     (label: string) => label,
   tie:               '🤝 SplitVote è perfettamente diviso.',
   feedbackQuestion:  'Questo dilemma ti è piaciuto?',
@@ -325,7 +325,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         : `${pctA}% vs ${pctB}% — SplitVote voters can barely decide. Which side are you on?\n"${scenario.question}"`)
     : isAggregateLandslide
     ? (isIT
-        ? `Il ${majorityPct}% dei votanti su SplitVote ha scelto la stessa cosa. Sei d'accordo?\n"${scenario.question}"`
+        ? `Il ${majorityPct}% dei votanti su SplitVote sceglie la stessa cosa. Sei d'accordo?\n"${scenario.question}"`
         : `${majorityPct}% of SplitVote voters agree on this one. Do you?\n"${scenario.question}"`)
     : (isIT
         ? `Il ${majorityPct}% ha scelto "${majorityLabel}". Tu cosa faresti?\n"${scenario.question}"`
