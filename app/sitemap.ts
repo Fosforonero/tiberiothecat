@@ -52,13 +52,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ])
 
-  // Category pages
-  const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').map((c) => ({
-    url: `${BASE}/category/${c.value}`,
-    lastModified: STATIC_LAST_MOD,
-    changeFrequency: 'daily' as const,
-    priority: 0.85,
-  }))
+  // Category pages — EN + IT pair per category (reuses CATEGORIES; emits 18
+  // entries for 9 categories × 2 locales). Hreflang is handled via
+  // `alternates.languages` in each category route's metadata, not in sitemap.
+  const categoryRoutes = CATEGORIES.filter((c) => c.value !== 'all').flatMap((c) => [
+    {
+      url: `${BASE}/category/${c.value}`,
+      lastModified: STATIC_LAST_MOD,
+      changeFrequency: 'daily' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/it/category/${c.value}`,
+      lastModified: STATIC_LAST_MOD,
+      changeFrequency: 'daily' as const,
+      priority: 0.8,
+    },
+  ])
 
   // SEO landing pages
   const topicRoutes = [
