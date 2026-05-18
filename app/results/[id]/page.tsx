@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
+import DilemmaInsightSection from '@/components/DilemmaInsightSection'
 import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
@@ -165,6 +166,12 @@ export default async function ResultsPage({ params, searchParams }: Props) {
         nextPathId={nextPathId}
         pathCategoryLabel={pathCategoryLabel}
         pathCategoryEmoji={pathCategoryEmoji}
+      />
+      <DilemmaInsightSection
+        scenario={scenario}
+        locale="en"
+        mode="results"
+        voteStats={{ pctA, pctB, total }}
       />
     </>
   )

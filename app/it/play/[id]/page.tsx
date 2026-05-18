@@ -12,6 +12,7 @@ import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from '@/app/play/[id]/VoteClientPage'
+import DilemmaInsightSection from '@/components/DilemmaInsightSection'
 import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
@@ -198,6 +199,7 @@ export default async function ItPlayPage({ params, searchParams }: Props) {
         streakDays={streakDays}
         streakAtRisk={streakAtRisk}
       />
+      <DilemmaInsightSection scenario={scenario} locale="it" mode="play" />
     </>
   )
 }
