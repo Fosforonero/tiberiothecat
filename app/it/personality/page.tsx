@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   const title = archetype
     ? `${archetype.signEmoji} Sono un ${archetype.nameIt} — Personalità Morale SplitVote`
-    : 'Il Tuo Profilo Morale | SplitVote'
+    : 'Il Tuo Profilo Morale'
   const description = archetype
     ? `${archetype.taglineIt} — Scopri il tuo archetipo morale SplitVote basato su come voti sui dilemmi.`
     : 'Scopri il tuo archetipo di personalità SplitVote basato sui tuoi voti sui dilemmi morali. Sei un Guardiano, Ribelle, Oracolo, Diplomatico, Stratega o Empatico?'

@@ -48,12 +48,15 @@ const IT_LABEL: Record<Category, string> = {
   lifestyle:     'Stile di vita',
 }
 
+// Root layout (`app/layout.tsx`) sets `title.template = '%s | SplitVote'`.
+// Return only the headline here so the template appends the brand once
+// — otherwise the rendered title doubles to "… | SplitVote | SplitVote".
 function enTitle(cat: Category): string {
-  return `${EMOJI[cat]} ${EN_LABEL[cat]} Dilemmas — Real-time Votes | SplitVote`
+  return `${EMOJI[cat]} ${EN_LABEL[cat]} Dilemmas — Real-time Votes`
 }
 
 function itTitle(cat: Category): string {
-  return `${EMOJI[cat]} Dilemmi di ${IT_LABEL[cat]} — Vota in Tempo Reale | SplitVote`
+  return `${EMOJI[cat]} Dilemmi di ${IT_LABEL[cat]} — Vota in Tempo Reale`
 }
 
 const HUB: HubMap = {

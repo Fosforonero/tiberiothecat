@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Termini di Servizio | SplitVote',
+  title: 'Termini di Servizio',
   description: 'Termini di Servizio di SplitVote.io.',
   robots: { index: true, follow: true },
   alternates: {

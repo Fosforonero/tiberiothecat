@@ -18,7 +18,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   // Dynamic title/description when an archetype is in the URL → richer share preview
   const title = archetype
     ? `${archetype.signEmoji} I'm a ${archetype.name} — SplitVote Moral Personality`
-    : 'Your Moral Profile | SplitVote'
+    : 'Your Moral Profile'
   const description = archetype
     ? `${archetype.tagline} — Discover your SplitVote moral archetype based on how you vote on real dilemmas.`
     : 'Discover your SplitVote personality archetype based on your votes. Which moral sign are you — Guardian, Rebel, Oracle, Diplomat, Strategist, or Empath?'

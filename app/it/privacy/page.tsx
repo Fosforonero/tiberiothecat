@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Informativa sulla Privacy | SplitVote',
+  title: 'Informativa sulla Privacy',
   description: 'Informativa sulla privacy di SplitVote.io — come raccogliamo, utilizziamo e proteggiamo i tuoi dati.',
   robots: { index: true, follow: true },
   alternates: {

@@ -5,7 +5,7 @@ import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import ProfileClient from './ProfileClient'
 
-export const metadata = { title: 'Profile Settings | SplitVote' }
+export const metadata = { title: 'Profile Settings' }
 export const dynamic = 'force-dynamic'
 
 export default async function ProfilePage() {

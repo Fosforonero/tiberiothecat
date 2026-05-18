@@ -10,7 +10,7 @@ import FreshFirstGrid from '@/components/FreshFirstGrid'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Top Dilemmas & Trending | SplitVote',
+  title: 'Top Dilemmas & Trending',
   description: 'All-time most voted moral dilemmas, top categories by total votes, and today\'s fresh AI-generated questions.',
   alternates: {
     canonical: 'https://splitvote.io/trending',

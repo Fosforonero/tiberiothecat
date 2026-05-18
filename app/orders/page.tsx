@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PRODUCT_BY_ID, type ProductId } from '@/lib/purchases'
 
-export const metadata = { title: 'Order History | SplitVote' }
+export const metadata = { title: 'Order History' }
 export const dynamic = 'force-dynamic'
 
 interface PurchaseRow {

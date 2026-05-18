@@ -12,7 +12,7 @@ import type { Metadata } from 'next'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Store | SplitVote',
+  title: 'Store',
   description: 'Abbonamento Premium, Pixie leggendari e cosmetici. Supporta SplitVote e sblocca di più.',
   alternates: {
     canonical: `${BASE_URL}/it/store`,

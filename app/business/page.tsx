@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import BusinessDashboardClient from './BusinessDashboardClient'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'Business Dashboard | SplitVote' }
+export const metadata: Metadata = { title: 'Business Dashboard' }
 export const dynamic = 'force-dynamic'
 
 export default async function BusinessPage() {

@@ -16,7 +16,7 @@ const BASE_URL = 'https://splitvote.io'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Classifiche & Tendenze | SplitVote',
+  title: 'Classifiche & Tendenze',
   description: 'I dilemmi morali più votati di sempre, le categorie top e i nuovi dilemmi AI generati oggi.',
   alternates: {
     canonical: `${BASE_URL}/it/trending`,

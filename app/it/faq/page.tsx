@@ -4,7 +4,7 @@ import Link from 'next/link'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Domande Frequenti — Come funziona SplitVote | SplitVote',
+  title: 'Domande Frequenti — Come funziona SplitVote',
   description: 'Domande frequenti su SplitVote: cos\'è un dilemma morale, come funziona il voto, la privacy dei tuoi dati e le funzionalità premium.',
   alternates: {
     canonical: `${BASE_URL}/it/faq`,

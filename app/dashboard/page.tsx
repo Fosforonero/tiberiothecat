@@ -22,7 +22,7 @@ import { COSMETIC_MAP, PIXIE_ITEMS, type CosmeticItemId } from '@/lib/cosmetics-
 import { getProfilePixieSrc, getEffectiveSpecies } from '@/lib/pixie'
 import type { PixieXpMap } from '@/lib/companion'
 
-export const metadata = { title: 'Dashboard | SplitVote' }
+export const metadata = { title: 'Dashboard' }
 
 type PollStatus = 'pending' | 'approved' | 'rejected' | 'flagged'
 

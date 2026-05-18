@@ -5,7 +5,7 @@ import PixieExplainerGallery from '@/components/PixieExplainerGallery'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Pixies — Your moral voting companions | SplitVote',
+  title: 'Pixies — Your moral voting companions',
   description:
     'Meet the Pixies: small companions that grow each time you vote on a moral dilemma. Discover the 12 species, their rarities, and how to unlock them.',
   alternates: {

@@ -23,7 +23,7 @@ import { scenarios } from '@/lib/scenarios'
 import { getDynamicScenarios } from '@/lib/dynamic-scenarios'
 import { getFeedbackBatchDetail } from '@/lib/redis'
 
-export const metadata = { title: 'Admin | SplitVote' }
+export const metadata = { title: 'Admin' }
 export const dynamic = 'force-dynamic'
 
 type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'content-signals' | 'blog' | 'monetization' | 'roles'

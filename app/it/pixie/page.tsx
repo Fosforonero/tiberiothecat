@@ -5,7 +5,7 @@ import PixieExplainerGallery from '@/components/PixieExplainerGallery'
 const BASE_URL = 'https://splitvote.io'
 
 export const metadata: Metadata = {
-  title: 'Pixie — I tuoi compagni morali di voto | SplitVote',
+  title: 'Pixie — I tuoi compagni morali di voto',
   description:
     'Scopri i Pixie: piccoli compagni che crescono ogni volta che voti un dilemma morale. 12 specie, 6 stadi di evoluzione, come sbloccarli.',
   alternates: {

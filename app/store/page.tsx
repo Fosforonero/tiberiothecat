@@ -4,7 +4,7 @@ import type { UserRole } from '@/lib/admin-auth'
 import StoreClient from '@/components/store/StoreClient'
 import { ALL_PRODUCT_IDS, PRODUCT_BY_ID, type ProductId, type PurchaseRow } from '@/lib/purchases'
 
-export const metadata = { title: 'Cosmetics Store | SplitVote' }
+export const metadata = { title: 'Cosmetics Store' }
 export const dynamic = 'force-dynamic'
 
 interface SearchParams { tab?: string }
