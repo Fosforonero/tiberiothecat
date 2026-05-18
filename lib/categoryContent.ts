@@ -168,7 +168,7 @@ const CONTENT: Record<Locale, Record<CategoryKey, CategoryEditorial>> = {
     },
     lifestyle: {
       editorial:
-        'Lifestyle dilemmas are the small daily choices that quietly build the person you become — habits, identity, how you spend a Saturday. None of them are make-or-break, which is precisely why they\'re revealing: when nothing forces your hand, the tradeoffs you actually pick say more about your priorities than any high-stakes test could.',
+        'Unlike the heavier categories, lifestyle questions don\'t pretend to have right answers — they\'re prompts about preferences, routines, and the tradeoffs you actually pick when nothing forces your hand. The low-stakes framing is the point: it surfaces patterns that high-stakes ethics tests can\'t, by showing what you do when no one is keeping score.',
       faqHeading: 'About lifestyle dilemmas',
       faq: [
         {
@@ -342,7 +342,7 @@ const CONTENT: Record<Locale, Record<CategoryKey, CategoryEditorial>> = {
     },
     lifestyle: {
       editorial:
-        'I dilemmi sullo stile di vita sono le piccole scelte quotidiane che costruiscono in silenzio la persona che diventi — abitudini, identità, come passi un sabato. Nessuna è decisiva, e proprio per questo dicono molto di te: quando nulla ti obbliga, i compromessi che scegli rivelano più delle tue priorità di qualsiasi prova ad alta posta.',
+        'A differenza delle categorie più pesanti, le domande sullo stile di vita non fingono di avere risposte giuste — sono spunti su preferenze, routine e i compromessi che scegli davvero quando nulla ti obbliga. Il framing a bassa posta è la qualità del formato: fa emergere schemi che le prove etiche ad alta posta non possono, mostrando cosa fai quando nessuno tiene il conto.',
       faqHeading: 'Sui dilemmi di stile di vita',
       faq: [
         {
