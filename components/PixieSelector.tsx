@@ -55,7 +55,7 @@ const SPECIES_TO_PRODUCT: Partial<Record<CompanionSpecies, string>> = {
 
 const COPY = {
   en: {
-    title:                'Your Pixie',
+    title:                'Customize Pixie',
     unlockLink:           '+ Unlock cosmetics →',
     currentlyEquipped:    'Currently equipped',
     speciesSection:       'Pixie / Species',
@@ -84,7 +84,7 @@ const COPY = {
     unequipGlowAria:      'Remove equipped glow',
   },
   it: {
-    title:                'Il tuo Pixie',
+    title:                'Personalizza Pixie',
     unlockLink:           '+ Sblocca cosmetici →',
     currentlyEquipped:    'Attualmente equipaggiato',
     speciesSection:       'Pixie / Specie',
@@ -426,21 +426,21 @@ export default function PixieSelector({
 
       {/* ── Currently Equipped banner ── */}
       <div className={`
-        flex items-center gap-3 rounded-xl border px-4 py-3 mb-5 transition-all
+        flex items-center gap-3 sm:gap-4 rounded-xl border px-3 sm:px-4 py-3 mb-5 transition-all
         ${RARITY_STYLES[activeSpeciesDef.rarity]} border-opacity-60
       `}>
-        <div className="relative w-12 h-12 flex-shrink-0 overflow-hidden">
+        <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 overflow-hidden">
           {SPECIES_WITH_SPRITES.has(activeSpecies) ? (
             <Image
               src={getPixieImagePath(activeSpecies, activeStage)}
               alt=""
-              width={96}
-              height={96}
-              className="w-full h-full object-contain scale-[1.6]"
+              width={128}
+              height={128}
+              className="w-full h-full object-contain scale-[1.85]"
               draggable={false}
             />
           ) : (
-            <span className="text-3xl" aria-hidden="true">
+            <span className="text-4xl" aria-hidden="true">
               {activeSpeciesDef.stageEmoji[activeStage - 1] ?? '✨'}
             </span>
           )}

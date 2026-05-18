@@ -156,7 +156,7 @@ export default function CompanionDisplay({
         100% { box-shadow: 0 0 0 0 rgba(250,204,21,0); }
       }
     `}</style>
-    <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-8">
+    <div className="rounded-2xl border border-[var(--border)] bg-[#0d0d1a]/60 p-5 mb-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--muted)]">
           {IT ? 'Il tuo Pixie' : 'Your Pixie'}
@@ -173,7 +173,7 @@ export default function CompanionDisplay({
             type="button"
             aria-label={IT ? 'Vedi il tuo Pixie ingrandito' : 'View your Pixie enlarged'}
             onClick={() => setShowLightbox(true)}
-            className="w-20 h-20 rounded-2xl flex items-center justify-center text-5xl overflow-hidden cursor-pointer p-1.5 hover:ring-2 hover:ring-white/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl flex items-center justify-center text-5xl overflow-hidden cursor-pointer p-1 hover:ring-2 hover:ring-white/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
             style={{
               background: 'rgba(255,255,255,0.03)',
               border: '1px solid rgba(255,255,255,0.06)',
@@ -186,9 +186,9 @@ export default function CompanionDisplay({
               <Image
                 src={getPixieImagePath(species, stage)}
                 alt=""
-                width={256}
-                height={256}
-                className="w-full h-full object-contain scale-[1.7]"
+                width={384}
+                height={384}
+                className="w-full h-full object-contain scale-[1.9]"
                 onError={() => setImgError(true)}
                 priority
               />

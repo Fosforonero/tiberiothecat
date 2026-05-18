@@ -246,7 +246,7 @@ export default async function DashboardPage() {
           { icon: '📅', value: memberSince, label: 'Member since', prefix: true, show: !!memberSince },
         ]
         return (
-          <div className="mb-10 flex items-start justify-between gap-4">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-center gap-4 min-w-0">
               <CosmeticAvatar
                 emoji={headerEmoji}
@@ -256,8 +256,8 @@ export default async function DashboardPage() {
                 ariaLabel={profile?.display_name ?? 'You'}
                 priority
               />
-              <div className="min-w-0">
-                <h1 className="text-3xl font-black text-white mb-1">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl sm:text-3xl font-black text-white mb-1">
                   Hey,{' '}
                   <CosmeticName
                     name={profile?.display_name?.split(' ')[0] ?? 'there'}
@@ -271,7 +271,7 @@ export default async function DashboardPage() {
               </div>
             </div>
             {userBadges.length > 0 && (
-              <div className="flex gap-1.5 flex-wrap justify-end mt-1">
+              <div className="flex gap-1.5 flex-wrap sm:justify-end sm:mt-1 sm:flex-shrink-0">
                 {userBadges.filter(b => b.badges != null).slice(0, 5).map(b => (
                   <BadgeChip
                     key={b.badge_id}
