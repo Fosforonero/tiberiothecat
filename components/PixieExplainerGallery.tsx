@@ -183,7 +183,7 @@ export default function PixieExplainerGallery({ locale = 'en' }: Props) {
                           alt={`${c.name} stage ${stage}`}
                           width={256}
                           height={256}
-                          className="w-full h-full object-contain scale-110"
+                          className="w-full h-full object-contain scale-[1.6]"
                           loading="lazy"
                         />
                       ) : (

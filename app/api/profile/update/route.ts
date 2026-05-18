@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   const { data: currentProfile } = await supabase
     .from('profiles')
-    .select('display_name, name_changes, is_premium, role, votes_count, streak_days')
+    .select('display_name, name_changes, is_premium, role, votes_count, streak_days, pixie_xp')
     .eq('id', user.id)
     .single()
 
@@ -129,6 +129,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Species not yet unlocked' }, { status: 403 })
     }
     updatePayload.companion_species = species
+
+    // Picking a "free/premium" species via this endpoint means the user
+    // wants that species to drive the avatar. If they also have a market
+    // skin equipped (pixie_xp.active = "pixie_*"), getEffectiveSpecies
+    // would keep returning the market species and the switch would be
+    // invisible. Clear pixie_xp.active so companion_species takes over.
+    const currentPixieXp = (currentProfile?.pixie_xp ?? {}) as Record<string, unknown>
+    if (typeof currentPixieXp.active === 'string') {
+      updatePayload.pixie_xp = { ...currentPixieXp, active: null }
+    }
   }
 
   if (Object.keys(updatePayload).length === 0) {

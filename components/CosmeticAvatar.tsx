@@ -64,10 +64,13 @@ function AvatarContent({
   priority?: boolean
 }) {
   if (pixieSrc) {
-    // Inset the image slightly (~92%) so the Pixie head/body doesn't get
-    // clipped by the rounded-2xl mask of the parent disc. Many Pixie sprites
-    // have asymmetric extents (wings, hats, tails) — object-contain centers
-    // them, and the small inset prevents corners from being cut off.
+    // Pixie PNGs ship with a substantial transparent border around the
+    // character — at native size the avatar reads as a tiny figurine
+    // floating in the middle of the disc. Render the image at the full
+    // disc size and scale UP by 1.8× (clipped by parent `overflow-hidden`)
+    // so the character fills the frame. Asymmetric sprites (wings, hats,
+    // tails) may clip at the edges; that's an explicit trade-off for a
+    // legible avatar over a microscopic centered figurine.
     return (
       <Image
         src={pixieSrc}
@@ -75,7 +78,7 @@ function AvatarContent({
         width={256}
         height={256}
         className="object-contain"
-        style={{ width: '92%', height: '92%' }}
+        style={{ width: '100%', height: '100%', transform: 'scale(1.8)', transformOrigin: 'center' }}
         draggable={false}
         priority={priority}
       />

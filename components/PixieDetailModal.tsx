@@ -187,10 +187,11 @@ export default function PixieDetailModal({
               <Image
                 src={getPixieImagePath(companion.id, heroStage)}
                 alt={companion.name}
-                width={256}
-                height={256}
+                width={512}
+                height={512}
                 style={{
                   width: '100%', height: '100%', objectFit: 'contain',
+                  transform: 'scale(1.65)',
                   filter: !showUnlocked ? 'grayscale(1)' : undefined,
                   opacity: !showUnlocked ? 0.45 : 1,
                 }}
@@ -314,6 +315,7 @@ export default function PixieDetailModal({
                         height={256}
                         style={{
                           width: '100%', height: '100%', objectFit: 'contain',
+                          transform: 'scale(1.65)',
                           filter: !showUnlocked ? 'grayscale(1)' : undefined,
                           opacity: !showUnlocked ? 0.35 : 1,
                         }}

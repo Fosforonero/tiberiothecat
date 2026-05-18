@@ -134,7 +134,7 @@ export default function MobileStickyHUD({
                   alt=""
                   width={256}
                   height={256}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain scale-[1.7]"
                   onError={() => setImgError(true)}
                   priority
                 />

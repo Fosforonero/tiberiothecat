@@ -18,8 +18,9 @@ import type { CompanionSpecies } from '@/lib/companion'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import { getEquippedCosmetics } from '@/lib/cosmetics'
-import { COSMETIC_MAP, type CosmeticItemId } from '@/lib/cosmetics-store'
-import { getProfilePixieSrc } from '@/lib/pixie'
+import { COSMETIC_MAP, PIXIE_ITEMS, type CosmeticItemId } from '@/lib/cosmetics-store'
+import { getProfilePixieSrc, getEffectiveSpecies } from '@/lib/pixie'
+import type { PixieXpMap } from '@/lib/companion'
 
 export const metadata = { title: 'Dashboard | SplitVote' }
 
@@ -124,6 +125,9 @@ export default async function DashboardPage() {
   const xp = profile?.xp ?? 0
   const streakDays = profile?.streak_days ?? 0
   const companionSpecies = (profile?.companion_species ?? 'spark') as CompanionSpecies
+  // Effective species honours pixie_xp.active (market skin) over companion_species.
+  // Used by every avatar surface (hero, CompanionDisplay) so they don't diverge.
+  const effectiveSpecies = getEffectiveSpecies(profile)
 
   // Entitlements — admin/premium derivation. Mirrors the bypass on /store so
   // PixieSelector renders every cosmetic as owned for admin/super_admin users.
@@ -134,32 +138,50 @@ export default async function DashboardPage() {
   })
 
   // Pixie Store data
-  const pixieXp        = (profile?.pixie_xp ?? {}) as Record<string, unknown>
-  const pixieOwnedIds  = Array.isArray(pixieXp.owned) ? pixieXp.owned as string[] : []
-  const activePixieId  = typeof pixieXp.active === 'string' ? pixieXp.active : null
+  const pixieXpRaw     = (profile?.pixie_xp ?? {}) as Record<string, unknown>
+  const pixieOwnedIds  = Array.isArray(pixieXpRaw.owned) ? pixieXpRaw.owned as string[] : []
   // Pre-resolve the Pixie sprite URL so both the hero (inside the IIFE)
   // and the PixieSelector picker (rendered later) reference the same
   // value — keeps the skin tile preview in sync with the hero avatar.
   // ignoreToggle: dashboard is the user's private view, sprite always shows.
   const dashboardPixieSrc = getProfilePixieSrc(profile, { ignoreToggle: true })
 
-  // Fetch user's purchased pixie items from user_purchases as fallback
+  // Resolve owned cosmetic product ids.
+  // 1. Admins see every market product as owned (mirrors /store + PixieSelector
+  //    UI bypass + equip APIs which already accept admin bypass).
+  // 2. Other users: union of pixie_xp.owned (legacy column populated by the
+  //    Stripe webhook) and user_purchases rows with status='completed'. The
+  //    DB column is 'completed', NOT 'purchased' — querying for 'purchased'
+  //    silently returned 0 rows, hiding real ownership from the dashboard.
   let purchasedPixieIds: string[] = pixieOwnedIds
-  try {
-    const admin = createAdminClient()
-    const { data: purchases } = await admin
-      .from('user_purchases')
-      .select('product_id')
-      .eq('user_id', user.id)
-      .eq('status', 'purchased')
-    if (purchases) {
-      purchasedPixieIds = Array.from(new Set([
-        ...pixieOwnedIds,
-        ...purchases.map((p: { product_id: string }) => p.product_id),
-      ]))
+  if (entitlements.isAdmin) {
+    purchasedPixieIds = PIXIE_ITEMS.map(i => i.id)
+  } else {
+    try {
+      const admin = createAdminClient()
+      const { data: purchases } = await admin
+        .from('user_purchases')
+        .select('product_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+      if (purchases) {
+        purchasedPixieIds = Array.from(new Set([
+          ...pixieOwnedIds,
+          ...purchases.map((p: { product_id: string }) => p.product_id),
+        ]))
+      }
+    } catch {
+      // fallback to pixie_xp.owned
     }
-  } catch {
-    // fallback to pixie_xp.owned
+  }
+
+  // Merge the resolved owned ids back into the pixie_xp shape so the
+  // unified PixieSelector — which derives ownership purely from
+  // pixie_xp.owned — sees ALL purchases (frames, glows, name color bundle
+  // included), not just the legacy pixie_xp.owned array.
+  const pixieXp: Record<string, unknown> & { owned?: string[] } = {
+    ...pixieXpRaw,
+    owned: purchasedPixieIds,
   }
 
   const totalPollVotes = typedPolls.reduce((acc, p) => acc + p.votes_a + p.votes_b, 0)
@@ -266,22 +288,28 @@ export default async function DashboardPage() {
       })()}
 
       {/* ── Companion ── */}
+      {/* species is the EFFECTIVE one (honours pixie_xp.active), and pixieXp
+          drives per-species stage so this section stays in lockstep with
+          the hero avatar above. */}
       <CompanionDisplay
-        species={companionSpecies}
+        species={effectiveSpecies}
+        pixieXp={pixieXp as PixieXpMap}
         votesCount={votesCount}
         xp={xp}
       />
 
-      {/* ── Cosmetici (Pixie Skins + Avatar toggle) ── */}
+      {/* ── Pixie / Cosmetics (unified species + skins + frames + glow + name color) ── */}
       <PixieSelector
-        ownedIds={purchasedPixieIds}
-        activePixieId={activePixieId}
+        companionSpecies={companionSpecies}
+        pixieXp={pixieXp as PixieXpMap & { owned?: string[]; active?: string | null }}
+        votesCount={votesCount}
+        streakDays={streakDays}
+        isPremium={entitlements.effectivePremium}
+        isAdmin={entitlements.isAdmin}
         equippedFrame={profile?.equipped_frame ?? null}
         equippedGlow={profile?.equipped_glow ?? null}
         nameColor={profile?.name_color ?? null}
         usePixieAvatar={profile?.use_pixie_avatar ?? false}
-        isAdmin={entitlements.isAdmin}
-        pixieXp={pixieXp}
       />
 
       {/* ── Daily Missions ── */}

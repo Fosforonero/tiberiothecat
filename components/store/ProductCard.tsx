@@ -130,7 +130,7 @@ export default function ProductCard({
           <img
             src={previewImg}
             alt={product.name}
-            className={`h-full w-full object-contain transition-transform duration-300 ${owned ? '' : 'group-hover:scale-110'}`}
+            className={`h-full w-full object-contain transition-transform duration-300 scale-[1.6] ${owned ? '' : 'group-hover:scale-[1.75]'}`}
           />
         ) : (
           <span className="text-5xl opacity-60">

@@ -6,8 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 import StoreClient from '@/components/store/StoreClient'
-import { ALL_PRODUCT_IDS, type ProductId, type PurchaseRow } from '@/lib/purchases'
-import type { CompanionSpecies } from '@/lib/companion'
+import { ALL_PRODUCT_IDS, PRODUCT_BY_ID, type ProductId, type PurchaseRow } from '@/lib/purchases'
 import type { Metadata } from 'next'
 
 const BASE_URL = 'https://splitvote.io'
@@ -43,11 +42,11 @@ export default async function ItStorePage({ searchParams }: { searchParams: Sear
 
   let isPremium = false
   let ownedProductIds: ProductId[] = []
-  let currentSpecies: CompanionSpecies = 'spark'
+  let activePixieProductId: ProductId | null = null
 
   if (user) {
     const [profileRes, purchasesRes] = await Promise.all([
-      supabase.from('profiles').select('is_premium, role, companion_species').eq('id', user.id).single(),
+      supabase.from('profiles').select('is_premium, role, pixie_xp').eq('id', user.id).single(),
       supabase.from('user_purchases').select('product_id, product_type, status, purchased_at')
         .eq('user_id', user.id).eq('status', 'completed'),
     ])
@@ -58,7 +57,9 @@ export default async function ItStorePage({ searchParams }: { searchParams: Sear
       role: (profileRes.data?.role ?? 'user') as UserRole,
     })
     isPremium = ents.effectivePremium
-    currentSpecies = (profileRes.data?.companion_species ?? 'spark') as CompanionSpecies
+    const pixieXp = (profileRes.data?.pixie_xp ?? {}) as Record<string, unknown>
+    const active = typeof pixieXp.active === 'string' ? pixieXp.active : null
+    activePixieProductId = active && PRODUCT_BY_ID[active as ProductId] ? (active as ProductId) : null
 
     ownedProductIds = ents.isAdmin
       ? ALL_PRODUCT_IDS
@@ -77,7 +78,7 @@ export default async function ItStorePage({ searchParams }: { searchParams: Sear
       isLoggedIn={!!user}
       isPremium={isPremium}
       ownedProductIds={ownedProductIds}
-      currentSpecies={currentSpecies}
+      activePixieProductId={activePixieProductId}
       locale="it"
       initialTab={initialTab}
     />

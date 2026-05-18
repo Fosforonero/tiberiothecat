@@ -1,10 +1,58 @@
 import { getCompanionStage, getSpeciesVotes, type CompanionSpecies, type PixieXpMap } from './companion'
+import { PRODUCT_BY_ID, type ProductId } from './purchases'
+
+/**
+ * Legacy / display-name → canonical species folder name.
+ *
+ * Some surfaces accidentally received the product-marketing name ("nova")
+ * instead of the asset folder name ("scintille"), or rely on the bare
+ * product id slice. This map normalises those at the deepest sprite-URL
+ * layer so every Pixie renderer (CosmeticAvatar, CompanionDisplay,
+ * MobileStickyHUD, PixieSelector, ProductCard, PixieExplainerGallery,
+ * PixieLevelUpModal, leaderboard avatars, /u/[id]) produces a working
+ * `/pixie/<folder>/` URL without each call site needing its own guard.
+ *
+ * Add an entry whenever a marketing name diverges from the asset folder.
+ */
+const SPECIES_ALIAS: Record<string, CompanionSpecies> = {
+  nova: 'scintille',
+}
+
+/** Normalise a species-ish string to the canonical asset folder name. */
+export function normaliseSpecies(species: string): string {
+  return SPECIES_ALIAS[species] ?? species
+}
 
 /** Returns the public URL for a Pixie stage image.
  *  Expected files: public/pixie/{species}/pixie-{species}-stage-{1-6}.png
- *  Falls back to emoji in CompanionDisplay if the file is missing (onError handler). */
+ *  Falls back to emoji in CompanionDisplay if the file is missing (onError handler).
+ *  Aliasing: a legacy "nova" species silently maps to the scintille sprite
+ *  family so old profile rows with companion_species='nova' never produce
+ *  a broken image. */
 export function getPixieImagePath(species: string, stage: number): string {
-  return `/pixie/${species}/pixie-${species}-stage-${stage}.png`
+  const canonical = normaliseSpecies(species)
+  return `/pixie/${canonical}/pixie-${canonical}-stage-${stage}.png`
+}
+
+/**
+ * Canonical Pixie product → species mapping.
+ *
+ * PIXIE_ITEMS / PRODUCT_CATALOG product ids ("pixie_nova") are NOT always
+ * a simple slice of the species folder ("scintille"). The single source of
+ * truth is `PRODUCT_BY_ID[id].unlocksSpecies`. Using slice() instead would
+ * map pixie_nova → "nova", a folder that doesn't exist, producing broken
+ * sprites for every Nova owner.
+ *
+ * Use this helper everywhere you need to translate a Pixie skin id into
+ * the species folder name (sprite preview, active equip resolution, etc.).
+ */
+export function pixieItemToSpecies(itemId: string): CompanionSpecies {
+  const def = PRODUCT_BY_ID[itemId as ProductId]
+  if (def?.unlocksSpecies) return def.unlocksSpecies
+  // Fallback for resilience: if the id is "pixie_<x>" and not in the
+  // catalog yet, strip the prefix so dev/preview environments don't crash.
+  if (itemId.startsWith('pixie_')) return itemId.slice('pixie_'.length) as CompanionSpecies
+  return itemId as CompanionSpecies
 }
 
 /**
@@ -61,7 +109,9 @@ export function getEffectiveSpecies(profile: {
   if (!profile) return 'spark'
   const active = typeof profile.pixie_xp?.active === 'string' ? profile.pixie_xp.active : null
   if (active?.startsWith('pixie_')) {
-    return active.slice('pixie_'.length) as CompanionSpecies
+    return pixieItemToSpecies(active)
   }
-  return (profile.companion_species as CompanionSpecies | null) ?? 'spark'
+  const raw = (profile.companion_species as string | null) ?? 'spark'
+  // Defensive: legacy rows may carry "nova" instead of "scintille".
+  return (SPECIES_ALIAS[raw] ?? raw) as CompanionSpecies
 }

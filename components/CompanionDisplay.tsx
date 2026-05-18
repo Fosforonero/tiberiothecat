@@ -124,14 +124,16 @@ export default function CompanionDisplay({
     return (
       <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${rarityStyle}`}>
         {!imgError ? (
-          <Image
-            src={getPixieImagePath(species, stage)}
-            alt=""
-            width={256}
-            height={256}
-            className="w-8 h-8 object-contain flex-shrink-0 p-0.5"
-            onError={() => setImgError(true)}
-          />
+          <span className="inline-block w-8 h-8 flex-shrink-0 overflow-hidden">
+            <Image
+              src={getPixieImagePath(species, stage)}
+              alt=""
+              width={256}
+              height={256}
+              className="w-full h-full object-contain scale-[1.7]"
+              onError={() => setImgError(true)}
+            />
+          </span>
         ) : (
           <span className="text-2xl">{emoji}</span>
         )}
@@ -186,7 +188,7 @@ export default function CompanionDisplay({
                 alt=""
                 width={256}
                 height={256}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain scale-[1.7]"
                 onError={() => setImgError(true)}
                 priority
               />
@@ -289,9 +291,9 @@ export default function CompanionDisplay({
               <Image
                 src={getPixieImagePath(species, stage)}
                 alt={companion.name}
-                width={256}
-                height={256}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                width={512}
+                height={512}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scale(1.25)' }}
               />
             ) : (
               <span style={{ fontSize: '96px' }}>{emoji}</span>

@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { COSMETIC_MAP, isCosmeticItemId } from '@/lib/cosmetics-store'
+import { isNameColorSlug } from '@/lib/cosmetics'
 import { getUserEntitlements } from '@/lib/entitlements'
 import type { UserRole } from '@/lib/admin-auth'
 
@@ -24,7 +25,12 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { itemId, nameColor } = body as { itemId?: string; nameColor?: string }
+  const { itemId, nameColor, unequip } = body as {
+    itemId?: string
+    nameColor?: string
+    /** Set to "frame" or "glow" to clear that cosmetic slot (no ownership check). */
+    unequip?: 'frame' | 'glow'
+  }
 
   let admin: ReturnType<typeof createAdminClient>
   try {
@@ -45,8 +51,35 @@ export async function POST(req: NextRequest) {
     role: (profile?.role ?? 'user') as UserRole,
   })
 
+  // ── unequip frame/glow (clears the cosmetic slot, no ownership check) ───────
+  // Users always retain the right to remove an equipped cosmetic — no purchase
+  // gate makes sense here, only auth.
+  if (unequip === 'frame' || unequip === 'glow') {
+    const column = unequip === 'frame' ? 'equipped_frame' : 'equipped_glow'
+    const { error } = await admin
+      .from('profiles')
+      .update({ [column]: null })
+      .eq('id', user.id)
+
+    if (error) {
+      console.error('[equip-cosmetic] unequip update failed:', error)
+      return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+    }
+
+    invalidateCosmeticSurfaces(user.id)
+    return NextResponse.json({ success: true, unequipped: unequip })
+  }
+
   // ── name_color selection (uses owned bundle, picks a specific color) ─────────
   if (nameColor !== undefined) {
+    // Validate against the canonical allowlist before doing any DB work.
+    // Without this an attacker (or a stale client) could write arbitrary
+    // strings into profiles.name_color and break the renderer (worst case
+    // injecting Tailwind class fragments that ship in the HTML).
+    if (typeof nameColor !== 'string' || !isNameColorSlug(nameColor)) {
+      return NextResponse.json({ error: 'Invalid name color' }, { status: 400 })
+    }
+
     let ownsNameColorBundle = entitlements.isAdmin
     if (!ownsNameColorBundle) {
       const { data: bundle } = await admin

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { PRODUCT_BY_ID, PRODUCT_CATALOG, type ProductId } from '@/lib/purchases'
-import type { CompanionSpecies } from '@/lib/companion'
 import ProductCard from './ProductCard'
 
 type Tab = 'premium' | 'pixies' | 'cosmetics'
@@ -13,8 +12,9 @@ interface Props {
   isLoggedIn: boolean
   isPremium: boolean
   ownedProductIds: ProductId[]
-  /** Currently equipped Pixie species — used to show "Equipped" state on cards. */
-  currentSpecies: CompanionSpecies
+  /** Currently active Pixie product id (e.g. "pixie_devil") — read from
+   *  pixie_xp.active. Source of truth shared with the dashboard picker. */
+  activePixieProductId: ProductId | null
   locale: 'en' | 'it'
   /** Optional deep-link to a specific tab (?tab=pixies). */
   initialTab?: Tab
@@ -111,7 +111,7 @@ const COPY = {
   },
 } as const
 
-export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, currentSpecies, locale, initialTab = 'pixies' }: Props) {
+export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, activePixieProductId, locale, initialTab = 'pixies' }: Props) {
   const copy = COPY[locale]
   const router = useRouter()
   const pathname = usePathname()
@@ -119,23 +119,28 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
   const [tab, setTab] = useState<Tab>(initialTab)
   const [premiumLoading, setPremiumLoading] = useState(false)
   const [premiumError, setPremiumError] = useState<string | null>(null)
-  const [equippedSpecies, setEquippedSpecies] = useState<CompanionSpecies>(currentSpecies)
+  const [activeProductId, setActiveProductId] = useState<ProductId | null>(activePixieProductId)
   const [equipLoading, setEquipLoading] = useState(false)
   const [equipError, setEquipError] = useState<string | null>(null)
   const ownedSet = new Set(ownedProductIds)
 
-  async function handleEquip(species: CompanionSpecies) {
-    if (species === equippedSpecies || equipLoading) return
+  /** Equip a market Pixie via the canonical API. Mirrors the dashboard
+   *  picker call so both surfaces write to pixie_xp.active and stay in
+   *  sync after router.refresh(). The old /api/profile/update path wrote
+   *  to profiles.companion_species directly and never updated pixie_xp,
+   *  leaving the dashboard avatar stuck on the previous skin. */
+  async function handleEquip(productId: ProductId) {
+    if (productId === activeProductId || equipLoading) return
     setEquipLoading(true)
     setEquipError(null)
     try {
-      const res = await fetch('/api/profile/update', {
+      const res = await fetch('/api/profile/equip-pixie', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ companionSpecies: species }),
+        body: JSON.stringify({ itemId: productId }),
       })
       if (res.ok) {
-        setEquippedSpecies(species)
+        setActiveProductId(productId)
         router.refresh()
       } else {
         const data: { error?: string } = await res.json().catch(() => ({}))
@@ -374,8 +379,8 @@ export default function StoreClient({ isLoggedIn, isPremium, ownedProductIds, cu
                 key={p.id}
                 product={p}
                 owned={ownedSet.has(p.id)}
-                isEquipped={!!p.unlocksSpecies && equippedSpecies === p.unlocksSpecies}
-                onEquip={p.unlocksSpecies ? () => handleEquip(p.unlocksSpecies!) : undefined}
+                isEquipped={activeProductId === p.id}
+                onEquip={() => handleEquip(p.id)}
                 equipLoading={equipLoading}
                 isLoggedIn={isLoggedIn}
                 isPremium={isPremium}
