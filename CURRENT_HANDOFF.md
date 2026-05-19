@@ -1,10 +1,92 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 19 May 2026 (afternoon) — IT topic landing parity audit closed as no-op (1:1 already), GSC report Retraction 3 added
+Last updated: 19 May 2026 (late afternoon) — DILEMMA-STATIC-41-REWRITE-PILOT-01 committed; **PRE-DEPLOY Redis reset required for 4 IDs**.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 19 May 2026 — IT topic landing parity audit closure
+## 0. Session 19 May 2026 (late) — Dilemma depth pilot rewrite
+
+**Sprint `DILEMMA-STATIC-41-REWRITE-PILOT-01` committed locally** (no push
+yet). 5 static dilemmas rewritten in EN + IT for moral depth, per the
+audit at `reports/dilemma-depth-audit-2026-05-19.md`. Files touched:
+`lib/scenarios.ts`, `lib/scenarios-it.ts`. Vote-mechanics, IDs,
+categories, routes, sitemap, and `Scenario` schema all preserved.
+
+Sprint sequence today (chronological):
+1. `DILEMMA-DEPTH-AUDIT-01` — read-only audit. Committed `dba24cf`.
+2. `DILEMMA-STATIC-41-REWRITE-PILOT-01` — implementation. Committed
+   (this section's release).
+
+### 🚨 BEFORE PUSH/DEPLOY — Aggregate Redis vote reset REQUIRED
+
+The 5 rewritten dilemmas keep their `id`, so existing Redis aggregate
+keys `votes:<id>` survive the rewrite. For 4 of the 5, the new question
+sits on a **different moral axis** than the old one — the cumulative
+split would mislead voters on the new framing (see smoke report in the
+session log and the per-id risk table below).
+
+**Before deploying this branch, an operator with Redis access MUST reset:**
+
+- `votes:rich-or-fair`     → `{ a: 0, b: 0 }`
+- `votes:censor-speech`    → `{ a: 0, b: 0 }`
+- `votes:deepfake-expose`  → `{ a: 0, b: 0 }`
+- `votes:prison-abolition` → `{ a: 0, b: 0 }`
+
+**DO NOT reset** `votes:robot-judge` — semantic shift on that ID is low
+(both old + new A endorse "use AI", both B endorse "don't"); the
+historical split is still directionally meaningful.
+
+**Reset timing:** ideally within a few minutes of deploy. The window
+between deploy of new text and reset of old counts is exactly the
+window where users see misleading splits — minimise it.
+
+**Reset mechanism:** Redis writes are HUMAN_ONLY per CLAUDE.md. Use the
+Upstash console or an authorised admin script. Implementer (Claude) did
+not and must not run this.
+
+**Supabase `dilemma_votes` carry-over** is **accepted intentionally**.
+Per-user `currentVote='a'` rows from the old text will persist on the 4
+rewritten IDs. This affects a small fraction of logged-in users (each
+user can change their vote within `can_change_until` if they choose).
+No Supabase wipe planned; no Supabase migration required for deploy.
+
+### Per-ID semantic-shift risk (compressed reference)
+
+| ID | Risk | Reset required? |
+|---|---|---|
+| `rich-or-fair` | High — old A "equal poverty" vs new A "targeted tax"; different axes. | YES |
+| `robot-judge` | Low — old/new A both endorse AI; old/new B both endorse human. Direction maps. | NO |
+| `censor-speech` | Medium-High — old B was free-speech absolutism (straw-man), new B is mainstream slippery-slope. Old counts biased toward A. | YES |
+| `deepfake-expose` | High — old premise stipulated guilt; new premise removes the stipulation. Many old-A voters voted because A was easy. | YES |
+| `prison-abolition` | Critical — old asked "abolish prisons?", new asks "should a released offender live unannounced in your neighbourhood?". Different dilemma entirely. | YES |
+
+### Verification already passed (do not re-run unless deploy concerns)
+
+- `npm run typecheck` ✅
+- `npm run build` ✅ (41 static `/play/<id>` and `/results/<id>` routes prerendered)
+- `npx vitest run tests/unit/{dilemma-seo-insights,category-content,category-hub-copy}.test.ts` → 46/46 ✅
+- `git diff --check` ✅
+- Local production-build smoke (`npm run start` on :3000) of all 6 PM-listed URLs → 200 OK; rewritten EN+IT strings present in SSR HTML; no `| SplitVote | SplitVote` doubling on any of the 6.
+
+### Files changed by this sprint
+
+- `lib/scenarios.ts` — 5 EN scenario blocks updated.
+- `lib/scenarios-it.ts` — 5 matching IT translations updated.
+- `CURRENT_HANDOFF.md` — this section (deploy warning).
+- No schema change. No new fields. No code-path change. No new files. PM WIP untouched.
+
+### Next recommended sprint
+
+`DILEMMA-INSIGHT-PER-ID-01` — populate per-dilemma post-vote insight
+copy. The static `Scenario` schema currently lacks `expertInsightEn` /
+`expertInsightIt`; the dynamic `DynamicScenario` already has them.
+Sprint can either: (a) add the fields to the static schema and write
+overrides for the 5 rewritten + maybe 5 more, or (b) route static-id
+insight lookup through a parallel `lib/static-insights.ts` map keyed by
+`id`. Option (b) is lower blast-radius and recommended; design choice
+deferred to next session start.
+
+## 0a. Session 19 May 2026 — IT topic landing parity audit closure
 
 **Sprint `IT-TOPIC-LANDING-PARITY-01` closed as no-op.** Phase 1 audit
 confirmed EN and IT topic landings are already at perfect 1:1 reciprocal

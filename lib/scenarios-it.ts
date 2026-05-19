@@ -100,14 +100,14 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Non mi intrometto. Non è la mia relazione.',
   },
   'rich-or-fair': {
-    question: 'Puoi premere un pulsante: tutti sulla Terra diventano ugualmente poveri, oppure il mondo resta com’è con disuguaglianze estreme.',
-    optionA: 'Lo premo. La povertà uguale è più giusta.',
-    optionB: 'Non lo premo. Mantengo il mondo attuale.',
+    question: "Una nuova tassa dimezzerebbe il reddito dell'1% più ricco e raddoppierebbe quello del 20% più povero. La ricchezza totale del Paese resta la stessa.",
+    optionA: 'La approvo. Meno concentrazione vale la redistribuzione.',
+    optionB: 'La blocco. Scegliere così chi vince e chi perde è sbagliato, anche quando i conti tornano.',
   },
   'robot-judge': {
-    question: "È provato che l'IA sia il 30% più accurata dei giudici umani. Sostituiresti i giudici umani con l'IA nei processi penali?",
-    optionA: 'Sì. Più accuratezza salva vite.',
-    optionB: 'No. La giustizia ha bisogno di umanità.',
+    question: "Uno strumento di IA per le condanne è più costante dei giudici umani su casi simili, ma non può spiegare il proprio ragionamento. Va usato?",
+    optionA: 'Sì. La costanza è già una forma di equità.',
+    optionB: 'No. Una condanna di cui non puoi conoscere la motivazione non è giustizia.',
   },
   'innocent-juror': {
     question: 'Sei in giuria. Tutte le prove indicano colpevolezza, ma il tuo istinto ti dice che l’imputato è innocente. Il verdetto deve essere unanime.',
@@ -130,9 +130,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Rifiuto. La privacy non si negozia.',
   },
   'censor-speech': {
-    question: 'Le bugie di un politico hanno causato direttamente 500 morti incitando alla violenza. Sosterresti il ban permanente da tutte le piattaforme social?',
-    optionA: 'Sì. Le parole pericolose hanno conseguenze.',
-    optionB: 'No. La libertà di parola è assoluta.',
+    question: 'Un politico diffonde affermazioni false che portano a molestie e violenze in alcune comunità. Va bannato in modo permanente da tutte le piattaforme principali?',
+    optionA: "Sì. La piattaforma non è la piazza pubblica — nessuno ha diritto a essere amplificato.",
+    optionB: "No. Quando l'asticella è il 'danno', il prossimo ban non avrà più questa faccia.",
   },
   'mandatory-vaccine': {
     question: 'I vaccini sono efficaci e sicuri al 99%. Dovrebbero essere obbligatori per frequentare la scuola, anche contro obiezioni religiose dei genitori?',
@@ -170,9 +170,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Lascio avanzare il progresso. La risposta è riqualificare.',
   },
   'deepfake-expose': {
-    question: 'Hai un video deepfake indistinguibile dal reale che mostra un politico corrotto mentre commette un crimine. Il politico è davvero corrotto, ma quell’evento non è mai accaduto.',
-    optionA: 'Lo pubblico. Merita di cadere.',
-    optionB: 'Lo distruggo. Una bugia resta una bugia.',
+    question: "Hai un video deepfake di una figura pubblica che commette un crimine. Non sai se l'episodio sia avvenuto davvero — sai solo che il video, in sé, è falso.",
+    optionA: "Lo pubblico. Se porterà a un'inchiesta vera, la verità verrà fuori comunque.",
+    optionB: 'Lo distruggo. Anche se avessi ragione, staresti piazzando una prova fabbricata.',
   },
   'tax-billionaires': {
     question: 'Una tassa patrimoniale una tantum del 90% sui miliardari potrebbe eliminare la fame nel mondo per 10 anni. Resterebbero comunque ricchissimi.',
@@ -195,9 +195,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'No. Alcune sostanze non dovrebbero mai essere legali.',
   },
   'prison-abolition': {
-    question: 'Tutte le prigioni vengono sostituite da centri di riabilitazione: terapia, istruzione, nessuna punizione. Gli studi mostrano che la recidiva cala del 60%.',
-    optionA: 'Sì. La riabilitazione è più efficace.',
-    optionB: 'No. Alcuni crimini meritano punizione.',
+    question: 'Una persona condannata per un reato grave finisce una lunga pena ed esce libera. Dovrebbe poter vivere nel tuo quartiere senza che a te venga detto nulla?',
+    optionA: 'Sì. Se ha scontato la pena, la punizione non può seguirla per sempre.',
+    optionB: 'No. Chi le vive accanto ha diritto di sapere quale rischio gli si chiede di accettare.',
   },
   'love-or-career': {
     question: 'Arriva il lavoro dei tuoi sogni, ma richiede di trasferirti in un altro continente. Il tuo partner da 5 anni rifiuta di seguirti.',
