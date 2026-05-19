@@ -60,9 +60,7 @@ Primary consent / tracking files:
 
 - `components/CookieConsent.tsx`
 - `components/Footer.tsx`
-- `app/layout.tsx`
-- `app/api/ga/script/route.ts`
-- `app/api/ga/g/collect/route.ts`
+- `app/layout.tsx` (loads gtag.js directly from `googletagmanager.com`; hits go directly to `google-analytics.com/g/collect`. The former first-party proxy under `app/api/ga/script/route.ts` and `app/api/ga/g/collect/route.ts` was removed in sprint `GA4-PROXY-GEO-FIX-01` — geo was being collapsed to the edge IP. Direct loading restores correct geo; consent gating is unchanged.)
 - `components/AdSlot.tsx`
 - `components/AdBlockBanner.tsx`
 

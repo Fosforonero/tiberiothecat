@@ -55,7 +55,7 @@
 - [x] Trust strip "Anonymous voting / No account required" su home + vote + footer
 - [x] Open Redirect fix: `safeRedirect()` in `auth/callback` e `login/page` — blocca `//`, backslash, URL assoluti
 - [x] JSON-LD escaping: `JsonLd.tsx` + VoteClientPage escapa `</script>` injection
-- [x] GA proxy hardening: `/api/ga/script` usa solo GA ID configurato, ignora param user-supplied (precedente menzione `/api/_g/script` era un drift documentale — il path reale è `/api/ga/script`; verificato live 19 May 2026)
+- [x] GA4 direct loading (sprint `GA4-PROXY-GEO-FIX-01`, 19 May 2026): il first-party proxy `/api/ga/script` + `/api/ga/g/collect` è stato rimosso perché GA4 non rispettava `X-Forwarded-For` e collassava la geo sull'IP edge Vercel (utenti IT mostrati come US/EU). gtag.js ora carica diretto da `googletagmanager.com`; i hit vanno a `google-analytics.com/g/collect`. Consent Mode v2 invariato (default all-denied).
 - [x] API input bounds: metadata 2KB cap, scenarioId pattern, countryCode regex, avatarEmoji max 8, displayName no control chars
 - [x] Stripe webhook non logga display name in chiaro; profile/update riduce error log a error code
 - [x] Cookie consent banner granulare (28 Apr 2026): Decline / Personalizza / Accetta tutto

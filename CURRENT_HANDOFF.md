@@ -1,8 +1,57 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 19 May 2026 (end of day) — AdSense low-value remediation (Phase 1 defensive + Phase 2 static-insights expansion) deployed; results vote-CTA bugfix deployed; sitemap & API caching mitigations live.
+Last updated: 19 May 2026 (late evening) — GA4 first-party proxy removed (`GA4-PROXY-GEO-FIX-01`); AdSense low-value remediation deployed earlier in the day.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+
+## 0-pre. Session 19 May 2026 (late evening) — `GA4-PROXY-GEO-FIX-01` — ⚠️ LOCAL COMMIT, NOT PUSHED
+
+PM observation: "non vedo mai traffico dall'Italia" in GA4. Vercel Analytics (independent geo pipeline) shows **Italy 59%, US 30%, Poland 5%, Germany 3%** over the last 30 days (338 visitors, 5,372 pageviews) — so the Italian audience is real and is in fact the majority. GA4 was misrepresenting it.
+
+### Root cause
+
+The first-party proxy at `/api/ga/g/collect` forwarded the client IP via `X-Forwarded-For`, but **GA4 client-side `/g/collect` does not trust `X-Forwarded-For` from arbitrary proxies** — it uses the TCP source IP for geo, which was the Vercel edge node IP. Result: all visitor geo collapsed to whichever Vercel edge region served the hit (likely US-East / Frankfurt / Paris). Italian users were classified as US or EU edge regions in GA4.
+
+Smoking gun in Vercel Analytics top pages: `/api/ga/_/service_worker/65d0/sw_iframe.html` had **33 hits** (tied with `/it`) — gtag.js was trying to register its service worker iframe relative to the configured `transport_url`, but our proxy only handled `/script` and `/g/collect`, so all those internal gtag requests 404'd silently.
+
+There is no `&_uip=` equivalent for client-side `/g/collect` (that parameter is server-side Measurement Protocol only). No fix on the proxy itself can restore geo while remaining first-party — the canonical solution is GTM Server-Side on Cloud Run, which is out of scope for current scale.
+
+### Decision and scope
+
+Removed the GA4 first-party proxy. gtag.js now loads directly from `https://www.googletagmanager.com/gtag/js?id=${GA_ID}` and hits go directly to `https://www.google-analytics.com/g/collect`. Consent Mode v2 is unchanged (`analytics_storage: 'denied'` by default; `send_page_view: false` with manual page_view via `GAPageView`). The AdSense first-party proxy at `app/api/ga/ads/route.ts` is unused by `app/layout.tsx` (which loads AdSense direct) and was **not** touched in this sprint.
+
+### Trade-off accepted
+
+URL-based adblockers may now block GA4 (since hits go to `google-analytics.com` instead of `splitvote.io/api/ga`). Estimated 10–20% data loss for users with strict adblockers. Acceptable trade vs the previous state of 100% wrong geo for everyone. AdSense rejection / low-value review is unaffected (no overlap).
+
+### Files changed (1 commit, local only)
+
+- `app/layout.tsx` — gtag.js src switched to direct `googletagmanager.com`; removed `transport_url`, `first_party_collection`; kept `send_page_view: false`.
+- `app/api/ga/script/route.ts` — **deleted**.
+- `app/api/ga/g/collect/route.ts` — **deleted**.
+- `README.md` — security notes section: replaced the two GA-proxy hardening notes with a single note explaining the direct-load model.
+- `LEGAL.md` — tracking files list: removed the two route files; added inline note explaining the direct-load model.
+- `LAUNCH_AUDIT.md` — security checklist line 58: updated from "GA proxy hardening" to "GA4 direct loading" with the sprint name and rationale.
+
+### Verification
+
+- `npm run typecheck` — see report below.
+- `npm run build` — see report below.
+- `git diff --check` — see report below.
+
+### PM WIP confirmed untouched
+
+`PRODUCT_STRATEGY.md`, `app/results/[id]/ResultsClientPage.tsx`, `lib/content-generation-*.ts`, `lib/content-quality-gates.ts`, ~80 pixie PNGs, `scripts/generate-pixie-assets.mjs` all remain modified-in-working-tree and unstaged.
+
+### Next action
+
+After PM **GO — push**, deploy. Then verify in GA4 Realtime: open `splitvote.io/it` from an Italian device, confirm `Country = Italy` appears within ~30 s. Comparable verification expected for US, etc.
+
+### Supersedes
+
+The GA4 verification note in §1 below ("First-party proxy active at `/api/ga/script` and `/api/ga/g/collect`") is **historically true for the morning of 19 May 2026** but is **superseded by this sprint**. The proxy is gone.
+
+---
 
 ## 0. Session 19 May 2026 (end of day) — AdSense remediation deployed — ✅ SHIPPED
 

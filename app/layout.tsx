@@ -128,15 +128,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('set', 'url_passthrough', true);
           `}
         </Script>
-        <Script src={`/api/ga/script?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_ID}', {
-              transport_url: 'https://splitvote.io/api/ga',
-              first_party_collection: true,
               send_page_view: false
             });
           `}

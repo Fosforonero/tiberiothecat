@@ -577,9 +577,7 @@ All `@splitvote.io` addresses route via Cloudflare Email Routing → Gmail. No p
 
 **API input bounds**: `POST /api/events/track` caps metadata at 2 KB serialized and validates `scenarioId` format (`^[a-z0-9-]{1,80}$`). `POST /api/profile/update` validates `countryCode` against `^[A-Z]{2}$`, caps `avatarEmoji` at 8 chars, and rejects `displayName` with control characters.
 
-**GA proxy** (`/api/ga/script`): ignores the `id` query param and always uses the configured `NEXT_PUBLIC_GA_ID` / hardcoded `G-5MPQ8PW0CE` — prevents proxying arbitrary GA IDs.
-
-**GA collect proxy** (`/api/ga/g/collect`): forwards `X-Forwarded-For` to Google intentionally — required for accurate geo and session data in GA4. No raw IPs are stored server-side.
+**GA4 loading** (`app/layout.tsx`): gtag.js is loaded directly from `https://www.googletagmanager.com/gtag/js?id=${GA_ID}` and hits go straight to `https://www.google-analytics.com/g/collect`. The previous first-party proxy under `/api/ga/script` and `/api/ga/g/collect` was removed in `GA4-PROXY-GEO-FIX-01` because GA4 does not honor `X-Forwarded-For` from arbitrary proxies, which collapsed all visitor geo to the Vercel edge IP (e.g. Italian users showing as US/EU edge regions). Direct loading restores correct geo; consent is still gated by Consent Mode v2 (`analytics_storage: 'denied'` default).
 
 ### Known issues / TODOs
 - Stripe webhook idempotency: implemented in `lib/stripe-webhook-events.ts` + `app/api/stripe/webhook/route.ts`. Requires `migration_v11_stripe_webhook_events.sql` applied in Supabase to be fully active. Until then, the webhook is backward-compatible (processes events without idempotency guard, emits `console.warn`).
