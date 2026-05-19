@@ -61,8 +61,8 @@ Primary consent / tracking files:
 - `components/CookieConsent.tsx`
 - `components/Footer.tsx`
 - `app/layout.tsx`
-- `app/api/_g/script/route.ts`
-- `app/api/_g/g/collect/route.ts`
+- `app/api/ga/script/route.ts`
+- `app/api/ga/g/collect/route.ts`
 - `components/AdSlot.tsx`
 - `components/AdBlockBanner.tsx`
 

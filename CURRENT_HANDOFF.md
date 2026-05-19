@@ -56,6 +56,8 @@ Uncommitted in working tree and must remain uncommitted by Claude:
 
 - **`why-not-intervene` in 2 bystander-effect blog posts (item 2.5 in QA open-items audit)**: confirmed **STALE**. `rg "why-not-intervene" lib app` returns 0 hits; the live `lib/blog.ts` `bystander-effect-and-moral-responsibility` has `relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'whistleblower']` — all valid. The audit report flagged a defect that no longer exists in source. No fix needed. Closing the open-item entry in the next QA audit refresh.
 
+- **GA4 wiring verification (post-EOD spot check)**: live production GA4 setup confirmed OK. Measurement ID `G-5MPQ8PW0CE`. First-party proxy active at `/api/ga/script` (HTTP 200, JS, 1h cache) and `/api/ga/g/collect` (HTTP 204). Consent Mode v2 declared `beforeInteractive` with all four signals (`analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization`) `denied` by default; `ads_data_redaction: true` and `url_passthrough: true` set. `send_page_view: false` with `transport_url` pointing at the first-party proxy. **Documentation drift discovered**: `LAUNCH_AUDIT.md` (line 58) and `LEGAL.md` (consent/tracking file list) mentioned the stale paths `/api/_g/script` and `/api/_g/g/collect` — those paths return 404. Both docs corrected to the live paths `/api/ga/script` and `/api/ga/g/collect`. **Runtime behavior unchanged** — drift was documentation only.
+
 ## 0a. Session 19 May 2026 (night) — Premium QA + Store one-time deferral — ✅ DOCS CLOSURE
 
 Two Stripe-adjacent sprints closed today as docs-only updates. No code, no Stripe config, no Vercel env vars changed.
