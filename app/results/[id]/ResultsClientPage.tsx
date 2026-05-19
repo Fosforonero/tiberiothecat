@@ -19,6 +19,11 @@ interface Props {
   pctB: number
   total: number
   voted: 'a' | 'b' | null
+  /** True when the viewer has already cast a vote on THIS scenario (per
+   *  Supabase row or sv_voted_* cookie). When false AND `voted` is also
+   *  null (no fresh post-vote redirect), the page exposes a "Vote on this
+   *  →" CTA to prevent dead-ends on share-link / direct-nav landings. */
+  hasVoted?: boolean
   nextId: string | null
   /** Optional locale prefix for share URLs, e.g. "/it" for Italian results */
   sharePrefix?: string
@@ -108,6 +113,9 @@ const EN_COPY = {
   pathOtherCats:     'Browse categories',
   comparing:         'Comparing your answer with SplitVote voters…',
   noVotesYet:        'Not enough votes yet to show a result.',
+  voteThisTitle:     'Vote on this dilemma',
+  voteThisBody:      "You haven't voted on this one yet — cast your choice and see how it splits.",
+  voteThisCTA:       'Vote now →',
 }
 
 const IT_COPY = {
@@ -183,9 +191,12 @@ const IT_COPY = {
   pathOtherCats:     'Sfoglia categorie',
   comparing:         'Confrontiamo la tua risposta con i votanti su SplitVote…',
   noVotesYet:        'Non ci sono ancora abbastanza voti per mostrare un risultato.',
+  voteThisTitle:     'Vota su questo dilemma',
+  voteThisBody:      'Non hai ancora votato qui — fai la tua scelta e scopri come si divide il mondo.',
+  voteThisCTA:       'Vota ora →',
 }
 
-export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, nextId, sharePrefix = '', pathCategory, pathStep, pathTarget, nextPathId, pathCategoryLabel, pathCategoryEmoji }: Props) {
+export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, hasVoted = false, nextId, sharePrefix = '', pathCategory, pathStep, pathTarget, nextPathId, pathCategoryLabel, pathCategoryEmoji }: Props) {
   const [mounted, setMounted] = useState(false)
   const [revealed, setRevealed] = useState(!voted || total < 10)
   const [copied, setCopied] = useState(false)
@@ -655,6 +666,25 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <p className="text-center text-sm text-[var(--muted)] mb-8">
           {copy.noVotesYet}
         </p>
+      )}
+
+      {/* ── Vote-on-this CTA ──
+          Users who land on /results/<id> without a fresh post-vote redirect
+          (share link, direct nav, refresh after cookie clear) get a clear
+          path back to /play/<id> instead of dead-ending on a "Next dilemma"
+          that points elsewhere. Hidden when the user just voted, or has
+          already voted on this scenario per Supabase/cookie. */}
+      {!voted && !hasVoted && (
+        <div className="mb-8 rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5 text-center">
+          <p className="text-white font-black text-lg mb-2">{copy.voteThisTitle}</p>
+          <p className="text-xs text-[var(--muted)] leading-relaxed mb-4">{copy.voteThisBody}</p>
+          <Link
+            href={`${sharePrefix}/play/${scenario.id}`}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-purple-600 hover:from-red-400 hover:to-purple-500 text-white font-bold text-sm transition-all shadow-lg neon-glow-red min-h-[48px]"
+          >
+            {copy.voteThisCTA}
+          </Link>
+        </div>
       )}
 
       {/* ── Next dilemma / Path CTA ── */}

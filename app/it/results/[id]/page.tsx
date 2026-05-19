@@ -113,6 +113,10 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
 
   // Use only IT-locale dynamic scenarios; static scenarios are the fallback inside the function
   const nextId = getFreshNextScenarioId(params.id, votedIds, itPool)
+  // True when this user already cast a vote on THIS scenario. Drives the
+  // "Vota su questo →" CTA in ResultsClientPage that prevents dead-ends
+  // when users land on /it/results/<id> via share link or direct nav.
+  const hasVoted = votedIds.has(params.id)
 
   // Guided path — parse params and compute next path question (IT locale)
   const rawPath = searchParams.path
@@ -167,6 +171,7 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
         pctB={pctB}
         total={total}
         voted={voted}
+        hasVoted={hasVoted}
         nextId={nextId}
         sharePrefix="/it"
         pathCategory={pathCategory}

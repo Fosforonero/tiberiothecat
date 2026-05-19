@@ -105,6 +105,11 @@ export default async function ResultsPage({ params, searchParams }: Props) {
   }
 
   const nextId = getFreshNextScenarioId(params.id, votedIds, dynamicScenarios)
+  // True when this user already cast a vote on THIS scenario (via Supabase
+  // for logged-in users, sv_voted_* cookie for anonymous). Drives the
+  // "Vote on this →" CTA in ResultsClientPage that prevents dead-ends
+  // when users land on /results/<id> via share link or direct nav.
+  const hasVoted = votedIds.has(params.id)
 
   // Guided path — parse params and compute next path question
   const rawPath = searchParams.path
@@ -164,6 +169,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
         pctB={pctB}
         total={total}
         voted={voted}
+        hasVoted={hasVoted}
         nextId={nextId}
         pathCategory={pathCategory}
         pathStep={pathStep}
