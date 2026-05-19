@@ -1,10 +1,95 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 19 May 2026 (evening) — DILEMMA-STATIC-41-REWRITE-PILOT-01 deployed live; Redis aggregate keys already absent (DEL no-op); no Supabase op needed.
+Last updated: 19 May 2026 (end of day) — AdSense low-value remediation (Phase 1 defensive + Phase 2 static-insights expansion) deployed; results vote-CTA bugfix deployed; sitemap & API caching mitigations live.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 19 May 2026 (late) — Dilemma depth pilot rewrite — ✅ SHIPPED
+## 0. Session 19 May 2026 (end of day) — AdSense remediation deployed — ✅ SHIPPED
+
+Five commits shipped between earlier today and tonight: a sitemap caching perf fix, an audit report, the AdSense defensive gates, a results-page vote-CTA bugfix, and the full static-insights expansion. Plus two earlier docs-only closures (Stripe Premium QA + Store one-time deferral, and the AdSense audit) recorded in §0a.
+
+### Deployed commits on `origin/main` (today's session, oldest → newest)
+
+| Commit | Title | Live status |
+|---|---|---|
+| `2776c4b` | perf(sitemap): hourly ISR revalidate to cut crawler CPU | ✅ live |
+| `d3b2d9b` | docs(adsense): audit low-value content risks | ✅ live |
+| `87741d5` | fix(adsense): suppress ads on thin review-risk surfaces | ✅ live |
+| `c88beaf` | fix(results): add vote CTA for unvoted dilemmas | ✅ live |
+| `19a020b` | feat(content): add per-id insights for all static dilemmas | ✅ live |
+
+### Production smoke status (all verified post-deploy)
+
+- **Static results coverage**: 41/41 static dilemmas now render per-id EN+IT insights below the vote bars (`lib/static-insights.ts`). Confirmed live on `/results/trolley`, `/it/results/trolley`, `/results/whistleblower`, `/it/results/whistleblower`, `/results/mercy-kill`, `/it/results/mercy-kill`.
+- **Sitemap**: 295 `<loc>` URLs (down from 296 — `/store` removed). 0 occurrences of `splitvote.io/store` in the XML.
+- **Store noindex**: `/store` and `/it/store` both return `<meta name="robots" content="noindex, follow">` in SSR. `/it/store` was never in the sitemap.
+- **Results vote-CTA**: `/results/whistleblower` and other unvoted/results pages now show the "Vote on this dilemma →" card with a link back to `/play/<id>` (and `/it/play/<id>` for IT) when the user has not yet voted. The CTA auto-hides for users with a prior vote on the scenario.
+- **AdSense gates**: `<AdSlot>` only renders on `/play/<id>` when `hasStaticInsight(id)` is true (all 41 static IDs after `19a020b`); on `/results/<id>` only when `total >= 50 && hasStaticInsight(id)`. Dynamic AI play+results pages without a per-id insight carry `robots: { index: false, follow: true }`.
+
+### AdSense — next action
+
+- **Wait 24–48 h after deploy** to let Googlebot recrawl the affected surfaces with their new content + noindex/sitemap state.
+- **Recommended next sprint (tomorrow): `ADSENSE-REVIEW-READY-CHECKLIST-01`** — read-only verification pass that goes through `reports/adsense-low-value-remediation-audit-2026-05-19.md` "Do not request AdSense review until these are done" checklist, confirms each item is live in production, and reports green/red on every line. Output: report only.
+- **After that passes**: PM submits AdSense re-review request from the AdSense dashboard.
+- **If re-review fails again**: fall through to Phase 2 remaining items — `dilemma-seo-insights.ts` variation expansion (3/3/4 → 8/8/8), `/about` enrichment (~300 → ~600-800 words), new `/editorial-policy` + `/methodology` pages, `Person`-typed author bylines on cornerstone blog posts.
+
+### Stripe — current state
+
+- **Premium checkout UI**: ✅ verified live by PM (19 May 2026). Stripe Checkout opens correctly on `splitvote.io/profile` and displays the Premium recurring monthly product (€4.99/mese). The 29 Apr `STRIPE_PRICE_ID_PREMIUM` env fix is fully effective.
+- **Live end-to-end payment**: ⏳ still pending. PM did not complete a card submit in this session. Risk profile remains low (the previously-broken layer is now visually confirmed correct), but the loop (checkout → webhook → `is_premium=true` → entitlements) has not been exercised in live mode with a real card.
+- **Pixie/cosmetic one-time purchases**: intentionally deferred. All 14 `STRIPE_PRICE_*` env vars remain unset in Vercel Production scope. Store cards continue to show the "Checkout coming online soon" graceful modal. Decision recorded in `LAUNCH_AUDIT.md §B → Store One-Time Purchases — Intentionally Deferred`.
+
+### Vercel / performance — current state
+
+- **75% Fluid Active CPU warning** received earlier this session. Mitigations deployed:
+  - `/api/results/[id]/route.ts` → 15s short-lived CDN cache (`s-maxage=15, stale-while-revalidate=45`) (`db4d161`).
+  - `/sitemap.xml` → hourly ISR via `export const revalidate = 3600` (`2776c4b`).
+  - The Phase 1 AdSense gates also indirectly reduce CPU on `/results/<id>` (fewer client requests to entitlements when `<AdSlot>` not rendered).
+- **Action**: avoid nonessential deploys; batch future pushes. PM to recheck Vercel dashboard usage cycle in 24–48 h to confirm the curve flattens.
+
+### PM WIP — do not touch
+
+Uncommitted in working tree and must remain uncommitted by Claude:
+`PRODUCT_STRATEGY.md`, `app/results/[id]/ResultsClientPage.tsx` (PM sticky-CTA refactor merged with today's bugfix + AdSlot-gate commits — snapshot procedure handled cleanly each commit), `lib/content-generation-prompts.ts`, `lib/content-generation-validate.ts`, `lib/content-quality-gates.ts`, ~80 modified pixie PNGs, `scripts/generate-pixie-assets.mjs`.
+
+### Audit-only open items closed today
+
+- **`why-not-intervene` in 2 bystander-effect blog posts (item 2.5 in QA open-items audit)**: confirmed **STALE**. `rg "why-not-intervene" lib app` returns 0 hits; the live `lib/blog.ts` `bystander-effect-and-moral-responsibility` has `relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'whistleblower']` — all valid. The audit report flagged a defect that no longer exists in source. No fix needed. Closing the open-item entry in the next QA audit refresh.
+
+## 0a. Session 19 May 2026 (night) — Premium QA + Store one-time deferral — ✅ DOCS CLOSURE
+
+Two Stripe-adjacent sprints closed today as docs-only updates. No code, no Stripe config, no Vercel env vars changed.
+
+### `PREMIUM-STRIPE-LIVE-QA-01` — checkout UI verified, payment still pending
+
+- ✅ **Checkout UI**: PM opened `splitvote.io/profile` with a real non-premium account and clicked "Upgrade to Premium". Stripe Checkout opened in live mode and displayed the Premium recurring monthly product (€4.99/mese) correctly. Confirmed the env var fix from 29 Apr 2026 (`STRIPE_PRICE_ID_PREMIUM` → `price_1TQZuO6MLlYKqmclQm57kmvI`) is fully effective in production.
+- ⏳ **Live end-to-end payment**: PM did not complete a live card submit in this session. The remaining residual risk is small (the only previously-broken layer — the price ID env var — is now visually confirmed correct). Recommended before promoting Premium to real users, but not urgent.
+- LAUNCH_AUDIT.md §B Stripe checkboxes updated (line 361 → ✅, line 362 → still open with note). Top 5 Blockers row 2 reworded to reflect remaining scope.
+
+### `STRIPE-STORE-COSMETICS-CHECKOUT-CONFIG-AUDIT-01` — closed as configuration-known/no-code
+
+- **Decision (PM, 19 May 2026)**: do not launch Pixie/cosmetic one-time purchases now. Keep all 14 Store one-time products intentionally in "Checkout coming online soon — sit tight" state until the business case justifies launch.
+- **Root cause confirmed**: the modal is the intentional graceful fallback in `app/api/checkout/one-time/route.ts:70-78` when `getStripePriceId(productId)` returns null (i.e. the per-product `STRIPE_PRICE_*` env var is unset). 14 env vars are documented in `README.md:78-96` but unset in Vercel Production scope.
+- **Code state**: production-ready. No changes proposed. `migration_v16_user_purchases` is applied; webhook handler `one_time_purchase` implements the anti-tampering Stripe Price ID ↔ catalog cross-check.
+- **Path to launch (deferred, no sprint queued)**: future `STORE-ONE-TIME-LAUNCH-01` will create 6 Stripe Products in live mode + set the 6 `STRIPE_PRICE_PIXIE_*` env vars on Vercel Production + redeploy + test on lowest-cost Pixie. Cosmetics (8 more env vars) can ship in a second pass.
+- **Residual risks tracked for future launch**: refund reverse-state for `one_time_purchase` rows uses legacy `lib/cosmetics-store.ts` catalog (audit needed pre-launch); UX `alreadyOwned` 409 not surfaced by client; tax/VAT setup default in Stripe Products. None block the deferral.
+- LAUNCH_AUDIT.md §B has a new "Store One-Time Purchases — Intentionally Deferred" subsection capturing this state.
+
+### LEGAL.md — no update required
+
+Payment behavior, data processing, and legal surface area are unchanged. Terms already cover Premium subscription, one-time digital goods, and the EU 14-day waiver. The deferral does not introduce new processors, new tracking, or new user data flows.
+
+### Files changed by this closure
+
+- `LAUNCH_AUDIT.md` — Premium checkboxes 361/362 + new Store one-time subsection + Top 5 Blockers row 2 wording.
+- `CURRENT_HANDOFF.md` — this section.
+- **No source files. No commits. No pushes.** PM WIP in working tree untouched (`PRODUCT_STRATEGY.md`, `ResultsClientPage.tsx`, `lib/content-generation-*.ts`, `lib/content-quality-gates.ts`, ~80 pixie PNGs).
+
+### Next recommended sprint
+
+**`ADSENSE-LOW-VALUE-REMEDIATION-AUDIT-01`** — read-only audit. AdSense approval is listed in the open queue (LAUNCH_AUDIT.md §C). If the account is in "low value content" or similar review state, the unblock path is typically: (a) thin-content pages → demote/noindex, (b) duplicate/aggregator pages → consolidate, (c) E-E-A-T signals (about/contact/policies, author bylines, citation density) → strengthen, (d) ad placement density vs main content → audit. Output: report only, no code changes, no AdSense dashboard actions. Sprint is SAFE_AUTONOMOUS-adjacent (read-only crawl + lib inventory).
+
+## 1. Session 19 May 2026 (late) — Dilemma depth pilot rewrite — ✅ SHIPPED
 
 **Sprint `DILEMMA-STATIC-41-REWRITE-PILOT-01` deployed to production** at
 ~11:27 local time on 19 May 2026. 5 static dilemmas rewritten in EN + IT

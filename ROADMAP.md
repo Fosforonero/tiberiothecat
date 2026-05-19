@@ -3,7 +3,44 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 19 Maggio 2026 — `IT-TOPIC-LANDING-PARITY-01` chiuso come no-op (parità 11+11 già presente); aggiunta Retraction 3 al GSC report.
+Ultimo aggiornamento: 19 Maggio 2026 (fine giornata) — AdSense low-value remediation (Phase 1 + Phase 2) deployed; results vote-CTA bugfix deployed; Stripe Premium checkout UI verified live; Vercel CPU mitigations live.
+
+---
+
+## 19 May 2026 (end of day) — AdSense remediation + Stripe QA + Vercel mitigation ✅ DONE
+
+AdSense rejected the site again for "Contenuti di scarso valore". Full Phase 1 defensive remediation + Phase 2 substantive remediation shipped in the same day. Plus a side bugfix on results-page UX and CPU mitigations after a Vercel Fluid Active CPU warning.
+
+**Deployed today:**
+- `2776c4b perf(sitemap): hourly ISR revalidate to cut crawler CPU` — Vercel CPU mitigation #1.
+- `db4d161 perf(api): cache aggregate results responses` — Vercel CPU mitigation #2 (15s edge cache + SWR).
+- `d3b2d9b docs(adsense): audit low-value content risks` — read-only audit, root-cause analysis, Phase 1/2 plan.
+- `87741d5 fix(adsense): suppress ads on thin review-risk surfaces` — Phase 1 gates: `<AdSlot>` only renders on play/results when `hasStaticInsight(id)`; results adds `total >= 50` gate; `/store` + `/it/store` noindex + sitemap removal; dynamic AI play/results noindex.
+- `c88beaf fix(results): add vote CTA for unvoted dilemmas` — unrelated bugfix surfaced by PM during today's deploy: results pages had no path back to `/play/<id>` for unvoted users. Server now passes `hasVoted` to client; client renders "Vote on this dilemma →" card when neither `voted` (searchParam) nor `hasVoted` (cookie/Supabase) is set.
+- `19a020b feat(content): add per-id insights for all static dilemmas` — Phase 2 substantive: insight coverage 5 → 41 static IDs (EN+IT, 328 substantive strings). Tests extended to enforce 41/41 coverage and forbidden-claim sweeps. The Phase 1 gate now opens for every static dilemma as soon as it crosses 50 votes.
+
+**Production smoke** (post-deploy): all 7 checks passed — `/results/trolley`, `/it/results/trolley`, `/results/whistleblower`, `/it/results/whistleblower`, `/results/mercy-kill`, `/it/results/mercy-kill` all render per-id EN/IT insight bodies; sitemap holds 295 URLs (no `/store`); both store routes carry `robots: { index: false, follow: true }`.
+
+**Stripe Premium QA** (separate docs-only closure today):
+- `PREMIUM-STRIPE-LIVE-QA-01`: ✅ Checkout UI verified live by PM. Stripe Checkout opens on `splitvote.io/profile` and displays the Premium recurring monthly product correctly. The 29 Apr env-var fix is fully effective.
+- ⏳ Live end-to-end payment (full webhook + entitlement cycle): not exercised this session. Residual risk small; not urgent.
+- `STRIPE-STORE-COSMETICS-CHECKOUT-CONFIG-AUDIT-01`: closed as configuration-known/no-code. PM decision: defer Pixie/cosmetic one-time launch; keep all 14 Store products in graceful "coming soon" modal until business case justifies launch. Full code/migration/webhook is production-ready — only Stripe Products + 14 `STRIPE_PRICE_*` env vars remain unconfigured.
+
+**Vercel performance**: 75% Fluid Active CPU warning received today. Mitigations `db4d161` + `2776c4b` deployed. Avoid nonessential deploys; batch future pushes. PM to recheck Vercel dashboard usage cycle in 24–48 h.
+
+**LEGAL.md**: assessed for each commit — no new data processors, no new tracking, no new cookies, no new user data flows. The AdSense ad surface was *reduced*, not expanded. No public Privacy/Terms changes required. Logged in LEGAL.md "Recent sprints".
+
+### Next candidates (tomorrow, priority order)
+
+| # | Sprint | Status | Notes |
+|---|---|---|---|
+| A | `ADSENSE-REVIEW-READY-CHECKLIST-01` | Ready (top) | Read-only verification pass. Walks through `reports/adsense-low-value-remediation-audit-2026-05-19.md` "Do not request AdSense review until these are done" checklist; confirms each item is live in production; report green/red per line. Effort: ~1 h. |
+| B | PM submits AdSense re-review | HUMAN_ONLY, conditional on A passing | After 24-48 h Googlebot recrawl window. PM action only — Claude cannot trigger AdSense from the dashboard. |
+| C | `ABOUT-EDITORIAL-TRUST-ENRICHMENT-01` (or `EDITORIAL-POLICY-PAGE-01`) | Ready, conditional on AdSense re-review failing | If AdSense rejects again post-Phase-2, the next move is Phase 2 trust/E-E-A-T: enrich `/about` from ~300 to ~600-800 words, add `/editorial-policy` + `/methodology` pages (EN+IT), add `Person`-typed author byline on cornerstone blog posts. Estimated 4-6 h. |
+| D | `GSC-EXPORT-CROSS-REFERENCE-01` | Blocked on PM | Unchanged — PM CSV export still pending. |
+| E | `STRIPE-PREMIUM-LIVE-PAYMENT-01` | HUMAN_ONLY | One-off live €4.99 transaction (refundable from Stripe dashboard) to close the last open Stripe QA checkbox. Not urgent. |
+
+Removed from queue: `PREMIUM-STRIPE-LIVE-QA-01` (checkout UI closed today; payment E2E split out as item E). `STRIPE-STORE-COSMETICS-CHECKOUT-CONFIG-AUDIT-01` (closed as configuration-known/no-code). `BLOG-INVALID-DILEMMA-ID-FIX-01` (audit was stale; `why-not-intervene` not in source — verified via `rg`).
 
 ---
 

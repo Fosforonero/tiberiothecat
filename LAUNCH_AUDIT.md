@@ -358,8 +358,26 @@ Stripe retry schedule: ~1min, 5min, 30min, 2h, 5h, 10h, 24h. Un evento in stato 
 - [x] **Bug fix (28 Apr 2026)**: aggiunto try/catch su `stripe.checkout.sessions.create()` in checkout, subscription e `billingPortal.sessions.create()` in portal — prima, Stripe throw → 500 non-JSON → client "Network error"; ora → 500 JSON con messaggio utile
 - [x] **Audit statico completo (28 Apr 2026)**: webhook lifecycle, idempotency, premium activation, cancellation, AdSlot, entitlements API, log safety — tutti verificati. Runbook allineato al codice.
 - [x] **Env var fix (29 Apr 2026): `STRIPE_PRICE_ID_PREMIUM` Production corretta** — Root cause reale: `STRIPE_PRICE_ID_PREMIUM` in Vercel Production conteneva per errore una Stripe Secret Key (`sk_live_...`) invece di un Price ID. Il codice usa `mode: 'subscription'` con `line_items: [{ price: STRIPE_PRICE_ID_PREMIUM }]` — Stripe rifiutava la chiamata perché il valore non era un Price ID valido. Nota: la narrativa precedente "prezzo one-time vs ricorrente" era imprecisa; la root cause era l'env var errata, non la configurazione del prodotto Stripe. Fix manuale (Matteo, 29 Apr 2026): env var aggiornata con il Price ID corretto del prodotto SplitVote Premium (recurring monthly, €4.99/mese). Vercel Production redeployata. Nessuna modifica al codice runtime.
-- [ ] **Checkout UI su `splitvote.io/profile` — verifica manuale** — env var fix completato (29 Apr 2026). Prossimo step: aprire `splitvote.io/profile` con account reale non-premium → cliccare "Upgrade to Premium" → verificare che Stripe Checkout si apra e mostri il piano ricorrente mensile correttamente. Non è ancora stata eseguita.
-- [ ] **Pagamento live end-to-end — verifica manuale** — il loop completo (checkout → webhook → `is_premium=true` → entitlements) non è ancora stato eseguito in live mode con carta reale o prepagata. Raccomandato prima di promuovere Premium a utenti reali.
+- [x] **Checkout UI su `splitvote.io/profile` — verifica manuale ✅ 19 Mag 2026** — PM ha aperto `splitvote.io/profile` con account reale non-premium e cliccato "Upgrade to Premium": Stripe Checkout si apre correttamente in live mode e mostra il prodotto Premium ricorrente mensile (€4.99/mese). Sprint `PREMIUM-STRIPE-LIVE-QA-01`.
+- [ ] **Pagamento live end-to-end — verifica manuale** — il loop completo (checkout → webhook → `is_premium=true` → entitlements) non è ancora stato eseguito in live mode con carta reale o prepagata. La verifica UI sopra (✅ 19 Mag 2026) conferma che il prodotto/prezzo è corretto; resta da chiudere solo il submit + webhook live. Raccomandato prima di promuovere Premium a utenti reali, ma non urgente: il rischio principale (env var errata) è già stato eliminato dal fix del 29 Apr.
+
+### Store One-Time Purchases (Pixie / Cosmetics) — Intentionally Deferred
+
+Decisione PM (19 Mag 2026): **non lanciare** i Pixie/cosmetic one-time purchases ora. Il modal "Checkout coming online soon — sit tight" mostrato dal Store su `splitvote.io/store` è il fallback intenzionale del codice quando le env vars `STRIPE_PRICE_*` (14 totali — 6 Pixie + 8 cosmetics) non sono configurate.
+
+- **Codice**: corretto e production-ready. `POST /api/checkout/one-time` restituisce `{ comingSoon: true }` + HTTP 501 quando `getStripePriceId(productId)` non trova l'env var; il client mostra il modal di cortesia.
+- **Migration**: `migration_v16_user_purchases` ✅ applicata — la tabella di destinazione esiste.
+- **Webhook**: handler `one_time_purchase` ✅ implementato con cross-check Stripe Price ID ↔ catalog anti-tampering.
+- **Bloccante per il lancio**: nessuno tecnico. Decisione di business — il PM sceglie quando attivare il lancio.
+
+**Per riattivare il lancio (sprint futuro `STORE-ONE-TIME-LAUNCH-01`)**: creare 6 Products in Stripe live mode + impostare le 6 env vars `STRIPE_PRICE_PIXIE_*` su Vercel Production scope + redeploy + test su lowest-cost Pixie. Runbook completo in `reports/qa-open-items-audit-2026-05-19.md` (sprint `STRIPE-STORE-COSMETICS-CHECKOUT-CONFIG-AUDIT-01` chiuso 19 Mag 2026 come configuration-known/no-code).
+
+**Rischi residui dello state deferred**:
+- Refund reverse-state per `one_time_purchase` rows usa il catalog legacy `lib/cosmetics-store.ts` invece di `lib/purchases.ts` → da auditare prima del lancio (`STORE-REFUND-PARITY-AUDIT-01`).
+- UX 409 `alreadyOwned` non gestita lato client (`ProductCard.tsx handleBuy` ignora il flag) → minore, non bloccante.
+- Tax/VAT inclusion default su Stripe Products → confermare politica con PM prima di Phase 1.
+
+Sprint `STRIPE-STORE-COSMETICS-CHECKOUT-CONFIG-AUDIT-01` chiuso come configuration-known/no-code (nessuna modifica al codice; nessuna modifica a Stripe; nessuna modifica a env vars).
 
 ### Blog Dynamic Storage
 - [ ] Progettare BlogDraft schema (vedi ROADMAP — Blog Weekly Generation)
@@ -506,10 +524,28 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 - [ ] Feedback quality signal: verificare che feedbackScore si aggiorni correttamente nei dynamic scenarios
 
 ### AdSense
-- [ ] Verifica account AdSense approvato (controlla status in dashboard Google)
-- [ ] NEXT_PUBLIC_ADSENSE_SLOT_RESULTS e NEXT_PUBLIC_ADSENSE_SLOT_PLAY con slot ID reali
-- [ ] Test ads visibili per utenti anonimi non-premium
-- [ ] Monitoring: policy violations alerts
+
+**19 May 2026 — AdSense rejected SplitVote again for "Contenuti di scarso valore" (low-value content, minimum content requirements, thin content with little or no added value, publisher policies/low-value inventory).** Remediation Phase 1 + Phase 2 deployed the same day.
+
+**Deployed remediation:**
+- ✅ Ad suppression on thin/template surfaces — `<AdSlot>` on `/play/[id]` and `/it/play/[id]` only renders when `hasStaticInsight(scenario.id)` is true; `/results/[id]` (shared by EN+IT) adds `total >= 50` gate (commit `87741d5`).
+- ✅ `/store` + `/it/store` `robots: { index: false, follow: true }` + removed from sitemap (commit `87741d5`).
+- ✅ Dynamic AI play/results pages `robots: { index: false, follow: true }` when not in `static-insights` (commit `87741d5`).
+- ✅ Per-id static insights expanded from 5 → 41 (EN+IT, 328 substantive strings; commit `19a020b`). The Phase 1 gate now opens for every static dilemma once it crosses 50 votes.
+- ✅ Results vote-CTA bugfix (`c88beaf`) — unrelated improvement: unvoted users on `/results/<id>` now see a "Vote on this dilemma →" card instead of a dead-end.
+- Full audit: [reports/adsense-low-value-remediation-audit-2026-05-19.md](reports/adsense-low-value-remediation-audit-2026-05-19.md).
+
+**Pending:**
+- [ ] Wait 24-48 h after deploy for Googlebot recrawl with new content + noindex/sitemap state.
+- [ ] Run `ADSENSE-REVIEW-READY-CHECKLIST-01` (read-only verification of every checklist item in the audit report's "Do not request AdSense review until these are done" section).
+- [ ] PM submits AdSense re-review from the AdSense dashboard once the checklist is green.
+- [ ] If re-review fails again: Phase 2 trust/E-E-A-T sprint — enrich `/about`, add `/editorial-policy` + `/methodology`, `Person`-typed author bylines.
+
+**Pre-existing AdSense queue items (still open):**
+- [ ] Verifica account AdSense approvato (controlla status in dashboard Google) — currently rejected; pending re-review per above.
+- [ ] NEXT_PUBLIC_ADSENSE_SLOT_RESULTS e NEXT_PUBLIC_ADSENSE_SLOT_PLAY con slot ID reali.
+- [ ] Test ads visibili per utenti anonimi non-premium — deferred until account approval.
+- [ ] Monitoring: policy violations alerts.
 
 ### Legal & Privacy
 - [x] Cookie banner granulare con Consent Mode v2 — COMPLETATO 28 Apr 2026
@@ -583,7 +619,7 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 | # | Blocker | Impatto | Effort |
 |---|---------|---------|--------|
 | 1 | Load test + Redis/Supabase stress test | Stabilità a scala | Medio (1 sprint) |
-| 2 | Stripe Premium — verifica checkout UI live + pagamento end-to-end (env fix ✅ 29 Apr) | Revenue + user trust | Basso (1–2 test manuali) |
+| 2 | Stripe Premium — pagamento live end-to-end (checkout UI ✅ 19 Mag 2026, env fix ✅ 29 Apr) | Revenue + user trust | Basso (1 test manuale residuo) |
 | 3 | AdSense approval | Monetizzazione | Fuori dal nostro controllo |
 | 4 | Google TCF CMP (per personalized ads EEA a scala) | AdSense policy compliance | Basso-medio (libreria esterna) |
 | 5 | Disaster recovery runbook | Resilienza operativa | Basso (documentazione) |
