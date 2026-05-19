@@ -1,54 +1,59 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 19 May 2026 (late afternoon) — DILEMMA-STATIC-41-REWRITE-PILOT-01 committed; **PRE-DEPLOY Redis reset required for 4 IDs**.
+Last updated: 19 May 2026 (evening) — DILEMMA-STATIC-41-REWRITE-PILOT-01 deployed live; Redis aggregate keys already absent (DEL no-op); no Supabase op needed.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 19 May 2026 (late) — Dilemma depth pilot rewrite
+## 0. Session 19 May 2026 (late) — Dilemma depth pilot rewrite — ✅ SHIPPED
 
-**Sprint `DILEMMA-STATIC-41-REWRITE-PILOT-01` committed locally** (no push
-yet). 5 static dilemmas rewritten in EN + IT for moral depth, per the
-audit at `reports/dilemma-depth-audit-2026-05-19.md`. Files touched:
-`lib/scenarios.ts`, `lib/scenarios-it.ts`. Vote-mechanics, IDs,
-categories, routes, sitemap, and `Scenario` schema all preserved.
+**Sprint `DILEMMA-STATIC-41-REWRITE-PILOT-01` deployed to production** at
+~11:27 local time on 19 May 2026. 5 static dilemmas rewritten in EN + IT
+for moral depth, per the audit at `reports/dilemma-depth-audit-2026-05-19.md`.
+Files touched: `lib/scenarios.ts`, `lib/scenarios-it.ts`. Vote-mechanics,
+IDs, categories, routes, sitemap, and `Scenario` schema all preserved.
+
+**Deploy sequence (`DEPLOY-DILEMMA-PILOT-01`):**
+- Pushed 3 commits (`4fc2081`, `dba24cf`, `5bd0036`) to `origin/main`.
+- Vercel production deploy went live ~7 min after push (curl-confirmed
+  via the marker string `"halve the income of the top 1%"` on
+  `/play/rich-or-fair`).
+- Live smoke on 7 URLs (EN + IT, play + results, `rich-or-fair` + `deepfake-expose`):
+  all HTTP 200, all new EN+IT strings rendered, zero `| SplitVote | SplitVote`
+  double-suffix occurrences.
+- PM ran `DEL votes:rich-or-fair votes:censor-speech votes:deepfake-expose votes:prison-abolition`
+  in the Upstash production console. Response: `0` — **all four keys
+  were already absent.** No state change required.
+- PM verified `/results/{rich-or-fair, censor-speech, deepfake-expose, prison-abolition, robot-judge}`
+  → all 5 show 0/fresh aggregate state, including `votes:robot-judge`
+  (which had been intended to retain history; in practice the key was
+  also absent in production Redis, so all 5 dilemmas start fresh).
+  Cosmetic-only deviation from plan; accepted.
+- **No Supabase operation performed and none required.** Per-user
+  `dilemma_votes.currentVote` rows survive on the 4 (now 5) rewritten
+  IDs as previously decided; users can re-vote within `can_change_until`.
+
+Sprint sequence today (chronological):
 
 Sprint sequence today (chronological):
 1. `DILEMMA-DEPTH-AUDIT-01` — read-only audit. Committed `dba24cf`.
 2. `DILEMMA-STATIC-41-REWRITE-PILOT-01` — implementation. Committed
    (this section's release).
 
-### 🚨 BEFORE PUSH/DEPLOY — Aggregate Redis vote reset REQUIRED
+### Post-deploy Redis state — resolved
 
-The 5 rewritten dilemmas keep their `id`, so existing Redis aggregate
-keys `votes:<id>` survive the rewrite. For 4 of the 5, the new question
-sits on a **different moral axis** than the old one — the cumulative
-split would mislead voters on the new framing (see smoke report in the
-session log and the per-id risk table below).
+The pre-deploy reset plan (DEL of 4 aggregate keys) was carried out by
+PM in the Upstash production console after the new text was live. The
+`DEL` returned `0` — all four target keys (`votes:rich-or-fair`,
+`votes:censor-speech`, `votes:deepfake-expose`, `votes:prison-abolition`)
+were already absent before the reset. `votes:robot-judge`, which the
+plan intentionally excluded from the reset, also turned out to be
+absent in production Redis. Net effect: all 5 rewritten dilemmas now
+start with fresh aggregate counts. The misleading-split window the
+runbook was designed to close never materialised in practice.
 
-**Before deploying this branch, an operator with Redis access MUST reset:**
-
-- `votes:rich-or-fair`     → `{ a: 0, b: 0 }`
-- `votes:censor-speech`    → `{ a: 0, b: 0 }`
-- `votes:deepfake-expose`  → `{ a: 0, b: 0 }`
-- `votes:prison-abolition` → `{ a: 0, b: 0 }`
-
-**DO NOT reset** `votes:robot-judge` — semantic shift on that ID is low
-(both old + new A endorse "use AI", both B endorse "don't"); the
-historical split is still directionally meaningful.
-
-**Reset timing:** ideally within a few minutes of deploy. The window
-between deploy of new text and reset of old counts is exactly the
-window where users see misleading splits — minimise it.
-
-**Reset mechanism:** Redis writes are HUMAN_ONLY per CLAUDE.md. Use the
-Upstash console or an authorised admin script. Implementer (Claude) did
-not and must not run this.
-
-**Supabase `dilemma_votes` carry-over** is **accepted intentionally**.
-Per-user `currentVote='a'` rows from the old text will persist on the 4
-rewritten IDs. This affects a small fraction of logged-in users (each
-user can change their vote within `can_change_until` if they choose).
-No Supabase wipe planned; no Supabase migration required for deploy.
+Supabase `dilemma_votes` per-user carry-over remains accepted as-is
+(small user fraction; `can_change_until` re-vote available). No
+Supabase write proposed or required.
 
 ### Per-ID semantic-shift risk (compressed reference)
 
