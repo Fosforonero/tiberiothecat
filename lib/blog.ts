@@ -3682,7 +3682,7 @@ const EN_POSTS: BlogPost[] = [
     date: '2026-05-11',
     readingTime: 6,
     tags: ['bystander effect', 'moral psychology', 'diffusion of responsibility', 'Darley Latané', 'ethics'],
-    relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'why-not-intervene'],
+    relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'whistleblower'],
     alternateSlug: 'effetto-spettatore-e-responsabilita-morale',
     content: [
       {
@@ -4314,6 +4314,28 @@ const IT_POSTS: BlogPost[] = [
     tags: ['etica', 'filosofia', 'psicologia morale'],
     relatedDilemmaIds: ['trolley', 'cure-secret', 'memory-erase'],
     alternateSlug: 'what-is-a-moral-dilemma',
+    faq: [
+      {
+        q: "Che differenza c'è tra dilemma morale e dilemma etico?",
+        a: 'Nell\'uso quotidiano i due termini sono praticamente intercambiabili. Alcuni filosofi riservano "dilemma etico" ai conflitti interni a un codice professionale (un medico che pesa la riservatezza del paziente contro l\'informazione alla famiglia) e "dilemma morale" ai conflitti più ampi fra valori personali. In entrambi i casi descrivono situazioni in cui ogni opzione rompe qualcosa.',
+      },
+      {
+        q: 'I dilemmi morali hanno una risposta giusta?',
+        a: 'Un vero dilemma morale è proprio quello in cui persone ragionevoli continuano a non essere d\'accordo anche dopo aver visto tutti i fatti. Possono esistere risposte difendibili — risposte che si possono argomentare — ma nessuna lascia il bilancio morale del tutto in pari. Le scelte difficili sono un\'altra cosa: sembrano dilemmi, ma con un ragionamento attento emerge un\'opzione più chiara.',
+      },
+      {
+        q: 'Qual è il dilemma morale più famoso?',
+        a: 'Il problema del carrello, introdotto dalla filosofa Philippa Foot nel 1967. Chiede se sia accettabile deviare un carrello fuori controllo per uccidere una persona invece di cinque. È diventato celebre perché quasi tutti rispondono di sì — e poi rifiutano la variante "del ponte", in cui bisogna spingere fisicamente qualcuno. L\'asimmetria fra le due risposte è la parte interessante.',
+      },
+      {
+        q: 'Come provano davvero a risolverli i filosofi?',
+        a: 'Tre tradizioni dominano la discussione. I consequenzialisti scelgono l\'opzione che produce il miglior risultato. I deontologi verificano se l\'azione rispetta regole assolute (non uccidere, non mentire). L\'etica delle virtù chiede invece cosa farebbe una persona di carattere virtuoso. Spesso le tre prospettive arrivano a verdetti diversi — ed è in parte per questo che i dilemmi continuano a contare.',
+      },
+      {
+        q: 'Un dilemma morale può avere una sola opzione?',
+        a: 'Sì — si chiamano "dilemmi a opzione unica". Hai un solo corso d\'azione possibile, ma compierlo viola comunque qualcosa a cui tieni (un medico obbligato a fare triage in un\'emergenza di massa, per esempio). Il dilemma sta nel costo morale, non nella scelta fra alternative.',
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -4386,6 +4408,28 @@ const IT_POSTS: BlogPost[] = [
     tags: ['problema del carrello', 'etica', 'filosofia', 'dilemmi classici'],
     relatedDilemmaIds: ['trolley', 'organ-harvest'],
     alternateSlug: 'trolley-problem-explained',
+    faq: [
+      {
+        q: 'Chi ha inventato il problema del carrello?',
+        a: 'La filosofa Philippa Foot, in un saggio del 1967 intitolato "The Problem of Abortion and the Doctrine of the Double Effect". Nella versione originale parlava di un tram fuori controllo, non di un carrello, e il suo vero bersaglio non era l\'etica della guida ma la dottrina filosofica che distingue le conseguenze volute da quelle previste ma non intenzionali.',
+      },
+      {
+        q: 'Qual è la differenza fra la versione della leva e quella del ponte?',
+        a: 'Il bilancio dei morti è identico — una vittima per salvarne cinque. Cambia il meccanismo. Nel caso della leva la morte è un effetto collaterale del deviare la minaccia. Nel caso del ponte usi una persona come oggetto per fermarla. La maggior parte delle persone accetta la prima e rifiuta la seconda: è proprio questa asimmetria ad aver reso celebre il problema.',
+      },
+      {
+        q: 'Cosa scelgono davvero le persone?',
+        a: "In grandi sondaggi internazionali, circa l'80-90% tira la leva e solo intorno al 30% spinge la persona dal ponte. Il divario è robusto attraverso età, istruzione e quasi tutte le culture, anche se i numeri esatti oscillano.",
+      },
+      {
+        q: 'Il problema del carrello ha mai influenzato il mondo reale?',
+        a: "Sì. Quando Mercedes-Benz ha dovuto decidere come le sue auto a guida autonoma dovessero ordinare la priorità delle vite in collisioni inevitabili, il dibattito ha richiamato esplicitamente il problema del carrello. L'esperimento Moral Machine del MIT ha raccolto circa 40 milioni di voti su dilemmi di guida autonoma; i risultati sono stati citati in discussioni di policy dall'UE a Singapore.",
+      },
+      {
+        q: 'È uno strumento filosofico utile o solo un "meme filosofico"?',
+        a: "Entrambe le cose. Molti eticisti sostengono che la cornice originale sia artificiale e che la vita morale reale raramente permetta un'aritmetica utilitarista così pulita. Altri rispondono che è proprio questo a renderlo utile: isola un singolo conflitto — conseguenze contro vincoli — e permette ai ricercatori di misurare come le persone ragionano quando nient'altro interferisce.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -5733,12 +5777,12 @@ const IT_POSTS: BlogPost[] = [
       height: 630,
     },
     locale: 'it',
-    title: "Etica dell'IA: Cosa Hanno Scelto 40 Milioni di Persone sugli Incidenti delle Auto Autonome",
-    seoTitle: "Dilemmi Etici dell'Intelligenza Artificiale: Lo Studio Moral Machine e le Scelte di 40 Milioni di Persone",
+    title: "Etica dell'IA: cosa hanno scelto 40 milioni di persone sugli incidenti delle auto autonome",
+    seoTitle: "Etica dell'IA: 40 milioni di scelte morali (Moral Machine)",
     description:
-      "Nel 2018, i ricercatori del MIT hanno raccolto 40 milioni di decisioni morali da 233 paesi sugli incidenti delle auto a guida autonoma. Ecco cosa crede davvero il mondo — e perché le risposte differiscono così tanto tra culture.",
+      "Nel 2018, i ricercatori del MIT hanno raccolto 40 milioni di decisioni morali da 233 paesi sugli incidenti delle auto a guida autonoma. Cosa hanno scelto le persone — e perché le risposte cambiano così tanto tra culture.",
     seoDescription:
-      "Un esperimento del 2018 ha raccolto 40 milioni di decisioni morali da 233 paesi su scenari di crash con auto autonome. Scopri cosa hanno scelto le persone, dove le culture si dividono e cosa significa per l'etica dell'IA.",
+      "Il Moral Machine del MIT: 40 milioni di decisioni morali da 233 paesi su incidenti di auto autonome. Cosa scelgono le persone e dove si divide il mondo.",
     date: '2026-05-09',
     readingTime: 6,
     tags: ['etica ia', 'auto a guida autonoma', 'moral machine', 'etica tecnologia', 'filosofia'],
@@ -6307,11 +6351,11 @@ const IT_POSTS: BlogPost[] = [
     slug: 'causare-vs-permettere-danno',
     locale: 'it',
     title: "Causare vs Permettere il Danno — Quando l'Inazione È Anche una Scelta",
-    seoTitle: "Causare vs Permettere il Danno — Perché Tirare la Leva Sembra Diverso da Spingere l'Uomo",
+    seoTitle: "Causare vs permettere il danno: l'asimmetria morale",
     description:
       "Tirare una leva per deviare un carrello sembra diverso dallo spingere qualcuno per fermarlo — anche quando la matematica è identica. La distinzione tra causare e permettere è uno degli enigmi più profondi della filosofia morale. E modella come ragioniamo su tutto, dalla medicina alla povertà globale.",
     seoDescription:
-      "Cos'è la distinzione tra causare e permettere il danno? Perché la maggior parte delle persone accetta un'uccisione attiva in alcuni casi e la rifiuta in altri? Esplora l'asimmetria morale che divide consequenzialisti e deontologi.",
+      "Perché tirare la leva sembra diverso dallo spingere qualcuno, anche quando la matematica è identica. Un'asimmetria al cuore della filosofia morale.",
     date: '2026-05-10',
     readingTime: 5,
     tags: ['causare vs permettere', 'etica', 'filosofia morale', 'problema del carrello', 'omissione'],
@@ -7832,7 +7876,7 @@ const IT_POSTS: BlogPost[] = [
     date: '2026-05-11',
     readingTime: 6,
     tags: ['effetto spettatore', 'psicologia morale', 'diffusione di responsabilità', 'Darley Latané', 'etica'],
-    relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'why-not-intervene'],
+    relatedDilemmaIds: ['trolley', 'lifeboat', 'innocent-juror', 'whistleblower'],
     alternateSlug: 'bystander-effect-and-moral-responsibility',
     content: [
       {
@@ -8164,6 +8208,28 @@ const IT_POSTS: BlogPost[] = [
     tags: ['ferita morale', 'psicologia', 'colpa', 'etica'],
     relatedDilemmaIds: ['whistleblower', 'cover-accident', 'report-friend', 'innocent-juror'],
     alternateSlug: 'moral-injury-when-values-break',
+    faq: [
+      {
+        q: 'La ferita morale è la stessa cosa del PTSD?',
+        a: 'No. Il PTSD è una diagnosi clinica legata a una risposta basata sulla paura dopo un evento che minaccia la vita. La ferita morale è un costrutto distinto — definito nel saggio fondativo di Litz e colleghi del 2009 — concentrato su colpa, vergogna e conflitto esistenziale dopo atti od omissioni che hanno violato valori profondamente sentiti. Possono coesistere. Possono anche presentarsi indipendentemente, e rispondono a cornici terapeutiche diverse.',
+      },
+      {
+        q: 'Chi studia oggi la ferita morale?',
+        a: 'Il National Center for PTSD del Dipartimento dei Veterani statunitense mantiene ricerca attiva e formazione clinica sul tema. Il concetto viene applicato sempre più anche a operatori sanitari (soprattutto dopo il triage Covid), operatori umanitari, giudici e persone in ruoli di caregiving familiare.',
+      },
+      {
+        q: 'Può capitare al di fuori della guerra o della medicina?',
+        a: 'Sì. Le condizioni strutturali — essere costretti a un\'azione che tradisce un valore a cui si tiene, senza un\'alternativa pulita — compaiono in molti contesti ordinari: licenziamenti aziendali che si è obbligati a comunicare, mediazioni di affidamento, lavoro di moderazione dei contenuti, persino il rimanere in silenzio dentro una famiglia durante episodi di crudeltà. Il pattern del dolore è lo stesso; cambia solo il palcoscenico.',
+      },
+      {
+        q: 'Come la trattano i clinici?',
+        a: 'Non esiste un protocollo unico approvato. Gli approcci con la base di ricerca più solida sono l\'Adaptive Disclosure (Litz), la Cognitive Processing Therapy adattata alla ferita morale, e i percorsi di gruppo che combinano ragionamento etico ed elaborazione del lutto. Esistono varianti laiche e a base religiosa. La sola terapia conversazionale generica è spesso considerata insufficiente.',
+      },
+      {
+        q: 'Che differenza c\'è fra ferita morale e "disagio morale"?',
+        a: "Il disagio morale (Andrew Jameton, etica infermieristica, 1984) descrive l'esperienza di sapere qual è la cosa giusta ma essere impediti dal farla. La ferita morale è ciò che può seguire quando il disagio diventa cronico, quando un atto viene effettivamente compiuto, o quando non è mai esistita un'opzione moralmente accettabile. Il disagio è il segnale d'allarme; la ferita è la lesione.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -8230,6 +8296,28 @@ const IT_POSTS: BlogPost[] = [
     tags: ['limerence', 'relazioni', 'psicologia', 'ossessione romantica'],
     relatedDilemmaIds: ['love-or-career', 'truth-friend', 'sibling-secret', 'memory-erase'],
     alternateSlug: 'limerence-love-obsession-dilemmas',
+    faq: [
+      {
+        q: 'Chi ha coniato il termine "limerence"?',
+        a: 'La psicologa Dorothy Tennov, nel libro del 1979 *Love and Limerence: The Experience of Being in Love*. Lo costruì a partire da centinaia di interviste, e lo usò proprio per nominare lo stato involontario, intrusivo, alimentato dalla speranza, che non rientrava nei concetti già esistenti di "amore" o "infatuazione".',
+      },
+      {
+        q: 'Limerence ed essere innamorati sono la stessa cosa?',
+        a: 'No. La distinzione di Tennov: l\'amore sopravvive alla certezza sull\'altra persona, la limerence spesso crolla quando l\'ambiguità sparisce. Si caratterizza per pensieri intrusivi sull\'"oggetto limerente", oscillazioni emotive estreme legate ai segnali percepiti, e una speranza di reciprocità che la mente continua a rigenerare. Un amore mutuo e stabile non ha bisogno di questo turbinio.',
+      },
+      {
+        q: 'La limerence è una diagnosi clinica?',
+        a: 'No. Non compare nel DSM-5 né nell\'ICD-11. Alcuni clinici trattano i casi gravi come un comportamento riconducibile allo spettro ossessivo-compulsivo, e il concetto ha avuto una ripresa di interesse nella ricerca dopo il 2020, ma non c\'è una definizione clinica condivisa né un protocollo di trattamento. Va usato in senso descrittivo, non diagnostico.',
+      },
+      {
+        q: 'Che differenza c\'è fra limerence e una cotta?',
+        a: 'Le cotte sono di solito più brevi, meno intense, e la persona riesce ancora a concentrarsi su altre parti della propria vita. La limerence è totalizzante: chi la vive racconta che interferisce con lavoro, sonno, alimentazione e relazioni esistenti. Le interviste di Tennov descrivevano episodi che andavano da 18 mesi a diversi anni.',
+      },
+      {
+        q: 'Perché l\'incertezza la rende più forte?',
+        a: 'Il rinforzo intermittente — lo stesso principio dietro le slot machine — produce il condizionamento comportamentale più potente. Una risposta ritardata, un gesto ambiguo, una porta socchiusa: tutto questo tiene la mente a generare speranze e a rileggere micro-segnali. Un sì chiaro (o un no chiaro) di solito spezza il loop. Il dilemma è che spesso, allora, la sincerità è la risposta più amorevole.',
+      },
+    ],
     content: [
       {
         type: 'p',

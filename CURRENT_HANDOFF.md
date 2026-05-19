@@ -1,8 +1,160 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 16 May 2026 (late) — blog Redis ISR root-cause fix + middleware matcher narrowing
+Last updated: 19 May 2026 (afternoon) — IT topic landing parity audit closed as no-op (1:1 already), GSC report Retraction 3 added
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+
+## 0. Session 19 May 2026 — IT topic landing parity audit closure
+
+**Sprint `IT-TOPIC-LANDING-PARITY-01` closed as no-op.** Phase 1 audit
+confirmed EN and IT topic landings are already at perfect 1:1 reciprocal
+parity (11 + 11 in both `lib/seo-topics.ts` and the live sitemap). The
+"19 EN / 12 IT" gap cited in the 18 May GSC report is a counting artifact
+(non-topic single-segment URLs erroneously bucketed as topic landings).
+No code touched.
+
+**Reports:**
+- New: [reports/it-topic-landing-parity-audit-2026-05-19.md](reports/it-topic-landing-parity-audit-2026-05-19.md)
+- Updated: [reports/gsc-indexing-diagnosis-2026-05-18.md](reports/gsc-indexing-diagnosis-2026-05-18.md)
+  → Retraction 3 added; §5 in Top 5 (topic landing content gap)
+  struck through in "What still stands".
+
+### Next recommended work — priority order (post-19 May)
+
+1. **A. `GSC-EXPORT-CROSS-REFERENCE-01`** — still **blocked on PM**.
+   Action unchanged from 18 May: export `Pages › Not indexed (Not found
+   404)` from Search Console as CSV → drop in `reports/`. Estimated
+   effort 1–2 h once data lands.
+2. **B. `BLOG-SEO-CONTENT-STRATEGY-01`** — **now the top unblocked
+   sprint.** Full audit of singolari articoli blog (EN + IT), update
+   aging copy, identify cluster gaps, queue 2–3 new articles. Use
+   `.claude/agents/blog-seo-editor.md` per `AGENTS.md` agent pairing
+   rules. Output: report only, no auto-publish.
+3. **C. `PREMIUM-STRIPE-LIVE-QA-01`** — HUMAN_ONLY. Manual live
+   checkout QA on `price_1TQZuO6MLlYKqmclQm57kmvI` (€4.99/mo) if still
+   pending per `LAUNCH_AUDIT.md`. Real card required.
+4. **D. `PIXIE-VISUAL-QA-POLISH-02`** — conditional. Only if PM
+   visually finds a defect on /profile, /store, /dashboard, /u/[id],
+   post-vote share. No queued issue.
+
+Removed from queue: `IT-TOPIC-LANDING-PARITY-01` (closed as no-op).
+
+## 0a. Session 18 May 2026 — SEO/Pixie/category closure day
+
+**State at end of day:** SEO technical work is **closed for today**. The
+roadmap for tomorrow is content/QA-driven, not code-driven. Nothing in the
+runtime code path requires further hardening today.
+
+### Sprints closed today
+
+| Sprint | Outcome |
+|---|---|
+| `SEO-TITLE-TEMPLATE-FIX-01` | Shipped — removed duplicate `\| SplitVote` suffix across category/topic surfaces. |
+| `SEO-WORLD-WORDING-01` | Shipped — public "world voted/chose" copy + metadata aligned to "SplitVote voters". |
+| `IT-RESULTS-GRAMMAR-01` | Shipped — IT grammar corrections introduced by SEO-WORLD-WORDING-01. |
+| `SITEMAP-I18N-CATEGORY-AUDIT-01` | Shipped — sitemap now emits both EN and IT entries per category, including `/category/lifestyle` and `/it/category/lifestyle`. |
+| `CATEGORY-HUBS-INTERNAL-LINKING-01` | Shipped — category pages converted into light discovery hubs with internal linking. |
+| `CATEGORY-CONTENT-FAQ-PARITY-01` | Shipped — added EN+IT lifestyle editorial + 3 FAQ items (10 unit tests pass; full parity across 9 categories × 2 locales). |
+| `RESULTS-PAGE-DEPTH-01` | Shipped — dilemma insight sections on play + results. |
+| `SEO-STALE-DYNAMIC-404-PROOF-01` | **Closed as no-op.** Crawl + live status check found **zero internal 404s** to pruned Redis dynamic IDs. Mitigation sprint cancelled. |
+
+### Retracted (false positives from earlier audits)
+
+- ~~`SEO-HREFLANG-BLOG-TOPICS-01` — "hreflang missing on ~112 of 296 URLs"~~
+  → Retracted. Audit had used case-sensitive grep for `hreflang=` but
+  Next.js emits camelCase `hrefLang=`. Re-audited case-insensitively:
+  296/296 URLs carry hreflang metadata. Sprint closed without code change.
+- ~~`BLOG-INDEX-DEAD-LINK-AUDIT-01` — "dead link `why-we-love-impossible-choices`"~~
+  → Retracted. The cited slug was a typo by the auditor; the real slug
+  is `why-people-love-impossible-choices` and returns 200. All 124
+  internal blog links verified live. Sprint closed without code change.
+- See [reports/gsc-indexing-diagnosis-2026-05-18.md](reports/gsc-indexing-diagnosis-2026-05-18.md)
+  → Errata section for the full retraction record + methodology rules
+  added to prevent recurrence.
+
+### Pixie / store state
+
+Carry-over bug from 16 May (cosmetics not applying) was resolved over
+this week's commits. Current state:
+
+- **Cosmetic ownership + equip flow:** fixed (`24c4cda` align pixie
+  cosmetics ownership and previews).
+- **Nova / scintille mapping:** fixed.
+- **Full Pixie selector:** shipped.
+- **"No frame" + "no glow" options:** shipped.
+- **Per-species asset scaling:** shipped (`1bd535d` normalize sprite
+  rendering across surfaces; `7ca3e6c` per-species tile preview +
+  active-skin precedence + cache invalidation).
+- **Remaining work:** only visual QA / polish if PM finds defects.
+  No queued sprint unless PM reports a regression.
+
+### Content inventory snapshot (verified today)
+
+- **Static dilemmas** (`lib/scenarios.ts`): **41**
+- **Dynamic dilemmas approved in Redis:** **779** linked on live
+  surfaces today, broken down as:
+  - `ai-en-*` / `ai-it-*`: 351
+  - `news-YYYYMMDD-*`: 204
+  - `culture-YYYYMMDD-*`: 56
+  - `gap-YYYYMMDD-*`: 48
+  - `evergreen-YYYYMMDD-*`: 48
+  - `psych-YYYYMMDD-*`: 36
+  - `viral-YYYYMMDD-*`: 24
+  - `grimdark-YYYYMMDD-*`: 12
+- **Dynamic dilemma drafts:** **0** (queue clean).
+- **Redis blog posts published:** **3**.
+- **Redis blog post drafts:** **3**.
+
+### 404 audit — reference for the future
+
+[reports/stale-dynamic-404-proof-2026-05-18.md](reports/stale-dynamic-404-proof-2026-05-18.md):
+
+- 22 surfaces crawled (home EN+IT, trending EN+IT, 9+9 category pages).
+- **863 unique** `/play/*` and `/results/*` URLs extracted from live
+  page bodies (no constructed URLs).
+- **863 / 863 = HTTP 200.** Zero 404s, zero 410s, zero 5xx.
+- 67 first-pass timeouts were all confirmed 200 on serial retry — not
+  treated as failures.
+- **Mitigation sprint cancelled.** No internal stale-dynamic 404 risk
+  to address from internal link emission.
+- Open external risk: historical URLs that Google saw before today's
+  crawl and may surface in GSC's "Not indexed (404)" report — addressable
+  only via `GSC-EXPORT-CROSS-REFERENCE-01` once PM exports the CSV.
+
+### Next recommended work — priority order for tomorrow
+
+1. **A. `GSC-EXPORT-CROSS-REFERENCE-01`** — **blocked on PM**. Action:
+   PM exports `Pages › Not indexed (Not found 404)` from Search Console
+   as CSV and drops it in the repo (e.g. `reports/gsc-pages-export-YYYY-MM-DD.csv`).
+   Once available, cross-reference against the static + dynamic ID
+   inventory to confirm which 404s are stale-only (safe to ignore) vs.
+   actually still reachable (would need redirect/410 policy). Estimated
+   effort: 1–2 h once data lands.
+2. **B. `IT-TOPIC-LANDING-PARITY-01`** — close the EN/IT topic-landing
+   gap (currently 19 EN vs 12 IT per `gsc-indexing-diagnosis-2026-05-18.md`
+   → Recommended next sprints → topic gap). Pure content sprint; touches
+   `lib/topic-landings.ts` / topic content files only; no runtime change.
+3. **C. `BLOG-SEO-CONTENT-STRATEGY-01`** — full audit of singolari
+   articoli blog (EN + IT), update aging copy, identify cluster gaps,
+   queue 2–3 new articles. Use `.claude/agents/blog-seo-editor.md` per
+   `AGENTS.md` agent pairing rules. Output: report only, no auto-publish.
+4. **D. `PREMIUM-STRIPE-LIVE-QA-01`** — if still pending per
+   `LAUNCH_AUDIT.md`: manual live checkout QA on the `€4.99/month`
+   recurring Price ID (`price_1TQZuO6MLlYKqmclQm57kmvI`). HUMAN_ONLY
+   per `AGENTS.md`; requires explicit GO + real card. Confirm the
+   webhook fires and the entitlement flips on the test account.
+5. **E. `PIXIE-VISUAL-QA-POLISH-02`** — only if PM visually inspects
+   /profile, /store, /dashboard, /u/[id], post-vote share card, and
+   finds a real defect. No queued issue today.
+
+### Files NOT to commit in this handoff
+
+- PM WIP currently uncommitted (do not stage by accident):
+  `PRODUCT_STRATEGY.md`, `ROADMAP.md` (PM has separate WIP edits in
+  deferred-backlog sections; today's handoff only prepends a new dated
+  section at the top), `app/results/[id]/ResultsClientPage.tsx`,
+  `lib/content-generation-prompts.ts`, `lib/content-generation-validate.ts`,
+  `lib/content-quality-gates.ts`, ~80 modified pixie PNGs.
 
 ## 0a. Session 16 May (late evening) — blog Redis ISR + middleware sprint
 

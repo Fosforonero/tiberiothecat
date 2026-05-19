@@ -3,7 +3,84 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 4 Maggio 2026 — Lifestyle dilemmas, dataset import pipeline, blog pagination/sort/IT fixes.
+Ultimo aggiornamento: 19 Maggio 2026 — `IT-TOPIC-LANDING-PARITY-01` chiuso come no-op (parità 11+11 già presente); aggiunta Retraction 3 al GSC report.
+
+---
+
+## 19 May 2026 — IT topic landing parity audit ✅ DONE (no-op)
+
+Phase 1 audit confirmed EN and IT topic landings already at perfect 1:1
+reciprocal parity (11 EN + 11 IT in both `lib/seo-topics.ts` and the live
+sitemap). The "19 EN / 12 IT" gap cited on 18 May was a counting artifact
+in the GSC audit, not a real state — see Retraction 3 in
+[reports/gsc-indexing-diagnosis-2026-05-18.md](reports/gsc-indexing-diagnosis-2026-05-18.md).
+
+**Closed as no-op:**
+- `IT-TOPIC-LANDING-PARITY-01` — zero missing IT landings; nothing to
+  implement. Audit: [reports/it-topic-landing-parity-audit-2026-05-19.md](reports/it-topic-landing-parity-audit-2026-05-19.md).
+
+**No runtime code touched.** Doc updates only:
+`reports/it-topic-landing-parity-audit-2026-05-19.md` (new),
+`reports/gsc-indexing-diagnosis-2026-05-18.md` (Errata Retraction 3),
+`CURRENT_HANDOFF.md`, `ROADMAP.md`.
+
+### Next candidates (post-19 May, priority order)
+
+| # | Sprint | Status | Notes |
+|---|---|---|---|
+| A | `GSC-EXPORT-CROSS-REFERENCE-01` | Blocked on PM | Needs PM to export `Pages › Not indexed (Not found 404)` CSV from Search Console. Only path left for historical external 404s. |
+| B | `BLOG-SEO-CONTENT-STRATEGY-01` | Ready (top unblocked) | Audit + update existing articles, plan cluster gaps + 2–3 new posts. Use `blog-seo-editor`. Report only, no auto-publish. |
+| C | `PREMIUM-STRIPE-LIVE-QA-01` | HUMAN_ONLY | Manual live checkout QA on `price_1TQZuO6MLlYKqmclQm57kmvI` (€4.99/mo) if still pending per `LAUNCH_AUDIT.md`. Real card required. |
+| D | `PIXIE-VISUAL-QA-POLISH-02` | Conditional | Only if PM visually finds a defect on /profile, /store, /dashboard, /u/[id], post-vote share. No queued issue today. |
+
+Removed from queue: `IT-TOPIC-LANDING-PARITY-01` (closed as no-op).
+
+---
+
+## 18 May 2026 — SEO/Pixie/category closure day ✅ DONE
+
+End-of-day status: SEO technical work closed; runtime code path stable.
+Detail per-sprint, retractions, content inventory, and next-day priorities
+are in [CURRENT_HANDOFF.md → Session 18 May](CURRENT_HANDOFF.md).
+
+**Shipped (this week + today):**
+- `SEO-TITLE-TEMPLATE-FIX-01` — removed duplicate `| SplitVote` suffix.
+- `SEO-WORLD-WORDING-01` — copy/metadata aligned to "SplitVote voters".
+- `IT-RESULTS-GRAMMAR-01` — IT grammar follow-up.
+- `SITEMAP-I18N-CATEGORY-AUDIT-01` — EN+IT sitemap parity per category.
+- `CATEGORY-HUBS-INTERNAL-LINKING-01` — category pages → discovery hubs.
+- `CATEGORY-CONTENT-FAQ-PARITY-01` — lifestyle editorial + FAQ; 10 unit
+  tests pass; 9 categories × 2 locales now have content parity.
+- `RESULTS-PAGE-DEPTH-01` — dilemma insight sections on play + results.
+- Pixie/store regression cluster (cosmetic ownership, equip flow,
+  Nova/scintille mapping, Pixie selector, "no frame"/"no glow",
+  per-species asset scaling).
+
+**Closed as no-op:**
+- `SEO-STALE-DYNAMIC-404-PROOF-01` — crawl of 22 source surfaces, 863
+  unique `/play/*` and `/results/*` URLs, 863/863 = HTTP 200. Zero
+  internal stale 404s. Mitigation sprint cancelled.
+  Report: [reports/stale-dynamic-404-proof-2026-05-18.md](reports/stale-dynamic-404-proof-2026-05-18.md).
+
+**Retracted (false positives from earlier audits, not regressions):**
+- ~~`SEO-HREFLANG-BLOG-TOPICS-01`~~ — case-sensitive grep bug;
+  296/296 URLs actually carry `hrefLang`.
+- ~~`BLOG-INDEX-DEAD-LINK-AUDIT-01`~~ — auditor typo on slug; all 124
+  internal blog links return 200.
+
+**Content inventory verified live (18 May):** 41 static dilemmas, 779
+dynamic approved in Redis, 0 dynamic drafts, 3 Redis blog published, 3
+Redis blog drafts.
+
+### Next candidates (tomorrow, priority order)
+
+| # | Sprint | Status | Notes |
+|---|---|---|---|
+| A | `GSC-EXPORT-CROSS-REFERENCE-01` | Blocked on PM | Needs PM to export `Pages › Not indexed (Not found 404)` CSV from Search Console. Only path left for historical external 404s. |
+| ~~B~~ | ~~`IT-TOPIC-LANDING-PARITY-01`~~ | ~~Ready~~ → **Closed no-op 19 May** | See 19 May section above. Premise (19 vs 12) was a counting artifact; actual state is 11+11 parity. |
+| C | `BLOG-SEO-CONTENT-STRATEGY-01` | Ready | Audit + update existing articles, plan cluster gaps + 2–3 new posts. Use `blog-seo-editor`. Report only, no auto-publish. |
+| D | `PREMIUM-STRIPE-LIVE-QA-01` | HUMAN_ONLY | Manual live checkout QA on `price_1TQZuO6MLlYKqmclQm57kmvI` (€4.99/mo) if still pending per `LAUNCH_AUDIT.md`. Real card required. |
+| E | `PIXIE-VISUAL-QA-POLISH-02` | Conditional | Only if PM visually finds a defect on /profile, /store, /dashboard, /u/[id], post-vote share. No queued issue today. |
 
 ---
 
@@ -254,12 +331,13 @@ Feedback from real viewers changed the near-term product priority. After Sprint 
 5. **Macro-area paths** — curated paths for audiences such as parents, couples, work, technology, society, and young adults, using existing category/path mechanics before schema changes.
 6. **Current-events dilemma workflow** — Italy/Europe/USA/World news-inspired dilemmas with source context, admin review, no autopublish, and legal/editorial guardrails.
 7. **AI-assisted localization workflow** — use AI/tooling for draft translations only; public copy remains reviewed and committed. Do not add new locales until the core loop/share/analytics base is stable.
-8. **Picoclaw Content Intelligence Integration** *(DEFERRED — Phase 0 docs complete, 30 Apr 2026)* — Picoclaw is an external trend-scouting agent; SplitVote remains the authoritative draft/review/publish system. Phase 1 manual import is already possible via the existing Seed Batch manual seed — no code needed. Phase 2+ (structured import endpoint, content intelligence dashboard, scheduled generation) require API/auth/LEGAL.md review before starting. Full integration strategy in `PRODUCT_STRATEGY.md → Picoclaw Content Intelligence Direction`.
+8. **SplitVote Content Intelligence Agent v1 + Picoclaw bridge** *(DEFERRED — docs updated 6 May 2026)* — Build the internal read-only gatekeeper before giving Picoclaw any structured ingestion path. Phase 0.5: SplitVote agent scans static/approved/draft inventory, seed usage, exclusions, duplicate clusters, and category gaps; outputs reports only. Picoclaw remains an external trend radar. No auto-publish, no auto-save, no automatic file mutation/commit/push/deploy. Full integration strategy in `PRODUCT_STRATEGY.md → Picoclaw + SplitVote Content Intelligence Direction`.
 9. **Pixie Phase 2 — Base assets** — add Pixie Spark PNG stage 1–5 to `public/pixie/`; update `CompanionDisplay` with `<Image>` + emoji fallback; no DB. Prerequisite: assets generated and PM-approved.
 10. **Pixie Phase 3 — Share card MVP** — shareable Pixie profile card (OG 1200×630 + story 1080×1920); `/api/pixie-card/[userId]` server-only endpoint; share CTA on dashboard. No DB migration. Prerequisite: Phase 2 assets. Privacy rules in `PRODUCT_STRATEGY.md → Pixie Shareability Direction`; confirm public fields in `LEGAL.md` before shipping.
 11. **Pixie Phase 4 — Variant selector / earned variants** — variant picker UI; server-side unlock verification; `pixie_variant_equipped` column on `profiles`; earned criteria: Cloud (5 categories), Ember (7-day streak), Moonlight (mission streak), Champion (100 votes), Wisp (500 votes).
-12. **Pixie Phase 5 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
-13. **Pixie Phase 6 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
+12. **Pixie personality + emotion system study** — define character traits, emotional expressions, and progression mood per Pixie before broad variant production. Use this as art direction for future Pixie sheets (idle, happy, proud, surprised, sad/low-energy, ultra legendary) and for richer level-up/share moments. No DB or monetization dependency; output should be a spec + approved reference sheet before implementation.
+13. **Pixie Phase 5 — VIP cosmetics** — Premium variants accessible via entitlements; define cancellation behavior; verify `LEGAL.md` if Premium perk wording changes.
+14. **Pixie Phase 6 — Purchased Pixies** — shop / bundles; `user_pixie_skins` table; Stripe Price IDs per variant. **Gate: `LEGAL.md` updated, Terms EN/IT digital goods section, Stripe QA complete, refund policy defined.**
 
 ### PM Field Observations — UX, Growth, Admin, AI Quality (30 Apr 2026)
 
@@ -1903,6 +1981,7 @@ iOS App Store → **Capacitor (WKWebView wrapper)**
 - [ ] **Build locale**: la shell di default usa Node 14; usare `nvm use` dentro questo repo.
 - [ ] **Upgrade framework**: Next 16 + React 19 + Node 24 è uno sprint dedicato, non va mischiato alla push corrente.
 - [ ] **Social trend sources**: X/Instagram/TikTok solo con API ufficiali o provider conformi. Niente scraping fragile.
+- [ ] **Content Intelligence / Picoclaw**: Picoclaw è solo radar esterno; SplitVote Content Intelligence Agent è il gatekeeper interno read-only/dry-run. Prima fase: report duplicati, seed burnout/cooldown, category gaps, opportunità landing. Nessuna pubblicazione, save mode, commit, push o deploy automatico.
 - [ ] **Legal/compliance reconciliation**: prima dello scaling aggiornare Privacy EN/IT, Terms EN/IT, cookie/storage inventory e consent UX seguendo `LEGAL.md`.
 - [ ] **i18n expansion**: prossima lingua `es`, poi `pt-BR`, poi `fr`; cinese solo come progetto market-entry separato.
 
