@@ -11,9 +11,12 @@ import type { Metadata } from 'next'
 
 const BASE_URL = 'https://splitvote.io'
 
+// noindex while the Store is intentionally pre-launch — see the EN store
+// page comment for the full rationale. Same gate on the IT mirror.
 export const metadata: Metadata = {
   title: 'Store',
   description: 'Abbonamento Premium, Pixie leggendari e cosmetici. Supporta SplitVote e sblocca di più.',
+  robots: { index: false, follow: true },
   alternates: {
     canonical: `${BASE_URL}/it/store`,
     languages: {

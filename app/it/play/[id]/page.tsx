@@ -13,6 +13,7 @@ import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import VoteClientPage from '@/app/play/[id]/VoteClientPage'
 import DilemmaInsightSection from '@/components/DilemmaInsightSection'
+import { hasStaticInsight } from '@/lib/static-insights'
 import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
@@ -34,11 +35,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = dynamicScenario?.seoDescription
     ?? `Vota: "${scenario.optionA}" contro "${scenario.optionB}" — Scopri come si dividono i votanti su SplitVote.`
   const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
+  // Exclude dynamic AI scenarios without a per-id editorial insight from
+  // Google's index. Static IT dilemmas remain indexable.
+  const noindex = !getItalianScenario(params.id) && !hasStaticInsight(params.id)
 
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
     alternates: {
       canonical: `${BASE_URL}/it/play/${params.id}`,
       languages: {

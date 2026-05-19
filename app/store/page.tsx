@@ -4,7 +4,16 @@ import type { UserRole } from '@/lib/admin-auth'
 import StoreClient from '@/components/store/StoreClient'
 import { ALL_PRODUCT_IDS, PRODUCT_BY_ID, type ProductId, type PurchaseRow } from '@/lib/purchases'
 
-export const metadata = { title: 'Cosmetics Store' }
+// noindex while the Store is intentionally pre-launch — 14 STRIPE_PRICE_*
+// env vars are unset, so every product card shows the "Checkout coming
+// online soon" fallback modal. Indexing an unfinished commerce surface
+// hurts AdSense site-readiness review. Re-enable indexing when at least
+// one product is purchasable in live mode. See
+// reports/adsense-low-value-remediation-audit-2026-05-19.md.
+export const metadata = {
+  title: 'Cosmetics Store',
+  robots: { index: false, follow: true },
+}
 export const dynamic = 'force-dynamic'
 
 interface SearchParams { tab?: string }

@@ -11,6 +11,7 @@ import JsonLd from '@/components/JsonLd'
 import RelatedDilemmas from '@/components/RelatedDilemmas'
 import DilemmaInsightSection from '@/components/DilemmaInsightSection'
 import AdSlot from '@/components/AdSlot'
+import { hasStaticInsight } from '@/lib/static-insights'
 import type { Metadata } from 'next'
 import type { Scenario } from '@/lib/scenarios'
 
@@ -37,11 +38,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = ds?.seoDescription
     ?? `Vote: "${scenario.optionA}" vs "${scenario.optionB}" — See how SplitVote voters split on this moral dilemma.`
   const keywords = ds?.keywords?.length ? ds.keywords.join(', ') : undefined
+  // Exclude dynamic AI scenarios without a per-id editorial insight from
+  // Google's index to address the AdSense low-value-content rejection. Static
+  // dilemmas remain indexable regardless of insight coverage. follow=true keeps
+  // internal link equity flowing.
+  const noindex = !staticScenario && !hasStaticInsight(params.id)
 
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
     alternates: {
       canonical: `${BASE_URL}/play/${params.id}`,
       languages: {
@@ -222,7 +229,11 @@ export default async function PlayPage({ params, searchParams }: Props) {
       />
       <DilemmaInsightSection scenario={scenario} locale="en" mode="play" />
       <RelatedDilemmas current={scenario} all={allScenarios} />
-      <AdSlot slot={SLOT_PLAY} className="max-w-2xl mx-auto px-4 pb-8" />
+      {/* AdSense gate: only render on curated static dilemmas with per-id
+          editorial insight. See reports/adsense-low-value-remediation-audit-2026-05-19.md. */}
+      {hasStaticInsight(scenario.id) && (
+        <AdSlot slot={SLOT_PLAY} className="max-w-2xl mx-auto px-4 pb-8" />
+      )}
     </>
   )
 }

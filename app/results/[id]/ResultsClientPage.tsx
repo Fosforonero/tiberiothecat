@@ -7,7 +7,7 @@ import AdSlot from '@/components/AdSlot'
 import { createClient } from '@/lib/supabase/client'
 import { getExpertInsight } from '@/lib/expert-insights'
 import type { DynamicExpertInsight } from '@/lib/expert-insights'
-import { getStaticInsight } from '@/lib/static-insights'
+import { getStaticInsight, hasStaticInsight } from '@/lib/static-insights'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { track } from '@/lib/gtag'
 import { SOCIAL_LINKS } from '@/lib/social-links'
@@ -1055,8 +1055,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         </div>
       </details>
 
-      {/* ── AdSense — shown after results, before CTA ── */}
-      <AdSlot slot={SLOT_RESULTS} className="rounded-2xl mb-8" />
+      {/* ── AdSense — shown after results, before CTA ──
+          Gated by AdSense low-value-content policy: only render on
+          curated static dilemmas with a per-id editorial insight AND once
+          the aggregate vote count clears a publisher-credibility floor
+          (≥ 50). Dynamic AI dilemmas and zero/low-vote results pages
+          render no ad. See reports/adsense-low-value-remediation-audit-2026-05-19.md. */}
+      {total >= 50 && hasStaticInsight(scenario.id) && (
+        <AdSlot slot={SLOT_RESULTS} className="rounded-2xl mb-8" />
+      )}
 
       {/* ── Soft sign-up CTA for anonymous users ── */}
       {isAnon && (
