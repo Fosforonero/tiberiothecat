@@ -44,15 +44,15 @@ const EN_COPY = {
   back:              '← All dilemmas',
   votesWorldwide:    (n: number) => `${n.toLocaleString()} votes worldwide`,
   tieTitle:          '🤝 SplitVote is perfectly split on this!',
-  tieDesc:           '50/50 — SplitVote voters are split right down the middle.',
+  tieDesc:           'Right down the middle. Nobody wins.',
   minorityTitle:     (pct: number) => `🔥 You're in the ${pct}% minority.`,
-  minorityDesc:      'Most people see this differently. Are you an outsider — or ahead of the curve?',
+  minorityDesc:      'Most people disagree. Outsider — or ahead?',
   majorityTitle:     (pct: number) => `🌍 ${pct}% of SplitVote voters agree with you.`,
-  majorityDesc:      "You're with the majority — but plenty of people see it differently.",
+  majorityDesc:      'Most agree with you. But not everyone.',
   closeSplitTitle:   (pct: number) => `You're on the ${pct}% side — almost a coin flip.`,
-  closeSplitDesc:    'SplitVote barely leans one way. A handful of votes could change it.',
+  closeSplitDesc:    'Razor-thin margin. Could swing either way.',
   landslideTitle:    (pct: number) => `🌊 ${pct}% of SplitVote voters agree with you.`,
-  landslideDesc:     'Almost everyone leans this way. But does the majority always make right?',
+  landslideDesc:     'Almost everyone leans this way.',
   youVoted:          'You voted:',
   majority:          (pct: number, label: string) => `🌍 ${pct}% of SplitVote voters chose: `,
   majorityLabel:     (label: string) => label,
@@ -122,15 +122,15 @@ const IT_COPY = {
   back:              '← Tutti i dilemmi',
   votesWorldwide:    (n: number) => `${n.toLocaleString('it-IT')} voti nel mondo`,
   tieTitle:          '🤝 SplitVote è perfettamente diviso su questo!',
-  tieDesc:           '50/50 — i votanti su SplitVote sono divisi a metà esatta.',
+  tieDesc:           'Esattamente a metà. Nessuno vince.',
   minorityTitle:     (pct: number) => `🔥 Sei nel ${pct}% della minoranza.`,
-  minorityDesc:      "La maggior parte delle persone la vede diversamente. Sei un outsider — o semplicemente in anticipo?",
+  minorityDesc:      "La maggioranza non è d'accordo. Outsider — o in anticipo?",
   majorityTitle:     (pct: number) => `🌍 Il ${pct}% dei votanti su SplitVote è d'accordo con te.`,
-  majorityDesc:      'Sei con la maggioranza — ma molti la vedono diversamente.',
+  majorityDesc:      'La maggioranza è con te. Ma non tutti.',
   closeSplitTitle:   (pct: number) => `Sei nel ${pct}% — quasi un tiro di moneta.`,
-  closeSplitDesc:    'SplitVote si inclina appena da una parte. Pochi voti potrebbero cambiare tutto.',
+  closeSplitDesc:    'Margine sottilissimo. Può cambiare in un attimo.',
   landslideTitle:    (pct: number) => `🌊 Il ${pct}% dei votanti su SplitVote è d'accordo con te.`,
-  landslideDesc:     'Quasi tutti si inclinano in questa direzione. Ma la maggioranza ha sempre ragione?',
+  landslideDesc:     'Quasi tutti la pensano così.',
   youVoted:          'Hai votato:',
   majority:          (pct: number, label: string) => `🌍 Il ${pct}% dei votanti su SplitVote sceglie: `,
   majorityLabel:     (label: string) => label,
@@ -542,10 +542,14 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           </div>
         ) : (
         <div className={`text-center mb-6 rounded-2xl py-5 px-6 border ${
-          isTie || isClose
+          isTie
+            ? 'border-purple-500/40 bg-gradient-to-r from-red-500/15 via-purple-500/10 to-blue-500/15'
+            : isClose
             ? 'border-purple-500/30 bg-purple-500/10'
             : isMinority
             ? 'border-orange-500/30 bg-orange-500/10'
+            : isUserOnLandslideSide
+            ? 'border-amber-500/40 bg-gradient-to-br from-green-500/15 to-amber-500/15'
             : 'border-green-500/30 bg-green-500/10'
         }`}>
           {isTie ? (
@@ -611,13 +615,13 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <div>
           <div className="flex justify-between items-center mb-1">
             <span className="text-sm font-semibold text-[var(--text)]">{scenario.optionA}</span>
-            <span className={`text-lg font-black ${winnerOption === 'a' ? 'text-red-400' : 'text-[var(--muted)]'}${!revealed ? ' invisible' : ''}`}>
+            <span className={`text-lg font-black transition-opacity duration-300 motion-reduce:transition-none ${winnerOption === 'a' ? 'text-red-400' : 'text-[var(--muted)]'} ${!revealed ? 'opacity-0' : 'opacity-100'}`}>
               {pctA}%
             </span>
           </div>
           <div className="h-6 bg-[var(--border)] rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-1000 ease-out ${winnerOption === 'a' ? 'bg-red-500' : 'bg-red-500/50'}`}
+              className={`h-full rounded-full transition-all duration-[450ms] ease-out motion-reduce:transition-none ${winnerOption === 'a' ? 'bg-red-500' : 'bg-red-500/50'}`}
               style={{ width: mounted && revealed ? `${pctA}%` : '0%' }}
             />
           </div>
@@ -627,13 +631,13 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         <div>
           <div className="flex justify-between items-center mb-1">
             <span className="text-sm font-semibold text-[var(--text)]">{scenario.optionB}</span>
-            <span className={`text-lg font-black ${winnerOption === 'b' ? 'text-blue-400' : 'text-[var(--muted)]'}${!revealed ? ' invisible' : ''}`}>
+            <span className={`text-lg font-black transition-opacity duration-300 motion-reduce:transition-none ${winnerOption === 'b' ? 'text-blue-400' : 'text-[var(--muted)]'} ${!revealed ? 'opacity-0' : 'opacity-100'}`}>
               {pctB}%
             </span>
           </div>
           <div className="h-6 bg-[var(--border)] rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-1000 ease-out ${winnerOption === 'b' ? 'bg-blue-500' : 'bg-blue-500/50'}`}
+              className={`h-full rounded-full transition-all duration-[450ms] ease-out motion-reduce:transition-none ${winnerOption === 'b' ? 'bg-blue-500' : 'bg-blue-500/50'}`}
               style={{ width: mounted && revealed ? `${pctB}%` : '0%' }}
             />
           </div>
