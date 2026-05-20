@@ -412,8 +412,19 @@ export function getNextScenarioId(excludeId: string, dynamicPool?: ScoredItem[])
 
 /**
  * Pick the next unvoted scenario ID.
- * Excludes currentId AND all ids in votedIds, preferring dynamic top-half by score.
- * Returns null only if every available scenario has been voted on (triggers "Browse all" fallback).
+ * Excludes currentId AND all ids in votedIds.
+ *
+ * Soft category-affinity preference (sprint NEXT-DILEMMA-CATEGORY-AFFINITY-01):
+ * when the current scenario's category resolves, we build a primary pool of fresh
+ * same-category items (dynamic + static combined). If that pool has ≥ 3 items,
+ * we route within it — preferring dynamic top-half by `finalScore` if any are
+ * present, otherwise random same-category static. With < 3 same-category items
+ * we fall through to the original cross-category behavior so the user does not
+ * loop a thin sub-category.
+ *
+ * Backward-compatible signature: callers pass the same arguments as before.
+ * Returns null only if every available scenario has been voted on
+ * (triggers "Browse all" fallback).
  */
 export function getFreshNextScenarioId(
   currentId: string,
@@ -422,6 +433,36 @@ export function getFreshNextScenarioId(
 ): string | null {
   const excluded = new Set([currentId, ...votedIds])
 
+  // Resolve the current scenario's category. Static lookup first; if currentId
+  // is a dynamic AI scenario, fall back to dynamicPool.
+  const currentCategory: string | undefined =
+    scenarios.find(s => s.id === currentId)?.category ??
+    dynamicPool?.find(s => s.id === currentId)?.category
+
+  // Same-category soft affinity: gather fresh same-category items from both
+  // pools. Threshold 3 chosen so the user still gets meaningful variation
+  // within a category before we fall through.
+  if (currentCategory) {
+    const sameCatDynamic = (dynamicPool ?? []).filter(
+      s => s.category === currentCategory && !excluded.has(s.id),
+    )
+    const sameCatStatic = scenarios.filter(
+      s => s.category === currentCategory && !excluded.has(s.id),
+    )
+    if (sameCatDynamic.length + sameCatStatic.length >= 3) {
+      if (sameCatDynamic.length > 0) {
+        const sorted = [...sameCatDynamic].sort(
+          (a, b) => (b.scores?.finalScore ?? 0) - (a.scores?.finalScore ?? 0),
+        )
+        const topHalf = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)))
+        return topHalf[Math.floor(Math.random() * topHalf.length)].id
+      }
+      return sameCatStatic[Math.floor(Math.random() * sameCatStatic.length)].id
+    }
+  }
+
+  // Cross-category fallback (original behavior): prefer dynamic top-half, then
+  // random static.
   if (dynamicPool?.length) {
     const fresh = dynamicPool.filter(s => !excluded.has(s.id))
     if (fresh.length) {
