@@ -1,0 +1,4062 @@
+{
+  "date": "2026-05-21",
+  "baseline_root": "pixie/original",
+  "wip_root": "public/pixie",
+  "totals": {
+    "compared_pairs": 144,
+    "changed": 72,
+    "unchanged": 72,
+    "only_in_baseline": 0,
+    "only_in_wip": 0,
+    "species_touched": 12,
+    "regressions": 0
+  },
+  "species_touched": [
+    "angel",
+    "banana",
+    "caffe",
+    "devil",
+    "fuoco",
+    "hologram",
+    "ice",
+    "leaf",
+    "moonlight",
+    "scintille",
+    "triste",
+    "voidcore"
+  ],
+  "records": [
+    {
+      "species": "angel",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 7106,
+      "wip_bytes": 15440,
+      "byte_delta": 8334,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.368,
+      "regressions": []
+    },
+    {
+      "species": "angel",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 10073,
+      "wip_bytes": 22804,
+      "byte_delta": 12731,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 13.59,
+      "regressions": []
+    },
+    {
+      "species": "angel",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 15930,
+      "wip_bytes": 36820,
+      "byte_delta": 20890,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 24.749,
+      "regressions": []
+    },
+    {
+      "species": "angel",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 21172,
+      "wip_bytes": 42576,
+      "byte_delta": 21404,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 29.846,
+      "regressions": []
+    },
+    {
+      "species": "angel",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 18408,
+      "wip_bytes": 42576,
+      "byte_delta": 24168,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 32.284,
+      "regressions": []
+    },
+    {
+      "species": "angel",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 19020,
+      "wip_bytes": 42576,
+      "byte_delta": 23556,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 31.961,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 19880,
+      "wip_bytes": 11026,
+      "byte_delta": -8854,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.577,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26473,
+      "wip_bytes": 21402,
+      "byte_delta": -5071,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 17.365,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 24091,
+      "wip_bytes": 28693,
+      "byte_delta": 4602,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 20.569,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 30169,
+      "wip_bytes": 40799,
+      "byte_delta": 10630,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 23.21,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 35510,
+      "wip_bytes": 53438,
+      "byte_delta": 17928,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 26.751,
+      "regressions": []
+    },
+    {
+      "species": "banana",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47482,
+      "wip_bytes": 53438,
+      "byte_delta": 5956,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 24.251,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 36116,
+      "wip_bytes": 36116,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37434,
+      "wip_bytes": 37434,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44327,
+      "wip_bytes": 44327,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 43730,
+      "wip_bytes": 43730,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 46439,
+      "wip_bytes": 46439,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "blip",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 60391,
+      "wip_bytes": 60391,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 15773,
+      "wip_bytes": 11821,
+      "byte_delta": -3952,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 8.793,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 22938,
+      "wip_bytes": 21464,
+      "byte_delta": -1474,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.332,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 23746,
+      "wip_bytes": 29230,
+      "byte_delta": 5484,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 12.949,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26149,
+      "wip_bytes": 36441,
+      "byte_delta": 10292,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.158,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 28037,
+      "wip_bytes": 49479,
+      "byte_delta": 21442,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 17.356,
+      "regressions": []
+    },
+    {
+      "species": "caffe",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 32778,
+      "wip_bytes": 49479,
+      "byte_delta": 16701,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 16.889,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 25335,
+      "wip_bytes": 25335,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 25839,
+      "wip_bytes": 25839,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31737,
+      "wip_bytes": 31737,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33768,
+      "wip_bytes": 33768,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 39135,
+      "wip_bytes": 39135,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "crown",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 49949,
+      "wip_bytes": 49949,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 7452,
+      "wip_bytes": 14061,
+      "byte_delta": 6609,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 7.241,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 12406,
+      "wip_bytes": 23491,
+      "byte_delta": 11085,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.545,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 17828,
+      "wip_bytes": 33444,
+      "byte_delta": 15616,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.58,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 23424,
+      "wip_bytes": 43283,
+      "byte_delta": 19859,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 19.14,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 21951,
+      "wip_bytes": 43283,
+      "byte_delta": 21332,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 20.974,
+      "regressions": []
+    },
+    {
+      "species": "devil",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 22085,
+      "wip_bytes": 43283,
+      "byte_delta": 21198,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 21.35,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 24445,
+      "wip_bytes": 24445,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 27430,
+      "wip_bytes": 27430,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 30491,
+      "wip_bytes": 30491,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33017,
+      "wip_bytes": 33017,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 39870,
+      "wip_bytes": 39870,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "diamond",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 51249,
+      "wip_bytes": 51249,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 15766,
+      "wip_bytes": 11037,
+      "byte_delta": -4729,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 8.235,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 20040,
+      "wip_bytes": 17165,
+      "byte_delta": -2875,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 9.024,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 22664,
+      "wip_bytes": 24798,
+      "byte_delta": 2134,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 10.739,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 25955,
+      "wip_bytes": 38607,
+      "byte_delta": 12652,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.718,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 30113,
+      "wip_bytes": 51502,
+      "byte_delta": 21389,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 19.031,
+      "regressions": []
+    },
+    {
+      "species": "fuoco",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33099,
+      "wip_bytes": 51502,
+      "byte_delta": 18403,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 18.318,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 22883,
+      "wip_bytes": 22883,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26822,
+      "wip_bytes": 26822,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 29857,
+      "wip_bytes": 29857,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31688,
+      "wip_bytes": 31688,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 40672,
+      "wip_bytes": 40672,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "galaxy",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 56577,
+      "wip_bytes": 56577,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 29154,
+      "wip_bytes": 29154,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31401,
+      "wip_bytes": 31401,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37041,
+      "wip_bytes": 37041,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 38483,
+      "wip_bytes": 38483,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44291,
+      "wip_bytes": 44291,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "heart",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 54314,
+      "wip_bytes": 54314,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 34948,
+      "wip_bytes": 24147,
+      "byte_delta": -10801,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 13.418,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37249,
+      "wip_bytes": 27708,
+      "byte_delta": -9541,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.474,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 40351,
+      "wip_bytes": 34647,
+      "byte_delta": -5704,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 17.314,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 43295,
+      "wip_bytes": 44637,
+      "byte_delta": 1342,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 20.591,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 46318,
+      "wip_bytes": 52029,
+      "byte_delta": 5711,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 23.6,
+      "regressions": []
+    },
+    {
+      "species": "hologram",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 50146,
+      "wip_bytes": 65159,
+      "byte_delta": 15013,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 29.556,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 23117,
+      "wip_bytes": 17053,
+      "byte_delta": -6064,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 15.859,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 28359,
+      "wip_bytes": 24829,
+      "byte_delta": -3530,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 19.235,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 30999,
+      "wip_bytes": 33174,
+      "byte_delta": 2175,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 21.756,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37401,
+      "wip_bytes": 45251,
+      "byte_delta": 7850,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 24.272,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 39232,
+      "wip_bytes": 61064,
+      "byte_delta": 21832,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 33.912,
+      "regressions": []
+    },
+    {
+      "species": "ice",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 40673,
+      "wip_bytes": 61064,
+      "byte_delta": 20391,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 31.699,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 35422,
+      "wip_bytes": 22041,
+      "byte_delta": -13381,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.824,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 39538,
+      "wip_bytes": 27692,
+      "byte_delta": -11846,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.516,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44997,
+      "wip_bytes": 43548,
+      "byte_delta": -1449,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 19.481,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47409,
+      "wip_bytes": 46772,
+      "byte_delta": -637,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 22.505,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 51547,
+      "wip_bytes": 60478,
+      "byte_delta": 8931,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 27.041,
+      "regressions": []
+    },
+    {
+      "species": "leaf",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 56701,
+      "wip_bytes": 80777,
+      "byte_delta": 24076,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 36.696,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33214,
+      "wip_bytes": 33214,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 34827,
+      "wip_bytes": 34827,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44364,
+      "wip_bytes": 44364,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 45193,
+      "wip_bytes": 45193,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 52555,
+      "wip_bytes": 52555,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "momo",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 63924,
+      "wip_bytes": 63924,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 32189,
+      "wip_bytes": 24380,
+      "byte_delta": -7809,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.639,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 34265,
+      "wip_bytes": 28243,
+      "byte_delta": -6022,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 17.53,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37654,
+      "wip_bytes": 34889,
+      "byte_delta": -2765,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 20.896,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 41480,
+      "wip_bytes": 43656,
+      "byte_delta": 2176,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 24.194,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 43327,
+      "wip_bytes": 60324,
+      "byte_delta": 16997,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 33.315,
+      "regressions": []
+    },
+    {
+      "species": "moonlight",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47204,
+      "wip_bytes": 78626,
+      "byte_delta": 31422,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 43.971,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37515,
+      "wip_bytes": 37515,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 38292,
+      "wip_bytes": 38292,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 41677,
+      "wip_bytes": 41677,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47236,
+      "wip_bytes": 47236,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 50930,
+      "wip_bytes": 50930,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "orbit",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 61468,
+      "wip_bytes": 61468,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "wip_meta": {
+        "mode": "RGBA",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": true
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 20182,
+      "wip_bytes": 20182,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 27221,
+      "wip_bytes": 27221,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 32779,
+      "wip_bytes": 32779,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 39514,
+      "wip_bytes": 39514,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 42122,
+      "wip_bytes": 42122,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "overseer",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 61729,
+      "wip_bytes": 61729,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31186,
+      "wip_bytes": 31186,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 34198,
+      "wip_bytes": 34198,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 38311,
+      "wip_bytes": 38311,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 40609,
+      "wip_bytes": 40609,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47365,
+      "wip_bytes": 47365,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "robot",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 56470,
+      "wip_bytes": 56470,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 17846,
+      "wip_bytes": 10365,
+      "byte_delta": -7481,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 9.21,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26772,
+      "wip_bytes": 21948,
+      "byte_delta": -4824,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.509,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26798,
+      "wip_bytes": 25868,
+      "byte_delta": -930,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 12.907,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 30472,
+      "wip_bytes": 36466,
+      "byte_delta": 5994,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 16.332,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33689,
+      "wip_bytes": 49318,
+      "byte_delta": 15629,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 18.882,
+      "regressions": []
+    },
+    {
+      "species": "scintille",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 36495,
+      "wip_bytes": 49318,
+      "byte_delta": 12823,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 18.859,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31267,
+      "wip_bytes": 31267,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 32199,
+      "wip_bytes": 32199,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 35084,
+      "wip_bytes": 35084,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 38674,
+      "wip_bytes": 38674,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 43445,
+      "wip_bytes": 43445,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "shade",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 55241,
+      "wip_bytes": 55241,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 34949,
+      "wip_bytes": 34949,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37055,
+      "wip_bytes": 37055,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44897,
+      "wip_bytes": 44897,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 44267,
+      "wip_bytes": 44267,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 47249,
+      "wip_bytes": 47249,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "spark",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 57956,
+      "wip_bytes": 57956,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 18272,
+      "wip_bytes": 10964,
+      "byte_delta": -7308,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 11.504,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 22586,
+      "wip_bytes": 17735,
+      "byte_delta": -4851,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 12.651,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 24448,
+      "wip_bytes": 23460,
+      "byte_delta": -988,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 15.525,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 29271,
+      "wip_bytes": 37298,
+      "byte_delta": 8027,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 17.747,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 31900,
+      "wip_bytes": 52146,
+      "byte_delta": 20246,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 21.018,
+      "regressions": []
+    },
+    {
+      "species": "triste",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 37713,
+      "wip_bytes": 52146,
+      "byte_delta": 14433,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 20.068,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 5553,
+      "wip_bytes": 5553,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 10064,
+      "wip_bytes": 10064,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 12446,
+      "wip_bytes": 12446,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 16683,
+      "wip_bytes": 16683,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 20493,
+      "wip_bytes": 20493,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "void",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33651,
+      "wip_bytes": 33651,
+      "byte_delta": 0,
+      "byte_identical": true,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": null,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 1,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 19671,
+      "wip_bytes": 9322,
+      "byte_delta": -10349,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 9.176,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 2,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 26834,
+      "wip_bytes": 16837,
+      "byte_delta": -9997,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 12.563,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 3,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 33161,
+      "wip_bytes": 24201,
+      "byte_delta": -8960,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 14.167,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 4,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 38486,
+      "wip_bytes": 36249,
+      "byte_delta": -2237,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 18.102,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 5,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 41464,
+      "wip_bytes": 58991,
+      "byte_delta": 17527,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 27.781,
+      "regressions": []
+    },
+    {
+      "species": "voidcore",
+      "stage": 6,
+      "in_baseline": true,
+      "in_wip": true,
+      "baseline_bytes": 43944,
+      "wip_bytes": 58991,
+      "byte_delta": 15047,
+      "byte_identical": false,
+      "baseline_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "wip_meta": {
+        "mode": "RGB",
+        "size": [
+          256,
+          256
+        ],
+        "has_alpha": false
+      },
+      "pixel_mad": 28.85,
+      "regressions": []
+    }
+  ]
+}
