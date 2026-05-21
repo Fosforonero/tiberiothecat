@@ -48,3 +48,9 @@ push_*.command
 .claude/worktrees/
 scripts/blog-drafts-input/
 scripts/current-events-drafts-input/
+
+# Pixie pipeline working trees — local-only asset workspace, never commit
+/pixie/original/
+/pixie/work/
+/pixie/final/
+/pixie/firefly_import/
