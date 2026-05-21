@@ -42,3 +42,9 @@ next-env.d.ts
 # Claude / local operational artifacts — ignore new local helper files
 push_*.command
 *.local.command
+
+# IDE metadata, Claude worktrees, local draft-input artifacts
+.idea/
+.claude/worktrees/
+scripts/blog-drafts-input/
+scripts/current-events-drafts-input/
