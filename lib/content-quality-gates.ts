@@ -47,6 +47,20 @@ function italianSignalCount(text: string): number {
   return accents + words
 }
 
+function clarityIssues(question: string, optionA: string, optionB: string): string[] {
+  const text = `${question} ${optionA} ${optionB}`.toLowerCase()
+  const issues: string[] = []
+
+  if (
+    /\b(non essere mai ingannat[oa]|nessuno [^.!?]{0,80}mentir|totale trasparenza)\b/.test(text) &&
+    /\b(nascond|tacer|tacere|ometter|omette|segreto|segreti|segretezza)\b/.test(text)
+  ) {
+    issues.push('clarity_truth_vs_omission')
+  }
+
+  return issues
+}
+
 export interface QualityGateInput {
   locale:           string
   question:         string
@@ -126,6 +140,11 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
       reasons.push(`dangerous_content:${pattern.source.slice(0, 30)}`)
       break
     }
+  }
+
+  // ── 8b. Editorial clarity: no contradictory absolutes / loopholes ────────
+  for (const issue of clarityIssues(input.question, input.optionA, input.optionB)) {
+    reasons.push(issue)
   }
 
   // ── 9. Language match (skipped for lifestyle — short labels lack signals) ──

@@ -81,6 +81,20 @@ function strArr(v: unknown, field: string, maxItems: number): string[] {
   })
 }
 
+function editorialClarityWarnings(question: string, optionA: string, optionB: string): string[] {
+  const text = `${question} ${optionA} ${optionB}`.toLowerCase()
+  const warnings: string[] = []
+
+  if (
+    /\b(non essere mai ingannat[oa]|nessuno [^.!?]{0,80}mentir|totale trasparenza)\b/.test(text) &&
+    /\b(nascond|tacer|tacere|ometter|omette|segreto|segreti|segretezza)\b/.test(text)
+  ) {
+    warnings.push('clarity_truth_vs_omission')
+  }
+
+  return warnings
+}
+
 const ACCENT_MAP: Record<string, string> = {
   à: 'a', á: 'a', â: 'a', ã: 'a', ä: 'a',
   è: 'e', é: 'e', ê: 'e', ë: 'e',
@@ -148,6 +162,7 @@ export function validateGeneratedOutput(
         searchableText: `${question} ${optionA} ${optionB} ${keywords.join(' ')}`,
       }
       const { noveltyScore, similarItems, warnings } = scoreNovelty(candidate, inventory)
+      const editorialWarnings = editorialClarityWarnings(question, optionA, optionB)
 
       const result: ValidatedDilemma = {
         type: 'dilemma',
@@ -163,7 +178,7 @@ export function validateGeneratedOutput(
         safetyNotes,
         noveltyScore,
         similarItems,
-        warnings,
+        warnings: Array.from(new Set([...warnings, ...editorialWarnings])),
       }
       return { ok: true, candidate: result }
     }
