@@ -194,3 +194,58 @@ The **only safe rollback** is a manual `HSET` to the BEFORE value recorded in th
 - **22 May 2026:** Script + reports prepared. Dry-run **not yet executed** in this sprint.
 - **PM next action:** create `.env.prod-recover`, run dry-run, review output, decide on write batch sizes.
 - **Claude next action:** none until PM reports back with dry-run output for review, then helps interpret the plan summary before the WRITE step.
+
+---
+
+## Recovery executed (22 May 2026 — same day)
+
+**Outcome: complete. Idempotent. Verified.**
+
+### Batches actually run by PM
+
+| Batch | `--max-keys` | Field updates | Hashes touched | Redis total BEFORE | Redis total AFTER |
+|---|---:|---:|---:|---:|---:|
+| 1 (canary) | 20 | 21 | 20 | 67 | 92 |
+| 2 (remainder) | 200 | 91 | 67 | 92 | 217 |
+| **Cumulative** | | **112** | **87** | 67 → 217 (Δ +150) | — |
+
+### Final sentinel dry-run (post-write)
+
+```
+hashes that would be touched : 0
+fields that would be HSET    : 0
+hashes skipped (Redis ≥)     : 134
+total votes BEFORE           : 217
+total votes AFTER            : 217
+largest per-dilemma delta    : 0
+```
+
+Idempotency confirmed: every reconstructed field equals or exceeds its Supabase-derived target. Re-running the script is now a no-op.
+
+### Public verification (curl with `?voted=a` ISR bypass)
+
+| Dilemma | Reconstructed target | Live page total | Match |
+|---|---|---|---|
+| `trolley` | 4A : 2B (6) | `4 votes (67%)` / `2 votes (33%)` / `6 total votes` | ✅ |
+| `trolley` (IT) | 4A : 2B (6) | `4 voti (67%)` / `2 voti (33%)` / `6 voti totali` | ✅ — confirms EN/IT share `votes:trolley` |
+| `organ-harvest` | 2A : 4B (6) | `2 votes (33%)` / `4 votes (67%)` / `6 total votes` | ✅ |
+| `delete-social-media` | 3A : 2B (5) | `3 votes (60%)` / `2 votes (40%)` / `5 total votes` | ✅ |
+
+### Recovery completeness
+
+System-wide Redis vote total recovered to **217** (vs. the 67 residual count observed just before the first write batch). The expected target from Supabase aggregates was ~210–228 (~210 from `vote_daily_stats` lifetime + up to ~18 ghost auth votes from `dilemma_votes` cross-merge). The achieved 217 sits squarely inside that window — the MAX-of-three-sources formula picked up most of the cross-merge benefit while never double-counting.
+
+### Residual risk after recovery
+
+- **Conservative under-recovery** of ≤ ~18 ghost auth votes (votes recorded in only one of the two Supabase tables). No double-counting, no downgrades.
+- **No application change** — vote-flow code unchanged; future writes go through the same `app/api/vote/route.ts` path and accumulate normally on top of the restored counts.
+- **No rollback required.** Recovery only ever raised counts; the previous wrong state is the "bug" we corrected.
+- **Reconstruction tool stays available** for future re-runs (idempotent, safe-default, triple-flag gate). Recommended to leave in `scripts/recover/` rather than delete — same incident class could recur until `REDIS-VOTE-SNAPSHOT-CRON-01` lands.
+
+### Follow-ups to queue
+
+1. `REDIS-VOTE-SNAPSHOT-CRON-01` — daily snapshot of `votes:*` to Supabase Storage. Closes the "no Postgres mirror" gap that capped today's recovery at ~92% lossless.
+2. Defensive startup guard for `lib/redis.ts` env validation.
+3. Inspect Upstash dashboard for production-DB memory-usage history to distinguish eviction (A1) vs manual flush (A2) vs Upstash-side incident (A3); update the incident report when known.
+
+**Status: closed. No further PM action required for this incident.**
