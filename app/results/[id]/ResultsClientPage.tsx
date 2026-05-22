@@ -45,8 +45,10 @@ const EN_COPY = {
   votesWorldwide:    (n: number) => `${n.toLocaleString()} votes worldwide`,
   tieTitle:          '🤝 SplitVote is perfectly split on this!',
   tieDesc:           "Dead even. The world can't decide either.",
+  tieExtra:          'This one is 50/50 — share it and see who breaks the tie.',
   minorityTitle:     (pct: number) => `🔥 You're in the ${pct}% minority.`,
   minorityDesc:      "You're in the minority. Most went the other way.",
+  minorityDescIsolated: "You're far from the crowd. Almost no one chose this side.",
   majorityTitle:     (pct: number) => `🌍 ${pct}% of SplitVote voters agree with you.`,
   majorityDesc:      "You're with the crowd. Just not all of it.",
   closeSplitTitle:   (pct: number) => `🌗 You're on the ${pct}% side — almost a coin flip.`,
@@ -123,8 +125,10 @@ const IT_COPY = {
   votesWorldwide:    (n: number) => `${n.toLocaleString('it-IT')} voti nel mondo`,
   tieTitle:          '🤝 SplitVote è perfettamente diviso su questo!',
   tieDesc:           'Pari assoluta. Il mondo non sa decidere.',
+  tieExtra:          'Esattamente 50/50 — condividilo e scopri chi rompe la parità.',
   minorityTitle:     (pct: number) => `🔥 Sei nel ${pct}% della minoranza.`,
   minorityDesc:      'Sei in minoranza. La maggioranza la pensa diversamente.',
+  minorityDescIsolated: 'Sei lontano dalla folla. Quasi nessuno ha scelto questo lato.',
   majorityTitle:     (pct: number) => `🌍 Il ${pct}% dei votanti su SplitVote è d'accordo con te.`,
   majorityDesc:      'Sei con la folla. Ma non con tutti.',
   closeSplitTitle:   (pct: number) => `🌗 Sei nel ${pct}% — quasi testa o croce.`,
@@ -381,6 +385,12 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
       ? 'landslide'
       : 'majority'
 
+  // Single source of truth for whether the reveal banner renders. The
+  // question recap downsizes only when a banner is above it; with no
+  // banner (low_sample, unvoted, or null pctVoted) the recap keeps its
+  // prior stronger sizing so the page doesn't open with a small heading.
+  const hasRevealBanner = voted !== null && pctVoted !== null && total >= 10
+
   // Aggregate share text — always uses majority stats, never reveals user's own vote
   const webShareText = total === 0
     ? (isIT
@@ -577,27 +587,18 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         {copy.back}
       </Link>
 
-      {/* Question recap */}
-      <div className="text-center mb-10">
-        <span className="text-5xl mb-4 block">{scenario.emoji}</span>
-        <h1 className="text-xl md:text-2xl font-bold text-[var(--text)] leading-snug mb-2">
-          {scenario.question}
-        </h1>
-        <p className="text-sm text-[var(--muted)]">
-          {copy.votesWorldwide(total)}
-        </p>
-      </div>
-
-      {/* ── Minority / Majority reveal ── */}
-      {voted && pctVoted !== null && total >= 10 && (
+      {/* ── Minority / Majority reveal — promoted above question recap so the
+            emotional payoff dominates the page hero and the natural mobile
+            screenshot crop frames the reveal, not the user's own vote. ── */}
+      {hasRevealBanner && (
         !revealed ? (
-          <div className="text-center mb-6 rounded-2xl py-5 px-6 border border-white/10 bg-white/5">
+          <div className="text-center mb-10 rounded-2xl py-6 md:py-8 px-6 border border-white/10 bg-white/5">
             <p className="text-sm text-[var(--muted)] animate-pulse">{copy.comparing}</p>
           </div>
         ) : (
-        <div className={`text-center mb-6 rounded-2xl py-5 px-6 border ${
+        <div className={`text-center mb-10 rounded-2xl py-6 md:py-8 px-6 border ${
           isTie
-            ? 'border-purple-500/40 bg-gradient-to-r from-red-500/15 via-purple-500/10 to-blue-500/15'
+            ? 'border-purple-500/60 bg-gradient-to-r from-red-500/25 via-purple-500/25 to-blue-500/25 neon-glow-purple'
             : isClose
             ? 'border-purple-500/50 bg-purple-500/10'
             : isMinority
@@ -608,12 +609,13 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         }`}>
           {isTie ? (
             <>
-              <p className="text-2xl font-black text-purple-400 mb-1">{copy.tieTitle}</p>
+              <p className="text-3xl md:text-4xl font-black tracking-tight text-purple-400 mb-1">{copy.tieTitle}</p>
               <p className="text-sm text-[var(--muted)]">{copy.tieDesc}</p>
+              <p className="text-sm text-[var(--muted)] mt-2">{copy.tieExtra}</p>
             </>
           ) : isClose ? (
             <>
-              <p className="text-2xl font-black text-purple-400 mb-1">
+              <p className="text-3xl md:text-4xl font-black tracking-tight text-purple-400 mb-1">
                 {copy.closeSplitTitle(pctVoted)}
               </p>
               <p className="text-sm text-[var(--muted)]">
@@ -622,16 +624,16 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             </>
           ) : isMinority ? (
             <>
-              <p className="text-2xl font-black text-orange-400 mb-1">
+              <p className="text-3xl md:text-4xl font-black tracking-tight text-orange-400 mb-1">
                 {copy.minorityTitle(pctVoted)}
               </p>
               <p className="text-sm text-[var(--muted)]">
-                {copy.minorityDesc}
+                {pctVoted !== null && pctVoted <= 20 ? copy.minorityDescIsolated : copy.minorityDesc}
               </p>
             </>
           ) : isUserOnLandslideSide ? (
             <>
-              <p className="text-2xl font-black text-green-400 mb-1">
+              <p className="text-3xl md:text-4xl font-black tracking-tight text-green-400 mb-1">
                 {copy.landslideTitle(pctVoted)}
               </p>
               <p className="text-sm text-[var(--muted)]">
@@ -640,7 +642,7 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
             </>
           ) : (
             <>
-              <p className="text-2xl font-black text-green-400 mb-1">
+              <p className="text-3xl md:text-4xl font-black tracking-tight text-green-400 mb-1">
                 {copy.majorityTitle(pctVoted)}
               </p>
               <p className="text-sm text-[var(--muted)]">
@@ -652,16 +654,18 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         )
       )}
 
-      {/* Your vote badge */}
-      {voted && (
-        <div className={`text-center mb-6 text-sm font-semibold rounded-xl py-3 border
-          ${voted === 'a'
-            ? 'text-red-300 border-red-500/30 bg-red-500/10'
-            : 'text-blue-300 border-blue-500/30 bg-blue-500/10'
-          }`}>
-          {copy.youVoted} {voted === 'a' ? scenario.optionA : scenario.optionB}
-        </div>
-      )}
+      {/* Question recap — quieter when a reveal banner sits above; falls back
+          to the prior stronger sizing when low_sample / unvoted hides the
+          banner so the page hero stays substantial. */}
+      <div className="text-center mb-10">
+        <span className={`${hasRevealBanner ? 'text-4xl mb-3' : 'text-5xl mb-4'} block`}>{scenario.emoji}</span>
+        <h1 className={`${hasRevealBanner ? 'text-base md:text-lg font-semibold' : 'text-xl md:text-2xl font-bold'} text-[var(--text)] leading-snug mb-2`}>
+          {scenario.question}
+        </h1>
+        <p className="text-sm text-[var(--muted)]">
+          {copy.votesWorldwide(total)}
+        </p>
+      </div>
 
       {/* Result bars */}
       <div className="space-y-4 mb-10">
@@ -697,6 +701,19 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
           </div>
         </div>
       </div>
+
+      {/* Your vote badge — placed after bars (was previously above) so the
+          natural mobile screenshot crop frames reveal + bars without exposing
+          the user's own choice in the top-of-fold capture. */}
+      {voted && (
+        <div className={`text-center mb-6 text-sm font-semibold rounded-xl py-3 border
+          ${voted === 'a'
+            ? 'text-red-300 border-red-500/30 bg-red-500/10'
+            : 'text-blue-300 border-blue-500/30 bg-blue-500/10'
+          }`}>
+          {copy.youVoted} {voted === 'a' ? scenario.optionA : scenario.optionB}
+        </div>
+      )}
 
       {/* Winner label */}
       {total > 0 && (
