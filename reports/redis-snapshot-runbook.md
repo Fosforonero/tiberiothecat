@@ -146,3 +146,29 @@ After 05:00 UTC on the next scheduled day:
 4. Sanity-check a few entries in `counts[]` against the live `/results/<id>` pages
 5. Confirm a `votes/<YYYY-MM-DD>.json` dated copy also exists
 6. Once verified, mark `[x] Daily Redis snapshot to long-term storage` in `reports/disaster-recovery-runbook.md §8` (separate sprint — not in this one)
+
+## 11. First-run verification log
+
+### Manual trigger — 22 May 2026
+
+The first invocation of this cron was a manual `curl` trigger immediately after deploy, before the scheduled 05:00 UTC slot. It succeeded.
+
+| Field | Value |
+|---|---|
+| `ok` | `true` |
+| `schemaVersion` | `1` |
+| `keyCount` | `136` |
+| `totalVotes` | `219` |
+| `takenAt` | `2026-05-22T12:49:43.739Z` |
+| `redisHost` | `superb-sheepdog-80533.upstash.io` |
+| `bucket` | `redis-snapshots` |
+| `bucketPath` | `votes/2026-05-22.json` |
+| `latestPath` | `votes/latest.json` |
+| `checksum` | `sha256:f22e0d0a855e9ff4058b88b783fa59aa2829a26e02ea56ff1fd038375d862896` |
+| `durationMs` | `764` |
+
+`keyCount=136` and `totalVotes=219` — the +2 keys and +2 votes vs the 22 May post-recovery state (134 keys / 217 votes per `reports/incidents/redis-vote-count-incident-2026-05-22.md`) reflect normal vote activity between the recovery and this manual snapshot.
+
+Next scheduled run: **05:00 UTC daily** (every day going forward, per `vercel.json`).
+
+The corresponding mitigation box in `reports/disaster-recovery-runbook.md §8` is checked as of 22 May 2026.

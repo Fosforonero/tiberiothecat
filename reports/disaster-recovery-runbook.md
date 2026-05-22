@@ -76,8 +76,14 @@ homepage cold ISR fails. Upstash dashboard shows error rate spike or 5xx.
 **Mitigation to set up in advance:**
 
 - Verify Upstash automatic backups are enabled (paid tier required).
-- Consider a daily cron snapshot of `dynamic:scenarios` JSON to S3 or Supabase
-  storage. Low cost, very high recoverability.
+- ✅ **Daily snapshot of `votes:*` shipped 22 May 2026** — cron route
+  `/api/cron/snapshot-redis-votes` writes an aggregate JSON snapshot to the
+  private Supabase Storage bucket `redis-snapshots` at 05:00 UTC daily. See
+  `reports/redis-snapshot-runbook.md` for operations. Restore tool deferred
+  to a later sprint; until then, recovery from a Redis reset still uses
+  `scripts/recover/redis-reconstruct-votes.mjs` (Supabase aggregates).
+  Broader scope (`dynamic:scenarios`, `dynamic:drafts`, `feedback:*`)
+  deferred to later sprints.
 
 ---
 
@@ -268,9 +274,16 @@ Upstash dashboard action — no SQL required for most.
 
 - [ ] **Supabase PITR** (Point-in-Time Recovery) — Settings → Backups. Paid tier.
 - [ ] **Upstash automatic backups** — verify enabled on the production DB.
-- [ ] **Daily Redis snapshot to long-term storage** — cron writes
-      `dynamic:scenarios` + `dynamic:drafts` JSON to a Supabase storage
-      bucket. Low cost, high recoverability. (Estimated effort: 1 sprint.)
+- [x] **Daily Redis snapshot to long-term storage (22 May 2026)** —
+      `/api/cron/snapshot-redis-votes` writes an aggregate `votes:*` JSON
+      snapshot to the private Supabase Storage bucket `redis-snapshots` at
+      05:00 UTC daily. Shipped in commit `4a65dd9`; first manual run
+      verified the same day (`keyCount=136`, `totalVotes=219`,
+      `bucketPath=votes/2026-05-22.json`,
+      `checksum=sha256:f22e0d0a855e9ff4058b88b783fa59aa2829a26e02ea56ff1fd038375d862896`).
+      Broader scope (`dynamic:scenarios`, `dynamic:drafts`, `feedback:*`) and
+      the restore tool deferred to later sprints. See
+      `reports/redis-snapshot-runbook.md`.
 - [ ] **Resend DNS records** (SPF + DKIM + DMARC) — verify in Resend dashboard.
 - [ ] **Vercel branch protection on `main`** — require typecheck + build pass.
 - [ ] **Capture `dns-baseline.txt`** next to this runbook so future drift is
