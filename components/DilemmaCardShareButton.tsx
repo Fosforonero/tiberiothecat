@@ -53,7 +53,7 @@ export default function DilemmaCardShareButton({ question, playHref, scenarioId,
       type="button"
       onClick={handleShare}
       aria-label={label}
-      className="flex items-center gap-1.5 text-xs text-[var(--muted)] hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10 shrink-0"
+      className="flex items-center gap-1.5 min-h-[44px] text-xs text-[var(--muted)] hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10 shrink-0"
     >
       <Share2 size={12} aria-hidden="true" />
       <span>{label}</span>

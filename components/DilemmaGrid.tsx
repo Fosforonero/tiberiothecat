@@ -29,7 +29,7 @@ function GridCard({ scenario, locale, playHref }: { scenario: Scenario; locale: 
       className="card-neon group block rounded-2xl p-5 sm:p-6"
     >
       <div className="flex items-start gap-3 sm:gap-4">
-        <span className="text-3xl sm:text-4xl flex-shrink-0">{scenario.emoji}</span>
+        <span className="text-3xl sm:text-4xl flex-shrink-0" aria-hidden="true">{scenario.emoji}</span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">
