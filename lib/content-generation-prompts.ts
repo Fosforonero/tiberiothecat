@@ -101,7 +101,7 @@ Requirements:
 - Question: genuine moral conflict, no easy answer, max 180 characters
 - Question must be directly votable — do not write a long scenario paragraph in the question field
 - Both options represent different values, not good vs evil
-- Each option: concise, max 110 characters
+- Each option: 20–110 characters; include both a clear choice verb and a brief rationale. Avoid noun-only labels like 'The company' or bare Yes/No answers.
 - Novel angle — different from existing content
 - Do not reproduce the same moral structure with different nouns or setting
 - Preferred category: ${targetCategory ?? 'any of the 8 listed'} (soft preference — use a different category if it fits the topic better)

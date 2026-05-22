@@ -48,7 +48,7 @@ export const scenarios: Scenario[] = [
     id: 'steal-medicine',
     question: "Your child is dying and needs medicine you cannot afford. You could steal it. The store owner is not evil — just running a business.",
     optionA: 'Steal it. Your child comes first.',
-    optionB: "Don't steal. Find another way.",
+    optionB: "Don't steal. Don't cross that line.",
     emoji: '💉',
     category: 'morality',
   },
@@ -131,7 +131,7 @@ export const scenarios: Scenario[] = [
   {
     id: 'truth-friend',
     question: "Your best friend asks if you like their new partner. You think the partner is terrible for them.",
-    optionA: 'Be brutally honest.',
+    optionA: 'Be brutally honest. They deserve the truth.',
     optionB: 'Keep the peace. Stay silent.',
     emoji: '🤫',
     category: 'loyalty',
@@ -207,7 +207,7 @@ export const scenarios: Scenario[] = [
   {
     id: 'privacy-terror',
     question: "Governments can prevent terrorist attacks by reading everyone's private messages — but there will be zero privacy. No exceptions.",
-    optionA: 'Allow it. Safety first.',
+    optionA: 'Allow it. Lives matter more than secrecy.',
     optionB: 'Refuse. Privacy is non-negotiable.',
     emoji: '🔒',
     category: 'freedom',
@@ -231,7 +231,7 @@ export const scenarios: Scenario[] = [
   {
     id: 'surveillance-city',
     question: "A city offers to eliminate all violent crime by installing 24/7 AI surveillance on every street corner and public space.",
-    optionA: 'Yes. Safety is worth it.',
+    optionA: 'Yes. Zero violent crime is worth the surveillance.',
     optionB: 'No. I will not live in a surveillance state.',
     emoji: '📹',
     category: 'freedom',
@@ -241,8 +241,8 @@ export const scenarios: Scenario[] = [
   {
     id: 'ai-art-copyright',
     question: "An AI generates a masterpiece painting with no human creative input. Who owns the copyright?",
-    optionA: "The AI's creator company.",
-    optionB: 'No one — it should be public domain.',
+    optionA: 'The company that built it owns it.',
+    optionB: 'No one — it belongs to the public domain.',
     emoji: '🎨',
     category: 'technology',
   },
@@ -349,7 +349,7 @@ export const scenarios: Scenario[] = [
   {
     id: 'forgive-cheater',
     question: "Your partner of 15 years admits to a one-time affair 3 years ago. They have been completely faithful since. They are genuinely remorseful.",
-    optionA: 'Stay. People make mistakes.',
+    optionA: "Stay. One mistake doesn't erase 15 years.",
     optionB: 'Leave. Trust is gone forever.',
     emoji: '💑',
     category: 'relationships',
@@ -357,8 +357,8 @@ export const scenarios: Scenario[] = [
   {
     id: 'save-partner-vs-stranger',
     question: "A burning building: you can only save one person — your partner, or a 5-year-old child you've never met.",
-    optionA: 'Save your partner.',
-    optionB: 'Save the child.',
+    optionA: 'Save your partner. Personal bonds come first.',
+    optionB: 'Save the child. A future life comes first.',
     emoji: '🔥',
     category: 'relationships',
   },

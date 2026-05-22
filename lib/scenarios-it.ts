@@ -32,7 +32,7 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
   'steal-medicine': {
     question: 'Tuo figlio sta morendo e ha bisogno di una medicina che non puoi permetterti. Potresti rubarla. Il proprietario non è cattivo: sta solo gestendo la sua attività.',
     optionA: 'La rubo. Mio figlio viene prima.',
-    optionB: 'Non rubo. Trovo un altro modo.',
+    optionB: 'Non rubo. Non oltrepasso quel limite.',
   },
   'organ-harvest': {
     question: 'Sei un medico. Gli organi di un paziente sano potrebbero salvare 5 persone che stanno morendo nella stanza accanto. Nessuno lo saprebbe mai.',
@@ -81,7 +81,7 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
   },
   'truth-friend': {
     question: 'Il tuo migliore amico ti chiede se ti piace il suo nuovo partner. Tu pensi che quella persona sia pessima per lui.',
-    optionA: 'Sono brutalmente sincero.',
+    optionA: 'Sono brutalmente sincero. Meritano la verità.',
     optionB: 'Mantengo la pace. Sto zitto.',
   },
   'report-friend': {
@@ -126,7 +126,7 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
   },
   'privacy-terror': {
     question: 'I governi possono prevenire attentati leggendo tutti i messaggi privati, ma la privacy sparirebbe del tutto. Nessuna eccezione.',
-    optionA: 'Lo permetto. Prima la sicurezza.',
+    optionA: 'Lo permetto. Le vite contano più della segretezza.',
     optionB: 'Rifiuto. La privacy non si negozia.',
   },
   'censor-speech': {
@@ -141,13 +141,13 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
   },
   'surveillance-city': {
     question: 'Una città può eliminare tutti i crimini violenti installando sorveglianza IA 24/7 in ogni strada e spazio pubblico.',
-    optionA: 'Sì. La sicurezza vale il prezzo.',
+    optionA: 'Sì. Azzerare la violenza vale la sorveglianza.',
     optionB: 'No. Non voglio vivere in uno stato di sorveglianza.',
   },
   'ai-art-copyright': {
     question: "Un'IA genera un dipinto capolavoro senza alcun input creativo umano. Chi possiede il copyright?",
-    optionA: "L'azienda che ha creato l'IA.",
-    optionB: 'Nessuno: dovrebbe essere dominio pubblico.',
+    optionA: "L'azienda che l'ha creata possiede l'opera.",
+    optionB: 'Nessuno — appartiene al dominio pubblico.',
   },
   'self-driving-crash': {
     question: "I freni di un'auto autonoma si rompono. Deve scegliere: schiantarsi contro una barriera e uccidere il passeggero, oppure investire un pedone che attraversava fuori dalle strisce.",
@@ -211,13 +211,13 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
   },
   'forgive-cheater': {
     question: 'Il tuo partner da 15 anni confessa un tradimento di una notte avvenuto 3 anni fa. Da allora è stato completamente fedele ed è sinceramente pentito.',
-    optionA: 'Resto. Le persone sbagliano.',
+    optionA: 'Resto. Un errore non cancella 15 anni.',
     optionB: 'Me ne vado. La fiducia è finita per sempre.',
   },
   'save-partner-vs-stranger': {
     question: 'Un edificio brucia: puoi salvare una sola persona, il tuo partner oppure un bambino di 5 anni che non hai mai incontrato.',
-    optionA: 'Salvo il mio partner.',
-    optionB: 'Salvo il bambino.',
+    optionA: 'Salvo il mio partner. Il legame personale viene prima.',
+    optionB: 'Salvo il bambino. Una vita futura viene prima.',
   },
 }
 

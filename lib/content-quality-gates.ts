@@ -107,7 +107,10 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
   // ── 3–4. Option lengths ───────────────────────────────────────
   const aLen    = input.optionA.length
   const bLen    = input.optionB.length
-  const optMin  = isLifestyle ? 2 : 5
+  // Moral dilemma options need room for a stance + rationale (block bare
+  // Yes/No and noun-only labels). Lifestyle preference options stay short
+  // since "Mare" / "Montagna" are intentionally minimal.
+  const optMin  = isLifestyle ? 2 : 20
   if (aLen < optMin) reasons.push('option_a_too_short')
   if (aLen > 200)    reasons.push('option_a_too_long')
   if (bLen < optMin) reasons.push('option_b_too_short')
