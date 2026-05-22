@@ -255,7 +255,7 @@ export default async function ItPage() {
 
         {/* ── Dilemma del Giorno ── */}
         <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
-          Il dilemma di oggi — scopri dove ti collochi
+          Il dilemma di oggi — scopri da che parte stai
         </p>
         <DailyDilemma
           scenario={dailyIT}
