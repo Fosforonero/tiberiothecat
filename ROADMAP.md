@@ -3,7 +3,42 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 21 Maggio 2026 (afternoon update) — **PM override**: AdSense review is noted but no longer a product freeze. Product iteration continues. PM insight: the post-vote reveal is the core retention hook (social comparison / self-positioning), not the vote itself. Next sprint candidate: `REVEAL-SELF-POSITIONING-COPY-01`.
+Ultimo aggiornamento: 22 Maggio 2026 — end-of-day closeout. Redis incident resolved + daily snapshot cron shipped. Home + DailyDilemma disciplined-neon redesign shipped. Results reveal hero amplified. Italian copy + a11y polish shipped. SEO goldmine/governance recorded as future backlog only.
+
+---
+
+## 22 May 2026 — End-of-Day Closeout
+
+Today's session covered a Redis vote-count incident, a redesign batch, a copy/a11y polish pass, and roadmap bookkeeping. All work is pushed to `origin/main` (head: `16577b5`). Working tree has exactly three pre-existing Pixie WIP entries — no other dirty state.
+
+### Shipped today (15 commits, all on `main`)
+
+| Cluster | Commits | Summary |
+|---|---|---|
+| **Redis recovery** | `0509275`, `9aae7ba`, `145ca49` | Vote-count incident triage, reconstruction script (max-of-three-sources, never downgrade), execution log. See `reports/incidents/redis-vote-count-incident-2026-05-22.md`. |
+| **Redis snapshot cron** | `4a65dd9`, `dd0a0ce` | Daily snapshot of `votes:*` to private Supabase Storage at 05:00 UTC. First manual run verified (`keyCount=136`, `totalVotes=219`, checksum recorded). Mitigation box ticked in DR runbook §8. |
+| **Disciplined-neon redesign** | `83f970b`, `2bb30d2`, `12378d8`, `aafd477`, `5fa19d4`, `3881246`, `90df8c2` | Spec authored; home S1 applied; reveal hero amplified on results; DailyDilemma hero card strengthened; home copy reframed around self-positioning; purple/cyan ambient orbs removed site-wide; DESIGN.md updated to match. |
+| **Copy + a11y polish** | `738035e`, `817fc34`, `f00415c` | IT daily-dilemma label naturalized (`scopri da che parte stai`); dilemma-card emoji aria-hidden + share tap target 44 px; first natural-Italian batch (personality teaser, expert insight, anon CTA, isolated minority, DailyDilemma CTA, vote-change copy). |
+| **Tooling + content gate** | `e185f17`, `1d721a9` | Sharper dilemma-option generation gate; current-events draft inserter tracked (dry-run by default). |
+| **Roadmap docs** | `16577b5` | Added SEO goldmine + governance as future backlog (this commit). |
+
+### Working state
+
+- Branch `main` aligned with `origin/main` at `16577b5`.
+- Dirty WIP: exactly 3 pre-existing Pixie tooling files (`scripts/generate-pixie-assets.mjs` modified, `scripts/generate-pixie-emoji-assets.py` + `scripts/normalize-pixie-assets.py` untracked). Untouched throughout the session.
+
+### Recommended next-session priorities
+
+1. **`POST-SHIP-VISUAL-QA-FOLLOWUP-01`** — only if PM smoke at 375/393/768/1024 surfaces issues from today's home/DailyDilemma redesign or reveal hero amplification. Read-only otherwise.
+2. **`PIXIE-TOOLING-FINAL-CLEANUP-01`** — decide what to do with the 3 dirty Pixie WIP files (commit them, delete them, or move to a long-running branch). Closes a working-tree noise source that's persisted across multiple sessions.
+3. **`REDIS-SNAPSHOT-FIRST-SCHEDULED-RUN-CHECK-01`** — read-only post-05:00-UTC check that the first **scheduled** (not manual) snapshot landed. Confirms `votes/<date>.json` and `votes/latest.json` are dated within the most recent window. Just visual + dashboard inspection.
+4. **`DILEMMA-CARD-VISUAL-AUDIT` follow-up** — only if PM finds card visuals still feel flat next to the redesigned DailyDilemma. Audit completed today recommended scope B (a11y polish only); scope C/D were explicitly deferred and remain available if PM later wants them.
+
+### Items intentionally NOT scheduled
+
+- `SEO-GOLDMINE-KEYWORD-AUDIT-01` and `SEO-GOVERNANCE-FOUNDATION-01` — recorded in the Future Backlog section above. Do not start either without a PM scoping sprint first.
+- Full Upstash automatic backups — separate from today's app-level vote snapshot. Still TBD in `LAUNCH_AUDIT.md → Disaster Recovery & Backup`.
+- EN copy voice polish — the audit identified low-severity EN candidates (`C13`, `C14`, `C17`, `C20` per `SITE-COPY-VOICE-AUDIT-EN-IT-01`). Deferred until after IT batch settles in production.
 
 ---
 

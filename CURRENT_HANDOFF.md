@@ -1,8 +1,40 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 21 May 2026 (afternoon update) — **PM override**: AdSense review is noted but no longer a product freeze. Product iteration continues. New PM insight: the post-vote reveal is the core retention hook (social comparison / self-positioning), not the vote itself. Next sprint candidate: `REVEAL-SELF-POSITIONING-COPY-01`.
+Last updated: 22 May 2026 — end-of-day closeout. Redis vote-count incident resolved + reconstruction verified. Daily Redis vote-count snapshot cron shipped and first manual run verified. Home + DailyDilemma disciplined-neon redesign shipped. Results reveal hero amplified. Italian copy + a11y polish shipped. SEO goldmine/governance recorded as future backlog only.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+
+## 0. Session 22 May 2026 — Redis recovery, snapshot cron, home redesign, IT copy polish, SEO backlog
+
+### TL;DR
+
+- **Redis vote-count incident** (morning) — triaged, reconstructed from max-of-three-sources (Redis live, dilemma_votes Supabase rows, daily aggregate fallback). Never downgrades a field. Procedure executed and verified. Incident log: `reports/incidents/redis-vote-count-incident-2026-05-22.md`.
+- **Daily Redis snapshot cron** shipped (`4a65dd9`) and first **manual** run verified (`dd0a0ce`). `votes:*` keys snapshotted to private Supabase Storage `redis-snapshots/votes/<date>.json` + `votes/latest.json` at 05:00 UTC daily. First-run values logged in `reports/redis-snapshot-runbook.md` §11. `keyCount=136`, `totalVotes=219`, `durationMs=764`. Disaster-recovery runbook §8 mitigation box ticked.
+- **Home + DailyDilemma disciplined-neon redesign** shipped across multiple commits (spec → S1 home → DailyDilemma hero card → orb cleanup → DESIGN.md update). Two ambient orbs only (red-pink + blue); purple and cyan removed site-wide.
+- **Results reveal hero amplification** (`12378d8`) — reveal banner promoted above question recap; question recap downsized only when banner present; tie-state amplified with neon-glow-purple; isolated-minority copy split out.
+- **Italian copy + a11y polish** — DailyDilemma label naturalized (`scopri da che parte stai`); dilemma-card emoji marked `aria-hidden`; share button raised to 44 px tap target; first natural-Italian batch of 12 strings (personality teaser, expert insight CTA, anon-track-your-choices, isolated minority, reveal pulse, DailyDilemma CTA, vote-change affordance, grace hint).
+- **SEO goldmine + governance** — recorded in `ROADMAP.md` Future Backlog only. No agents, scripts, cron, or content created. No DB writes.
+
+### Working state at this closeout
+
+- **Branch:** `main`, aligned with `origin/main` at `16577b5`.
+- **Working tree:** exactly 3 pre-existing Pixie tooling entries (`scripts/generate-pixie-assets.mjs` modified, `scripts/generate-pixie-emoji-assets.py` + `scripts/normalize-pixie-assets.py` untracked). Untouched throughout the session. Same three entries that have persisted across multiple recent sessions.
+- **Build/typecheck/test** all green at last verification (`f00415c` was the last code-touching commit; subsequent commits were docs-only).
+
+### Recommended next-session priorities
+
+1. **`POST-SHIP-VISUAL-QA-FOLLOWUP-01`** — only if PM-side smoke at 375/393/768/1024 widths surfaces issues from today's home/DailyDilemma redesign or reveal hero amplification. Read-only otherwise.
+2. **`PIXIE-TOOLING-FINAL-CLEANUP-01`** — close the 3 dirty Pixie WIP entries (commit, delete, or move to a long-running branch). Removes persistent working-tree noise.
+3. **`REDIS-SNAPSHOT-FIRST-SCHEDULED-RUN-CHECK-01`** — read-only post-05:00-UTC check that the first **scheduled** (not manual) snapshot landed. Confirms `votes/<date>.json` and `votes/latest.json` were written in the right window. Just dashboard + curl inspection.
+4. **`DILEMMA-CARD-VISUAL-AUDIT` follow-up** — only if PM finds card visuals still feel flat next to the redesigned DailyDilemma. Audit completed today recommended scope B (a11y polish only); scope C/D explicitly deferred and remain available.
+
+### Items intentionally NOT scheduled
+
+- `SEO-GOLDMINE-KEYWORD-AUDIT-01` and `SEO-GOVERNANCE-FOUNDATION-01` — recorded in `ROADMAP.md` Future Backlog. Do not start either without a PM scoping sprint first. Auto-publish is HUMAN_ONLY per `CLAUDE.md`.
+- Full Upstash automatic backups — separate from today's app-level snapshot. Still TBD in `LAUNCH_AUDIT.md → Disaster Recovery & Backup`.
+- EN copy voice polish — `SITE-COPY-VOICE-AUDIT-EN-IT-01` flagged low-severity EN candidates (C13, C14, C17, C20). Deferred until the IT batch settles in production.
+
+---
 
 ## 0. Session 21 May 2026 (afternoon update) — PM override: AdSense not a blocker; reveal loop prioritized
 

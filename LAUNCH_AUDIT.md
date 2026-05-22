@@ -562,9 +562,9 @@ Script: `tests/load/splitvote-spike-load.js` (`npm run load:spike`). Usa `defaul
 - [ ] Keyboard navigation: form + dialogs + modal
 
 ### Disaster Recovery & Backup
-- [ ] Redis backup strategy: Upstash automatic backups abilitati?
+- [x] **Backup voti Redis — ✅ 22 Maggio 2026** — Snapshot giornaliero dei contatori `votes:*` su Supabase Storage privata via cron `0 5 * * *` (`app/api/cron/snapshot-redis-votes`, commit `4a65dd9`). Runbook: `reports/redis-snapshot-runbook.md`. **Nota:** non sostituisce un backup completo lato Upstash (ancora TBD per il piano free), ma copre la classe di dati a maggior rischio di perdita (vote counts).
 - [ ] Supabase backup: Point-in-Time Recovery configurato?
-- [ ] Runbook per: Redis loss (dynamic:scenarios/drafts), Supabase outage, Vercel deploy failure
+- [x] **Runbook per: Redis loss, Supabase outage, Vercel deploy failure — ✅ 22 Maggio 2026** — `reports/disaster-recovery-runbook.md` aggiornato. Procedura di recovery dei vote counts Redis eseguita e verificata oggi (incident log: `reports/incidents/redis-vote-count-incident-2026-05-22.md`).
 - [ ] Environment variables backup sicuro (non solo in Vercel dashboard)
 
 ### Mobile Store Apps
