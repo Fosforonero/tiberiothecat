@@ -144,7 +144,8 @@ SplitVote is a **global real-time voting game**, not a survey tool. The visual l
 - Page: `var(--bg)` (#070718)
 - Cards/panels: `var(--surface)` (#0f0f2a)
 - Elevated card (hover): `var(--surface2)` (#141432)
-- Three animated orbs (red-pink, blue, purple) at `opacity: 0.13–0.25`, `blur(110–130px)` — always `aria-hidden="true"`, disabled under `prefers-reduced-motion`
+- Two animated orbs (red-pink, blue) rendered as `.bg-orbs::before` + `.bg-orbs::after` at `opacity: 0.25`, `blur(110px)` — always `aria-hidden="true"`, disabled under `prefers-reduced-motion`
+- Disciplined-neon rule: do not reintroduce additional ambient orbs (e.g. purple, cyan, mid-layer) unless a future sprint explicitly approves the cross-surface visual change
 - Dot grid texture: `body::before`, fixed, `pointer-events: none`, `aria-hidden` via CSS
 
 **Brand assets:**
@@ -305,7 +306,7 @@ All custom keyframes live in `globals.css` (not Tailwind config, except `pop` an
 | Result bar width | 1s | Inline `transition-all duration-1000 ease-out` |
 
 **Reduced motion:** `@media (prefers-reduced-motion: reduce)` in `globals.css` disables:
-- `.bg-orbs::before/after`, `.bg-orb-mid`, `.bg-orb-cyan` (orb drift)
+- `.bg-orbs::before/after` (orb drift)
 - `.pulse-glow`
 - `.mobile-menu-enter`
 - `.card-neon` (transition: none)
@@ -620,7 +621,7 @@ Use for text that describes icon-only buttons when no other label is available.
 **Reduced motion:**
 ```css
 @media (prefers-reduced-motion: reduce) {
-  .bg-orbs::before, .bg-orbs::after, .bg-orb-mid, .bg-orb-cyan,
+  .bg-orbs::before, .bg-orbs::after,
   .pulse-glow, .mobile-menu-enter { animation: none; }
   .card-neon { transition: none; }
 }
