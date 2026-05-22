@@ -7,6 +7,73 @@ Ultimo aggiornamento: 21 Maggio 2026 (afternoon update) — **PM override**: AdS
 
 ---
 
+## Future Backlog — SEO Goldmine & Governance (not yet scheduled)
+
+> Strategic SEO initiatives queued for future sprints. Not implementation-ready yet — each needs its own scoping pass + PM GO before code, agents, scripts, or cron get created. **No content auto-publish under any of these items** — HUMAN_ONLY per `CLAUDE.md`.
+
+### 1. SEO-GOLDMINE-KEYWORD-AUDIT-01
+
+**Status:** Backlog. Not scheduled.
+
+**Mode:** Read-only. Generates a report; never writes to DB, Redis, sitemap, or content.
+
+**Goal:** Identify high-opportunity keywords (EN + IT) that should drive new dilemmas, landing pages, blog articles, and internal-link insertions.
+
+**Inputs:**
+- Google Search Console exports / manual snapshots (PM-uploaded CSV — no API dependency in v1)
+- Optional: internal `top_dilemmas` Redis read-only snapshot for category-demand cross-reference
+
+**Outputs:**
+- One ranked opportunity report per locale, saved under `reports/`
+- Each opportunity maps to: (a) new dilemma candidates, (b) landing-page candidates, (c) blog-article candidates, (d) internal-link insertions
+- Tagged by intent (informational / comparison / decision) and confidence (high / med / low based on impressions × position headroom)
+
+**Hard rules:**
+- No auto-publish, no draft creation, no DB / Redis writes
+- No paid API dependency
+- No SERP scraping
+- Observed GSC data and LLM inference must be marked separately in the report
+
+**Why deferred:** Needs data-source decision from PM + EN/IT clustering taxonomy spec before scripts exist.
+
+### 2. SEO-GOVERNANCE-FOUNDATION-01
+
+**Status:** Backlog. Not scheduled.
+
+**Mode:** Docs / agents / scripts only at first. **No automation** until PM explicitly approves a recurring cadence in a separate sprint.
+
+**Goal:** Codify the SAFE_AUTONOMOUS vs HUMAN_ONLY split for SEO tasks so future sprints inherit a stable governance frame instead of being re-litigated each time.
+
+**Proposed deliverables (across multiple sub-sprints):**
+- `SEO_GOVERNANCE.md` at repo root — daily / weekly review cadence, agent responsibilities, escalation rules. Lives as a sibling to `LEGAL.md` and `LAUNCH_AUDIT.md`.
+- 2-3 specialist agent definitions in `.claude/agents/`: keyword prospector, internal-link auditor, meta / structured-data drift watcher. **All read-only**, matching the existing `.claude/agents/` convention.
+- Optionally one `npm run seo:daily-report` command for read-only artifact generation. **Not** wired to cron in v1.
+
+**Hard rules:**
+- Reports-only automation first; cron / recurrence comes later only via a separately-named sprint
+- No auto-publish; no draft creation; no save mode
+- PM GO required for any content creation or publishing step
+- All new agents must be read-only per `.claude/agents/` convention
+
+**Why deferred:** Depends on the keyword audit being scoped first so the governance doc references real workflows, not speculative ones.
+
+### Cross-cutting guardrails (apply to both items above)
+
+- **Observed GSC data must be separated from LLM inference.** Reports must visually distinguish observed (GSC) data from inferred (LLM) opportunities. Never blend them in the same column.
+- **EN and IT reports separate.** Each locale gets its own report; clustering and intent classifications differ (e.g. "dilemmi morali" vs "moral dilemmas" carry different SERP intent profiles).
+- **No fragile SERP scraping in v1.** Brittle, ToS-risky, low-value vs a GSC-first approach.
+- **No paid API dependency in v1.** No Ahrefs / Semrush / Moz until PM approves a budget item.
+- **No sitemap / robots / legal changes** under either sprint without an explicit, separately-named sprint that touches only those files.
+
+### Path to schedule
+
+1. PM picks one of the two as the first sprint to scope properly. Recommendation: `SEO-GOLDMINE-KEYWORD-AUDIT-01` first — its output informs what the governance doc and agents should describe.
+2. A scoping sprint (read-only audit) defines inputs, outputs, taxonomy.
+3. Then an implementation sprint creates docs / scripts / agents — still no automation.
+4. Only after the manual workflow is proven does cron / recurrence get a separate sprint.
+
+---
+
 ## 21 May 2026 (afternoon update) — PM override: AdSense not a blocker; reveal loop prioritized
 
 **PM directive**: AdSense review is **no longer a product freeze constraint**. Product development and launch iteration continue. Public changes ship when they improve the product and pass normal QA. AdSense-specific files (`<AdSlot>`, `public/ads.txt`, AdSense loader, Consent Mode v2 signals) still get extra care, but they are not a roadmap blocker. If AdSense rejects post-change, the site can be resubmitted later. The morning's freeze framing (see below) is **superseded**.
