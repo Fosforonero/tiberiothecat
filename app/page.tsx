@@ -221,12 +221,12 @@ export default async function HomePage() {
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> No account required</span>
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Anonymous voting</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> See what the world chooses</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Find out who agrees with you</span>
         </div>
 
         {/* ── Dilemma of the Day ── */}
         <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
-          Today&apos;s dilemma — vote anonymously
+          Today&apos;s dilemma — see where you stand
         </p>
         <DailyDilemma scenario={dailyScenario} totalVotes={dailyVotes} />
 

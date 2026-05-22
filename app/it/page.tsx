@@ -250,12 +250,12 @@ export default async function ItPage() {
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Nessun account richiesto</span>
           <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Voto anonimo</span>
-          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Scopri cosa sceglierebbe il mondo</span>
+          <span className="flex items-center gap-1.5"><span className="text-green-400">✓</span> Scopri chi la pensa come te</span>
         </div>
 
         {/* ── Dilemma del Giorno ── */}
         <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
-          Il dilemma di oggi — vota in anonimo
+          Il dilemma di oggi — scopri dove ti collochi
         </p>
         <DailyDilemma
           scenario={dailyIT}
