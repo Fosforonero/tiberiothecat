@@ -7,6 +7,7 @@ import type { Scenario } from '@/lib/scenarios'
 import { track } from '@/lib/gtag'
 import { getServerVotedIds } from '@/lib/client-voted-ids'
 import { shareQuestion } from '@/lib/share-question'
+import DilemmaOptionPills from '@/components/DilemmaOptionPills'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://splitvote.io'
 
@@ -96,11 +97,23 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
   }
 
   return (
-    <div className="mb-10 rounded-3xl overflow-hidden neon-glow-yellow card-neon-yellow relative"
+    <div
+      className="mb-10 rounded-3xl overflow-hidden card-neon-yellow relative"
       style={{
-        border: '1px solid rgba(255,215,0,0.25)',
-        background: 'linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,140,0,0.04) 50%, rgba(255,51,102,0.04) 100%)'
-      }}>
+        border: '1px solid rgba(255,215,0,0.40)',
+        background:
+          'linear-gradient(135deg, rgba(255,215,0,0.10) 0%, rgba(255,140,0,0.06) 50%, rgba(255,51,102,0.05) 100%)',
+        // Combined outer halo + inner highlight + inner ring. Inline style
+        // overrides the neon-glow-yellow class shadow on purpose so we can
+        // express both the outer presence and the inset "depth" in one rule.
+        boxShadow: [
+          '0 0 12px rgba(255,215,0,0.40)',
+          '0 0 48px rgba(255,215,0,0.15)',
+          'inset 0 1px 0 rgba(255,255,255,0.06)',
+          'inset 0 0 0 1px rgba(255,215,0,0.10)',
+        ].join(', '),
+      }}
+    >
 
       {/* Full-card overlay link — covers non-interactive areas, sits behind CTAs and share button */}
       <Link
@@ -111,8 +124,8 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
       />
 
       {/* Header bar */}
-      <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b"
-        style={{ borderColor: 'rgba(255,215,0,0.12)', background: 'rgba(255,215,0,0.04)' }}>
+      <div className="flex items-center justify-between px-5 sm:px-6 py-3 border-b"
+        style={{ borderColor: 'rgba(255,215,0,0.18)', background: 'rgba(255,215,0,0.05)' }}>
         <div className="flex items-center gap-2">
           <Zap size={14} className="text-yellow-400 pulse-glow" fill="currentColor" aria-hidden="true" />
           <span className="text-yellow-400 text-xs sm:text-sm font-black uppercase tracking-widest neon-text-yellow">
@@ -143,47 +156,59 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-6 py-5">
-        <div className="flex items-start gap-3 sm:gap-4">
-          <span className="text-3xl sm:text-4xl flex-shrink-0 mt-0.5" aria-hidden="true">{scenario.emoji}</span>
+      <div className="px-5 sm:px-7 pt-6 sm:pt-7 pb-6">
+
+        {/* Hero block: emoji + category label + question */}
+        <div className="flex items-start gap-4 sm:gap-5 mb-5">
+          <span
+            className="text-4xl sm:text-5xl flex-shrink-0 mt-0.5 leading-none"
+            aria-hidden="true"
+          >
+            {scenario.emoji}
+          </span>
           <div className="flex-1 min-w-0">
-            <p className="text-base sm:text-xl font-bold text-white leading-snug mb-3">
+            <span className="block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-yellow-300 mb-2">
+              {scenario.category}
+            </span>
+            <p className="text-lg sm:text-2xl font-black text-white leading-tight tracking-tight">
               {scenario.question}
             </p>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-widest text-yellow-300 border border-yellow-500/30 rounded-full px-3 py-1">
-                {scenario.category}
-              </span>
-              {totalVotes > 0 && (
-                <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
-                  <Globe size={11} />
-                  {totalVotes.toLocaleString()} {copy.votesToday}
-                </span>
-              )}
-            </div>
           </div>
         </div>
 
-        {/* CTA — relative z-10 so these links are above the full-card overlay */}
-        <div className="relative z-10 mt-5 flex items-center gap-3">
+        {/* A=red / B=blue option pills */}
+        <div className="mb-5">
+          <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
+        </div>
+
+        {/* Vote count line — centered, secondary */}
+        {totalVotes > 0 && (
+          <div className="mb-5 flex items-center justify-center gap-1.5 text-xs text-[var(--muted)]">
+            <Globe size={11} aria-hidden="true" />
+            <span>{totalVotes.toLocaleString()} {copy.votesToday}</span>
+          </div>
+        )}
+
+        {/* CTA — the reveal trigger; z-10 keeps clicks above the full-card overlay */}
+        <div className="relative z-10 flex items-center gap-3">
           <Link
             href={ctaHref}
-            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 active:scale-[0.97] active:bg-yellow-300 text-black font-black text-sm px-6 py-3 rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
+            className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 active:scale-[0.97] active:bg-yellow-300 text-black font-black text-base px-6 py-3.5 min-h-[48px] rounded-xl transition-all neon-glow-yellow hover:scale-[1.01]"
           >
             {isVoted ? copy.results : copy.voteNow}
-            <ChevronRight size={16} />
+            <ChevronRight size={18} />
           </Link>
           {!isVoted && (
             <Link
               href={`${prefix}/results/${scenario.id}`}
-              className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 rounded-xl hover:bg-white/5"
+              className="text-sm text-[var(--muted)] hover:text-white transition-colors px-4 py-3 min-h-[48px] flex items-center rounded-xl hover:bg-white/5"
             >
               {copy.results}
             </Link>
           )}
         </div>
 
-        {/* Share — relative z-10 so button is above the full-card overlay */}
+        {/* Share — z-10 above the overlay */}
         <div className="relative z-10 mt-3 text-center">
           <button
             onClick={handleShare}
