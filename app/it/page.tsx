@@ -211,7 +211,7 @@ export default async function ItPage() {
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-glow" />
             Voti in tempo reale
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-5 sm:mb-6 leading-none">
+          <h1 className="text-4xl sm:text-5xl md:text-[88px] font-black tracking-tight mb-5 sm:mb-6 leading-none">
             Cosa sceglierebbe
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-purple-400 to-blue-400">
@@ -270,7 +270,7 @@ export default async function ItPage() {
         <section className="mb-12">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-              <span className="text-red-400">🔥</span> Dilemmi in Evidenza
+              <span className="text-red-400" aria-hidden="true">🔥</span> Dilemmi in Evidenza
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -292,7 +292,7 @@ export default async function ItPage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-orange-400">🔥</span> Di Tendenza
+                <span className="text-orange-400" aria-hidden="true">🔥</span> Di Tendenza
               </h2>
               <Link href="/it/trending" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
                 Vedi tutti →
@@ -319,7 +319,7 @@ export default async function ItPage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400">✨</span> Nuove Domande
+                <span className="text-green-400" aria-hidden="true">✨</span> Nuove Domande
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -340,7 +340,7 @@ export default async function ItPage() {
         {/* ── Tutti i dilemmi ── */}
         <section className="mb-12">
           <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
-            📂 Tutti i dilemmi
+            <span aria-hidden="true">📂</span> Tutti i dilemmi
           </h2>
           <DilemmaGrid scenarios={allScenariosIT} locale="it" />
         </section>
@@ -348,7 +348,7 @@ export default async function ItPage() {
         {/* ── Categorie ── */}
         <section className="mb-12">
           <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5 flex items-center gap-2">
-            <span>📂</span> Esplora per Categoria
+            <span aria-hidden="true">📂</span> Esplora per Categoria
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {FEATURED_CATEGORIES.map((cat) => (
@@ -357,7 +357,7 @@ export default async function ItPage() {
                 href={`/it/category/${cat.slug}`}
                 className="card-neon group rounded-xl p-4 transition-all text-center"
               >
-                <span className="text-3xl block mb-2">{cat.emoji}</span>
+                <span className="text-3xl block mb-2" aria-hidden="true">{cat.emoji}</span>
                 <span className="font-semibold text-[var(--text)] block">{cat.label}</span>
                 <span className="text-xs text-[var(--muted)] group-hover:text-white transition-colors">{cat.desc}</span>
               </Link>
@@ -367,7 +367,7 @@ export default async function ItPage() {
 
         {/* ── FAQ ── */}
         <section className="mb-12">
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-6 text-center">❓ Domande Frequenti</h2>
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-6 text-center"><span aria-hidden="true">❓</span> Domande Frequenti</h2>
           <div className="space-y-3">
             {[
               {

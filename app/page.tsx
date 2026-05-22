@@ -182,7 +182,7 @@ export default async function HomePage() {
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-glow" />
             Real-time global votes
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-5 sm:mb-6 leading-none">
+          <h1 className="text-4xl sm:text-5xl md:text-[88px] font-black tracking-tight mb-5 sm:mb-6 leading-none">
             What would the
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-purple-400 to-blue-400">
@@ -238,7 +238,7 @@ export default async function HomePage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-orange-400">🔥</span> Trending Now
+                <span className="text-orange-400" aria-hidden="true">🔥</span> Trending Now
               </h2>
               <Link href="/trending" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
                 See all →
@@ -265,7 +265,7 @@ export default async function HomePage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-yellow-400">⭐</span> Most Voted
+                <span className="text-yellow-400" aria-hidden="true">⭐</span> Most Voted
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -288,7 +288,7 @@ export default async function HomePage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400">✨</span> Latest Questions
+                <span className="text-green-400" aria-hidden="true">✨</span> Latest Questions
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -309,7 +309,7 @@ export default async function HomePage() {
         {/* ── Browse All ── */}
         <section>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
-            📂 Browse All
+            <span aria-hidden="true">📂</span> Browse All
           </h2>
           <DilemmaGrid scenarios={allScenarios} />
         </section>

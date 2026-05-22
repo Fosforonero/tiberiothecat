@@ -145,13 +145,13 @@ export default function DailyDilemma({ scenario, totalVotes, locale = 'en' }: Pr
       {/* Content */}
       <div className="px-4 sm:px-6 py-5">
         <div className="flex items-start gap-3 sm:gap-4">
-          <span className="text-3xl sm:text-4xl flex-shrink-0 mt-0.5">{scenario.emoji}</span>
+          <span className="text-3xl sm:text-4xl flex-shrink-0 mt-0.5" aria-hidden="true">{scenario.emoji}</span>
           <div className="flex-1 min-w-0">
             <p className="text-base sm:text-xl font-bold text-white leading-snug mb-3">
               {scenario.question}
             </p>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-widest text-yellow-400/70 border border-yellow-500/20 rounded-full px-3 py-1">
+              <span className="text-xs font-bold uppercase tracking-widest text-yellow-300 border border-yellow-500/30 rounded-full px-3 py-1">
                 {scenario.category}
               </span>
               {totalVotes > 0 && (
