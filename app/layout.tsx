@@ -166,10 +166,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }} />
       </head>
       <body className="min-h-screen" style={{ background: 'var(--bg)' }}>
-        {/* Animated background */}
+        {/* Animated background — disciplined 2-orb ambient (red-pink + blue
+            via .bg-orbs::before / ::after). The previous purple and cyan
+            ambient layers were removed for a calmer neon surface. */}
         <div className="bg-orbs" aria-hidden="true" />
-        <div className="bg-orb-mid" aria-hidden="true" />
-        <div className="bg-orb-cyan" aria-hidden="true" />
 
         {/* ── Navbar ── */}
         <nav className="border-b border-[var(--border)] px-4 sm:px-6 py-3 flex items-center justify-between gap-3"

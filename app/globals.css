@@ -87,37 +87,6 @@ body {
   100% { transform: translate(-55px, -45px) scale(1.15); }
 }
 
-.bg-orb-mid {
-  position: fixed;
-  width: 550px;
-  height: 550px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #7c22e0, transparent 70%);
-  filter: blur(130px);
-  opacity: 0.18;
-  top: 35%;
-  left: 45%;
-  transform: translate(-50%, -50%);
-  animation: orb-drift-b 24s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bg-orb-cyan {
-  position: fixed;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #00b4d8, transparent 70%);
-  filter: blur(120px);
-  opacity: 0.13;
-  top: -100px;
-  right: -80px;
-  animation: orb-drift-a 20s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* ── Subtle dot grid texture ────────────────────────────── */
 body::before {
   content: '';
@@ -278,8 +247,6 @@ nav, main, footer {
 @media (prefers-reduced-motion: reduce) {
   .bg-orbs::before,
   .bg-orbs::after,
-  .bg-orb-mid,
-  .bg-orb-cyan,
   .pulse-glow,
   .mobile-menu-enter {
     animation: none;
