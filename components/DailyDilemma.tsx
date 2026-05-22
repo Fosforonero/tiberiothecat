@@ -32,7 +32,7 @@ const IT_COPY = {
   label:         'Dilemma del Giorno',
   resetsIn:      'Cambia tra',
   votesToday:    'voti oggi',
-  voteNow:       'Scopri il risultato',
+  voteNow:       'Guarda come si divide',
   results:       'Vedi risultati',
   shareQuestion: 'Condividi domanda',
   shareCopied:   'Link copiato',

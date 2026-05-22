@@ -50,12 +50,12 @@ export default function PersonalityTeaser({ locale = 'en' }: Props) {
       <div className="flex-1 min-w-0">
         <p className="font-bold text-white text-sm mb-1">
           {isIT
-            ? '🧠 I tuoi voti stanno rivelando un pattern'
+            ? '🧠 Si vede uno schema nelle tue scelte'
             : '🧠 Your votes are revealing a pattern'}
         </p>
         <p className="text-xs text-[var(--muted)] leading-relaxed">
           {isIT
-            ? 'Scopri il tuo Tipo di Personalità Morale — sei un Guardian, Strategist o Empath?'
+            ? 'Scopri la tua personalità morale — sei Guardian, Strategist o Empath?'
             : 'Discover your Moral Personality Type — are you a Guardian, Strategist, or Empath?'}
         </p>
       </div>
