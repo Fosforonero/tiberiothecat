@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/generate-dilemmas",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/snapshot-redis-votes",
+      "schedule": "0 5 * * *"
     }
   ],
   "redirects": [
