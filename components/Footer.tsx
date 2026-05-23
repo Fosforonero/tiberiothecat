@@ -50,7 +50,17 @@ export default function Footer() {
     <footer className="text-center text-[var(--muted)] text-xs py-10 mt-16">
       <div className="neon-divider mb-8 mx-auto max-w-2xl" />
       <p className="mb-1">© 2026 SplitVote.io — {isIT ? 'Nessuna risposta giusta. Solo una onesta.' : 'No right answers. Just honest ones.'}</p>
-      <p className="text-[10px] opacity-40 mb-3">{isIT ? 'Piattaforma di voto anonimo' : 'Anonymous voting platform'}</p>
+      <p className="text-[10px] opacity-40 mb-3">
+        {isIT ? 'Piattaforma di voto anonimo' : 'Anonymous voting platform'} · {isIT ? 'creato da ' : 'made by '}
+        <a
+          href="https://www.fosforonero.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-white transition-colors"
+        >
+          Fosforonero
+        </a>
+      </p>
       <p className="flex items-center justify-center gap-4 flex-wrap mb-3">
         <a href={isIT ? '/it/blog' : '/blog'} className="hover:text-white transition-colors">
           Blog
