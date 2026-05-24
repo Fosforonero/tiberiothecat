@@ -3,7 +3,7 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 24 Maggio 2026 — Home declutter shipped (EN + IT structurally aligned, single 4-card continuation section, full Browse-All grid removed). 5 weak dilemmas rewritten EN + 6 IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change.
+Ultimo aggiornamento: 24 Maggio 2026 — Home declutter shipped (EN + IT structurally aligned, single 4-card continuation section, full Browse-All grid removed). 5 weak dilemmas rewritten EN + 6 IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change. Tactical SEO backlog (internal linking + llms.txt + paused 21 May items) added below for next useful SEO sprint.
 
 ---
 
@@ -46,6 +46,47 @@ Five-phase sprint per `SPRINT: HOME-DECLUTTER-AND-DILEMMA-QUALITY-RECOVERY-01`. 
 
 - Local `main`: 5 commits ahead of `origin/main`.
 - Dirty WIP: same 3 pre-existing Pixie tooling entries (untouched throughout the session).
+
+---
+
+## SEO Sprint Queue — Tactical Backlog
+
+> Small, tactical SEO items queued for the next useful SEO sprint. Each item is independent — they can be bundled into one sprint or run separately. No new tracking, no DB writes, no new processors. PM GO still required before implementation per `CLAUDE.md`.
+>
+> Distinct from `## Future Backlog — SEO Goldmine & Governance` below: those are strategic initiatives needing their own scoping pass; the items here are tactical, edit-only, and ready to implement on PM GO.
+
+### Quick wins added 24 May 2026
+
+| # | Sprint | Effort | Why it's worth doing |
+|---|---|---|---|
+| 1 | `SEO-BLOG-INTERNAL-LINKING-AUDIT-01` | 30–90 min | Cross-link related blog articles within the same cluster (loyalty / honesty, trolley variants, consequentialism vs deontology, etc.). Topical authority is a real Google signal. `lib/blog.ts` already exposes `relatedDilemmaIds` + `internalLinks` fields; the work is to audit current usage and insert anchor-text links between articles where natural. ROI alto, basso rischio. Effort range depends on number of blog articles. |
+| 2 | `SEO-LLMS-TXT-BASE-01` | 15–20 min | Add `/llms.txt` per the Answer.ai 2024 proposed standard. Helps AI crawlers (ChatGPT Search, Perplexity, AI Overviews, Claude web fetch) understand which content to cite. **Adoption-driven bet — not yet a Google ranking factor.** Base version only: site map + brief platform description. Heavier `llms-full.txt` variant (concatenated body) is deferred until base shows traceable AI-citation traffic. |
+
+### Already queued from 21 May 2026 GSC snapshot (still valid)
+
+These three minor edit-only sprints were paused during the 22 May redesign and 24 May home declutter work. They remain valid and should ship the next time we touch SEO content. None overlap with each other; all touch existing blog pages only.
+
+| # | Sprint | Locale | URL type | Effort |
+|---|---|---|---|---|
+| 3 | `SEO-IT-LEALTA-ONESTA-DIFFERENZE-FAQ-01` | IT | existing blog `lealta-vs-onesta-quando-le-due-virtu-non-possono-coesistere` | ~15 LOC, FAQ Q&A insertion |
+| 4 | `SEO-LOYALTY-HONESTY-SNIPPET-TUNE-01` | EN | existing blog `loyalty-vs-honesty-when-they-collide` | ~5 LOC, meta + intro tune |
+| 5 | `SEO-TROLLEY-FOOTBRIDGE-STATS-META-01` | EN | existing blog `trolley-problem-statistics` | ~2 LOC, meta description tune |
+
+### Suggested bundling for the next SEO sprint
+
+- **Bundle A — blog content batch**: #1 (internal linking) + #3 + #4 + #5. All blog-only, low coupling, one PM review pass. Estimated total 1–2.5 hours depending on blog article count.
+- **Bundle B — llms.txt standalone**: #2 only. Creates a new `/llms.txt` route, independent of any other surface. Estimated 15–20 min. Can ship at any point before or after Bundle A.
+
+**Priority within a single sprint**: Bundle A first (more validated SEO win), Bundle B after if time allows.
+
+### Constraints (inherited across all items)
+
+- No new analytics events; no `user_events` writes.
+- No new processors / cookies / tracking.
+- No content auto-publish.
+- No sitemap / robots / `LEGAL.md` change unless the specific item explicitly needs it (none of the five should).
+- EN/IT parity preserved where applicable.
+- All items remain reversible — single-file or near-single-file edits.
 
 ---
 
