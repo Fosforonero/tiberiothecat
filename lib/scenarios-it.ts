@@ -55,9 +55,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Resto in silenzio. Il passato è passato.',
   },
   lifeboat: {
-    question: 'Una scialuppa può reggere al massimo 8 persone. I sopravvissuti sono 9. Qualcuno deve finire in mare o affogano tutti.',
-    optionA: 'Voto per buttare qualcuno fuori.',
-    optionB: 'Rifiuto. Si affonda o si sopravvive insieme.',
+    question: "Una scialuppa regge 8 persone. Siete in 9. Nessuno si offre. Qualcuno propone che vada l'anziano del gruppo — vi guarda e annuisce.",
+    optionA: 'Accetto il suo cenno. Ha fatto pace con la scelta.',
+    optionB: "Rifiuto. Quando cominciamo a scegliere chi è 'utile', abbiamo già perso qualcosa che non si recupera.",
   },
   'time-machine': {
     question: 'Puoi tornare indietro nel tempo e uccidere una persona da neonata, impedendo un genocidio da 10 milioni di morti. Il neonato è innocente.',
@@ -100,9 +100,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Non mi intrometto. Non è la mia relazione.',
   },
   'rich-or-fair': {
-    question: "Una nuova tassa dimezzerebbe il reddito dell'1% più ricco e raddoppierebbe quello del 20% più povero. La ricchezza totale del Paese resta la stessa.",
-    optionA: 'La approvo. Meno concentrazione vale la redistribuzione.',
-    optionB: 'La blocco. Scegliere così chi vince e chi perde è sbagliato, anche quando i conti tornano.',
+    question: "Una nuova tassa dimezzerebbe il reddito dell'1% più ricco e raddoppierebbe quello del 20% più povero. La ricchezza totale resta invariata.",
+    optionA: 'Approvarla. Ridurre la concentrazione vale la redistribuzione.',
+    optionB: 'Bloccarla. Scegliere così chi vince e chi perde è sbagliato, anche quando i conti tornano.',
   },
   'robot-judge': {
     question: "Uno strumento di IA per le condanne è più costante dei giudici umani su casi simili, ma non può spiegare il proprio ragionamento. Va usato?",
@@ -120,9 +120,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'No. Imprigionare un morente non risolve nulla.',
   },
   'revenge-vs-forgiveness': {
-    question: 'Qualcuno che ti ha rovinato la vita 10 anni fa ora è cambiato, ha successo e aiuta la comunità. Non si è mai scusato.',
-    optionA: 'Lo smaschero. Il mondo deve sapere chi era.',
-    optionB: 'Lascio perdere. Le persone possono cambiare.',
+    question: 'Chi ti ha falsamente accusato dieci anni fa, costandoti la carriera, oggi guida un ente di beneficenza locale. Non si è mai fatto vivo.',
+    optionA: 'Dico ai suoi donatori chi era. La reputazione non si ripulisce col silenzio.',
+    optionB: 'Lascio stare. Continuare a tenermelo dentro costerebbe più a me che a lui.',
   },
   'privacy-terror': {
     question: 'I governi possono prevenire attentati leggendo tutti i messaggi privati, ma la privacy sparirebbe del tutto. Nessuna eccezione.',
@@ -160,14 +160,14 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: "No. La morte fa parte dell'essere umani.",
   },
   'delete-social-media': {
-    question: 'Puoi cancellare per sempre tutti i social media. Il mondo diventa più lento e meno connesso, ma la salute mentale globale migliora del 40%.',
-    optionA: 'Li cancello. La salute mentale viene prima.',
-    optionB: 'No. Connessione e libertà di espressione contano.',
+    question: "Una legge vieterebbe i social ai minori di 16 anni, con verifica del documento. Proteggerebbe alcuni ragazzi e taglierebbe fuori quelli che proprio lì trovano comunità a cui sentono di appartenere.",
+    optionA: "Approvarla. Per i minori la regola di default dev'essere proteggere, non lasciar entrare.",
+    optionB: 'Bloccarla. Chi ne ha più bisogno sarà il primo a restare fuori.',
   },
   'ai-replaces-jobs': {
-    question: "L'IA eliminerà il 30% dei lavori entro 10 anni. I governi possono rallentarla a enorme costo economico, oppure lasciarla avanzare e riqualificare i lavoratori.",
-    optionA: 'La rallento. Le persone hanno bisogno di tempo.',
-    optionB: 'Lascio avanzare il progresso. La risposta è riqualificare.',
+    question: "La tua azienda ti offre lo stesso stipendio: o supervisioni un'IA che fa il tuo vecchio lavoro, o ti riqualifichi per un altro ruolo senza garanzia di ottenerlo. Hai 30 giorni per decidere.",
+    optionA: "Supervisiono l'IA. Prendo la certezza.",
+    optionB: 'Mi riqualifico. Il ruolo di supervisore sparirà subito dopo.',
   },
   'deepfake-expose': {
     question: "Hai un video deepfake di una figura pubblica che commette un crimine. Non sai se l'episodio sia avvenuto davvero — sai solo che il video, in sé, è falso.",
@@ -175,9 +175,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Lo distruggo. Anche se avessi ragione, staresti piazzando una prova fabbricata.',
   },
   'tax-billionaires': {
-    question: 'Una tassa patrimoniale una tantum del 90% sui miliardari potrebbe eliminare la fame nel mondo per 10 anni. Resterebbero comunque ricchissimi.',
-    optionA: 'Sì. Nessuno ha bisogno di un miliardo.',
-    optionB: 'No. La redistribuzione forzata è sbagliata.',
+    question: 'Una patrimoniale una tantum finanzierebbe dieci anni di aiuti alimentari a chi ne ha più bisogno. I miliardari resterebbero comunque miliardari.',
+    optionA: 'Approvarla. La fame che placa pesa più del principio che piega.',
+    optionB: 'Bloccarla. Colpire un gruppo, anche se comodo, rende più facile colpire il prossimo.',
   },
   'open-borders': {
     question: 'Confini completamente aperti tra tutti i paesi: chiunque può vivere e lavorare ovunque senza restrizioni.',
