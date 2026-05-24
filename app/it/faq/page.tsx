@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import JsonLd from '@/components/JsonLd'
 
 const BASE_URL = 'https://splitvote.io'
 
@@ -106,9 +107,34 @@ const SECTIONS = [
   },
 ]
 
+// Build FAQPage JSON-LD for rich results in Google Search.
+// Mirrors the EN /faq pattern (app/faq/page.tsx) but skips the
+// React-node flatten step because IT answers are already plain strings.
+// Structured data must reflect the visible SECTIONS content above — do not
+// add or remove Q/A here without updating the rendered SECTIONS too.
+function faqJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: SECTIONS.flatMap(s =>
+      s.items.map(item => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.a.replace(/\s+/g, ' ').trim(),
+        },
+      }))
+    ),
+  }
+}
+
 export default function ItFaqPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
+      {/* JSON-LD for SEO rich results — mirrors the visible SECTIONS below */}
+      <JsonLd data={faqJsonLd()} />
+
       {/* Hero */}
       <div className="text-center mb-12">
         <div className="inline-block bg-cyan-500/10 text-cyan-400 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-6 border border-cyan-500/20">
