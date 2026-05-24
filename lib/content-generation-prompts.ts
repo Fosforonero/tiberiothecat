@@ -52,6 +52,8 @@ Safety and quality rules (strictly enforced — output will be rejected if viola
 - The central rule must be internally consistent. If the dilemma uses absolute terms like "always", "never", "everyone", "no one", or "total", define exactly what is impossible and what remains possible.
 - Do not pair universal promises with contradictory loopholes. Example: if people cannot lie to someone, say whether they can still stay silent or refuse to answer; do not call that "total transparency".
 - Options must be mutually exclusive responses to the same question. Do not let one option introduce a hidden exception that makes the premise unclear.
+- Each option must combine a concrete stance with a brief rationale. Never write a bare "Yes." / "No." / "Sì." label with no rationale, and never pair an asymmetric strawman label with a neutral one. Symmetric phrasing: both options imperative or both descriptive; no morally loaded adjective on one option that the other does not rebut. (Lifestyle preference items are exempt — see buildLifestyleDilemmaPrompt.)
+- No magic empirical stipulations in the question. Forbidden patterns: "studies show", "X% more accurate", "X% effective", "+N% improvement", "experts agree", "proven to", "guaranteed to", "the X model shows" / "il modello X mostra". The voter must reason about plausibility, not be locked in by a stipulated contested fact that pre-resolves the moral work.
 - If topic touches psychology, ethics, or health: add a brief disclaimer in safetyNotes
 - Content must be suitable for a general audience aged 16+
 - No unverified factual claims about specific recent or ongoing events

@@ -41,6 +41,40 @@ export const LIFESTYLE_AUTOPUBLISH_FINALSCORE_THRESHOLD = 30
 const IT_ACCENT_RE = /[àáèéìíòóùú]/
 const IT_WORDS_RE  = /\b(il|la|di|che|non|per|con|del|della|degli|alle|questo|questa|tutti|ogni|sono|hanno|siamo|puoi|devi|può|ho|hai|sei|era|fare|cosa|come|dove|quando)\b/gi
 
+// Soft depth warnings (moral dilemmas only — lifestyle is exempt by design).
+// Each option must combine a concrete stance with a brief rationale. Options
+// that open with a bare "Yes." / "No." / "Sì." flag the asymmetric-label
+// pattern the depth audit (reports/dilemma-depth-audit-2026-05-19.md §3.1)
+// identified as the most common reason real options read like a poll.
+const MORAL_BARE_YES_NO_RE = /^(yes|no|sì|sí)\.\s/i
+
+// Magic empirical stipulations in the question. Forbidden for moral dilemmas
+// because they pre-resolve the moral work by stipulating a contested
+// empirical claim, leaving the voter only a preference vote. EN + IT
+// patterns combined; lifestyle is exempt.
+const MAGIC_STIPULATION_RE = new RegExp(
+  [
+    // EN markers
+    'studies?\\s+show',
+    'experts?\\s+agree',
+    'proven\\s+to\\b',
+    'guarantees?\\b',
+    'guaranteed\\s+to\\b',
+    'will\\s+result\\s+in\\b',
+    '\\+\\s*\\d+\\s*%',                                    // +40%
+    '\\d+\\s*%\\s+(?:more|fewer|less|likely)\\b',          // 30% more
+    '\\d+\\s*%\\s+(?:effective|accurate|safer)\\b',
+    // IT markers
+    'studi\\s+(?:dimostrano|mostrano|provano)',
+    'esperti\\s+concordano',
+    'si\\s+dimostra\\s+che',
+    'garantit[oa]\\b',
+    'modello\\s+\\w+\\s+(?:mostra|dimostra)',              // "modello portoghese mostra"
+    '\\d+\\s*%\\s+in\\s+(?:più|meno)\\b',
+  ].join('|'),
+  'i',
+)
+
 function italianSignalCount(text: string): number {
   const accents = (text.match(/[àáèéìíòóùú]/g) ?? []).length
   const words   = (text.match(IT_WORDS_RE) ?? []).length
@@ -185,6 +219,20 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
   if (!isLifestyle && aLen < 20 && bLen < 20) warnings.push('options_very_short')
   if (!input.keywords || input.keywords.length === 0) warnings.push('no_keywords')
   if (titleLen > 0 && titleLen < 40) warnings.push('seo_title_short_for_google')
+
+  // ── Soft depth warnings (moral dilemmas only — never on lifestyle) ────
+  // These are advisory signals for admin review, not reject reasons.
+  if (!isLifestyle) {
+    if (MORAL_BARE_YES_NO_RE.test(input.optionA)) {
+      warnings.push('moral_option_bare_yes_no:optionA')
+    }
+    if (MORAL_BARE_YES_NO_RE.test(input.optionB)) {
+      warnings.push('moral_option_bare_yes_no:optionB')
+    }
+    if (MAGIC_STIPULATION_RE.test(input.question)) {
+      warnings.push('magic_stipulation_in_question')
+    }
+  }
 
   return {
     passed:   reasons.length === 0,
