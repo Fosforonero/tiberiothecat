@@ -144,50 +144,16 @@ export default async function HomePage() {
     })),
   }
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'What is SplitVote?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'SplitVote is a platform where people worldwide vote on impossible moral dilemmas in real time. Questions cover ethics, survival, loyalty, justice, and more.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'How does the trolley problem vote work?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'On SplitVote, you vote anonymously on classic dilemmas like the trolley problem and instantly see how your answer compares to thousands of other voters worldwide.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Are the votes on SplitVote real?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes. Every vote is cast in real time by real users. Results update live and are stored securely — one vote per user per dilemma.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Is SplitVote free?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Voting on all dilemmas is completely free. A Premium membership unlocks advanced features like custom poll creation and no ads.',
-        },
-      },
-    ],
-  }
+  // FAQPage JSON-LD intentionally not rendered here. Google requires
+  // structured data to mirror visible page content; the EN home has no
+  // visible FAQ accordion (the full FAQ lives at /faq, which carries its
+  // own FAQPage JSON-LD). Mirror of the IT-home cleanup done on 24 May
+  // (528bcb3) — see SPRINT: HOME-DISCOVERY-BALANCE-AND-EN-FAQ-SCHEMA-FIX-01.
 
   return (
     <>
       <JsonLd data={websiteSchema} />
       <JsonLd data={itemListSchema} />
-      <JsonLd data={faqSchema} />
 
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
 
@@ -276,14 +242,56 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ── Compact continuation links — replaces the deleted full grid ── */}
+        {/* ── Browse by theme — quiet pill chip row to surface category
+              discovery without bringing back the deleted DilemmaGrid.
+              Mobile-first: text-only chips with flex-wrap, min-h 36 px,
+              last chip ("All topics →") visually distinct as the broader
+              browse path. ── */}
+        <div className="mb-8">
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
+            Browse by theme
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Link
+              href="/category/morality"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Moral dilemmas
+            </Link>
+            <Link
+              href="/category/survival"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Survival
+            </Link>
+            <Link
+              href="/category/relationships"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Relationships
+            </Link>
+            <Link
+              href="/category/technology"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Technology
+            </Link>
+            <Link
+              href="/topics"
+              className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-blue-500/30 hover:border-blue-500/60 text-xs text-blue-300/80 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
+            >
+              All topics
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Compact continuation links — secondary nav. "All topics" was
+              removed from this strip since the chip row above already
+              surfaces the broader browse path. ── */}
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-10 text-sm text-[var(--muted)]">
           <Link href="/trending" className="hover:text-white transition-colors">
             <span aria-hidden="true">🔥</span> Trending
-          </Link>
-          <span className="text-white/15">·</span>
-          <Link href="/topics" className="hover:text-white transition-colors">
-            <span aria-hidden="true">📂</span> All topics
           </Link>
           <span className="text-white/15">·</span>
           <Link href="/leaderboard" className="hover:text-white transition-colors">

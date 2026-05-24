@@ -257,16 +257,58 @@ export default async function ItPage() {
           </section>
         )}
 
-        {/* ── Compact continuation links — replaces the deleted full grid,
-              categorie grid, and FAQ accordion. /it/faq retains the full
+        {/* ── Esplora per tema — quiet pill chip row to surface category
+              discovery without bringing back the deleted "Esplora per
+              Categoria" grid. Mobile-first: text-only chips with
+              flex-wrap, min-h 36 px, last chip ("Tutti i temi →")
+              visually distinct as the broader browse path. Mirrors the
+              EN structure exactly. ── */}
+        <div className="mb-8">
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)] text-center mb-3">
+            Esplora per tema
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Link
+              href="/it/category/morality"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Moralità
+            </Link>
+            <Link
+              href="/it/category/survival"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Sopravvivenza
+            </Link>
+            <Link
+              href="/it/category/relationships"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Relazioni
+            </Link>
+            <Link
+              href="/it/category/technology"
+              className="inline-flex items-center px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
+            >
+              Tecnologia
+            </Link>
+            <Link
+              href="/it/temi"
+              className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-blue-500/30 hover:border-blue-500/60 text-xs text-blue-300/80 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
+            >
+              Tutti i temi
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Compact continuation links — secondary nav. "Tutti i temi" was
+              removed from this strip since the chip row above already
+              surfaces the broader browse path. /it/faq retains the full
               FAQ content. ── */}
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-12 text-sm text-[var(--muted)]">
           <Link href="/it/trending" className="hover:text-white transition-colors">
             <span aria-hidden="true">🔥</span> Di tendenza
-          </Link>
-          <span className="text-white/15">·</span>
-          <Link href="/it/temi" className="hover:text-white transition-colors">
-            <span aria-hidden="true">📂</span> Tutti i temi
           </Link>
           <span className="text-white/15">·</span>
           <Link href="/it/leaderboard" className="hover:text-white transition-colors">
