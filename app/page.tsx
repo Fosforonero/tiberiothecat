@@ -2,8 +2,6 @@ import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import { getServerVotedIds, freshFirst } from '@/lib/voted-ids'
-import DilemmaGrid from '@/components/DilemmaGrid'
-import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
 import AdSlot from '@/components/AdSlot'
 import DailyDilemma from '@/components/DailyDilemma'
@@ -99,6 +97,23 @@ export default async function HomePage() {
     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
     .slice(0, 6)
   const newlyGenerated = freshFirst(newlyGeneratedRaw, votedIds)
+
+  // "Pick your next" — single deterministic 4-card continuation section.
+  // Blends 1 trending + 1 most-voted + 2 newly-generated (with graceful
+  // fallbacks if any source list is shorter than expected). The three
+  // source lists are already mutually exclusive (seen-set discipline above)
+  // and each is freshFirst'd, so position-0 in each list is unvoted where
+  // possible. Source-tagged badges are preserved.
+  type PickItem = { scenario: Scenario; badge: 'trending' | 'new' | undefined }
+  const picks: PickItem[] = []
+  if (trendingNow[0])     picks.push({ scenario: trendingNow[0],     badge: 'trending' })
+  if (mostVoted[0])       picks.push({ scenario: mostVoted[0],       badge: undefined  })
+  if (newlyGenerated[0])  picks.push({ scenario: newlyGenerated[0],  badge: 'new'      })
+  if (newlyGenerated[1])  picks.push({ scenario: newlyGenerated[1],  badge: 'new'      })
+  // Pad up to 4 if a primary slot was empty
+  if (picks.length < 4 && mostVoted[1])    picks.push({ scenario: mostVoted[1],    badge: undefined  })
+  if (picks.length < 4 && trendingNow[1])  picks.push({ scenario: trendingNow[1],  badge: 'trending' })
+  const pickYourNext = picks.slice(0, 4)
 
   // JSON-LD schemas
   const websiteSchema = {
@@ -233,26 +248,27 @@ export default async function HomePage() {
         {/* ── Personality teaser (logged-in users, 7-day dismiss) ── */}
         <PersonalityTeaser locale="en" />
 
-        {/* ── Trending Now (ranked by recent votes: today + yesterday) ── */}
-        {trendingNow.length > 0 && (
-          <section className="mb-12">
+        {/* ── Pick your next — single deterministic continuation section
+              (1 trending + 1 most-voted + 2 fresh, max 4 cards) ── */}
+        {pickYourNext.length > 0 && (
+          <section className="mb-10">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-orange-400" aria-hidden="true">🔥</span> Trending Now
+                <span className="text-blue-400" aria-hidden="true">▶</span> Pick your next
               </h2>
               <Link href="/trending" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
                 See all →
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {trendingNow.map((s) => (
+              {pickYourNext.map(({ scenario: s, badge }) => (
                 <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/play/${s.id}`}
                   resultsHref={`/results/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
-                  badge="trending"
+                  badge={badge}
                   locale="en"
                 />
               ))}
@@ -260,62 +276,23 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ── Most Voted ── */}
-        {mostVoted.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-yellow-400" aria-hidden="true">⭐</span> Most Voted
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {mostVoted.map((s) => (
-                <VotedDilemmaCard
-                  key={s.id}
-                  scenario={s}
-                  playHref={`/play/${s.id}`}
-                  resultsHref={`/results/${s.id}`}
-                  totalVotes={voteMap.get(s.id)}
-                  locale="en"
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Latest Questions (most recent AI dilemmas) ── */}
-        {newlyGenerated.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400" aria-hidden="true">✨</span> Latest Questions
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {newlyGenerated.map((s) => (
-                <VotedDilemmaCard
-                  key={s.id}
-                  scenario={s}
-                  playHref={`/play/${s.id}`}
-                  resultsHref={`/results/${s.id}`}
-                  badge="new"
-                  locale="en"
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Browse All ── */}
-        <section>
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
-            <span aria-hidden="true">📂</span> Browse All
-          </h2>
-          <DilemmaGrid scenarios={allScenarios} />
-        </section>
+        {/* ── Compact continuation links — replaces the deleted full grid ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-10 text-sm text-[var(--muted)]">
+          <Link href="/trending" className="hover:text-white transition-colors">
+            <span aria-hidden="true">🔥</span> Trending
+          </Link>
+          <span className="text-white/15">·</span>
+          <Link href="/topics" className="hover:text-white transition-colors">
+            <span aria-hidden="true">📂</span> All topics
+          </Link>
+          <span className="text-white/15">·</span>
+          <Link href="/leaderboard" className="hover:text-white transition-colors">
+            <span aria-hidden="true">🏆</span> Leaderboard
+          </Link>
+        </div>
 
         {/* AdSense */}
-        <div className="mt-12">
+        <div className="mt-4">
           <AdSlot slot={SLOT_HOME} className="rounded-2xl" />
         </div>
 

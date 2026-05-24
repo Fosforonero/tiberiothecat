@@ -4,9 +4,7 @@ import { scenarios } from '@/lib/scenarios'
 import type { DynamicScenario } from '@/lib/dynamic-scenarios'
 import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedTrendingIds } from '@/lib/cached-data'
 import { getServerVotedIds, freshFirst } from '@/lib/voted-ids'
-import DilemmaCard from '@/components/DilemmaCard'
 import VotedDilemmaCard from '@/components/VotedDilemmaCard'
-import DilemmaGrid from '@/components/DilemmaGrid'
 import DailyDilemma from '@/components/DailyDilemma'
 import JsonLd from '@/components/JsonLd'
 import { translateScenarioToItalian } from '@/lib/scenarios-it'
@@ -60,15 +58,6 @@ export const metadata: Metadata = {
   ],
 }
 
-const FEATURED_CATEGORIES = [
-  { slug: 'morality', label: 'Moralità', emoji: '⚖️', desc: 'Le scelte più difficili della vita' },
-  { slug: 'survival', label: 'Sopravvivenza', emoji: '🆘', desc: 'Cosa faresti per sopravvivere?' },
-  { slug: 'loyalty', label: 'Lealtà', emoji: '🤝', desc: 'Amici, famiglia, principi' },
-  { slug: 'justice', label: 'Giustizia', emoji: '🏛️', desc: 'Legge vs coscienza' },
-  { slug: 'freedom', label: 'Libertà', emoji: '🕊️', desc: 'Sicurezza contro privacy' },
-  { slug: 'technology', label: 'Tecnologia', emoji: '🤖', desc: 'IA, futuro, etica digitale' },
-]
-
 const FEATURED_DILEMMA_IDS = [
   'trolley',
   'organ-harvest',
@@ -77,45 +66,6 @@ const FEATURED_DILEMMA_IDS = [
   'self-driving-crash',
   'privacy-terror',
 ]
-
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'Cos\'è un dilemma morale?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Un dilemma morale è una situazione ipotetica in cui non esiste una risposta chiaramente giusta o sbagliata. Entrambe le scelte implicano conseguenze significative, mettendo alla prova i tuoi valori etici e morali.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Come funziona SplitVote?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'SplitVote presenta dilemmi etici impossibili. Voti la tua risposta e subito dopo vedi come ha risposto il resto del mondo in tempo reale. Puoi confrontarti per categoria demografica, paese, età.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Cos\'è il Trolley Problem?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Il Trolley Problem (problema del tram) è un celebre dilemma etico: un tram fuori controllo sta per investire 5 persone. Puoi deviarlo su un binario secondario dove c\'è 1 sola persona. Tiri la leva o no? Non esiste una risposta giusta: è uno strumento per esplorare la morale.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'I dilemmi morali hanno una risposta giusta?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. I dilemmi morali sono progettati per non avere una risposta universalmente corretta. Servono a esplorare differenti sistemi etici (utilitarismo, deontologia, etica della virtù) e a capire cosa davvero valorizza una persona o una società.',
-      },
-    },
-  ],
-}
 
 const websiteSchema = {
   '@context': 'https://schema.org',
@@ -198,9 +148,22 @@ export default async function ItPage() {
     .slice(0, 6)
   const newlyGeneratedIT = freshFirst(newlyGeneratedRaw, votedIds)
 
+  // "Per te" — single deterministic 4-card continuation section. Mirrors
+  // the EN home structure (1 featured/trending + 1 trending + 2 fresh).
+  // Source lists are already mutually exclusive via the seen-set and each
+  // is freshFirst'd, so position-0 in each list is unvoted where possible.
+  type PickItem = { scenario: Scenario; badge: 'trending' | 'new' | undefined }
+  const picks: PickItem[] = []
+  if (trendingIT[0])         picks.push({ scenario: trendingIT[0],         badge: 'trending' })
+  if (featuredDeduped[0])    picks.push({ scenario: featuredDeduped[0],    badge: undefined  })
+  if (newlyGeneratedIT[0])   picks.push({ scenario: newlyGeneratedIT[0],   badge: 'new'      })
+  if (newlyGeneratedIT[1])   picks.push({ scenario: newlyGeneratedIT[1],   badge: 'new'      })
+  if (picks.length < 4 && featuredDeduped[1])  picks.push({ scenario: featuredDeduped[1],  badge: undefined  })
+  if (picks.length < 4 && trendingIT[1])       picks.push({ scenario: trendingIT[1],       badge: 'trending' })
+  const perTe = picks.slice(0, 4)
+
   return (
     <>
-      <JsonLd data={faqSchema} />
       <JsonLd data={websiteSchema} />
 
       <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16">
@@ -266,47 +229,27 @@ export default async function ItPage() {
         {/* ── Personality teaser (utenti loggati, dismiss 7 giorni) ── */}
         <PersonalityTeaser locale="it" />
 
-        {/* ── Dilemmi in Evidenza ── */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-              <span className="text-red-400" aria-hidden="true">🔥</span> Dilemmi in Evidenza
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            {featuredDeduped.map((s) => (
-              <VotedDilemmaCard
-                key={s.id}
-                scenario={s}
-                playHref={`/it/play/${s.id}`}
-                resultsHref={`/it/results/${s.id}`}
-                totalVotes={voteMap.get(s.id)}
-                locale="it"
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* ── Trending IT (ranked by recent votes: today + yesterday) ── */}
-        {trendingIT.length > 0 && (
-          <section className="mb-12">
+        {/* ── Per te — single deterministic continuation section
+              (1 trending + 1 in evidenza + 2 fresh, max 4 cards) ── */}
+        {perTe.length > 0 && (
+          <section className="mb-10">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-orange-400" aria-hidden="true">🔥</span> Di Tendenza
+                <span className="text-blue-400" aria-hidden="true">▶</span> Per te
               </h2>
               <Link href="/it/trending" className="text-sm text-[var(--muted)] hover:text-white transition-colors">
                 Vedi tutti →
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {trendingIT.map((s) => (
+              {perTe.map(({ scenario: s, badge }) => (
                 <VotedDilemmaCard
                   key={s.id}
                   scenario={s}
                   playHref={`/it/play/${s.id}`}
                   resultsHref={`/it/results/${s.id}`}
                   totalVotes={voteMap.get(s.id)}
-                  badge="trending"
+                  badge={badge}
                   locale="it"
                 />
               ))}
@@ -314,92 +257,26 @@ export default async function ItPage() {
           </section>
         )}
 
-        {/* ── Nuove Domande ── */}
-        {newlyGeneratedIT.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="text-green-400" aria-hidden="true">✨</span> Nuove Domande
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {newlyGeneratedIT.map((s) => (
-                <VotedDilemmaCard
-                  key={s.id}
-                  scenario={s}
-                  playHref={`/it/play/${s.id}`}
-                  resultsHref={`/it/results/${s.id}`}
-                  badge="new"
-                  locale="it"
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Tutti i dilemmi ── */}
-        <section className="mb-12">
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5">
-            <span aria-hidden="true">📂</span> Tutti i dilemmi
-          </h2>
-          <DilemmaGrid scenarios={allScenariosIT} locale="it" />
-        </section>
-
-        {/* ── Categorie ── */}
-        <section className="mb-12">
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5 flex items-center gap-2">
-            <span aria-hidden="true">📂</span> Esplora per Categoria
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {FEATURED_CATEGORIES.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/it/category/${cat.slug}`}
-                className="card-neon group rounded-xl p-4 transition-all text-center"
-              >
-                <span className="text-3xl block mb-2" aria-hidden="true">{cat.emoji}</span>
-                <span className="font-semibold text-[var(--text)] block">{cat.label}</span>
-                <span className="text-xs text-[var(--muted)] group-hover:text-white transition-colors">{cat.desc}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* ── FAQ ── */}
-        <section className="mb-12">
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-6 text-center"><span aria-hidden="true">❓</span> Domande Frequenti</h2>
-          <div className="space-y-3">
-            {[
-              {
-                q: "Cos'è un dilemma morale?",
-                a: "Un dilemma morale è una situazione ipotetica dove non esiste una risposta chiaramente giusta. Entrambe le scelte hanno conseguenze significative, mettendo alla prova i tuoi valori etici.",
-              },
-              {
-                q: "Cos'è il Trolley Problem?",
-                a: "Il Trolley Problem (problema del tram) è il dilemma etico più famoso al mondo: un tram fuori controllo sta per investire 5 persone. Puoi deviarlo su un binario dove c'è 1 sola persona. Tiri la leva? Questo esperimento mentale esplora la differenza tra morale utilitaristica (5 > 1) e deontologica (non si usa una persona come mezzo).",
-              },
-              {
-                q: "I dilemmi hanno una risposta giusta?",
-                a: "No. Sono strumenti filosofici per esplorare sistemi etici diversi: l'utilitarismo (massimizza il bene comune), la deontologia (regole assolute), l'etica della virtù (cosa farebbe una persona virtuosa?). Non c'è risposta universale — ma è interessante vedere come si divide il mondo.",
-              },
-              {
-                q: "Come funziona SplitVote?",
-                a: "Voti la tua risposta al dilemma, poi vedi subito la distribuzione globale in tempo reale. Puoi creare un account per salvare le tue risposte, guadagnare badge e sfidare gli amici.",
-              },
-            ].map(({ q, a }) => (
-              <details
-                key={q}
-                className="card-neon rounded-xl p-4 cursor-pointer"
-              >
-                <summary className="font-semibold text-[var(--text)] list-none flex items-center justify-between">
-                  {q}
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform ml-2 flex-shrink-0">▾</span>
-                </summary>
-                <p className="mt-3 text-sm text-[var(--muted)] leading-relaxed">{a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
+        {/* ── Compact continuation links — replaces the deleted full grid,
+              categorie grid, and FAQ accordion. /it/faq retains the full
+              FAQ content. ── */}
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-12 text-sm text-[var(--muted)]">
+          <Link href="/it/trending" className="hover:text-white transition-colors">
+            <span aria-hidden="true">🔥</span> Di tendenza
+          </Link>
+          <span className="text-white/15">·</span>
+          <Link href="/it/temi" className="hover:text-white transition-colors">
+            <span aria-hidden="true">📂</span> Tutti i temi
+          </Link>
+          <span className="text-white/15">·</span>
+          <Link href="/it/leaderboard" className="hover:text-white transition-colors">
+            <span aria-hidden="true">🏆</span> Classifica
+          </Link>
+          <span className="text-white/15">·</span>
+          <Link href="/it/faq" className="hover:text-white transition-colors">
+            <span aria-hidden="true">❓</span> Domande frequenti
+          </Link>
+        </div>
 
       </div>
     </>
