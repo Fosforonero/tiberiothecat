@@ -62,7 +62,11 @@ export default function DilemmaCard({ scenario, playHref, totalVotes, badge, loc
               {scenario.question}
             </p>
             <DilemmaOptionPills optionA={scenario.optionA} optionB={scenario.optionB} />
-            {totalVotes !== undefined && totalVotes > 0 && (
+            {/* Vote count is shown only when it lands as strong social proof
+                (>= 50 votes). Below that threshold the count tends to read
+                as filler rather than signal, and DailyDilemma stays the
+                dedicated social-proof surface on home. */}
+            {totalVotes !== undefined && totalVotes >= 50 && (
               <div className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--muted)]">
                 <Globe size={10} />
                 <span>{totalVotes.toLocaleString(locale === 'it' ? 'it-IT' : 'en-US')} {votesLabel}</span>
