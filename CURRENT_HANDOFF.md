@@ -1,10 +1,60 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 22 May 2026 — end-of-day closeout. Redis vote-count incident resolved + reconstruction verified. Daily Redis vote-count snapshot cron shipped and first manual run verified. Home + DailyDilemma disciplined-neon redesign shipped. Results reveal hero amplified. Italian copy + a11y polish shipped. SEO goldmine/governance recorded as future backlog only.
+Last updated: 24 May 2026 — Home declutter + dilemma quality recovery sprint complete. EN and IT home structurally aligned to a single 4-card continuation section + compact CTA strip. Five weak dilemmas rewritten EN + six IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change. Five local commits await PM GO to push.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 22 May 2026 — Redis recovery, snapshot cron, home redesign, IT copy polish, SEO backlog
+## 0. Session 24 May 2026 — Home declutter + dilemma quality recovery (5 phases)
+
+### TL;DR
+
+- **Home declutter** (EN + IT): single 4-card "Pick your next" / "Per te" continuation section replaces the wall of 3–5 mutually-exclusive card sections plus the full `DilemmaGrid` Browse-All / Tutti i dilemmi grid. EN and IT now structurally identical. DailyDilemma is the focal moment as intended by the disciplined-neon spec.
+- **Dilemma rewrites**: 5 weak EN entries (`lifeboat`, `revenge-vs-forgiveness`, `delete-social-media`, `ai-replaces-jobs`, `tax-billionaires`) + 6 IT entries (same five + `rich-or-fair` PM-preferred phrasing) rewritten per `reports/dilemma-depth-audit-2026-05-19.md`. The other 5 of the audit's 10-list were already in target state from earlier sprints. Same IDs, same categories. Natural Italian.
+- **Quality gate soft warnings**: `runQualityGates` now emits `moral_option_bare_yes_no:option{A,B}` and `magic_stipulation_in_question` on AI-generated drafts. Lifestyle exempt by design. SAFETY_RULES in the AI prompt extended with matching instructions. New test file with 13 vitest cases.
+- **Card quietening**: DilemmaCard vote count gated at ≥50 votes (was `>0`). Badges already capped at one slot via single `badge` prop.
+- **Docs**: ROADMAP entry for 24 May, this CURRENT_HANDOFF block, and `docs/redesign/disciplined-neon-spec.md` §10 "Home density discipline" capturing the new rule.
+
+### Working state at this closeout
+
+- **Branch:** `main`, **5 commits ahead** of `origin/main`. No push yet — awaits PM GO.
+- **Working tree:** same 3 pre-existing Pixie tooling entries (`scripts/generate-pixie-assets.mjs` modified, `scripts/generate-pixie-emoji-assets.py` + `scripts/normalize-pixie-assets.py` untracked). Untouched throughout the session.
+- **Verification:** `npm run typecheck` ✅, `npm run build` ✅, `npm run test` ✅ (122 passing; was 109 before this sprint), `git diff --check` ✅ exit 0.
+- **PM-side visual QA pending** at 375 / 393 / 768 / 1024 px on `/` and `/it`.
+
+### Commits queued (5)
+
+| Commit | Title |
+|---|---|
+| `2e266d9` | content(dilemmas): rewrite weakest moral dilemmas (EN+IT) |
+| `1f4f02e` | content(gates): warn on moral yes/no and magic stipulations |
+| `a616ba5` | style(card): show vote count only above 50-vote social-proof floor |
+| `528bcb3` | style(home): declutter to single 4-card continuation section |
+| (this commit, docs) | docs(handoff): close 24 May home declutter session |
+
+### Hard constraints preserved (verified)
+
+- No new analytics events. No `user_events` writes added. No reveal-reaction tracking. No grace-undo tracking.
+- No Supabase migration. No Redis write. No autopublish / save-mode behavior change.
+- `LEGAL.md` untouched (no new processors, no new cookies, no new data fields).
+- No `git push`. No deploy.
+
+### Recommended next-session priorities
+
+1. **PM-side visual QA** of the 5 queued commits at 375 / 393 / 768 / 1024 px on `/` and `/it`. If PM approves, run the GO push.
+2. **`SEO-IT-FAQ-JSONLD-MIGRATION-01`** — tiny follow-up to add `FAQPage` JSON-LD to `/it/faq/page.tsx` (the IT home FAQ JSON-LD was removed because the visible accordion was removed; `/it/faq` still carries the full content as `<details>`).
+3. **`BEHAVIORAL-INSIGHTS-DERIVATION-READONLY-01`** — queued by PM, not started. Reports only. Live Supabase SELECT not approved by default; needs explicit data-source decision.
+4. **`POST-SHIP-VISUAL-QA-FOLLOWUP-01`** — only if PM smoke on home declutter surfaces issues.
+5. **`PIXIE-TOOLING-FINAL-CLEANUP-01`** — close the 3 dirty Pixie WIP entries.
+
+### Items intentionally NOT scheduled
+
+- Hard rejection (vs. soft warning) on the new quality-gate patterns — defer until dry-run confirms low false-positive rate against the existing dynamic pool.
+- `moralAxis` JSON field requirement on AI output — depth audit recommendation but out of this sprint's scope.
+- Per-dilemma `expertInsight` overrides for the static-41 — separate content sprint.
+
+---
+
+## 0a. Session 22 May 2026 — Redis recovery, snapshot cron, home redesign, IT copy polish, SEO backlog
 
 ### TL;DR
 

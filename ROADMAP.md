@@ -3,7 +3,49 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 22 Maggio 2026 — end-of-day closeout. Redis incident resolved + daily snapshot cron shipped. Home + DailyDilemma disciplined-neon redesign shipped. Results reveal hero amplified. Italian copy + a11y polish shipped. SEO goldmine/governance recorded as future backlog only.
+Ultimo aggiornamento: 24 Maggio 2026 — Home declutter shipped (EN + IT structurally aligned, single 4-card continuation section, full Browse-All grid removed). 5 weak dilemmas rewritten EN + 6 IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change.
+
+---
+
+## 24 May 2026 — Home Declutter + Dilemma Quality Recovery
+
+Five-phase sprint per `SPRINT: HOME-DECLUTTER-AND-DILEMMA-QUALITY-RECOVERY-01`. PM-reported "wall of cards" + shallow yes/no dilemmas blocking real product feedback.
+
+### Shipped (5 commits, all on local `main`)
+
+| Cluster | Commit | Summary |
+|---|---|---|
+| **Dilemma rewrites** | `2e266d9` | Apply depth-audit rewrites: 5 EN entries (lifeboat, revenge-vs-forgiveness, delete-social-media, ai-replaces-jobs, tax-billionaires) + 6 IT entries (same 5 + rich-or-fair PM-preferred phrasing). Same IDs, same categories. Natural Italian, no calques. |
+| **Quality gate warnings** | `1f4f02e` | Add two non-blocking soft warnings to `runQualityGates`: `moral_option_bare_yes_no:option{A,B}` and `magic_stipulation_in_question`. Lifestyle exempt. SAFETY_RULES in `lib/content-generation-prompts.ts` extended with matching instructions. 13 new vitest cases (`tests/unit/content-quality-gates.test.ts`). Test count 109 → 122. No autopublish/save-mode changes. |
+| **Card quietening** | `a616ba5` | DilemmaCard vote count now shown only at ≥50 votes (was `>0`). Badges already capped at one via single `badge` prop. |
+| **Home structure** | `528bcb3` | EN home: drop Trending Now / Most Voted / Latest Questions / Browse All; add single 4-card "Pick your next" + compact CTA chip strip. IT home: drop Dilemmi in Evidenza / Di Tendenza / Nuove Domande / Tutti i dilemmi / Categorie / FAQ accordion; add single 4-card "Per te" + compact CTA chip strip with link to `/it/faq`. EN/IT structurally aligned. -146 LOC net. |
+| **Docs** | (this commit) | ROADMAP, CURRENT_HANDOFF, disciplined-neon spec §10 "Home density discipline". |
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green, all routes prerender
+- `npm run test` ✅ 122 passing (was 109)
+- `git diff --check` ✅ exit 0
+- Local visual QA at 375 / 393 / 768 / 1024 px: pending PM smoke
+
+### Hard constraints preserved
+
+- No new analytics events; no `user_events` writes; no reveal-reaction tracking; no grace-undo tracking.
+- No Supabase migration; no Redis write; no autopublish behavior change; no `AUTO_PUBLISH_DILEMMAS` change.
+- `LEGAL.md` untouched (no data-flow / tracking / privacy change introduced).
+- No `git push`, no deploy. All 5 commits await PM GO to push.
+
+### Known follow-ups (separate sprints)
+
+- **SEO**: `/it/faq` does not yet carry its own `FAQPage` JSON-LD. The IT home FAQ JSON-LD was removed because the visible accordion was removed. Tiny follow-up SEO sprint can move the schema to `/it/faq` page.
+- **`BEHAVIORAL-INSIGHTS-DERIVATION-READONLY-01`**: queued by PM, not started. Live Supabase SELECT not approved by default — needs a separate GO and explicit data-source decision.
+- Hard rejection vs. soft warning escalation on the new quality-gate patterns can land after a dry-run shows acceptable false-positive rate.
+
+### Working state at this entry
+
+- Local `main`: 5 commits ahead of `origin/main`.
+- Dirty WIP: same 3 pre-existing Pixie tooling entries (untouched throughout the session).
 
 ---
 

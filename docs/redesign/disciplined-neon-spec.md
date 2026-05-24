@@ -226,5 +226,53 @@ Before S1 implementation can start, PM needs to confirm:
 ## 9. Status
 
 - **0.1 draft** — created 22 May 2026 from audit findings.
-- Awaiting PM review.
-- After PM approval, this file becomes the input for `SPRINT: DISCIPLINED-NEON-HOME-S1-01`.
+- **S1 home** shipped 22 May 2026 (`2bb30d2` + `aafd477` + `5fa19d4` + `3881246` + `90df8c2`).
+- **Site-wide orb cleanup** shipped 22 May 2026 (`3881246` + `90df8c2`).
+- **Home density discipline** added 24 May 2026 (`528bcb3` — see §10 below).
+- Next: S2 Play / Results pass, then S3 OG / story-card, then S4 Profile.
+
+---
+
+## 10. Home density discipline
+
+> Added 24 May 2026 from `SPRINT: HOME-DECLUTTER-AND-DILEMMA-QUALITY-RECOVERY-01`.
+
+**Rule:** the home page (EN + IT) carries **at most one card grid section** below the DailyDilemma. The wall of 3–5 mutually-exclusive card sections that preceded this sprint conflicted with the disciplined-neon principle of "one focal moment per surface" — DailyDilemma cannot be the focal moment if it competes with three sibling card walls and a Browse-All grid below it.
+
+**Target home structure (EN and IT identical in shape):**
+
+```
+Hero (h1 + subline)
+  ↓
+Game loop strip
+  ↓
+Trust strip (anonymity + reveal framing)
+  ↓
+DailyDilemma  ← focal moment
+  ↓
+PersonalityTeaser (small inline, logged-in only)
+  ↓
+One continuation section, max 4 cards
+  ↓
+Compact CTA chip strip (/trending, /topics, /leaderboard, /faq)
+  ↓
+AdSlot (EN only — IT intentionally no AdSlot for now)
+```
+
+**The single continuation section** ("Pick your next" / "Per te") uses a deterministic 4-card blend:
+
+- 1 from trending
+- 1 from most-voted (EN) or featured (IT)
+- 2 from newly-generated
+- Fallback: if a primary slot is empty, pad from a 2nd of any remaining source. Cap at 4.
+
+**What no longer lives on home:**
+
+- Multiple parallel card sections (Trending Now / Most Voted / Latest Questions, Dilemmi in Evidenza / Di Tendenza / Nuove Domande)
+- Full `DilemmaGrid` Browse-All / Tutti i dilemmi grid
+- IT "Esplora per Categoria" grid (categories accessible via `/it/temi`)
+- IT FAQ accordion (full FAQ at `/it/faq`)
+
+**SEO note on FAQ JSON-LD:** removing the visible FAQ accordion from IT home also removed the home-level `FAQPage` JSON-LD (Google requires structured data to reflect visible page content). `/it/faq` carries the full FAQ content as `<details>` blocks but does not yet carry its own `FAQPage` JSON-LD — a small follow-up SEO sprint should add it.
+
+**EN/IT parity:** structurally identical. Section copy adapts naturally per locale. Both home routes pass `dynamic = 'force-dynamic'` so the continuation blend stays per-request fresh.
