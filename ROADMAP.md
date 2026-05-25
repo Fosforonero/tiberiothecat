@@ -35,6 +35,39 @@ PM trigger: Matteo flagged the generated IT dilemma "Se un Paese rifiuta regole 
 - No admin UI change; warnings surface via the same path used by `moral_option_bare_yes_no` and `magic_stipulation_in_question`.
 - No `git push`, no deploy.
 
+### Follow-up — `DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01` (read-only audit, 25 May 2026)
+
+Shipped same-day. Read-only `scripts/audit-editorial-warnings.mjs` ran the four editorial-shape regexes against the full production dynamic pool (346 approved + 53 drafts) via Upstash REST GET. Findings in `reports/dynamic-dilemma-editorial-warnings-dryrun-2026-05-25.md`.
+
+- Approved moral-only flag rate: **34 / 324 = 10.5%**. Tradeoff-marker suppressor fired on 34 approved moral items (already protected).
+- Draft moral-only flag rate: **10 / 53 = 18.9%**.
+- Manual triage on top 30 flagged: strong-TP ~17%, TP/borderline-TP ~37%, FP/borderline-FP **~46%**.
+
+Recommendation: **keep as advisory; do NOT escalate to hard rejection** until regex tuning + admin UI follow-ups land.
+
+Two follow-up sprints queued (see also "SEO Sprint Queue" below — these are content-pipeline items, kept here):
+
+#### Queued: `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01`
+
+Single-file edit on `lib/content-quality-gates.ts` + new vitest cases. Targets the two loudest FP families:
+
+1. Expand `EDITORIAL_TRADEOFF_MARKERS_RE` with IT conditional verb forms ("ma penalizzerebbe / priverebbe / ridurrebbe / raddoppierebbe / danneggerebbe / costerebbe / sacrificherebbe / aumenterebbe / toglierebbe / escluderebbe") and the "rischiare" infinitive.
+2. Tighten `SUPPORT_OPPOSE_RE` to require verb position (preceded by `should\s+\w+\s+`, `to\s+`, `dovrebbe(?:ro)?\s+`, `deve\s+`, or final-before-`?`) — eliminates noun matches like "the ban", "support forum", "approve" (medical), "limits".
+3. Drop `gli altri` from `UNDEFINED_ACTOR_RE` OR add negative-lookbehind on `verso|agli|con|tra|degli` — eliminates personal usages.
+4. Tighten `UNDEFINED_ACTION_RE` to verb position — eliminates noun forms like "limiti" (`limiti d'età`).
+5. Re-run the dry-run; target FP ≤ 25%, TP ≥ 75% before considering hard-rejection escalation.
+
+Safe / SEMI_AUTONOMOUS. Touches only the gate file + tests. No autopublish / Redis / legal / admin UI changes.
+
+#### Queued: `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`
+
+Admin review UI renders the four new warning codes with distinctive copy and the matched trigger token, so a human reviewer can verdict TP/FP per item in <5s. Out of scope for the regex-tuning sprint above. Touches admin UI only; no gate logic change.
+
+#### Explicitly NOT scheduled
+
+- Bulk retroactive rewrite of the 34 flagged approved dilemmas — too many are FPs. Hand-pick the strong-TP subset (5 items) only if a small editorial sprint is approved separately as `DILEMMA-EDITORIAL-REWRITE-FROM-DRYRUN-01`.
+- Touching `lib/content-generation-prompts.ts` again. The 25 May SAFETY_RULES additions are fine; new generations should already be lower-noise.
+
 ### Residual risk / false-positive notes
 
 - The four heuristic regexes are deliberately surface-only; they will produce false positives when a moral dilemma legitimately discusses policy without using an explicit tradeoff marker. Keep them as warnings (not reasons) until a dry-run against the live dynamic pool shows the signal is clean. The audit's recommendation (defer hard-rejection until dry-run) is preserved.

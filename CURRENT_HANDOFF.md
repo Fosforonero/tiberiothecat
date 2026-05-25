@@ -1,10 +1,92 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 25 May 2026 — `DILEMMA-EDITORIAL-SHAPE-GATE-01` shipped locally. AI generation prompt now forces conflict-shaped dilemmas (do not ask "should X happen", transform into "which cost do you accept") and requires the `rationale` field to name the value collision. Quality gate adds four moral-only soft warnings — `abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb` — suppressed when the question carries an explicit tradeoff marker ("più pericoloso ... o ...", "ma raddoppia ... quale ingiustizia accetti", "which cost do you accept"). 8 new vitest cases (21 total in the file, up from 13). Lifestyle exempt. No autopublish / save-mode / Redis / Supabase / legal change. Local diff awaits PM GO to commit + push.
+Last updated: 25 May 2026 — Two same-day sprints. (1) `DILEMMA-EDITORIAL-SHAPE-GATE-01` committed (`30fe2ac`): AI prompt forces conflict-shaped dilemmas; gate emits four moral-only soft warnings (`abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`) suppressed by explicit tradeoff markers. (2) `DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01` shipped locally: read-only audit script + report. Production pool flag rate: **10.5% approved (34/324 moral), 18.9% drafts (10/53)**. Manual triage on top 30 → ~17% strong-TP, ~37% TP/borderline-TP, ~46% FP/borderline-FP. Recommendation: keep advisory, do NOT hard-reject; queue two follow-ups (`DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` + `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`). 3 untracked artifacts (script + .md + .json) await commit decision.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 25 May 2026 — Dilemma Editorial Shape Gate
+## 0. Session 25 May 2026 (afternoon) — Editorial-warnings dry-run against production pool
+
+### TL;DR
+
+Read-only audit per `SPRINT: DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01`. Built `scripts/audit-editorial-warnings.mjs` that fetches `dynamic:scenarios` + `dynamic:drafts` from Upstash via REST GET, runs the four editorial-shape regexes from `30fe2ac` against each dilemma, and emits a per-warning breakdown + top-20 flagged tables. No Redis writes, no admin actions, no save-mode change. Findings in `reports/dynamic-dilemma-editorial-warnings-dryrun-2026-05-25.md` (+ `.json` sidecar).
+
+### Numbers
+
+| Pool | Total | Moral | Lifestyle | Flagged (moral) | Flag rate |
+|---|---:|---:|---:|---:|---:|
+| Approved | 346 | 324 | 22 | 34 | **10.5%** |
+| Drafts | 53 | 53 | 0 | 10 | **18.9%** |
+
+Tradeoff-marker suppressor was effective: 34 approved moral items contained an explicit cost marker and were silently passed (would otherwise have been candidates for warnings).
+
+### Manual triage — top 30 flagged
+
+- Strong TP: 5 (~17%)
+- TP / borderline TP: 11 (~37%)
+- FP / borderline FP: **14 (~46%)**
+
+Loudest FP patterns:
+
+1. `SUPPORT_OPPOSE_RE` matches **nouns** (`the ban`, `support forum`, `approve` in medical context, `limits`) — ~50% of FPs.
+2. `EDITORIAL_TRADEOFF_MARKERS_RE` misses **IT conditional verbs** (`ma penalizzerebbe`, `ma priverebbe`, `ma ridurrebbe`) — ~25% of FPs.
+3. `UNDEFINED_ACTOR_RE` matches `gli altri` used **personally** (`verso gli altri` = "to other people") — ~10% of FPs.
+4. `UNDEFINED_ACTION_RE` matches **noun forms** (`limiti d'età`, `ridurre` in option phrases) — ~10% of FPs.
+
+### Recommendation
+
+**Keep the four checks as advisory warnings. Do NOT escalate to hard rejection.** Queue two follow-up sprints:
+
+1. **`DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01`** — single-file edit on `lib/content-quality-gates.ts` + new vitest cases. Expand suppressor with IT conditional forms + "rischiare" infinitive. Tighten `SUPPORT_OPPOSE_RE` / `UNDEFINED_ACTION_RE` to verb position. Drop `gli altri` from `UNDEFINED_ACTOR_RE` (or add negative-lookbehind). Re-run dry-run; target FP ≤ 25%, TP ≥ 75%.
+2. **`ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`** — when admin review UI is touched next, render the four codes with distinctive copy + matched trigger token so human reviewers can verdict TP/FP in <5s per item.
+
+Explicitly NOT scheduled:
+
+- Bulk retroactive rewrite of the 34 flagged approved dilemmas. Too many FPs. If approved, hand-pick the 5 strong-TP rows only (`DILEMMA-EDITORIAL-REWRITE-FROM-DRYRUN-01`, separate sprint).
+- Hard rejection escalation until the tuning sprint + dry-run re-run confirm acceptable FP rate.
+- Any change to `lib/content-generation-prompts.ts`. The 25 May `SAFETY_RULES` additions are fine; future generations should already be lower-noise.
+
+### Files produced / changed
+
+- `scripts/audit-editorial-warnings.mjs` (new, local-only, no `package.json` script entry — keeps it from being mistaken for a routine job)
+- `reports/dynamic-dilemma-editorial-warnings-dryrun-2026-05-25.md` (new, full report + triage)
+- `reports/dynamic-dilemma-editorial-warnings-dryrun-2026-05-25.json` (new, machine-readable sidecar)
+- `ROADMAP.md` (closeout block appended to the 25 May entry; two queued follow-ups documented)
+- `CURRENT_HANDOFF.md` (this section)
+
+### Verification
+
+- `npm run typecheck` ✅ green (no TS source touched)
+- `git diff --check` ✅ exit 0
+- Script run output (captured in this session log):
+  - `approved=346 drafts=53`
+  - `approved flag rate (moral only): 10.5% (34/324)`
+  - `draft flag rate (moral only):    18.9% (10/53)`
+  - `tradeoff-marker suppressed (approved moral): 34`
+
+### Hard constraints preserved
+
+- No Redis write (script only does REST GET on two keys).
+- No admin approve / reject / publish action.
+- No `AUTO_PUBLISH_DILEMMAS` change.
+- No `lib/content-quality-gates.ts` change (still at `30fe2ac`).
+- No `lib/content-generation-prompts.ts` change.
+- No static-scenario rewrites.
+- No admin UI change.
+- No legal / Stripe / auth / middleware change.
+- No `git push`, no deploy.
+
+### How to re-run later
+
+```bash
+nvm use
+node scripts/audit-editorial-warnings.mjs
+```
+
+Outputs land in `reports/dynamic-dilemma-editorial-warnings-dryrun-<YYYY-MM-DD>.{md,json}`. Re-run after `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` to confirm FP rate dropped.
+
+---
+
+## 0a. Session 25 May 2026 (morning) — Dilemma Editorial Shape Gate
 
 ### TL;DR
 

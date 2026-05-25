@@ -1,0 +1,662 @@
+{
+  "generatedAt": "2026-05-25T19:15:23.421Z",
+  "approved": {
+    "label": "approved",
+    "total": 346,
+    "moralCount": 324,
+    "lifestyleCount": 22,
+    "totalFlagged": 34,
+    "flagRatePct": 10.5,
+    "byLocale": {
+      "en": 172,
+      "it": 174,
+      "other": 0
+    },
+    "byCategory": {
+      "justice": 78,
+      "relationships": 41,
+      "morality": 55,
+      "freedom": 68,
+      "lifestyle": 22,
+      "loyalty": 5,
+      "society": 33,
+      "technology": 38,
+      "survival": 6
+    },
+    "flagCounts": {
+      "abstract_policy_question": 9,
+      "support_oppose_framing": 14,
+      "undefined_collective_actor": 18,
+      "undefined_action_verb": 6
+    },
+    "flagRatesPct": {
+      "abstract_policy_question": 2.8,
+      "support_oppose_framing": 4.3,
+      "undefined_collective_actor": 5.6,
+      "undefined_action_verb": 1.9
+    }
+  },
+  "drafts": {
+    "label": "drafts",
+    "total": 53,
+    "moralCount": 53,
+    "lifestyleCount": 0,
+    "totalFlagged": 10,
+    "flagRatePct": 18.9,
+    "byLocale": {
+      "en": 24,
+      "it": 29,
+      "other": 0
+    },
+    "byCategory": {
+      "technology": 12,
+      "society": 14,
+      "justice": 13,
+      "freedom": 7,
+      "lifestyle": 2,
+      "survival": 2,
+      "morality": 3
+    },
+    "flagCounts": {
+      "abstract_policy_question": 1,
+      "support_oppose_framing": 6,
+      "undefined_collective_actor": 1,
+      "undefined_action_verb": 3
+    },
+    "flagRatesPct": {
+      "abstract_policy_question": 1.9,
+      "support_oppose_framing": 11.3,
+      "undefined_collective_actor": 1.9,
+      "undefined_action_verb": 5.7
+    }
+  },
+  "suppressedApprovedCount": 34,
+  "topApproved": [
+    {
+      "id": "ai-it-lo-stato-vieta-i-voli-clwvl",
+      "locale": "it",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Lo Stato vieta i voli per vacanze oltre 2000 km per ridurre le emissioni. Chi non rispetta il divieto paga una multa equivalente a un mese di stipendio. Lo sostieni?",
+      "optionA": "Sì: il clima è un'emergenza collettiva e i sacrifici personali sono necessari e giusti.",
+      "optionB": "No: limitare la libertà di movimento colpisce soprattutto chi ha meno alternative economiche.",
+      "scoreFinal": 75,
+      "trend": "climate restrictions on flights",
+      "generatedAt": "2026-05-06T17:45:49.234Z",
+      "approvedAt": "2026-05-06T20:49:07.312Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing",
+        "undefined_collective_actor",
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "ai-it-lo-stato-dovrebbe-impo-8mvzs",
+      "locale": "it",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Lo Stato dovrebbe imporre limiti legali giornalieri al tempo trascorso sui social media per proteggere il benessere psicologico dei cittadini?",
+      "optionA": "Sì: la salute mentale collettiva vale più della libertà individuale di scorrere infinitamente.",
+      "optionB": "No: decidere quanto tempo passare online spetta solo all'individuo, non allo Stato.",
+      "scoreFinal": 75,
+      "trend": "doomscrolling limits by law",
+      "generatedAt": "2026-05-06T15:54:36.280Z",
+      "approvedAt": "2026-05-06T15:54:52.128Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor",
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "ai-en-a-fast-fashion-ban-wou-jk0az",
+      "locale": "en",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "A fast fashion ban would cut pollution but destroy millions of low-wage garment jobs in developing countries. Do you support it?",
+      "optionA": "Ban fast fashion — the environmental cost outweighs short-term economic harm to workers.",
+      "optionB": "No ban — workers' livelihoods today matter more than abstract long-term ecological gains.",
+      "scoreFinal": 80,
+      "trend": "banning fast fashion",
+      "generatedAt": "2026-05-06T21:00:17.675Z",
+      "approvedAt": "2026-05-06T21:00:45.353Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-it-la-tua-scuola-vuole-in-jarkd",
+      "locale": "it",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "La tua scuola vuole introdurre l'uniforme obbligatoria per ridurre le differenze sociali. Tu credi che cancelli l'identità personale. Cosa sostieni?",
+      "optionA": "Sostengo l'uniforme: riduce il giudizio basato sul vestiario e livella le disuguaglianze visibili.",
+      "optionB": "Mi oppongo: il modo di vestire è espressione di sé e sopprimerlo non elimina le disuguaglianze reali.",
+      "scoreFinal": 80,
+      "trend": "school uniforms",
+      "generatedAt": "2026-05-06T20:53:06.445Z",
+      "approvedAt": "2026-05-06T20:57:37.286Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing",
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "ai-en-should-governments-leg-8hhxq",
+      "locale": "en",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Should governments legally cap daily social media scrolling time for adults to protect mental well-being — even without their consent?",
+      "optionA": "Yes — chronic doomscrolling is a public health crisis; the state has a duty to set limits, like seatbelt laws.",
+      "optionB": "No — adults own their attention; paternalistic screen laws infantilize citizens and normalize behavioral control.",
+      "scoreFinal": 80,
+      "trend": "doomscrolling limits by law",
+      "generatedAt": "2026-05-06T15:50:24.782Z",
+      "approvedAt": "2026-05-06T15:54:46.858Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-should-governments-off-29dx0",
+      "locale": "en",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Should governments offer financial incentives to homeless individuals to participate in medical trials, providing them immediate survival resources while raising concerns about exploitation and informed consent?",
+      "optionA": "Yes, it provides essential income and access to healthcare for a vulnerable population who otherwise lack options.",
+      "optionB": "No, it exploits their desperate circumstances and undermines the principle of voluntary, uncoerced participation in research.",
+      "scoreFinal": 80,
+      "trend": "Is it ethical for governments to pay homeless people to participate in medical trials?",
+      "generatedAt": "2026-04-29T12:58:26.868Z",
+      "approvedAt": "2026-04-29T12:58:26.868Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-should-society-priorit-28vp0",
+      "locale": "en",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Should society prioritize maximizing organ supply through automatic opt-out laws, or respect individual autonomy by requiring explicit consent?",
+      "optionA": "Yes, automatic opt-out saves more lives by increasing organ availability while still allowing personal choice.",
+      "optionB": "No, bodily autonomy must be preserved through explicit consent to prevent ethical overreach by the state.",
+      "scoreFinal": 80,
+      "trend": "Should organ donation be automatically opt-out rather than opt-in by law?",
+      "generatedAt": "2026-04-29T12:58:03.252Z",
+      "approvedAt": "2026-04-29T12:58:03.252Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-transit-workers-strike-kze71",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Transit workers strike for fair wages, leaving thousands unable to reach hospitals or jobs. Should the government force them back to work?",
+      "optionA": "Yes — public safety and access to essential services outweigh the right to strike indefinitely.",
+      "optionB": "No — forcing workers back undermines collective bargaining and sets a precedent that strips labor power.",
+      "scoreFinal": 75,
+      "trend": "strikes disrupting public services",
+      "generatedAt": "2026-05-06T21:40:15.133Z",
+      "approvedAt": "2026-05-06T21:41:39.227Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-a-steel-towns-only-emp-jlu68",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "A steel town's only employer pollutes heavily but employs 80% of residents. Should the government shut it down or keep it running?",
+      "optionA": "Shut it down: no community's livelihood justifies ongoing environmental harm to others.",
+      "optionB": "Keep it running: condemning workers to poverty is also a form of injustice.",
+      "scoreFinal": 75,
+      "trend": "protecting jobs in polluting industries",
+      "generatedAt": "2026-05-06T21:01:43.040Z",
+      "approvedAt": "2026-05-06T21:01:59.909Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-should-governments-be-2b3b6",
+      "locale": "en",
+      "category": "technology",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Should governments be permitted to bypass legal constraints and hack into private digital systems if it could prevent an immediate terrorist threat?",
+      "optionA": "Yes, because saving innocent lives justifies temporarily overriding digital privacy rights.",
+      "optionB": "No, because normalizing such intrusion erodes the long-term security and trust in digital systems for everyone.",
+      "scoreFinal": 75,
+      "trend": "Should governments be allowed to hack private systems to prevent imminent terrorist attacks?",
+      "generatedAt": "2026-04-29T12:59:46.434Z",
+      "approvedAt": "2026-04-29T12:59:46.434Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-should-governments-be-ocj16",
+      "locale": "en",
+      "category": "technology",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Should governments be permitted to bypass encryption on private devices and networks to stop a confirmed, imminent terrorist threat when explicit consent is impossible to obtain?",
+      "optionA": "Yes, to protect innocent lives by preventing mass casualties.",
+      "optionB": "No, to preserve digital privacy and prevent normalization of unwarranted surveillance.",
+      "scoreFinal": 68,
+      "trend": "Should governments be allowed to hack private systems to prevent imminent terrorist attacks?",
+      "generatedAt": "2026-04-29T06:28:58.842Z",
+      "approvedAt": "2026-04-29T06:29:41.573Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-en-a-viral-video-strips-a-kz3x0",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "A viral video strips a private person of their anonymity before any investigation. Should platforms remove it to protect them, or keep it up in the name of public transparency?",
+      "optionA": "Remove it — unverified exposure causes irreversible harm to an innocent person.",
+      "optionB": "Keep it up — suppressing it shields potential wrongdoing from public scrutiny.",
+      "scoreFinal": 80,
+      "trend": "viral trials by social media",
+      "generatedAt": "2026-05-06T21:40:01.812Z",
+      "approvedAt": "2026-05-06T21:41:11.126Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question"
+      ]
+    },
+    {
+      "id": "ai-it-vietare-i-voli-brevi-s-jnjfu",
+      "locale": "it",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Vietare i voli brevi sotto i 500 km ridurrebbe le emissioni, ma penalizzerebbe chi vive in aree remote senza alternative ferroviarie veloci. È giusto?",
+      "optionA": "Sì: il clima non aspetta, chi abita in zone isolate deve adattarsi come tutti gli altri.",
+      "optionB": "No: una politica verde che scarica i costi sui più vulnerabili non è vera giustizia ambientale.",
+      "scoreFinal": 80,
+      "trend": "banning short flights",
+      "generatedAt": "2026-05-06T21:03:02.442Z",
+      "approvedAt": "2026-05-06T21:05:10.278Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "ai-it-vietare-la-fast-fashio-jp9je",
+      "locale": "it",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Vietare la fast fashion salverebbe milioni di lavoratori tessili dal supersfruttamento, ma priverebbe i più poveri dell'unico abbigliamento accessibile. Vale la pena?",
+      "optionA": "Sì: il divieto è necessario per fermare lo sfruttamento umano e ambientale, anche se aumenta il costo del vestiario.",
+      "optionB": "No: chi non può permettersi alternative ha diritto a vestirsi. La povertà non può essere ignorata in nome dell'etica.",
+      "scoreFinal": 80,
+      "trend": "banning fast fashion",
+      "generatedAt": "2026-05-06T21:04:22.922Z",
+      "approvedAt": "2026-05-06T21:04:32.019Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "ai-en-a-student-with-a-chron-j9qa2",
+      "locale": "en",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "A student with a chronic illness needs their phone to monitor health alerts. A blanket classroom ban applies to everyone. Should the rule bend?",
+      "optionA": "Enforce the ban equally — no exceptions, or the rule loses meaning for everyone.",
+      "optionB": "Grant a medical exception — equal rules shouldn't override unequal needs.",
+      "scoreFinal": 80,
+      "trend": "phones banned in classrooms",
+      "generatedAt": "2026-05-06T20:52:18.122Z",
+      "approvedAt": "2026-05-06T20:57:49.176Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "ai-it-imporre-un-ordine-corr-z905s",
+      "locale": "it",
+      "category": "relationships",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Imporre un ordine 'corretto' per la colazione è un atto di cura verso gli altri o una violazione della loro autonomia alimentare?",
+      "optionA": "Condividere le proprie abitudini alimentari è un gesto d'amore e responsabilità verso chi ami.",
+      "optionB": "Ognuno ha il diritto di mangiare come preferisce: imporre un metodo è controllo mascherato da cura.",
+      "scoreFinal": 80,
+      "trend": "carboidrati vs proteine — La colazione: Cereali prima e latte dopo, o latte prima e cereali dopo?",
+      "generatedAt": "2026-05-05T18:44:05.776Z",
+      "approvedAt": "2026-05-05T18:44:38.645Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-it-una-citta-propone-di-u-2ysrs",
+      "locale": "it",
+      "category": "technology",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Una città propone di usare i dati di sorveglianza per identificare potenziali minacce tramite algoritmi predittivi, ma ciò comporterebbe tracciare costantemente i movimenti di tutti i cittadini. Accetti di sacrificare la tua privacy per una maggiore sicurezza collettiva, o rifiuti per proteggere le libertà fondamentali?",
+      "optionA": "Sostenere il sistema di sorveglianza predittiva per prevenire crimini e proteggere la comunità.",
+      "optionB": "Opporsi al sistema per preservare la privacy individuale e prevenire abusi del potere di controllo.",
+      "scoreFinal": 80,
+      "trend": "È etico usare dati di sorveglianza delle città per prevenire crimini prima che accadano?",
+      "generatedAt": "2026-04-29T13:18:12.520Z",
+      "approvedAt": "2026-04-29T13:50:15.556Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "ai-it-scopri-che-il-partner-2ce7o",
+      "locale": "it",
+      "category": "relationships",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Scopri che il partner di un amico ha una relazione extraconiugale, ma nessuno te l'ha chiesto esplicitamente. Dovresti parlare e rischiare di distruggere la loro relazione, o tacere e permettere che continui l'inganno?",
+      "optionA": "Raccontare la verità, onorando il valore dell'onestà e il diritto della persona di sapere.",
+      "optionB": "Mantenere il segreto, rispettando la privacy altrui ed evitando di causare sofferenza non richiesta.",
+      "scoreFinal": 80,
+      "trend": "Dovresti rivelare a qualcuno che il suo partner lo tradisce, anche se non te lo ha chiesto?",
+      "generatedAt": "2026-04-29T13:00:47.220Z",
+      "approvedAt": "2026-04-29T13:00:47.220Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "ai-en-a-school-pays-students-j9fby",
+      "locale": "en",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "A school pays students cash for A grades. Engagement soars, but only wealthy families can afford tutors to qualify. Do you support the program?",
+      "optionA": "Yes — rewarding achievement motivates all students, regardless of how they got there.",
+      "optionB": "No — paying for grades turns learning into a transaction and deepens inequality.",
+      "scoreFinal": 78,
+      "trend": "paying students for good grades",
+      "generatedAt": "2026-05-06T20:52:03.934Z",
+      "approvedAt": "2026-05-06T20:58:32.242Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "ai-it-preferiresti-vivere-60-eypkj",
+      "locale": "it",
+      "category": "survival",
+      "isLifestyle": false,
+      "dilemmaStyle": null,
+      "status": "approved",
+      "question": "Preferiresti vivere 60 anni in perfetta salute, assaporando ogni momento senza limiti, oppure 90 anni con una qualità di vita gradualmente ridotta, ma con più tempo per le relazioni e l'amore?",
+      "optionA": "Scegliere 60 anni di salute perfetta, godendo appieno di ogni esperienza senza declino fisico o mentale.",
+      "optionB": "Optare per 90 anni con un graduale peggioramento della qualità di vita, privilegiando la longevità e il tempo con i propri cari.",
+      "scoreFinal": 76,
+      "trend": "Preferiresti vivere 60 anni in perfetta salute oppure 90 anni con qualità di vita ridotta?",
+      "generatedAt": "2026-04-27T16:30:45.235Z",
+      "approvedAt": "2026-04-27T17:14:52.032Z",
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_action_verb"
+      ]
+    }
+  ],
+  "topDrafts": [
+    {
+      "id": "news-20260516-health-regulator-outsider-en",
+      "locale": "en",
+      "category": "technology",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A regulator appoints an outsider who challenges expert consensus, promising fresh scrutiny of old assumptions. Should the public welcome it?",
+      "optionA": "Yes. Institutions need outsiders to break groupthink.",
+      "optionB": "No. Expertise is not bias just because it is institutional.",
+      "scoreFinal": 74,
+      "trend": "Trust in health regulators",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "abstract_policy_question",
+        "undefined_collective_actor"
+      ]
+    },
+    {
+      "id": "news-20260515-rival-ai-guardrails-it",
+      "locale": "it",
+      "category": "technology",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "Due superpotenze rivali possono ridurre il rischio di catastrofi legate all'IA condividendo protocolli di sicurezza, ma potrebbero rivelare debolezze strategiche. Dovrebbero cooperare?",
+      "optionA": "Sì. Alcuni rischi sono troppo grandi per la rivalità.",
+      "optionB": "No. Condividere difese con rivali può rendere tutti meno sicuri.",
+      "scoreFinal": 74,
+      "trend": "Regole internazionali per l'IA",
+      "generatedAt": "2026-05-15T15:52:35.357Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "news-20260516-health-regulator-speed-en",
+      "locale": "en",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A health regulator can approve medicines faster by giving political leaders more influence over priorities. Is that worth it?",
+      "optionA": "Yes. Patients should not wait because bureaucracy moves slowly.",
+      "optionB": "No. Science-based agencies lose value when politics sets the pace.",
+      "scoreFinal": 73,
+      "trend": "Trust in health regulators",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "news-20260516-health-regulator-speed-it",
+      "locale": "it",
+      "category": "society",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "Un'autorità sanitaria può approvare farmaci più rapidamente dando ai leader politici più influenza sulle priorità. Ne vale la pena?",
+      "optionA": "Sì. I pazienti non devono aspettare perché la burocrazia è lenta.",
+      "optionB": "No. Le agenzie scientifiche perdono valore se il ritmo lo decide la politica.",
+      "scoreFinal": 73,
+      "trend": "Fiducia nelle autorità sanitarie",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "news-20260516-social-anonymous-teens-en",
+      "locale": "en",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A teen support forum protects vulnerable minors through anonymity, but anonymity also makes age rules harder to enforce. Should it stay anonymous?",
+      "optionA": "Yes. Some young people need private spaces to ask for help.",
+      "optionB": "No. Safety rules are weak if nobody knows who is actually there.",
+      "scoreFinal": 72,
+      "trend": "Social media and minors",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "news-20260516-social-anonymous-teens-it",
+      "locale": "it",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "Un forum di supporto per adolescenti protegge minori vulnerabili grazie all'anonimato, ma l'anonimato rende più difficile far rispettare i limiti d'età. Dovrebbe restare anonimo?",
+      "optionA": "Sì. Alcuni ragazzi hanno bisogno di spazi privati per chiedere aiuto.",
+      "optionB": "No. Le regole di sicurezza valgono poco se nessuno sa chi è davvero presente.",
+      "scoreFinal": 72,
+      "trend": "Social e minori",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "news-20260516-datacenter-bills-en",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A data center brings tax revenue, but residents may face higher electricity bills and more grid pressure. Should the city approve it?",
+      "optionA": "Approve it. The public budget can use the money.",
+      "optionB": "Reject it. Residents should not subsidize private computing demand.",
+      "scoreFinal": 72,
+      "trend": "Urban data center moratoriums",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "news-20260516-datacenter-elsewhere-en",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A city bans large data centers, knowing the same projects may move to smaller towns with weaker rules. Is the ban still ethical?",
+      "optionA": "Yes. Each community has the right to defend itself.",
+      "optionB": "No. Exporting the burden to less powerful places is not a solution.",
+      "scoreFinal": 72,
+      "trend": "Urban data center moratoriums",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    },
+    {
+      "id": "news-20260516-eurovision-safe-stage-en",
+      "locale": "en",
+      "category": "freedom",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "A live cultural event can avoid disruption only by sharply limiting protests near the venue. Should security restrict them?",
+      "optionA": "Yes. Fans and performers deserve a safe event.",
+      "optionB": "No. Sanitizing protest empties public culture of meaning.",
+      "scoreFinal": 72,
+      "trend": "Eurovision, pop culture and protests",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "undefined_action_verb"
+      ]
+    },
+    {
+      "id": "news-20260516-weather-work-commute-en",
+      "locale": "en",
+      "category": "justice",
+      "isLifestyle": false,
+      "dilemmaStyle": "moral",
+      "status": "draft",
+      "question": "Bad weather makes commuting risky but not impossible. Should employers be required to allow remote work when official alerts are active?",
+      "optionA": "Yes. No job is worth a preventable road risk.",
+      "optionB": "No. Businesses need discretion when conditions vary by area.",
+      "scoreFinal": 72,
+      "trend": "Weather disruption and responsibility",
+      "generatedAt": "2026-05-16T12:26:45.305Z",
+      "approvedAt": null,
+      "tradeoffMarkerHit": false,
+      "warnings": [
+        "support_oppose_framing"
+      ]
+    }
+  ]
+}
