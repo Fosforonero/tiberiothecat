@@ -570,11 +570,11 @@ const EN_POSTS: BlogPost[] = [
     slug: 'trolley-problem-statistics',
     locale: 'en',
     title: 'The Trolley Problem: Poll Results and How People Vote',
-    seoTitle: 'The Trolley Problem: Poll Results and How People Vote',
+    seoTitle: 'Trolley Problem Poll Results — Lever, Footbridge Variant Approval Rate & More',
     description:
-      "How do people actually vote on the trolley problem? SplitVote poll results across the classic version and its variants. No science — just real votes.",
+      "How do people actually vote on the trolley problem? SplitVote poll results across the classic lever version and the footbridge variant. No science — just real votes.",
     seoDescription:
-      "How do people actually vote on the trolley problem? SplitVote poll results across the classic version and its variants. No science — just real votes.",
+      "How do people actually vote on the trolley problem — including the footbridge variant approval rate? SplitVote poll results across the classic version and its variants. No science — just real votes.",
     date: '2026-04-27',
     readingTime: 5,
     tags: ['trolley problem', 'poll results', 'ethics', 'moral dilemmas'],
@@ -663,7 +663,11 @@ const EN_POSTS: BlogPost[] = [
       },
       {
         type: 'p',
-        text: "The drop from the lever version is significant. The closest SplitVote scenario to this logic involves the same ethical trade-off in a medical context.",
+        text: "In the large international research surveys associated with Joshua Greene and others (2001 onward), roughly 80–90% of participants pull the lever, while only about 30% push the man off the footbridge — the canonical footbridge variant approval rate that made the puzzle famous. SplitVote's live split typically tracks the same direction, with the footbridge sitting well below the lever. For the history behind the asymmetry, see [the trolley problem explained](/blog/trolley-problem-explained).",
+      },
+      {
+        type: 'p',
+        text: "The closest SplitVote scenario to the same ethical trade-off in a medical context is the organ harvest dilemma.",
       },
       {
         type: 'cta',
@@ -1716,16 +1720,39 @@ const EN_POSTS: BlogPost[] = [
     slug: 'loyalty-vs-honesty-when-they-collide',
     locale: 'en',
     title: 'Loyalty vs Honesty: When the Two Cannot Coexist',
-    seoTitle: 'Loyalty vs Honesty — When Telling the Truth Means Betraying Someone You Love',
+    seoTitle: 'Loyalty vs Honesty — Truth vs Loyalty When the Two Collide',
     description:
       'Most real moral dilemmas are not about trolleys — they are about people we know. When loyalty and honesty directly conflict, which wins? And where is the breaking point?',
     seoDescription:
-      'Loyalty and honesty are both virtues — until they collide. Explore the moral psychology of when protecting someone close conflicts with telling the truth, through five real dilemmas.',
+      'When loyalty and honesty collide — truth vs loyalty in everyday moments. Five real dilemmas about protecting someone close vs telling the truth, with live SplitVote results.',
     date: '2026-05-09',
-    readingTime: 5,
-    tags: ['loyalty', 'honesty', 'ethics', 'moral philosophy', 'moral dilemmas'],
+    dateModified: '2026-05-25',
+    readingTime: 9,
+    tags: ['loyalty', 'honesty', 'truth vs loyalty', 'ethics', 'moral philosophy', 'moral dilemmas'],
     relatedDilemmaIds: ['cover-accident', 'report-friend', 'sibling-secret', 'truth-friend', 'whistleblower'],
     alternateSlug: 'lealta-vs-onesta-quando-si-scontrano',
+    faq: [
+      {
+        q: "What's the difference between loyalty and honesty?",
+        a: "Both are moral virtues, but they answer different questions. Loyalty asks who you protect; honesty asks what you say. Most of the time the two coexist quietly. They collide when staying loyal to someone you care about requires concealing the truth from someone else — and at that point you have to pick a side.",
+      },
+      {
+        q: "Is truth vs loyalty really a moral dilemma?",
+        a: "Yes — and one of the most common in real life. A true dilemma isn't a choice between right and wrong; it's a choice between two things you actually value. Truth vs loyalty fits that test exactly: both options leave a moral remainder — guilt, regret, or unfinished obligation — that you have to live with.",
+      },
+      {
+        q: "When does loyalty stop being a virtue?",
+        a: "Most people carry an implicit hierarchy: loyalty to close family outweighs loyalty to friends, which outweighs loyalty to institutions, which outweighs abstract honesty principles. The hierarchy shifts with the severity of the wrong. Helping a friend cover a parking fine is different from covering a fatal accident — and most people's loyalty has a breaking point they rarely know until they hit it.",
+      },
+      {
+        q: "Is it better to be loyal or honest?",
+        a: "Neither is automatically better — the right balance depends on the stakes and the people involved. A useful test: imagine the person you'd be lying to (or staying silent in front of) found out months later. Would they understand your loyalty as care, or experience it as betrayal? When loyalty would be experienced as betrayal by someone who also deserved care, honesty usually wins.",
+      },
+      {
+        q: "Can you be loyal and honest at the same time?",
+        a: "Yes, most of the time — the two virtues only collide in specific situations, not by default. The honest move that preserves loyalty is usually to say the hard truth privately to the person you are loyal to, before circumstances force a public choice. Loyalty does not require silence; it requires care. Honesty does not require broadcasting; it requires not deceiving.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -1734,6 +1761,18 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: 'Loyalty and honesty are both genuine moral virtues. The problem is that they can fail to coexist at the same time. When they collide, you cannot satisfy both — and your answer reveals something real about how you actually reason about ethics, regardless of the values you think you hold.',
+      },
+      {
+        type: 'h2',
+        text: "What's the difference between loyalty and honesty?",
+      },
+      {
+        type: 'p',
+        text: 'Loyalty asks **who you protect**. Honesty asks **what you say**. They are distinct virtues that govern different parts of life — loyalty handles relationships and obligation, honesty handles the truthfulness of what you communicate. Most days they leave each other alone and you barely notice they are separate.',
+      },
+      {
+        type: 'p',
+        text: 'They collide when staying loyal to someone you care about requires concealing the truth from someone else — and you cannot do both. That is where honesty and loyalty stop being slogans and become a real choice with a real cost on either side.',
       },
       {
         type: 'h2',
@@ -1749,6 +1788,30 @@ const EN_POSTS: BlogPost[] = [
       },
       {
         type: 'h2',
+        text: 'Real-life examples where loyalty and honesty collide',
+      },
+      {
+        type: 'p',
+        text: 'The clearest way to see the conflict is to imagine yourself in scenes where both virtues pull in opposite directions. None of these are abstract trolley problems — they are situations many people face at some point.',
+      },
+      {
+        type: 'p',
+        text: "**At work.** You discover your manager has been inflating numbers in reports the leadership team relies on. Reporting them is honest. Staying silent protects the only person who has ever advocated for your promotion. The loyalty you owe to someone who has had your back collides with the honesty owed to people who do not yet know they are being misled.",
+      },
+      {
+        type: 'p',
+        text: "**In your family.** Your sibling tells you something painful — a divorce being planned, a serious health issue, a financial mistake — and asks you not to tell your parents. You believe your parents should know. Loyalty to your sibling collides with the honesty your parents would expect from you. Neither choice is consequence-free.",
+      },
+      {
+        type: 'p',
+        text: "**In friendship.** Your best friend's new partner is being unfaithful and you have proof. Telling your friend is honest. It also risks destroying not just their relationship but your friendship — they may resent you for being the messenger. Telling no one preserves the social peace at the cost of letting your friend live inside a lie.",
+      },
+      {
+        type: 'p',
+        text: "**As an employee or citizen.** You discover your company is doing something illegal that harms people outside it. Reporting is honest. It also costs jobs in the community — including, possibly, your own. The loyalty you owe to colleagues collides with the honesty owed to people they will never meet but are nevertheless harming.",
+      },
+      {
+        type: 'h2',
         text: 'What moral psychology tells us',
       },
       {
@@ -1761,6 +1824,18 @@ const EN_POSTS: BlogPost[] = [
       },
       {
         type: 'h2',
+        text: 'Why this conflict is harder than "right vs wrong"',
+      },
+      {
+        type: 'p',
+        text: "It is tempting to assume a moral dilemma is just a choice between a right answer and a wrong one. Most of the time, that is a hard choice, not a dilemma. A hard choice has a clearly better option that is simply difficult to take — like quitting a comfortable job to chase a vocation. A real dilemma is structurally different: both options demand something you genuinely value, and choosing one means walking away from the other without resolving it.",
+      },
+      {
+        type: 'p',
+        text: "Philosophers call what is left over a **moral remainder**. After you choose, you still owe something to the option you abandoned — guilt, regret, an apology, an attempt to repair what your choice cost. That residue is the signature of a real loyalty-honesty conflict. If you can choose without any cost to either side, the dilemma was probably not real to begin with.",
+      },
+      {
+        type: 'h2',
         text: 'The hierarchy most people carry',
       },
       {
@@ -1770,6 +1845,23 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: "But the hierarchy shifts with the severity of the wrong. Helping a friend cover a parking fine is different from covering a fatal accident. Most people's loyalty has a breaking point — they just rarely know where it sits until they face the actual situation.",
+      },
+      {
+        type: 'h2',
+        text: 'What your answer may reveal about how you reason morally',
+      },
+      {
+        type: 'p',
+        text: "Across many loyalty-vs-honesty scenarios, most people settle into a tendency — not a fixed rule, but a recognisable lean. Someone who repeatedly weights loyalty heavily tends to find their moral footing in relationships, obligations, and the trust they have built with specific people. Someone who repeatedly weights honesty heavily tends to find theirs in fairness, accountability, and the principle that the truth ought to be available regardless of who it implicates.",
+      },
+      {
+        type: 'p',
+        text: "Neither lean is correct in isolation. Research like Moral Foundations Theory describes loyalty and fairness as distinct moral concerns, each with legitimate weight. The choice you make in one situation does not bind you in another, and most people find their loyalty-honesty balance shifts with the severity of the wrong, the closeness of the relationships involved, and how reversible the damage is.",
+      },
+      {
+        type: 'cta',
+        label: 'Discover your moral personality from your votes →',
+        href: '/personality',
       },
       {
         type: 'h2',
@@ -1811,6 +1903,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'cta',
         label: 'Your company illegally pollutes a river. 1,000 jobs are at stake. Report or stay silent? →',
         href: '/play/whistleblower',
+      },
+      {
+        type: 'h2',
+        text: 'Frequently asked questions',
+      },
+      {
+        type: 'h3',
+        text: "What's the difference between loyalty and honesty?",
+      },
+      {
+        type: 'p',
+        text: "Both are moral virtues, but they answer different questions. Loyalty asks who you protect; honesty asks what you say. Most of the time the two coexist quietly. They collide when staying loyal to someone you care about requires concealing the truth from someone else — and at that point you have to pick a side.",
+      },
+      {
+        type: 'h3',
+        text: 'Is truth vs loyalty really a moral dilemma?',
+      },
+      {
+        type: 'p',
+        text: "Yes — and one of the most common in real life. A true dilemma isn't a choice between right and wrong; it's a choice between two things you actually value. Truth vs loyalty fits that test exactly: both options leave a moral remainder — guilt, regret, or unfinished obligation — that you have to live with.",
+      },
+      {
+        type: 'h3',
+        text: 'When does loyalty stop being a virtue?',
+      },
+      {
+        type: 'p',
+        text: "Most people carry an implicit hierarchy: loyalty to close family outweighs loyalty to friends, which outweighs loyalty to institutions, which outweighs abstract honesty principles. The hierarchy shifts with the severity of the wrong. Helping a friend cover a parking fine is different from covering a fatal accident — and most people's loyalty has a breaking point they rarely know until they hit it.",
+      },
+      {
+        type: 'h3',
+        text: 'Is it better to be loyal or honest?',
+      },
+      {
+        type: 'p',
+        text: "Neither is automatically better — the right balance depends on the stakes and the people involved. A useful test: imagine the person you'd be lying to (or staying silent in front of) found out months later. Would they understand your loyalty as care, or experience it as betrayal? When loyalty would be experienced as betrayal by someone who also deserved care, honesty usually wins.",
+      },
+      {
+        type: 'h3',
+        text: 'Can you be loyal and honest at the same time?',
+      },
+      {
+        type: 'p',
+        text: "Yes, most of the time — the two virtues only collide in specific situations, not by default. The honest move that preserves loyalty is usually to say the hard truth privately to the person you are loyal to, before circumstances force a public choice. Loyalty does not require silence; it requires care. Honesty does not require broadcasting; it requires not deceiving.",
       },
       {
         type: 'cta',
@@ -5910,16 +6046,39 @@ const IT_POSTS: BlogPost[] = [
     slug: 'lealta-vs-onesta-quando-si-scontrano',
     locale: 'it',
     title: 'Lealtà vs Onestà: Quando le Due Virtù Non Possono Coesistere',
-    seoTitle: 'Lealtà vs Onestà — Quando Dire la Verità Significa Tradire Chi Ami',
+    seoTitle: 'Lealtà e Onestà — Differenze, Conflitti e Punto di Rottura',
     description:
       'La maggior parte dei veri dilemmi morali non riguarda trolley — riguarda persone che conosciamo. Quando lealtà e onestà entrano in conflitto diretto, quale vince? E dove si trova il punto di rottura?',
     seoDescription:
-      "Lealtà e onestà sono entrambe virtù — finché non si scontrano. Esplora la psicologia morale di quando proteggere qualcuno di caro entra in conflitto con dire la verità, attraverso cinque dilemmi reali.",
+      "Qual è la differenza tra onestà e lealtà? E cosa succede quando lealtà e onestà entrano in conflitto diretto? Cinque dilemmi reali, voti dal vivo, nessuna risposta facile.",
     date: '2026-05-09',
-    readingTime: 5,
-    tags: ['lealtà', 'onestà', 'etica', 'filosofia morale', 'dilemmi morali'],
+    dateModified: '2026-05-25',
+    readingTime: 9,
+    tags: ['lealtà', 'onestà', 'differenza onestà lealtà', 'etica', 'filosofia morale', 'dilemmi morali'],
     relatedDilemmaIds: ['cover-accident', 'report-friend', 'sibling-secret', 'truth-friend', 'whistleblower'],
     alternateSlug: 'loyalty-vs-honesty-when-they-collide',
+    faq: [
+      {
+        q: "Qual è la differenza tra lealtà e onestà?",
+        a: "Sono entrambe virtù morali, ma rispondono a domande diverse. La lealtà dice chi proteggi; l'onestà dice cosa dici. Per la maggior parte del tempo convivono in silenzio. Entrano in conflitto quando restare leali a qualcuno che ami richiede di nascondere la verità a qualcun altro — e a quel punto devi scegliere da che parte stare.",
+      },
+      {
+        q: "Lealtà e onestà: quando entrano in conflitto?",
+        a: "Quando essere leali richiede di nascondere qualcosa. Un partner che ha commesso un errore grave, un fratello che ti chiede di coprirlo, un amico che ha superato un limite. La domanda smette di essere astratta: lo proteggi o dici la verità? Non puoi soddisfare entrambe le cose nello stesso momento.",
+      },
+      {
+        q: "Quando la lealtà smette di essere una virtù?",
+        a: "Quasi tutti portano una gerarchia implicita: lealtà ai familiari stretti, poi agli amici, poi alle istituzioni, infine ai principi astratti di onestà. La gerarchia cambia con la gravità del torto. Coprire una multa non è coprire un incidente mortale. Il punto di rottura esiste — di solito non lo conosci finché non lo raggiungi.",
+      },
+      {
+        q: "È meglio essere leali o onesti?",
+        a: "Nessuna delle due è automaticamente migliore — l'equilibrio giusto dipende dalla posta in gioco e dalle persone coinvolte. Un test utile: immagina che la persona a cui staresti mentendo (o davanti a cui staresti tacendo) lo scoprisse mesi dopo. Vedrebbe la tua lealtà come cura, o la vivrebbe come tradimento? Quando la lealtà verrebbe vissuta come tradimento da qualcuno che meritava anche cura, di solito vince l'onestà.",
+      },
+      {
+        q: "Si può essere leali e onesti allo stesso tempo?",
+        a: "Sì, la maggior parte delle volte — le due virtù si scontrano solo in situazioni specifiche, non per default. La mossa onesta che protegge la lealtà di solito è dire la verità difficile in privato alla persona a cui sei leale, prima che le circostanze costringano una scelta pubblica. La lealtà non richiede il silenzio: richiede cura. L'onestà non richiede di annunciare nulla: richiede di non ingannare.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -5928,6 +6087,18 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: "Lealtà e onestà sono entrambe autentiche virtù morali. Il problema è che possono non riuscire a coesistere nello stesso momento. Quando si scontrano, non puoi soddisfare entrambe — e la tua risposta rivela qualcosa di reale su come ragioni effettivamente in etica, indipendentemente dai valori che pensi di avere.",
+      },
+      {
+        type: 'h2',
+        text: 'Qual è la differenza tra lealtà e onestà?',
+      },
+      {
+        type: 'p',
+        text: "La lealtà risponde alla domanda **chi proteggi**. L'onestà risponde alla domanda **cosa dici**. Sono virtù distinte che governano parti diverse della vita: la lealtà tiene insieme le relazioni e i legami, l'onestà tiene insieme la verità di quello che comunichi. Quasi sempre convivono in silenzio e nemmeno noti che sono cose separate.",
+      },
+      {
+        type: 'p',
+        text: "Si scontrano quando restare leali a qualcuno che ami richiede di nascondere la verità a qualcun altro — e non puoi fare entrambe le cose. È in quel momento che lealtà e onestà smettono di essere parole e diventano una scelta vera, con un costo reale da una parte o dall'altra.",
       },
       {
         type: 'h2',
@@ -5943,6 +6114,30 @@ const IT_POSTS: BlogPost[] = [
       },
       {
         type: 'h2',
+        text: 'Esempi reali in cui lealtà e onestà entrano in conflitto',
+      },
+      {
+        type: 'p',
+        text: "Il modo più chiaro di vedere il conflitto è immaginarsi in scene in cui le due virtù tirano in direzioni opposte. Non sono problemi del tram astratti — sono situazioni che molti incontrano almeno una volta nella vita.",
+      },
+      {
+        type: 'p',
+        text: "**Al lavoro.** Scopri che il tuo manager sta gonfiando numeri nei report su cui la direzione prende decisioni. Segnalarlo è onesto. Tacere protegge l'unica persona che si è mai battuta perché tu venissi promosso. La lealtà verso chi ti ha coperto le spalle si scontra con l'onestà dovuta a persone che ancora non sanno di essere ingannate.",
+      },
+      {
+        type: 'p',
+        text: "**In famiglia.** Tuo fratello o tua sorella ti confida qualcosa di doloroso — un divorzio che sta arrivando, un problema di salute, un errore finanziario — e ti chiede di non dirlo ai genitori. Tu pensi che i genitori dovrebbero sapere. La lealtà verso tuo fratello si scontra con l'onestà che i tuoi genitori si aspettano da te. Nessuna delle due scelte è senza conseguenze.",
+      },
+      {
+        type: 'p',
+        text: "**Tra amici.** Scopri che il nuovo partner del tuo migliore amico lo sta tradendo e hai le prove. Dirglielo è onesto. Dirglielo rischia di distruggere non solo quella relazione ma anche la vostra amicizia — potrebbe risentirsi con te per essere stato il messaggero. Non dire niente preserva la pace sociale al prezzo di lasciare che il tuo amico viva dentro una bugia.",
+      },
+      {
+        type: 'p',
+        text: "**Come dipendente o come cittadino.** Scopri che la tua azienda sta facendo qualcosa di illegale che danneggia persone esterne. Denunciare è onesto. Costa anche posti di lavoro nella comunità — incluso, possibilmente, il tuo. La lealtà verso i colleghi si scontra con l'onestà dovuta a persone che non incontrerai mai ma che vengono comunque danneggiate.",
+      },
+      {
+        type: 'h2',
         text: 'Cosa ci dice la psicologia morale',
       },
       {
@@ -5955,6 +6150,18 @@ const IT_POSTS: BlogPost[] = [
       },
       {
         type: 'h2',
+        text: 'Perché questo conflitto è più difficile di "giusto contro sbagliato"',
+      },
+      {
+        type: 'p',
+        text: "C'è la tentazione di pensare che un dilemma morale sia una scelta fra una risposta giusta e una sbagliata. Quasi sempre, però, quella è una scelta difficile, non un dilemma. Una scelta difficile ha un'opzione chiaramente migliore che semplicemente costa fatica — come lasciare un lavoro comodo per inseguire una vocazione. Un vero dilemma è strutturalmente diverso: entrambe le opzioni chiedono qualcosa che ti sta davvero a cuore, e sceglierne una significa abbandonare l'altra senza risolverla.",
+      },
+      {
+        type: 'p',
+        text: "I filosofi chiamano ciò che resta **residuo morale**. Dopo aver scelto, devi ancora qualcosa all'opzione che hai abbandonato — senso di colpa, rimpianto, una scusa, un tentativo di riparare al costo che la tua scelta ha imposto. Quel residuo è la firma di un vero conflitto fra lealtà e onestà. Se riesci a scegliere senza nessun costo da nessuna parte, probabilmente non era un vero dilemma.",
+      },
+      {
+        type: 'h2',
         text: "La gerarchia che la maggior parte di noi porta con sé",
       },
       {
@@ -5964,6 +6171,23 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: "Ma la gerarchia cambia con la gravità del torto. Aiutare un amico a coprire una multa è diverso dal coprire un incidente mortale. La lealtà della maggior parte delle persone ha un punto di rottura — ma raramente sanno dove si trova finché non affrontano la situazione reale.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa rivela moralmente la tua scelta',
+      },
+      {
+        type: 'p',
+        text: "Attraverso molti scenari di lealtà-onestà, la maggior parte delle persone si assesta su una tendenza — non una regola fissa, ma una inclinazione riconoscibile. Chi pesa ripetutamente la lealtà trova il proprio punto di riferimento morale nelle relazioni, negli obblighi e nella fiducia costruita con persone specifiche. Chi pesa ripetutamente l'onestà lo trova nell'equità, nella responsabilità e nel principio che la verità debba essere accessibile indipendentemente da chi tocca.",
+      },
+      {
+        type: 'p',
+        text: "Nessuna delle due inclinazioni è corretta in isolamento. La Moral Foundations Theory descrive lealtà ed equità come preoccupazioni morali distinte, ciascuna con peso legittimo. La scelta che fai in una situazione non ti vincola in un'altra, e quasi tutti scoprono che il proprio equilibrio fra lealtà e onestà cambia con la gravità del torto, la vicinanza delle relazioni coinvolte e quanto è reversibile il danno.",
+      },
+      {
+        type: 'cta',
+        label: 'Scopri la tua personalità morale dai tuoi voti →',
+        href: '/it/personality',
       },
       {
         type: 'h2',
@@ -6005,6 +6229,50 @@ const IT_POSTS: BlogPost[] = [
         type: 'cta',
         label: "La tua azienda inquina illegalmente un fiume. 1.000 posti di lavoro sono a rischio. Denunci o taci? →",
         href: '/it/play/whistleblower',
+      },
+      {
+        type: 'h2',
+        text: 'Domande frequenti',
+      },
+      {
+        type: 'h3',
+        text: 'Qual è la differenza tra lealtà e onestà?',
+      },
+      {
+        type: 'p',
+        text: "Sono entrambe virtù morali, ma rispondono a domande diverse. La lealtà dice chi proteggi; l'onestà dice cosa dici. Per la maggior parte del tempo convivono in silenzio. Entrano in conflitto quando restare leali a qualcuno che ami richiede di nascondere la verità a qualcun altro — e a quel punto devi scegliere da che parte stare.",
+      },
+      {
+        type: 'h3',
+        text: 'Lealtà e onestà: quando entrano in conflitto?',
+      },
+      {
+        type: 'p',
+        text: "Quando essere leali richiede di nascondere qualcosa. Un partner che ha commesso un errore grave, un fratello che ti chiede di coprirlo, un amico che ha superato un limite. La domanda smette di essere astratta: lo proteggi o dici la verità? Non puoi soddisfare entrambe le cose nello stesso momento.",
+      },
+      {
+        type: 'h3',
+        text: 'Quando la lealtà smette di essere una virtù?',
+      },
+      {
+        type: 'p',
+        text: "Quasi tutti portano una gerarchia implicita: lealtà ai familiari stretti, poi agli amici, poi alle istituzioni, infine ai principi astratti di onestà. La gerarchia cambia con la gravità del torto. Coprire una multa non è coprire un incidente mortale. Il punto di rottura esiste — di solito non lo conosci finché non lo raggiungi.",
+      },
+      {
+        type: 'h3',
+        text: 'È meglio essere leali o onesti?',
+      },
+      {
+        type: 'p',
+        text: "Nessuna delle due è automaticamente migliore — l'equilibrio giusto dipende dalla posta in gioco e dalle persone coinvolte. Un test utile: immagina che la persona a cui staresti mentendo (o davanti a cui staresti tacendo) lo scoprisse mesi dopo. Vedrebbe la tua lealtà come cura, o la vivrebbe come tradimento? Quando la lealtà verrebbe vissuta come tradimento da qualcuno che meritava anche cura, di solito vince l'onestà.",
+      },
+      {
+        type: 'h3',
+        text: 'Si può essere leali e onesti allo stesso tempo?',
+      },
+      {
+        type: 'p',
+        text: "Sì, la maggior parte delle volte — le due virtù si scontrano solo in situazioni specifiche, non per default. La mossa onesta che protegge la lealtà di solito è dire la verità difficile in privato alla persona a cui sei leale, prima che le circostanze costringano una scelta pubblica. La lealtà non richiede il silenzio: richiede cura. L'onestà non richiede di annunciare nulla: richiede di non ingannare.",
       },
       {
         type: 'cta',
