@@ -1,10 +1,104 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 24 May 2026 — Home declutter + dilemma quality recovery sprint complete. EN and IT home structurally aligned to a single 4-card continuation section + compact CTA strip. Five weak dilemmas rewritten EN + six IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change. Five local commits await PM GO to push.
+Last updated: 25 May 2026 — `DILEMMA-EDITORIAL-SHAPE-GATE-01` shipped locally. AI generation prompt now forces conflict-shaped dilemmas (do not ask "should X happen", transform into "which cost do you accept") and requires the `rationale` field to name the value collision. Quality gate adds four moral-only soft warnings — `abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb` — suppressed when the question carries an explicit tradeoff marker ("più pericoloso ... o ...", "ma raddoppia ... quale ingiustizia accetti", "which cost do you accept"). 8 new vitest cases (21 total in the file, up from 13). Lifestyle exempt. No autopublish / save-mode / Redis / Supabase / legal change. Local diff awaits PM GO to commit + push.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 24 May 2026 — Home declutter + dilemma quality recovery (5 phases)
+## 0. Session 25 May 2026 — Dilemma Editorial Shape Gate
+
+### TL;DR
+
+PM trigger: Matteo flagged the generated IT dilemma "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?" as boring yes/no policy polling, not the conflict-shaped tradeoff SplitVote promises. Editorial audit (`reports/dilemma-editorial-audit-2026-05-25.md`) named the failure pattern (topic-as-question + undefined collective actor + undefined action verb + no cost on either side) and prescribed a narrow gate sprint. Sprint executed per `SPRINT: DILEMMA-EDITORIAL-SHAPE-GATE-01`.
+
+### Files changed (local, uncommitted)
+
+- `lib/content-generation-prompts.ts` — added two `SAFETY_RULES` items (conflict-shaped dilemma framing + avoid vague referendum framing) and strengthened the `rationale` field requirement to name the value collision.
+- `lib/content-quality-gates.ts` — added 5 regexes (`EDITORIAL_TRADEOFF_MARKERS_RE`, `ABSTRACT_POLICY_RE`, `SUPPORT_OPPOSE_RE`, `UNDEFINED_ACTOR_RE`, `UNDEFINED_ACTION_RE`) and a new block inside `runQualityGates` that emits four moral-only soft warnings, suppressed when an explicit tradeoff marker is present in the question.
+- `tests/unit/content-quality-gates.test.ts` — added a new `describe` block with 8 cases covering the weak/strong IT and EN samples, lifestyle exemption, advisory-only behavior, and the explicit-tradeoff suppression path.
+- `ROADMAP.md` — new 25 May 2026 entry above the 24 May section.
+- `CURRENT_HANDOFF.md` — this section.
+
+### Warnings added (4)
+
+| Code | Fires when (in the question, moral only, no tradeoff marker present) |
+|---|---|
+| `abstract_policy_question` | Referendum-style framing: "should governments / countries / society / we ban|allow|...", "dovrebbero i Paesi / la società / si dovrebbe vietare|permettere|...". |
+| `support_oppose_framing` | Policy-poll verbs: support, oppose, endorse, reject, approve, disapprove, ban, allow, regulate, permit, prohibit + IT equivalents (sostenere, opporsi, vietare, permettere, regolare, ...). |
+| `undefined_collective_actor` | Broad noun actors with no concrete identity: countries / governments / society / the others / the state / the platform + IT (un Paese, i Paesi, gli altri, il governo, lo Stato, la società, le aziende, ...). |
+| `undefined_action_verb` | Vague action verbs with no concrete object/cost: slow / restrict / limit / curb / throttle + IT (rallentare, limitare, restringere, ridurre, frenare, ...). |
+
+### Suppressor (single regex, all four warnings)
+
+`EDITORIAL_TRADEOFF_MARKERS_RE` matches one of:
+- EN comparative-risk / explicit-cost phrasing: "even if", "even though", "knowing that", "at the cost of", "in exchange for", "in return for", "risking", "more dangerous/harmful/risky/costly", "which cost/risk/danger/harm/injustice/tradeoff/side do you accept", "but doubles|halves|raises|lowers|costs|penalizes|harms|sacrifices|cuts|locks out|leaves out|forces".
+- IT equivalents: "anche se", "sapendo che", "al costo di", "rischiando", "in cambio di", "più pericoloso/dannoso/rischioso/grave/costoso/doloroso/ingiusto", "quale costo/rischio/ingiustizia/pericolo/danno/tradeoff/lato accetti", "ma raddoppia|penalizza|danneggia|costa|costringe|sacrifica|aumenta|riduce|toglie|esclude", "pur proteggendo|salvando|riducendo|aumentando|garantendo|dando", "nonostante".
+
+Bare conjunctions ("ma", "but", "or") are intentionally NOT suppressors — too common in natural sentences.
+
+### Before / after examples
+
+#### IT — weak (warns)
+- Question: "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?"
+- Fires: `undefined_collective_actor` (un Paese, gli altri) + `undefined_action_verb` (rallentare).
+- `passed` stays `true` (advisory only).
+
+#### IT — strong (does NOT warn)
+- Question: "È più pericoloso sviluppare l'AI senza regole o lasciare che lo facciano solo i Paesi che ignorano le regole?"
+- Suppressor: "più pericoloso" matches `EDITORIAL_TRADEOFF_MARKERS_RE`.
+- Editorial-shape warnings array: `[]`.
+
+#### EN — weak (warns)
+- Question: "Should countries slow AI development if another country ignores AI rules?"
+- Fires: `abstract_policy_question` ("should countries") + `undefined_collective_actor` (countries) + `undefined_action_verb` (slow).
+
+#### EN — explicit tradeoff (does NOT warn)
+- Question: "A foreign-owned app is a real security risk, but banning it hands the state the power to close any platform later — which cost do you accept?"
+- Suppressor: "which cost do you accept" matches.
+- Editorial-shape warnings array: `[]`.
+
+#### Lifestyle — exempt regardless of surface tokens
+- Question: "Coffee or tea? Should countries ban one of them?"
+- `dilemmaStyle === 'lifestyle'` → entire moral-only block skipped, no editorial warnings fire.
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all 41 static play/results routes prerender)
+- `npx vitest run tests/unit/content-quality-gates.test.ts` ✅ 21/21 passing (was 13)
+- `git diff --check` ✅ exit 0
+
+### Hard constraints preserved
+
+- No `AUTO_PUBLISH_DILEMMAS` behavior change. New warnings are advisory only; the `reasons` array is unchanged for all existing inputs; existing `passed=true` results stay `passed=true`.
+- No Redis write, no Supabase migration, no auth change, no Stripe/webhook/entitlement change.
+- No legal / cookie / analytics surface touched. No `LEGAL.md` update needed (no new data flows, no new tracking).
+- No static-scenario rewrites. `lib/scenarios.ts` and `lib/scenarios-it.ts` untouched in this sprint.
+- No admin UI change; the new codes surface via the same warnings array as `moral_option_bare_yes_no` and `magic_stipulation_in_question`.
+- No `git push`, no deploy. PM WIP in the working tree (3 Pixie tooling entries) remains untouched.
+
+### Residual risk / false-positive notes
+
+- The four heuristic regexes are surface-only; they will produce false positives when a moral dilemma legitimately discusses policy without using an explicit tradeoff marker. The audit's recommendation stands: keep them as warnings (not reasons) until a dry-run against the live dynamic pool shows the signal is clean.
+- "gli altri" is caught by `undefined_collective_actor` but not by `abstract_policy_question` (which requires a more specific noun like "i Paesi" / "la società"). Intentional: the broader actor check is what triggers on the canonical weak case.
+- `EDITORIAL_TRADEOFF_MARKERS_RE` deliberately requires a comparative-risk phrase OR a cost-introducing connector followed by a real cost verb. Bare conjunctions are not enough.
+- Admin review UI does not yet render distinctive copy for the four new codes; they appear in the same generic "warnings" list as the existing depth warnings until a separate PM-approved UI sprint.
+
+### Recommended next-session priorities
+
+1. **PM commit + push approval** for this sprint's diff once visual review of the new warning copy / prompt addition is OK. No production behavior changes; safe to bundle with the existing 5 queued 24 May commits or to ship standalone.
+2. **Dry-run the new warnings against the existing approved dynamic pool** (read-only) to measure false-positive rate before any future hard-rejection escalation. Output: report only.
+3. **Admin review UI**: surface the four new codes with distinctive copy (separate PM-approved UI sprint).
+4. Existing recommended priorities from the 24 May session remain valid (see §0 below): PM visual QA on the 5 queued commits, `SEO-IT-FAQ-JSONLD-MIGRATION-01` (already shipped 24 May, can be closed in handoff), `BEHAVIORAL-INSIGHTS-DERIVATION-READONLY-01`.
+
+### Items intentionally NOT scheduled
+
+- Hard rejection (vs. soft warning) on the four new editorial-shape patterns — defer until dry-run.
+- Retroactive rewrite of existing dynamic-pool dilemmas that would now warn — separate PM-approved sprint (touches Redis content).
+- `moralAxis` JSON field on AI output — depth-audit recommendation, still out of scope.
+
+---
+
+## 0a. Session 24 May 2026 — Home declutter + dilemma quality recovery (5 phases)
 
 ### TL;DR
 

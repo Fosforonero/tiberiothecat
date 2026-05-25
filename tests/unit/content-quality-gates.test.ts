@@ -138,6 +138,130 @@ describe('runQualityGates — magic stipulation soft warning', () => {
   })
 })
 
+describe('runQualityGates — editorial-shape warnings (DILEMMA-EDITORIAL-SHAPE-GATE-01)', () => {
+  // The weak generated IT dilemma that triggered this sprint. It is vague
+  // ("un Paese", "gli altri"), uses a bare action verb ("rallentare"), and
+  // collapses into a yes/no policy referendum — exactly the failure mode the
+  // editorial-shape gate must catch.
+  it('warns on the weak IT AI-regulation sample that triggered the sprint', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      locale: 'it',
+      question: "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?",
+      optionA: 'Rallentare. La prudenza viene prima della corsa tecnologica.',
+      optionB: 'Andare avanti. Restare indietro sarebbe peggio nel medio periodo.',
+    })
+    // At least one editorial-shape warning must fire — the broad actors,
+    // referendum framing, and vague verb should each trigger their own.
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings.length).toBeGreaterThan(0)
+    expect(result.warnings).toContain('undefined_collective_actor')
+    expect(result.warnings).toContain('undefined_action_verb')
+  })
+
+  it('warns on the weak EN AI-regulation phrasing', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'Should countries slow AI development if another country ignores AI rules?',
+      optionA: 'Slow it. Safety must come before the race.',
+      optionB: 'Press on. Falling behind would be worse over time.',
+    })
+    expect(result.warnings).toContain('abstract_policy_question')
+    expect(result.warnings).toContain('undefined_collective_actor')
+    expect(result.warnings).toContain('undefined_action_verb')
+  })
+
+  it('does NOT warn on the strong IT rewrite (explicit comparative-risk frame)', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      locale: 'it',
+      question: "È più pericoloso sviluppare l'AI senza regole o lasciare che lo facciano solo i Paesi che ignorano le regole?",
+      optionA: "Rallentare. Se l'AI è rischiosa, la prudenza viene prima della gara.",
+      optionB: 'Restare in corsa. Se avanzano solo gli irresponsabili, il rischio aumenta.',
+    })
+    // "più pericoloso" is the suppressor — the question already names the
+    // collision, so the editorial-shape warnings must stay silent even
+    // though "i Paesi" is still a broad actor.
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings).toEqual([])
+  })
+
+  it('does NOT warn on an explicit-tradeoff IT policy dilemma with "ma raddoppia" + "quale ingiustizia accetti"', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      locale: 'it',
+      question: 'Se un reddito universale salva chi resta fuori dal lavoro ma raddoppia le tasse a chi ha già costruito stabilità, quale ingiustizia accetti?',
+      optionA: 'Approvarlo. Lasciare indietro chi cade è un costo più grave delle nuove tasse.',
+      optionB: 'Respingerlo. Punire chi ha costruito è un costo che la società non regge a lungo.',
+    })
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings).toEqual([])
+  })
+
+  it('does NOT warn on an explicit-tradeoff EN policy dilemma with "which cost do you accept"', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'A foreign-owned app is a real security risk, but banning it hands the state the power to close any platform later — which cost do you accept?',
+      optionA: 'Ban it. Collective safety has to come before digital comfort.',
+      optionB: 'Keep it open. A power of censorship outlives the emergency that justified it.',
+    })
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings).toEqual([])
+  })
+
+  it('does NOT fire editorial-shape warnings on a clean concrete-actor moral dilemma', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'Your closest friend tells you in confidence that they cheated on their partner. The partner is also your friend.',
+      optionA: "Tell the partner. They have a right to know the relationship they're in.",
+      optionB: "Stay silent. Their relationship is not yours to break open.",
+    })
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings).toEqual([])
+  })
+
+  it('does NOT fire editorial-shape warnings on lifestyle dilemmas even with referendum surface words', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      category: 'lifestyle',
+      dilemmaStyle: 'lifestyle',
+      // Deliberately contains "support" + "ban" surface tokens — they
+      // must be ignored entirely on lifestyle items.
+      question: 'Coffee or tea? Should countries ban one of them?',
+      optionA: 'Coffee',
+      optionB: 'Tea',
+      scores: { noveltyScore: 20, finalScore: 40 },
+    })
+    const editorialWarnings = result.warnings.filter((w) =>
+      ['abstract_policy_question', 'support_oppose_framing', 'undefined_collective_actor', 'undefined_action_verb'].includes(w),
+    )
+    expect(editorialWarnings).toEqual([])
+  })
+
+  it('editorial-shape warnings do NOT block passed=true', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      locale: 'it',
+      question: "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?",
+      optionA: 'Rallentare. La prudenza viene prima della corsa tecnologica.',
+      optionB: 'Andare avanti. Restare indietro sarebbe peggio nel medio periodo.',
+    })
+    expect(result.warnings).toContain('undefined_collective_actor')
+    expect(result.reasons).toEqual([])
+    expect(result.passed).toBe(true)
+  })
+})
+
 describe('runQualityGates — soft warnings are advisory, never blocking', () => {
   it('passes a clean moral dilemma with zero warnings of these kinds', () => {
     const result = runQualityGates({

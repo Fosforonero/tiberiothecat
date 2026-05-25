@@ -75,6 +75,107 @@ const MAGIC_STIPULATION_RE = new RegExp(
   'i',
 )
 
+// Editorial-shape suppressor (moral dilemmas only). When ANY of these
+// markers appears in the question, all four editorial-shape warnings
+// (abstract_policy_question, support_oppose_framing,
+// undefined_collective_actor, undefined_action_verb) are suppressed
+// because the question is already shaped as a "which cost do you accept"
+// tradeoff rather than a referendum.
+//
+// Patterns deliberately require either a comparative-risk phrase
+// ("more dangerous", "più pericoloso") or a cost-introducing connector
+// followed by a real cost verb ("but doubles", "ma raddoppia") — bare
+// conjunctions like "ma" / "but" / "or" are too common in natural speech
+// to use as suppressors on their own.
+const EDITORIAL_TRADEOFF_MARKERS_RE = new RegExp(
+  [
+    // EN — explicit tradeoff / comparative-risk phrasing
+    '\\beven if\\b',
+    '\\beven though\\b',
+    '\\bknowing that\\b',
+    '\\bat the cost of\\b',
+    '\\bin exchange for\\b',
+    '\\bin return for\\b',
+    '\\brisking\\b',
+    'which (?:cost|risk|danger|harm|injustice|tradeoff|trade-off|side) do you accept',
+    'more (?:dangerous|harmful|risky|costly|painful|unjust)',
+    'but (?:doubles|halves|raises|lowers|costs|penalizes|harms|sacrifices|cuts|locks out|leaves out|forces)',
+    // IT — explicit tradeoff / comparative-risk phrasing
+    '\\banche se\\b',
+    '\\bsapendo che\\b',
+    '\\bal costo di\\b',
+    '\\brischiando\\b',
+    '\\bin cambio di\\b',
+    'quale (?:costo|rischio|ingiustizia|pericolo|danno|tradeoff|lato) accetti',
+    'più (?:pericoloso|dannoso|rischioso|grave|costoso|doloroso|ingiusto)',
+    '\\bma (?:raddoppia|penalizza|danneggia|costa|costringe|sacrifica|aumenta|riduce|toglie|esclude)',
+    '\\bpur (?:proteggendo|salvando|riducendo|aumentando|garantendo|dando)',
+    '\\bnonostante\\b',
+  ].join('|'),
+  'i',
+)
+
+// Referendum-style "Should X..." framing. Triggers `abstract_policy_question`.
+// EN: "Should governments/countries/society/companies/the state... <verb>"
+// EN: "Should we / society <ban|allow|support|oppose|regulate|permit|prohibit>"
+// IT: "Dovrebbero i governi/i paesi/le aziende..." or "La società/lo stato/i paesi dovrebbe(ro)..."
+// IT: "Si dovrebbe(ro) <vietare|permettere|sostenere|regolare|limitare>"
+const ABSTRACT_POLICY_RE = new RegExp(
+  [
+    // EN
+    'should\\s+(?:governments?|countries|society|the\\s+government|the\\s+state|companies|platforms|nations|policymakers|the\\s+public)\\b',
+    'should\\s+(?:we|society)\\s+(?:ban|allow|support|oppose|regulate|permit|prohibit|endorse|reject)\\b',
+    // IT
+    'dovrebbero\\s+(?:i\\s+(?:governi|paesi|governanti|cittadini)|le\\s+aziende|gli\\s+stati|le\\s+piattaforme|le\\s+nazioni)\\b',
+    '(?:i\\s+(?:governi|paesi|governanti|cittadini)|la\\s+società|lo\\s+stato|le\\s+aziende|le\\s+piattaforme|gli\\s+stati)\\s+dovrebbe(?:ro)?\\b',
+    'si\\s+dovrebbe(?:ro)?\\s+(?:vietare|permettere|sostenere|regolare|limitare|consentire|proibire)\\b',
+  ].join('|'),
+  'i',
+)
+
+// Support/oppose policy-poll verbs in the question. Triggers
+// `support_oppose_framing` unless a tradeoff marker is present.
+// Per the 25 May editorial audit, this groups support/oppose-style verbs
+// (support, oppose, allow, ban, regulate, permit, prohibit + IT equivalents)
+// because they signal a poll-shaped framing rather than a real moral collision.
+const SUPPORT_OPPOSE_RE = new RegExp(
+  [
+    // EN
+    '\\b(?:support|oppose|endorse|reject|approve|disapprove|ban|allow|regulate|permit|prohibit)\\b',
+    // IT
+    '\\b(?:sostenere|sostieni|sostenga|opporsi|opponi|appoggiare|respingere|approvare|disapprovare|vietare|vieti|permettere|permetti|regolare|regoli|consentire|consenti|proibire|proibisci)\\b',
+  ].join('|'),
+  'i',
+)
+
+// Broad collective actors with no concrete identity. Triggers
+// `undefined_collective_actor` unless a tradeoff marker is present.
+// "un Paese" / "gli altri" / "the others" are the canonical weak-dilemma actors —
+// they don't put the voter into a scene they can picture.
+const UNDEFINED_ACTOR_RE = new RegExp(
+  [
+    // EN
+    '\\b(?:countries|governments|companies|the\\s+society|society|the\\s+others|the\\s+government|the\\s+state|the\\s+platform|policymakers|nations|the\\s+public)\\b',
+    // IT
+    '\\b(?:un\\s+paese|i\\s+paesi|gli\\s+altri|il\\s+governo|lo\\s+stato|la\\s+società|le\\s+aziende|le\\s+piattaforme|i\\s+governanti|le\\s+nazioni|i\\s+cittadini)\\b',
+  ].join('|'),
+  'i',
+)
+
+// Vague action verbs with no concrete object/cost. Triggers
+// `undefined_action_verb` unless a tradeoff marker is present.
+// "rallentare comunque" / "slow X" is the canonical weak verb — the voter
+// can't picture what slowing actually entails or what it costs.
+const UNDEFINED_ACTION_RE = new RegExp(
+  [
+    // EN
+    '\\b(?:slow|restrict|limit|curb|throttle|slow\\s+down)\\b',
+    // IT
+    '\\b(?:rallentare|rallentino|rallenti|rallentiamo|limitare|limiti|limitino|restringere|ridurre|riduci|riducano|frenare|freni|frenino)\\b',
+  ].join('|'),
+  'i',
+)
+
 function italianSignalCount(text: string): number {
   const accents = (text.match(/[àáèéìíòóùú]/g) ?? []).length
   const words   = (text.match(IT_WORDS_RE) ?? []).length
@@ -231,6 +332,28 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
     }
     if (MAGIC_STIPULATION_RE.test(input.question)) {
       warnings.push('magic_stipulation_in_question')
+    }
+
+    // Editorial-shape warnings (DILEMMA-EDITORIAL-SHAPE-GATE-01, 25 May 2026).
+    // Catch referendum-style framings that produce boring yes/no policy
+    // polls instead of conflict-shaped dilemmas. Suppressed when the
+    // question already carries an explicit tradeoff marker — the question
+    // is then doing the editorial work itself and the broad surface
+    // patterns become acceptable.
+    const hasTradeoffMarker = EDITORIAL_TRADEOFF_MARKERS_RE.test(input.question)
+    if (!hasTradeoffMarker) {
+      if (ABSTRACT_POLICY_RE.test(input.question)) {
+        warnings.push('abstract_policy_question')
+      }
+      if (SUPPORT_OPPOSE_RE.test(input.question)) {
+        warnings.push('support_oppose_framing')
+      }
+      if (UNDEFINED_ACTOR_RE.test(input.question)) {
+        warnings.push('undefined_collective_actor')
+      }
+      if (UNDEFINED_ACTION_RE.test(input.question)) {
+        warnings.push('undefined_action_verb')
+      }
     }
   }
 

@@ -3,7 +3,44 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 24 Maggio 2026 — Home declutter shipped (EN + IT structurally aligned, single 4-card continuation section, full Browse-All grid removed). 5 weak dilemmas rewritten EN + 6 IT in target state. Quality gate now emits soft warnings on moral yes/no labels and magic stipulations (lifestyle exempt). DilemmaCard vote count hidden below 50-vote social-proof floor. No new tracking, no DB writes, no autopublish change. Tactical SEO backlog (internal linking + llms.txt + paused 21 May items) added below for next useful SEO sprint.
+Ultimo aggiornamento: 25 Maggio 2026 — `DILEMMA-EDITORIAL-SHAPE-GATE-01` shipped (local). AI dilemma-generation prompt now forces a "conflict-shaped dilemma" framing (do not ask whether the topic is good/bad — transform into a collision between two defensible fears with explicit costs) and requires the `rationale` field to name the value collision. Quality gate adds four moral-only soft warnings (`abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`) that catch referendum-style framings like "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?" — suppressed when the question carries an explicit tradeoff marker ("più pericoloso ... o ...", "ma raddoppia ... quale ingiustizia accetti", "which cost do you accept"). 8 new vitest cases (21 total in the file). Lifestyle remains exempt. No autopublish / save-mode / Redis / Supabase / legal change.
+
+---
+
+## 25 May 2026 — Dilemma Editorial Shape Gate
+
+PM trigger: Matteo flagged the generated IT dilemma "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?" as boring yes/no policy polling — not the conflict-shaped tradeoffs SplitVote promises. Editorial audit recorded in `reports/dilemma-editorial-audit-2026-05-25.md`. Sprint executed per `SPRINT: DILEMMA-EDITORIAL-SHAPE-GATE-01`.
+
+### Shipped (local — awaits PM GO to commit + push)
+
+| File | Change |
+|---|---|
+| `lib/content-generation-prompts.ts` | Added two new `SAFETY_RULES` items: (1) "conflict-shaped dilemma" — do not ask should-X-be-good/bad; transform topic into a collision between two defensible fears with costs on both sides; both options must read as serious positions, not yes/no labels. (2) "avoid vague referendum framing" — replace broad collective actors + vague action verbs with concrete actors + specific actions. Strengthened the `rationale` field requirement: must name the value collision (e.g. `"safety vs competitiveness"`) AND explain why both sides are defensible. |
+| `lib/content-quality-gates.ts` | Added 5 new regexes and 4 new moral-only soft warnings: `abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`. All four suppressed when `EDITORIAL_TRADEOFF_MARKERS_RE` matches the question (explicit cost language like "even if", "anche se", "ma raddoppia", "più pericoloso", "which cost do you accept", "quale ingiustizia accetti"). Lifestyle (`dilemmaStyle === 'lifestyle'`) exempt by the same `if (!isLifestyle)` block as the existing depth warnings. |
+| `tests/unit/content-quality-gates.test.ts` | Added 8 new cases: weak IT AI-regulation sample warns, weak EN AI-regulation sample warns, strong IT rewrite (`più pericoloso ... o ...`) does NOT warn, explicit-tradeoff IT policy dilemma (`ma raddoppia ... quale ingiustizia accetti`) does NOT warn, explicit-tradeoff EN policy dilemma (`which cost do you accept`) does NOT warn, clean concrete-actor moral dilemma does NOT warn, lifestyle stays exempt even with referendum surface tokens, warnings never block `passed=true`. |
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all 41 static play/results routes prerender)
+- `npx vitest run tests/unit/content-quality-gates.test.ts` ✅ 21/21 passing (was 13)
+- `git diff --check` ✅ exit 0
+
+### Hard constraints preserved
+
+- No `AUTO_PUBLISH_DILEMMAS` behavior change. New checks are advisory only; `reasons` array is unchanged for all existing inputs; existing `passed=true` results stay `passed=true`.
+- No Redis write, no Supabase migration, no auth change, no Stripe/webhook/entitlement change.
+- No legal/cookie/analytics surface touched. No `LEGAL.md` update needed (no new data flows).
+- No static-scenario rewrites in this sprint. Existing pool unchanged.
+- No admin UI change; warnings surface via the same path used by `moral_option_bare_yes_no` and `magic_stipulation_in_question`.
+- No `git push`, no deploy.
+
+### Residual risk / false-positive notes
+
+- The four heuristic regexes are deliberately surface-only; they will produce false positives when a moral dilemma legitimately discusses policy without using an explicit tradeoff marker. Keep them as warnings (not reasons) until a dry-run against the live dynamic pool shows the signal is clean. The audit's recommendation (defer hard-rejection until dry-run) is preserved.
+- `gli altri` (in "gli altri dovrebbero") is caught by `undefined_collective_actor` but not by `abstract_policy_question` (which requires a more specific noun like "i Paesi" / "la società"). Intentional: the broader `undefined_collective_actor` is what makes the warning fire on the canonical weak case.
+- `EDITORIAL_TRADEOFF_MARKERS_RE` requires either a comparative-risk phrase ("più pericoloso", "more dangerous") or a cost-introducing connector followed by a real cost verb ("ma raddoppia", "but doubles"). Bare conjunctions like "ma" / "but" are intentionally NOT suppressors — they're too common in natural sentences to act as a tradeoff signal.
+- Admin review UI does not yet surface the four new warning codes with distinctive copy; they display in the same generic "warnings" list as the depth warnings until a separate UI sprint is approved.
 
 ---
 

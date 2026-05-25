@@ -54,6 +54,8 @@ Safety and quality rules (strictly enforced — output will be rejected if viola
 - Options must be mutually exclusive responses to the same question. Do not let one option introduce a hidden exception that makes the premise unclear.
 - Each option must combine a concrete stance with a brief rationale. Never write a bare "Yes." / "No." / "Sì." label with no rationale, and never pair an asymmetric strawman label with a neutral one. Symmetric phrasing: both options imperative or both descriptive; no morally loaded adjective on one option that the other does not rebut. (Lifestyle preference items are exempt — see buildLifestyleDilemmaPrompt.)
 - No magic empirical stipulations in the question. Forbidden patterns: "studies show", "X% more accurate", "X% effective", "+N% improvement", "experts agree", "proven to", "guaranteed to", "the X model shows" / "il modello X mostra". The voter must reason about plausibility, not be locked in by a stipulated contested fact that pre-resolves the moral work.
+- Conflict-shaped dilemma (moral dilemmas only — lifestyle is exempt). Do not ask whether the topic is good or bad, or whether some collective actor should support / oppose / allow / ban / regulate something. Transform the abstract topic into a collision between two defensible values or fears, and make the question expose the cost of both choices. The voter must be choosing which cost or risk they accept, not casting a yes/no policy vote. If the user can answer without accepting a cost on either side, the question is too shallow — rewrite it. Both options must read as two serious positions a thoughtful person could hold, not yes/no labels.
+- Avoid vague referendum framing in the question. Phrasings like "Should countries / governments / society X?", "Dovrebbero i Paesi / i governi / la società X?", or broad collective actors ("un Paese", "gli altri", "the others") combined with vague action verbs ("slow", "regulate", "ban", "rallentare", "regolare", "vietare") almost always produce shallow poll-style questions. Replace the broad actor with a concrete one (your country, your company, your child's school, the platform you use daily) and the vague verb with a specific action whose cost the voter can picture.
 - If topic touches psychology, ethics, or health: add a brief disclaimer in safetyNotes
 - Content must be suitable for a general audience aged 16+
 - No unverified factual claims about specific recent or ongoing events
@@ -108,6 +110,7 @@ Requirements:
 - Do not reproduce the same moral structure with different nouns or setting
 - Preferred category: ${targetCategory ?? 'any of the 8 listed'} (soft preference — use a different category if it fits the topic better)
 - Category must be one of: morality, survival, loyalty, justice, freedom, technology, society, relationships
+- The rationale field must name the value collision the dilemma forces (e.g. "safety vs competitiveness", "privacy vs protection", "loyalty vs justice", "autonomy vs care") AND briefly explain why both options are defensible from a recognised value system. A rationale that only says "this is engaging" or "this is novel" is insufficient.
 
 Output this exact JSON object (no other text):
 {
@@ -120,7 +123,7 @@ Output this exact JSON object (no other text):
   "seoTitle": "...",
   "seoDescription": "...",
   "keywords": ["...", "..."],
-  "rationale": "One sentence: why this dilemma is novel and engaging",
+  "rationale": "Name the collision (e.g. 'safety vs competitiveness') and one sentence on why both sides are defensible.",
   "safetyNotes": []
 }`
 
