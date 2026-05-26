@@ -23,7 +23,6 @@ export interface CatalogToolbarCopy {
   divisivityMin:     string
   divisivityMax:     string
   divisivitySuffix:  string
-  resultsCount:      (n: number) => string
 }
 
 interface Props {
@@ -37,7 +36,8 @@ interface Props {
   divisivity:      number
   // UI props
   chips:           CategoryChip[]
-  totalCount:      number
+  /** Already-formatted count string (e.g. "12 dilemmas") — server-side formatted. */
+  countLabel:      string
   copy:            CatalogToolbarCopy
 }
 
@@ -52,7 +52,7 @@ const DEFAULTS = {
 
 export default function CatalogToolbar({
   pathBase, locale, query, category, sort, voteState, divisivity,
-  chips, totalCount, copy,
+  chips, countLabel, copy,
 }: Props) {
   const router = useRouter()
   const pathname = usePathname()
@@ -111,7 +111,7 @@ export default function CatalogToolbar({
           />
         </div>
         <span className="font-mono text-[11px] font-semibold text-[var(--muted)] tracking-[0.08em] tabular-nums lg:ml-auto lg:justify-self-end">
-          {copy.resultsCount(totalCount)}
+          {countLabel}
         </span>
       </div>
 

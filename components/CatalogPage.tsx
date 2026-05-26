@@ -114,7 +114,6 @@ const EN_COPY: CatalogPageCopy = {
     divisivityMin:     'consensus',
     divisivityMax:     '50/50 split',
     divisivitySuffix:  '%',
-    resultsCount:      (n: number) => `${n} ${n === 1 ? 'dilemma' : 'dilemmas'}`,
   },
   emptyTitle:     'No dilemmas match',
   emptyBody:      'Try widening filters or reset everything.',
@@ -138,7 +137,6 @@ const IT_COPY: CatalogPageCopy = {
     divisivityMin:     'consenso',
     divisivityMax:     'spaccato 50/50',
     divisivitySuffix:  '%',
-    resultsCount:      (n: number) => `${n} ${n === 1 ? 'dilemma' : 'dilemmi'}`,
   },
   emptyTitle:     'Nessun dilemma corrisponde',
   emptyBody:      'Prova ad allargare i filtri o resetta tutto.',
@@ -146,6 +144,11 @@ const IT_COPY: CatalogPageCopy = {
   pagerPrev:      'Indietro',
   pagerNext:      'Avanti',
   pagerAriaLabel: 'Paginazione catalogo',
+}
+
+function formatCountLabel(n: number, locale: 'en' | 'it'): string {
+  if (locale === 'it') return `${n} ${n === 1 ? 'dilemma' : 'dilemmi'}`
+  return `${n} ${n === 1 ? 'dilemma' : 'dilemmas'}`
 }
 
 // ── Component ───────────────────────────────────────────────────────
@@ -308,7 +311,7 @@ export default async function CatalogPage({
           voteState={params.voteState}
           divisivity={params.divisivity}
           chips={chips}
-          totalCount={sorted.length}
+          countLabel={formatCountLabel(sorted.length, locale)}
           copy={copy.toolbar}
         />
 
