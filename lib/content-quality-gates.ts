@@ -176,6 +176,53 @@ const UNDEFINED_ACTION_RE = new RegExp(
   'i',
 )
 
+// Second-person pronouns (moral dilemmas only). When ALL of these are
+// absent from the question, the voter is a spectator on a policy debate
+// rather than a participant in a moral choice — triggers
+// `missing_personal_stake`. EN + IT, case-insensitive.
+//
+// IT possessives include "tuo/tua/tuoi/tue" and reflexive "ti". "Voi/vostro"
+// is included for plural-second-person phrasings that still place the voter
+// in the scene.
+const PERSONAL_STAKE_RE = new RegExp(
+  [
+    // EN
+    '\\b(?:you|your|yours|yourself|yourselves)\\b',
+    // IT
+    '\\btu\\b', '\\b(?:tuo|tua|tuoi|tue)\\b', '\\bti\\b', '\\bte\\b',
+    '\\bvoi\\b', '\\b(?:vostro|vostra|vostri|vostre)\\b', '\\bvi\\b',
+  ].join('|'),
+  'i',
+)
+
+// Decision-verb closure (moral dilemmas only). When ALL of these are
+// absent from the question, the question is a scene without a visible
+// choice — triggers `wordy_setup_question` if the question is also long.
+// Matches: a trailing "?", or a decision close phrase anywhere in the
+// question.
+const DECISION_VERB_RE = new RegExp(
+  [
+    '\\?',
+    '\\bwould\\s+you\\b',
+    '\\bdo\\s+you\\b',
+    '\\bwhat\\s+do\\s+you\\b',
+    '\\bwhich\\s+do\\s+you\\b',
+    '\\bare\\s+you\\b',
+    '\\blo\\s+faresti\\b',
+    '\\blo\\s+fai\\b',
+    '\\bcosa\\s+(?:scegli|fai|decidi)\\b',
+    '\\bchi\\s+scegli\\b',
+    '\\baccetti\\b',
+    '\\bsei\\s+disposto\\b',
+    '\\bvale\\s+la\\s+pena\\b',
+  ].join('|'),
+  'i',
+)
+
+function countWords(s: string): number {
+  return (s.match(/\S+/g) ?? []).length
+}
+
 function italianSignalCount(text: string): number {
   const accents = (text.match(/[àáèéìíòóùú]/g) ?? []).length
   const words   = (text.match(IT_WORDS_RE) ?? []).length
@@ -354,6 +401,39 @@ export function runQualityGates(input: QualityGateInput): QualityGateResult {
       if (UNDEFINED_ACTION_RE.test(input.question)) {
         warnings.push('undefined_action_verb')
       }
+    }
+
+    // AI-PROMPT-PUNCHY-FRAMING-01 (26 May 2026) — three structural
+    // warnings designed to catch the failure mode the home-daily-pool
+    // audit surfaced: long policy-essay framings with no personal stake,
+    // no visible decision verb, and over-long options that read like
+    // footnotes. NOT suppressed by the tradeoff marker — these are
+    // about structural shape, not about whether the question already
+    // names a cost.
+
+    // missing_personal_stake — no 2nd-person pronoun (you/your/tu/tuo/ti/voi).
+    // The voter must be inside the scene, not above it.
+    if (!PERSONAL_STAKE_RE.test(input.question)) {
+      warnings.push('missing_personal_stake')
+    }
+
+    // wordy_setup_question — long question with no visible decision verb.
+    // A scene without a "?" or "would you" / "lo faresti" is a scene, not
+    // a dilemma — the voter shouldn't have to infer the choice from setup.
+    const qWords = countWords(input.question)
+    if (qWords > 28 && !DECISION_VERB_RE.test(input.question)) {
+      warnings.push('wordy_setup_question')
+    }
+
+    // wordy_option — option > 22 words. Punchy options ("Edit. Save
+    // your child.") outperform long subordinate-clause options
+    // ("Edit the genes, because the suffering of the child is real, while
+    // the social precedent…") on engagement and clarity.
+    if (countWords(input.optionA) > 22) {
+      warnings.push('wordy_option:optionA')
+    }
+    if (countWords(input.optionB) > 22) {
+      warnings.push('wordy_option:optionB')
     }
   }
 

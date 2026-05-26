@@ -262,6 +262,113 @@ describe('runQualityGates — editorial-shape warnings (DILEMMA-EDITORIAL-SHAPE-
   })
 })
 
+describe('runQualityGates — punchy framing warnings (AI-PROMPT-PUNCHY-FRAMING-01, 26 May 2026)', () => {
+  it('flags missing_personal_stake when no second-person pronoun is in the question', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'A nation shifts to opt-out organ donation. Is presumed consent ethical or a violation?',
+      optionA: 'Allow it. Lives saved outweigh the procedural concern.',
+      optionB: 'Refuse it. Explicit consent is non-negotiable for bodies.',
+    })
+    expect(result.warnings).toContain('missing_personal_stake')
+  })
+
+  it('does NOT flag missing_personal_stake when "your" is in the question', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'You can edit your future child\'s genes to remove a painful disease. Would you do it?',
+      optionA: 'Edit. Save your child from real pain.',
+      optionB: 'Refuse. Do not open that door for everyone else.',
+    })
+    expect(result.warnings.some((w) => w === 'missing_personal_stake')).toBe(false)
+  })
+
+  it('does NOT flag missing_personal_stake when Italian "tu" or "tuo" is present', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      locale: 'it',
+      question: 'Tuo figlio rischia una malattia genetica. Modifichi i suoi geni o accetti il rischio?',
+      optionA: 'Modifica. Salva tuo figlio dal dolore.',
+      optionB: 'Rifiuta. Non aprire quella porta per gli altri.',
+    })
+    expect(result.warnings.some((w) => w === 'missing_personal_stake')).toBe(false)
+  })
+
+  it('flags wordy_setup_question when question >28 words and no decision verb', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question:
+        'An unexpected diagnosis leaves your parent needing daily, hands-on care, and they long to stay at home. Your hard-earned career is finally taking off and you are the primary earner for your own family.',
+      optionA: 'Leave the career. Care for your parent at home.',
+      optionB: 'Hire professional care. Keep providing for your family.',
+    })
+    expect(result.warnings).toContain('wordy_setup_question')
+  })
+
+  it('does NOT flag wordy_setup_question when a decision verb closes the question', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question:
+        'An unexpected diagnosis leaves your parent needing daily, hands-on care, and they long to stay at home. Your career is finally taking off and you are the primary earner for your family — what do you choose?',
+      optionA: 'Leave the career. Care for your parent at home.',
+      optionB: 'Hire professional care. Keep providing for your family.',
+    })
+    expect(result.warnings.some((w) => w === 'wordy_setup_question')).toBe(false)
+  })
+
+  it('flags wordy_option:optionA when optionA exceeds 22 words', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'You witness a friend cheat in an exam. Would you report them?',
+      optionA:
+        'Report it. The integrity of the exam matters more than the friendship, because cheating undermines the fairness of the entire assessment system for every student who studied honestly.',
+      optionB: 'Stay silent. Loyalty wins.',
+    })
+    expect(result.warnings).toContain('wordy_option:optionA')
+  })
+
+  it('flags wordy_option:optionB when optionB exceeds 22 words', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question: 'You witness a friend cheat in an exam. Would you report them?',
+      optionA: 'Report it. Integrity wins.',
+      optionB:
+        'Stay silent. Loyalty matters more than the exam outcome, because you cannot expect a friendship to survive being the one who turned a friend in for what is ultimately a small infraction.',
+    })
+    expect(result.warnings).toContain('wordy_option:optionB')
+  })
+
+  it('lifestyle is exempt from punchy-framing warnings', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      category: 'lifestyle',
+      dilemmaStyle: 'lifestyle',
+      question: 'Coffee or tea on a quiet Sunday morning before breakfast at home?',
+      optionA: 'Coffee',
+      optionB: 'Tea',
+      scores: { noveltyScore: 20, finalScore: 40 },
+    })
+    expect(result.warnings.some((w) => w === 'missing_personal_stake')).toBe(false)
+    expect(result.warnings.some((w) => w === 'wordy_setup_question')).toBe(false)
+    expect(result.warnings.some((w) => w.startsWith('wordy_option'))).toBe(false)
+  })
+
+  it('punchy-framing warnings are advisory, never blocking', () => {
+    const result = runQualityGates({
+      ...VALID_BASE,
+      question:
+        'Should the justice system prioritize the inmate\'s proven rehabilitation or the victims\' need for a sense of finality and punishment after decades have passed in prison?',
+      optionA: 'Grant early release. Rehabilitation is the goal.',
+      optionB:
+        'Deny early release. The severity of the crime demands that the original sentence be served to uphold justice for the victims who still suffer daily.',
+    })
+    expect(result.warnings).toContain('missing_personal_stake')
+    expect(result.warnings).toContain('wordy_option:optionB')
+    expect(result.reasons).toEqual([])
+    expect(result.passed).toBe(true)
+  })
+})
+
 describe('runQualityGates — soft warnings are advisory, never blocking', () => {
   it('passes a clean moral dilemma with zero warnings of these kinds', () => {
     const result = runQualityGates({
