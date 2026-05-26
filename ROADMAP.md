@@ -3,7 +3,57 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 26 Maggio 2026 (tarda sera) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + 4 sprint local pendenti push. Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`. (2) Home daily-pool audit. (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 SAFETY_RULES + 3 gate warnings; detection 1/10 → 8/10. (4) `AI-TREND-DRAFTS-SCALE-01` — daily draft count 3 → configurable default 10 per locale via env. (5) `TREND-SIGNAL-GOOGLE-FIX-01` — replaced dead Google Trends RSS with Wikipedia top-pageviews (EN+IT, official Wikimedia REST API) + added HackerNews top stories (EN-only). Trend volume EN 15→37 (+147%), IT 15→27 (+80%). Vitest 139/139. 3 Pixie WIP preserved untouched.
+Ultimo aggiornamento: 26 Maggio 2026 (notte) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + 5 sprint local pendenti push, di cui l'ultimo è `DILEMMAS-CATALOG-01` (nuova pagina catalogo `/moral-dilemmas` + mirror IT, filtro 9 categorie + sort popular/fresh/divisive + paginazione 24/pagina + CTA dalla home + sitemap, vitest 156/156). Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`. (2) Home daily-pool audit. (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 SAFETY_RULES + 3 gate warnings; detection 1/10 → 8/10. (4) `AI-TREND-DRAFTS-SCALE-01` — daily draft count 3 → configurable default 10 per locale via env. (5) `TREND-SIGNAL-GOOGLE-FIX-01` — replaced dead Google Trends RSS with Wikipedia top-pageviews (EN+IT, official Wikimedia REST API) + added HackerNews top stories (EN-only). Trend volume EN 15→37 (+147%), IT 15→27 (+80%). Vitest 139/139. 3 Pixie WIP preserved untouched.
+
+---
+
+## 26 May 2026 (notte) — `DILEMMAS-CATALOG-01`
+
+PM segnalazione: 213 dilemmi (41 statici + 172 dynamic EN) sono "difficili da trovare e organizzati male". `/moral-dilemmas` era una landing SEO con 20 esempi hard-coded — non un vero catalogo. Sprint upgrade in-place a vero catalogo + mirror IT + CTA dalla home + sitemap.
+
+### Shipped (local — awaits PM GO to commit + push)
+
+| File | Status | Change |
+|---|---|---|
+| `lib/catalog.ts` | NEW (~160 LOC) | Pure helpers: `CatalogItem` type, `buildCatalogItems` (dedup static-wins), `filterCatalog`, `sortCatalog` (popular/fresh/divisive), `categoryCounts`. |
+| `tests/unit/catalog.test.ts` | NEW | 17 vitest cases. |
+| `components/CategoryChipFilter.tsx` | NEW | Client. Single-select chip row, mobile scroll orizzontale, `aria-pressed`. |
+| `components/SortSelect.tsx` | NEW | Client. Native `<select>` styled, 3 opzioni. |
+| `components/Paginator.tsx` | NEW | Client. Windowed pages first/last/current±1, `aria-current`. |
+| `components/DilemmaCatalogClient.tsx` | NEW | Orchestrator. URL state via `useSearchParams`+`router.replace`. Default-strip params per canonical pulito. Page clamp. Lifestyle badge. Empty state. Divisive hint. |
+| `app/moral-dilemmas/page.tsx` | REWRITE | Server component, `revalidate=300`. Fetch unified + JSON-LD (ItemList + BreadcrumbList). Rimosso 20 hard-coded + intro marketing. |
+| `app/it/dilemmi-morali/page.tsx` | REWRITE | IT mirror. Sort italiani (Popolari/Recenti/Divisivi). "Tutti" come All. Natural Italian. |
+| `lib/scenarios-it.ts` | MODIFY | Aggiunto `lifestyle: 'Stile di vita'` a `CATEGORY_LABELS_IT`. |
+| `app/page.tsx` + `app/it/page.tsx` | MODIFY | "Pick your next" / "Per te" 4° slot da pick personalizzata → CTA card `<Link>` al catalogo con `🔍` + count dinamico. |
+| `app/sitemap.ts` | MODIFY | +2 entry: `/moral-dilemmas` (priority 0.85), `/it/dilemmi-morali` (priority 0.80), daily. |
+
+### Verification
+
+- `npm run typecheck` ✅
+- `npm run test` ✅ 156/156 (era 139, +17 nuovi)
+- `npm run build` ✅ green, entrambe le route prerendered come `○` static, 100 kB First Load JS
+- `git diff --check` ✅
+- EN/IT parity ≥1 `DilemmaCatalogClient` mounted in entrambe
+
+### Hard constraints preserved
+
+- HUMAN_ONLY untouched: auth, Stripe, Redis vote, middleware, admin
+- Voto anonimo invariato
+- `/play/[id]` force-dynamic + `/results/[id]` revalidate=60 invariati
+- Share URL non espone voto utente
+- Pixie WIP intatti
+
+### Risks (sprint-1)
+
+1. Hydration cost: solo 24 card/pagina mount, accettabile
+2. URL share break post-filter-change: clamp page `[1, totalPages]` su ogni render
+3. Mobile chip overflow 375px: `snap-x` orizzontale + bleed
+4. Divisive sort UX: copy inline esplicativa `Showing only dilemmas with 50+ votes`
+5. Lifestyle label IT: aggiunto in scenarios-it.ts
+
+### Out of scope (sprint-2+)
+
+Search by keyword, multi-select chips, saved/bookmarked, realtime vote update, header nav voce, footer link, blog cross-link auto, server-side filter/sort.
 
 ---
 

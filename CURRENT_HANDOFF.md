@@ -1,10 +1,79 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 26 May 2026 (evening) — Day delivered four pushes (4 commits Vercel-live) + four more local sprints. (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` shipped + pushed (`a59a0eb`). (2) Home daily-pool audit found 5/10 next dilemmas missing personal stake. (3) `AI-PROMPT-PUNCHY-FRAMING-01` shipped + pushed (`d39ea03` + `db6bd91`). (4) `AI-TREND-DRAFTS-SCALE-01` (local) — bump daily AI-generated drafts from 3 to 10 per locale via env. (5) **`TREND-SIGNAL-GOOGLE-FIX-01`** (local) — replaced dead Google Trends RSS source with **Wikipedia top-pageviews** (EN + IT, free, official Wikimedia API) + added **HackerNews top stories** as tech-ethics signal (EN-only). Source weights rebalanced: wikipedia 30%, reddit 25%, rss 20%, hackernews 10%, internal_feedback 15%. `google_trends` weight set to 0 (deprecated but kept in TrendSource type for backward compat with existing Redis drafts). Trend volume nearly tripled in EN (15→37 signals) and almost doubled in IT (15→27). Vitest 139/139.
-PM: Matteo
-Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
+Last updated: 26 May 2026 (notte) — Day delivered four pushes (4 commits Vercel-live) + five more local sprints (cornerstone-2 + punchy gates + count-bump + Wikipedia/HN trend fix + **dilemmas catalog**). Vitest 156/156.
 
-## 0. Session 26 May 2026 (late evening) — `TREND-SIGNAL-GOOGLE-FIX-01`
+## 0. Session 26 May 2026 (notte) — `DILEMMAS-CATALOG-01`
+
+### TL;DR
+
+PM segnalazione: 213 dilemmi totali (41 statici + 172 dynamic EN) sono "difficili da trovare e organizzati male", `/moral-dilemmas` era una landing SEO con 20 esempi hard-coded — non un vero catalogo. Sprint shipped (local, awaits push): catalog page completo a `/moral-dilemmas` + mirror `/it/dilemmi-morali` con filtro chip per 9 categorie + sort (Popular / Fresh / Divisive) + paginazione 24 card/pagina + URL state shareable + CTA dalla home (4° slot di "Pick Your Next") + 2 entry in sitemap.
+
+### Files changed (local — awaits PM GO to commit + push)
+
+| File | Status | Change |
+|---|---|---|
+| `lib/catalog.ts` | NEW (~160 LOC) | Pure helpers: `CatalogItem` type, `buildCatalogItems` (dedup static-wins, lifestyle flag, freshnessTs), `filterCatalog`, `sortCatalog` (popular/fresh/divisive con ≥50-vote floor), `categoryCounts`. |
+| `tests/unit/catalog.test.ts` | NEW | 17 vitest cases coprono dedup, lifestyle inference, freshness fallback, tutti e 3 i sort mode, empty/edge cases. |
+| `components/CategoryChipFilter.tsx` | NEW | Client. Chip row single-select. Mobile: scroll orizzontale `snap-x` con bleed; ≥sm: `flex-wrap`. `aria-pressed`. |
+| `components/SortSelect.tsx` | NEW | Client. Native `<select>` styled disciplined-neon. EN+IT labels via prop. |
+| `components/Paginator.tsx` | NEW | Client. Windowing (first, last, current ±1, ellipsis). `aria-current="page"` su pagina attiva. |
+| `components/DilemmaCatalogClient.tsx` | NEW | Client orchestrator. Owns filter+sort+page via `useSearchParams`+`router.replace`. Default-strip URL params per canonical pulito. Page clamp `[1, totalPages]`. Grid via `FreshFirstGrid` + `VotedDilemmaCard`. Lifestyle badge inline. Empty state. Divisive hint copy. |
+| `app/moral-dilemmas/page.tsx` | REWRITE | Server component. `revalidate = 300`. Fetch unified data (static + dynamic EN via `getCachedDynamicScenariosByLocale`) + vote map + detail. JSON-LD: `ItemList` (default sort, no filter, first 24) + `BreadcrumbList`. Metadata con count dinamico. Hreflang invariato. Hero + catalog + cross-links. Rimosso: 20 dilemmi hard-coded + intro marketing. |
+| `app/it/dilemmi-morali/page.tsx` | REWRITE | IT mirror. `scenarios.map(translateScenarioToItalian)`. Sort labels italiani (Popolari / Recenti / Divisivi). "Tutti" come "All". Italian copy naturale, no calques. |
+| `lib/scenarios-it.ts` | MODIFY | Aggiunto `lifestyle: 'Stile di vita'` a `CATEGORY_LABELS_IT` (chiave mancante). |
+| `app/page.tsx` | MODIFY | "Pick your next" da 4 picks personalizzate → 3 picks + 1 CTA card 4° slot `<Link>` a `/moral-dilemmas` con `🔍` + count dinamico. Fallback logic aggiornata per pad fino a 3. |
+| `app/it/page.tsx` | MODIFY | IT mirror dello stesso pattern. CTA copy "Esplora tutti i {N} dilemmi" + "Apri catalogo". |
+| `app/sitemap.ts` | MODIFY | +2 entry: `/moral-dilemmas` priority 0.85 daily, `/it/dilemmi-morali` priority 0.80 daily. |
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run test` ✅ 156/156 (era 139, +17 nuovi catalog test)
+- `npm run build` ✅ green, `/moral-dilemmas` + `/it/dilemmi-morali` entrambi prerendered come `○` static, 100 kB First Load JS
+- `git diff --check` ✅ exit 0
+- EN/IT parity (`DilemmaCatalogClient` mounted): entrambe le pagine ≥1 occorrenza
+
+### Hard constraints preserved
+
+- HUMAN_ONLY non toccati: auth, Stripe, Redis vote, middleware, admin
+- Voto anonimo ancora funziona (catalogo è solo discovery surface)
+- `/play/[id]` force-dynamic e `/results/[id]` revalidate=60 invariati
+- Share URL non espone voto utente (catalogo non mostra user's vote)
+- Pixie WIP 3 file intatti
+
+### How it works for the user
+
+1. Visit `/moral-dilemmas` → 24 card primi sortati per popolarità, default filter "All"
+2. Click chip "Morality" → URL diventa `?category=morality`, card filtrate, count aggiornato
+3. Cambia sort=Divisive → vedi solo card ≥50 voti, copy "Showing only dilemmas with 50+ votes"
+4. Click page 2 → URL `?page=2`, smooth scroll-top, 24 successivi
+5. Share URL `?category=technology&sort=fresh&page=2` → stato ripristinato in incognito
+6. Lifestyle items mostrano badge giallo "LIFESTYLE" top-right card
+7. Home: 4° card di "Pick Your Next" è "Explore all {N} dilemmas" → click → catalogo
+
+### Out of scope (sprint-2+)
+
+- Search by keyword (richiede fuzzy match o server endpoint)
+- Multi-select category chips (semantica AND/OR ambigua)
+- Saved/bookmarked dilemmas (richiede auth state)
+- Realtime vote updates senza refresh
+- Header nav voce "All Dilemmas" + footer link (PM ha scelto solo home CTA in sprint-1)
+- Cross-link automatico dal blog cluster pages
+- Server-side filter/sort (213 item troppo pochi per giustificarlo)
+
+### PM-side follow-ups (post-push)
+
+- Verify Vercel deploy `live`
+- Smoke test URL: `/moral-dilemmas`, `/it/dilemmi-morali` → 200 + JSON-LD presente
+- Google Rich Results Test sui 2 URL (ItemList + BreadcrumbList)
+- GSC Request Indexing sui 2 URL
+- Sitemap fetch verify
+- Mobile QA breakpoints 375 / 393 / 768 / 1024 — chip row scroll orizzontale a 375 senza overflow
+- Lighthouse mobile target ≥90 Performance, ≥95 a11y, ≥100 SEO
+
+---
+
+## 0a. Session 26 May 2026 (tarda sera) — `TREND-SIGNAL-GOOGLE-FIX-01`
 
 ### TL;DR
 
@@ -66,7 +135,7 @@ Same as before: `DAILY_DILEMMA_DRAFTS_PER_LOCALE=5` (or any int 1-20) in Vercel 
 
 ---
 
-## 0a. Session 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
+## 0b. Session 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
 
 ### TL;DR
 
@@ -137,7 +206,7 @@ Unset → defaults to 10 per locale.
 
 ---
 
-## 0b. Session 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
+## 0c. Session 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
 
 ### TL;DR
 
@@ -176,7 +245,7 @@ PM flagged today's home daily dilemma as incomprehensible. Audit of the next 10 
 
 ---
 
-## 0c. Session 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
+## 0d. Session 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
 
 ### TL;DR
 
@@ -197,7 +266,7 @@ Continuation of yesterday's loyalty/honesty cornerstone work. Promoted EN articl
 
 ---
 
-## 0d. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
+## 0e. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
 
 ### TL;DR
 
