@@ -98,22 +98,20 @@ export default async function HomePage() {
     .slice(0, 6)
   const newlyGenerated = freshFirst(newlyGeneratedRaw, votedIds)
 
-  // "Pick your next" — single deterministic 4-card continuation section.
-  // Blends 1 trending + 1 most-voted + 2 newly-generated (with graceful
-  // fallbacks if any source list is shorter than expected). The three
-  // source lists are already mutually exclusive (seen-set discipline above)
-  // and each is freshFirst'd, so position-0 in each list is unvoted where
-  // possible. Source-tagged badges are preserved.
+  // "Pick your next" — 3 personalised picks + 1 fixed catalog CTA (DILEMMAS-CATALOG-01).
+  // Blends 1 trending + 1 most-voted + 1 newly-generated (with graceful
+  // fallbacks if any source list is shorter than expected). The 4th grid
+  // slot is rendered separately as a CTA card linking to /moral-dilemmas.
   type PickItem = { scenario: Scenario; badge: 'trending' | 'new' | undefined }
   const picks: PickItem[] = []
   if (trendingNow[0])     picks.push({ scenario: trendingNow[0],     badge: 'trending' })
   if (mostVoted[0])       picks.push({ scenario: mostVoted[0],       badge: undefined  })
   if (newlyGenerated[0])  picks.push({ scenario: newlyGenerated[0],  badge: 'new'      })
-  if (newlyGenerated[1])  picks.push({ scenario: newlyGenerated[1],  badge: 'new'      })
-  // Pad up to 4 if a primary slot was empty
-  if (picks.length < 4 && mostVoted[1])    picks.push({ scenario: mostVoted[1],    badge: undefined  })
-  if (picks.length < 4 && trendingNow[1])  picks.push({ scenario: trendingNow[1],  badge: 'trending' })
-  const pickYourNext = picks.slice(0, 4)
+  // Pad up to 3 if a primary slot was empty
+  if (picks.length < 3 && mostVoted[1])      picks.push({ scenario: mostVoted[1],      badge: undefined  })
+  if (picks.length < 3 && trendingNow[1])    picks.push({ scenario: trendingNow[1],    badge: 'trending' })
+  if (picks.length < 3 && newlyGenerated[1]) picks.push({ scenario: newlyGenerated[1], badge: 'new'      })
+  const pickYourNext = picks.slice(0, 3)
 
   // JSON-LD schemas
   const websiteSchema = {
@@ -214,8 +212,9 @@ export default async function HomePage() {
         {/* ── Personality teaser (logged-in users, 7-day dismiss) ── */}
         <PersonalityTeaser locale="en" />
 
-        {/* ── Pick your next — single deterministic continuation section
-              (1 trending + 1 most-voted + 2 fresh, max 4 cards) ── */}
+        {/* ── Pick your next — 3 personalised picks + 1 catalog CTA card.
+              The CTA (4th slot) is fixed and links to /moral-dilemmas where
+              users can filter and sort the full catalog. ── */}
         {pickYourNext.length > 0 && (
           <section className="mb-10">
             <div className="flex items-center justify-between mb-5">
@@ -238,6 +237,25 @@ export default async function HomePage() {
                   locale="en"
                 />
               ))}
+              <Link
+                href="/moral-dilemmas"
+                className="group relative flex flex-col justify-between rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5 p-5 hover:border-blue-500/60 hover:from-blue-500/15 hover:to-purple-500/10 transition-all motion-reduce:transition-none"
+                aria-label={`Explore the full catalog of ${allScenarios.length} dilemmas`}
+              >
+                <div>
+                  <div className="text-3xl mb-3" aria-hidden="true">🔍</div>
+                  <p className="text-lg font-black text-white leading-tight mb-2">
+                    Explore all {allScenarios.length} dilemmas
+                  </p>
+                  <p className="text-sm text-[var(--muted)] leading-snug">
+                    Browse the full catalog. Filter by category, sort by popularity or divisiveness.
+                  </p>
+                </div>
+                <div className="mt-4 text-xs text-blue-300 font-bold tracking-widest uppercase flex items-center gap-1">
+                  Open catalog
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none">→</span>
+                </div>
+              </Link>
             </div>
           </section>
         )}

@@ -148,19 +148,18 @@ export default async function ItPage() {
     .slice(0, 6)
   const newlyGeneratedIT = freshFirst(newlyGeneratedRaw, votedIds)
 
-  // "Per te" — single deterministic 4-card continuation section. Mirrors
-  // the EN home structure (1 featured/trending + 1 trending + 2 fresh).
-  // Source lists are already mutually exclusive via the seen-set and each
-  // is freshFirst'd, so position-0 in each list is unvoted where possible.
+  // "Per te" — 3 personalised picks + 1 fixed catalog CTA (DILEMMAS-CATALOG-01).
+  // Mirrors the EN home structure with 4th slot as a CTA card linking to
+  // /it/dilemmi-morali.
   type PickItem = { scenario: Scenario; badge: 'trending' | 'new' | undefined }
   const picks: PickItem[] = []
   if (trendingIT[0])         picks.push({ scenario: trendingIT[0],         badge: 'trending' })
   if (featuredDeduped[0])    picks.push({ scenario: featuredDeduped[0],    badge: undefined  })
   if (newlyGeneratedIT[0])   picks.push({ scenario: newlyGeneratedIT[0],   badge: 'new'      })
-  if (newlyGeneratedIT[1])   picks.push({ scenario: newlyGeneratedIT[1],   badge: 'new'      })
-  if (picks.length < 4 && featuredDeduped[1])  picks.push({ scenario: featuredDeduped[1],  badge: undefined  })
-  if (picks.length < 4 && trendingIT[1])       picks.push({ scenario: trendingIT[1],       badge: 'trending' })
-  const perTe = picks.slice(0, 4)
+  if (picks.length < 3 && featuredDeduped[1])    picks.push({ scenario: featuredDeduped[1],    badge: undefined  })
+  if (picks.length < 3 && trendingIT[1])         picks.push({ scenario: trendingIT[1],         badge: 'trending' })
+  if (picks.length < 3 && newlyGeneratedIT[1])   picks.push({ scenario: newlyGeneratedIT[1],   badge: 'new'      })
+  const perTe = picks.slice(0, 3)
 
   return (
     <>
@@ -253,6 +252,25 @@ export default async function ItPage() {
                   locale="it"
                 />
               ))}
+              <Link
+                href="/it/dilemmi-morali"
+                className="group relative flex flex-col justify-between rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5 p-5 hover:border-blue-500/60 hover:from-blue-500/15 hover:to-purple-500/10 transition-all motion-reduce:transition-none"
+                aria-label={`Esplora il catalogo completo di ${allScenariosIT.length} dilemmi`}
+              >
+                <div>
+                  <div className="text-3xl mb-3" aria-hidden="true">🔍</div>
+                  <p className="text-lg font-black text-white leading-tight mb-2">
+                    Esplora tutti i {allScenariosIT.length} dilemmi
+                  </p>
+                  <p className="text-sm text-[var(--muted)] leading-snug">
+                    Sfoglia il catalogo completo. Filtra per categoria, ordina per popolarità o divisività.
+                  </p>
+                </div>
+                <div className="mt-4 text-xs text-blue-300 font-bold tracking-widest uppercase flex items-center gap-1">
+                  Apri catalogo
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none">→</span>
+                </div>
+              </Link>
             </div>
           </section>
         )}

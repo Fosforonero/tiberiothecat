@@ -9,6 +9,7 @@ export const CATEGORY_LABELS_IT: Record<string, string> = {
   technology:    'Tecnologia',
   society:       'Società',
   relationships: 'Relazioni',
+  lifestyle:     'Stile di vita',
 }
 
 type ItalianScenarioText = Pick<Scenario, 'question' | 'optionA' | 'optionB'>

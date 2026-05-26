@@ -94,6 +94,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
+  // Dilemmas catalog (full filterable/sortable index)
+  const catalogRoutes = [
+    {
+      url: `${BASE}/moral-dilemmas`,
+      lastModified: STATIC_LAST_MOD,
+      changeFrequency: 'daily' as const,
+      priority: 0.85,
+    },
+    {
+      url: `${BASE}/it/dilemmi-morali`,
+      lastModified: STATIC_LAST_MOD,
+      changeFrequency: 'daily' as const,
+      priority: 0.80,
+    },
+  ]
+
   // Static + Redis-published blog posts
   const staticBlogPosts = [
     ...getPostsByLocale('en'),
@@ -204,6 +220,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes,
     // SEO topic landings
     ...topicRoutes,
+    // Full dilemmas catalog (EN + IT)
+    ...catalogRoutes,
     // Blog index — use the freshest post date so Googlebot re-crawls the
     // index when a Redis-published article goes live. Falls back to
     // STATIC_LAST_MOD when no posts exist.
