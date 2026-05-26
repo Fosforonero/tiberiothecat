@@ -109,6 +109,22 @@ npm run generate:social-content
 8. **Commit and push only when the prompt explicitly asks for it.**
 9. Final report: commit hash if any, files changed, verification outcome, and residual risks.
 
+### Push cadence rule (Vercel deploy hygiene)
+
+Every push to `main` triggers a Vercel production deploy. Do not stack
+multiple deploys in the same session:
+
+- **Default**: commit locally and keep working. Do NOT push after every
+  commit, even if each one is verified.
+- **Push when**: the user explicitly asks, OR an end-of-day batch is
+  ready, OR a hotfix is user-visible and time-sensitive (500 error,
+  visible regression, broken language switch, etc.).
+- **Avoid**: 3+ consecutive pushes within a single session for
+  polish/content sprints. Batch them into one push at the end.
+- If you have multiple unpushed commits at end-of-task, summarise them
+  and ask "push these N commits now, or batch with later work?" — do
+  not push silently.
+
 ## Definition Of Done
 
 - Scope completed without unrelated changes.
