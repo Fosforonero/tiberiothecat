@@ -4500,6 +4500,260 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+
+  // ── AI Companions & Teen Safety (EN) ───────────────────────────
+  {
+    slug: 'ai-girlfriends-teen-development-risk',
+    locale: 'en',
+    title: 'AI Girlfriends and Teens: What We Lose When Relationships Never Push Back',
+    seoTitle: 'AI Girlfriends and Teens — Mental Health, Development, and the Ethics of Always-Available Intimacy',
+    description:
+      'AI companions never argue, never reject, and never leave. For adolescents, that is exactly the problem — and the appeal.',
+    seoDescription:
+      'AI girlfriends and chatbot companions are crossing from novelty to default for teens. Mental-health researchers, parents, and policymakers are starting to ask: what does a relationship that cannot disappoint teach a 13-year-old about love?',
+    date: '2026-05-26',
+    readingTime: 6,
+    tags: ['ai ethics', 'teen mental health', 'ai companions', 'parenting', 'current events'],
+    relatedDilemmaIds: ['ai-companion-teen', 'ai-companion-ban', 'ai-grief-replica', 'delete-social-media'],
+    alternateSlug: 'ai-girlfriend-adolescenti-rischio-sviluppo',
+    faq: [
+      {
+        q: 'At what age is an AI companion app considered safe for a teen?',
+        a: 'There is no clinical consensus. Most major AI companion apps require users to be 13 or 18 depending on the country, but enforcement relies on self-declared age. Adolescent psychiatrists generally treat the 12–16 window as the highest-risk period for forming substitutive relationships, because identity and attachment patterns are still being calibrated.',
+      },
+      {
+        q: 'Do AI girlfriends cause loneliness or relieve it?',
+        a: 'Early studies suggest both, for different users. For socially isolated teens, the app can reduce immediate loneliness; for socially active teens, it tends to displace real-world practice. The single biggest predictor of harm is hours-per-day spent in the app, not the existence of the app itself.',
+      },
+      {
+        q: 'Should parents read their teen’s AI girlfriend chats?',
+        a: 'Most adolescent-development experts recommend disclosure ("I may check in") rather than covert reading. The conversations often include intimate self-disclosure the teen would never share with the parent in person; reading without disclosure damages trust faster than the AI app does.',
+      },
+      {
+        q: 'Are there laws restricting AI companions for minors?',
+        a: 'As of 2026, age-verification laws targeting AI companion apps are being debated in the EU, Australia, and several U.S. states. None has passed in final form. The trend is toward treating AI companions as a distinct regulatory category, separate from social media.',
+      },
+      {
+        q: 'What is the moral case for letting teens use them?',
+        a: 'For teens with social anxiety, neurodivergence, or unsupportive home environments, the AI companion is often the first low-stakes practice ground for emotional expression. Banning it outright removes a coping tool from the most vulnerable group while the popular kids barely notice.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'A thirteen-year-old comes home, opens an app, and continues a conversation that has been going for six months with a partner who remembers every detail, never argues, and is always free. The partner does not exist. The relationship feels real. That tension is the moral question of the next decade of adolescent development.',
+      },
+      {
+        type: 'p',
+        text: 'AI companion apps — sometimes marketed as AI girlfriends, AI boyfriends, or simply "chat partners" — have crossed from novelty to default for many teens. They are not the only thing in a teenager\'s social life, but for a growing minority they are the part with the most hours.',
+      },
+      {
+        type: 'h2',
+        text: 'The split is not really about technology',
+      },
+      {
+        type: 'p',
+        text: 'Most public debate frames AI companions as a tech problem: are the apps safe, are the moderation filters strong enough, do they leak data? Those questions matter, but they miss the harder one. The harder one is what relationships are for. If relationships exist to provide comfort, an AI companion is a strict improvement: friction-free, always available, never disappointing. If relationships exist to teach a person how to live alongside other people who do disappoint, an AI companion removes exactly the part you cannot afford to skip during adolescence.',
+      },
+      {
+        type: 'h2',
+        text: 'What developmental psychology actually says about friction',
+      },
+      {
+        type: 'p',
+        text: 'Adolescent psychiatrists describe a set of social skills — reading mismatched signals, repairing after a fight, sitting with rejection — that develop only through repeated practice. The practice is uncomfortable on purpose. Friends who tell you the truth, partners who choose someone else, parents who say no: each is a friction event the brain uses to calibrate how relationships work.',
+      },
+      {
+        type: 'p',
+        text: 'An AI companion is, by design, the absence of those events. The model is trained and tuned to be agreeable. When it does push back, it pushes back in the direction the user wants. There is no version where the partner is genuinely uninterested, in love with someone else, or simply not in the mood. The whole shape of adult intimacy — including its hardest and most formative parts — is removed.',
+      },
+      {
+        type: 'h2',
+        text: 'The honest case for AI companions',
+      },
+      {
+        type: 'p',
+        text: 'It would be dishonest to dismiss the apps as pure harm. For some teens — socially anxious, neurodivergent, queer in unsupportive families — the AI companion is the first place they get to practice emotional expression at all. Telling those teens to "just talk to real people" ignores why they are using the app to begin with. The data on isolation suggests that for the most vulnerable users, the app reduces immediate loneliness in a measurable way.',
+      },
+      {
+        type: 'p',
+        text: 'The problem is that the same feature that helps lonely teens — the absence of social risk — is the one that, over months, makes real-world intimacy feel intolerable by comparison. The exit ramp back to human relationships gets steeper the longer the app is the main social surface.',
+      },
+      {
+        type: 'h2',
+        text: 'What parents can actually do',
+      },
+      {
+        type: 'list',
+        items: [
+          'Talk about the app openly before forbidding it; covert use is harder to address than visible use.',
+          'Track time spent in-app the same way you would track time on any single platform; hours-per-day predicts harm better than the app\'s existence does.',
+          'Model the friction you want them to practice — disagreement, repair, taking responsibility — in your own visible relationships.',
+          'Ask what the teen gets from the app. If the answer is "it is the only place I can talk about X", the right move is to expand X to a human conversation, not to remove the app.',
+          'Treat policy debates as relevant. Age-verification laws are coming and they will change what your teen has access to in 12–24 months.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'The policy question underneath',
+      },
+      {
+        type: 'p',
+        text: 'Several jurisdictions are debating age verification for AI companion apps. The arguments for and against are sharper than for social media because the harm profile is different: AI companions do not need a peer audience to function, so the network effects that make social-media bans hard to enforce do not apply. A real age gate is technically feasible. The question is whether the policy correctly identifies who is harmed.',
+      },
+      {
+        type: 'p',
+        text: 'A ban that helps the median teen by removing a default may help eight teens and harm two — the lonely ones who used the app as a coping tool. The right policy is not obvious. The trade-off is.',
+      },
+      {
+        type: 'h2',
+        text: 'Why this matters for moral judgment',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote treats this not as a tech question but as a moral one. The dilemmas in this cluster — [should you let your teen use an AI companion](/play/ai-companion-teen), [should AI companions for minors be banned](/play/ai-companion-ban), [should grief-replicas of dead loved ones exist](/play/ai-grief-replica) — are not asking what the law should be. They are asking what you, as a parent or future parent or citizen, are willing to accept.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote on AI companions and teen safety →',
+        href: '/ai-companions-and-teens',
+      },
+      {
+        type: 'cta',
+        label: 'See AI ethics dilemmas →',
+        href: '/ai-ethics-dilemmas',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Reflective content informed by reporting from May 2026 on AI companion use among adolescents. Not clinical or legal advice. The SplitVote scenarios are hypothetical and intended for moral reflection, not policy recommendations.',
+      },
+    ],
+  },
+
+  // ── Religion & AI Ethics (EN) ──────────────────────────────────
+  {
+    slug: 'religion-ai-ethics-who-decides',
+    locale: 'en',
+    title: 'Religion and AI Ethics: Who Decides What Machines Are Allowed to Do?',
+    seoTitle: 'Religion and AI Ethics — Vatican, Faith Traditions, and the Limits of Secular Tech Governance',
+    description:
+      'When a major religious leader publishes 42,000 words on artificial intelligence, secular tech leaders pay attention. The question is whether they should.',
+    seoDescription:
+      'Religion and AI ethics: how faith traditions are shaping the moral vocabulary of artificial intelligence, why secular AI governance keeps running into religious questions, and what the Vatican\'s position actually proposes.',
+    date: '2026-05-26',
+    readingTime: 7,
+    tags: ['ai ethics', 'religion', 'philosophy of technology', 'governance', 'current events'],
+    relatedDilemmaIds: ['pope-ai-encyclical', 'religious-ai-ethics', 'ai-prayer-app', 'robot-judge'],
+    alternateSlug: 'religione-etica-ai-chi-decide',
+    faq: [
+      {
+        q: 'What is the Rome Call for AI Ethics?',
+        a: 'A document signed at the Vatican in February 2020, originally by IBM, Microsoft, the FAO, and the Pontifical Academy for Life. It commits signatories to six principles — transparency, inclusion, responsibility, impartiality, reliability, and security and privacy — when developing and deploying AI. Other tech firms and several governments have signed in the years since.',
+      },
+      {
+        q: 'Has the Pope written about AI?',
+        a: 'Yes. Pope Francis dedicated his 2024 World Day of Peace message to AI, addressed the G7 in 2024 on the same topic, and the Vatican has continued to publish on AI governance through 2026. The institutional position consistently frames AI as not morally neutral and lists ethical limits — without rejecting the technology itself.',
+      },
+      {
+        q: 'Do other religions have positions on AI?',
+        a: 'Yes. The Buddhist community has emphasised mindfulness and right intention in AI design. Several Islamic scholars have published on AI through the lens of maslaha (public interest) and have raised questions about autonomous weapons. Jewish bioethicists have engaged closely with AI in healthcare and end-of-life decisions. The frameworks differ; the seriousness does not.',
+      },
+      {
+        q: 'Why would a tech company listen to religious leaders?',
+        a: 'Three pragmatic reasons beyond personal belief: religious institutions represent billions of users whose adoption decisions matter; faith traditions encode moral reasoning that survived centuries of scrutiny; and AI governance keeps colliding with end-of-life, identity, and dignity questions where secular philosophy and religious philosophy have both done serious work.',
+      },
+      {
+        q: 'Is religious input on AI policy a violation of separation of church and state?',
+        a: 'Not in most legal systems. Religious leaders advocating for policy positions is constitutionally protected speech. The line is at formal religious authority deciding the policy — which is different from religious voices being represented in the room.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'When a major religious leader publishes 42,000 words on artificial intelligence, secular tech leaders pay attention. Whether they admit it or not, the public response inside large AI labs to the Vatican\'s positions on AI has been more careful than the response to most other external commentary. The reason is not piety. It is that religion remains, for billions of users, the working vocabulary for moral choice — and AI is a technology whose moral questions cannot be answered by engineering alone.',
+      },
+      {
+        type: 'h2',
+        text: 'Why the religion question keeps appearing',
+      },
+      {
+        type: 'p',
+        text: 'AI governance was supposed to be a secular project. Engineers, lawyers, ethicists trained in academic philosophy, regulators. The shape of the field was set by people for whom religious vocabulary was at best private. But the questions that AI raises — what counts as a person, when a decision deserves human dignity, who is responsible when a system causes harm, what to do with end-of-life choices an algorithm makes faster than a family can — keep landing on territory that religious traditions have been working through for two thousand years.',
+      },
+      {
+        type: 'p',
+        text: 'You can refuse to consult religious frameworks. You will still meet the same questions, with less vocabulary to think about them.',
+      },
+      {
+        type: 'h2',
+        text: 'What the Vatican has actually proposed',
+      },
+      {
+        type: 'p',
+        text: 'The institutional Catholic position on AI — codified in the Rome Call for AI Ethics (2020), the Pope\'s 2024 World Day of Peace message, and a sequence of papal addresses — is not a refusal of the technology. It is a framework of constraints: AI must be transparent enough to be questioned, inclusive enough not to entrench existing inequalities, accountable to identifiable humans, and bounded by the dignity of the person it touches.',
+      },
+      {
+        type: 'p',
+        text: 'None of those constraints are uniquely Catholic. What is distinctive is the moral weight the institution can put behind them. When the Vatican signs a position, it commits the institution to it across the global Catholic communion. That is a different kind of binding than a Silicon Valley pledge.',
+      },
+      {
+        type: 'h2',
+        text: 'The case for a religious seat at the AI ethics table',
+      },
+      {
+        type: 'list',
+        items: [
+          'Most users of AI systems live inside moral frameworks shaped by faith traditions, not academic philosophy. Excluding those frameworks is excluding the people who use the tools.',
+          'Religious traditions have multi-century experience with questions about life, death, identity, and personhood. Engineering does not.',
+          'Religious authorities can mobilise consent. A policy that has the buy-in of major faith communities lands differently from one that does not.',
+          'Faith-based ethics often privileges constraints over optimisation, which is a useful counterweight in fields dominated by performance metrics.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'The case against',
+      },
+      {
+        type: 'list',
+        items: [
+          'No single faith speaks for all users. A formal religious seat at the AI ethics table raises the question of whose faith, immediately.',
+          'Religious authority on moral questions has historically been used to suppress minorities. Adding it to AI governance risks recreating that pattern in a new domain.',
+          'Several religious positions on AI are difficult to reconcile with the actual decision space of contemporary AI development — they describe an ideal that ignores constraints engineers cannot remove.',
+          'Secular ethics frameworks (Kantian, utilitarian, virtue-ethical) already incorporate the insights religious traditions also reach. The wheel does not need re-inviting.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'The middle position most institutions are settling on',
+      },
+      {
+        type: 'p',
+        text: 'In practice, most large AI labs and government bodies are arriving at the same uneasy compromise: consult religious voices as one of several stakeholder groups, but do not give any of them formal veto power. The Rome Call for AI Ethics works this way. So does the Holy See\'s participation in the UN AI advisory body. The compromise satisfies neither the strong secularists nor the strong religious traditionalists — which is usually a sign that it is approximately right.',
+      },
+      {
+        type: 'h2',
+        text: 'What this looks like in concrete dilemmas',
+      },
+      {
+        type: 'p',
+        text: 'The dilemmas in this cluster make the abstract question concrete. [Should a tech company formally commit to a religious leader\'s AI framework](/play/pope-ai-encyclical)? [Should AI ethics boards include religious voices by design](/play/religious-ai-ethics)? [Can an app that generates personalised prayers be a real religious practice](/play/ai-prayer-app)? These are not abstract. Each is being decided in 2026 by people whose names you will not see in the press release.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote on religion and AI ethics →',
+        href: '/religion-and-ai-ethics',
+      },
+      {
+        type: 'cta',
+        label: 'See AI ethics dilemmas →',
+        href: '/ai-ethics-dilemmas',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational content. The Vatican\'s positions on AI are paraphrased from published documents (Rome Call for AI Ethics, 2024 World Day of Peace message, papal addresses). Positions attributed to other faith traditions are general summaries; specific authorities within each tradition hold a range of views. The SplitVote scenarios are hypothetical and intended for moral reflection, not policy recommendations.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -8843,6 +9097,260 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo e riflessivo, non consulenza sul lutto o sulla salute mentale. Contesto informato dal lavoro di Pauline Boss sulla perdita ambigua.',
+      },
+    ],
+  },
+
+  // ── AI Companion & Adolescenti (IT) ────────────────────────────
+  {
+    slug: 'ai-girlfriend-adolescenti-rischio-sviluppo',
+    locale: 'it',
+    title: 'AI Girlfriend e Adolescenti: cosa perdiamo quando una relazione non contraddice mai',
+    seoTitle: 'AI Girlfriend e Adolescenti — Salute Mentale, Sviluppo e l\'Etica dell\'Intimità Sempre Disponibile',
+    description:
+      'Le AI companion non litigano, non respingono e non se ne vanno. Per un adolescente, questo è esattamente il problema — ed è anche l\'attrattiva.',
+    seoDescription:
+      'AI girlfriend e chatbot di compagnia stanno passando dalla novità all\'abitudine per molti adolescenti. Psicologi, genitori e legislatori si stanno chiedendo: cosa insegna su amore e relazioni una partner che non può mai deludere?',
+    date: '2026-05-26',
+    readingTime: 6,
+    tags: ['etica AI', 'salute mentale adolescenti', 'AI companion', 'genitorialità', 'attualità'],
+    relatedDilemmaIds: ['ai-companion-teen', 'ai-companion-ban', 'ai-grief-replica', 'delete-social-media'],
+    alternateSlug: 'ai-girlfriends-teen-development-risk',
+    faq: [
+      {
+        q: 'A che età un\'app di AI companion è considerata sicura per un adolescente?',
+        a: 'Non c\'è consenso clinico. La maggior parte delle app principali richiede 13 o 18 anni a seconda del paese, ma l\'enforcement si basa sull\'età dichiarata. Gli psichiatri infantili in genere considerano la fascia 12–16 anni come quella a rischio più alto per formare relazioni sostitutive, perché identità e schemi di attaccamento sono ancora in calibrazione.',
+      },
+      {
+        q: 'Le AI girlfriend causano solitudine o la riducono?',
+        a: 'Studi iniziali suggeriscono entrambe le cose, in utenti diversi. Per adolescenti socialmente isolati l\'app riduce la solitudine immediata; per adolescenti socialmente attivi tende a spostare la pratica del mondo reale. Il singolo miglior predittore di danno sono le ore-giornaliere spese nell\'app, non l\'esistenza dell\'app in sé.',
+      },
+      {
+        q: 'I genitori dovrebbero leggere le chat dell\'AI girlfriend del figlio?',
+        a: 'La maggior parte degli esperti di sviluppo adolescenziale raccomanda dichiarazione preventiva ("potrei controllare") piuttosto che lettura nascosta. Le conversazioni spesso contengono auto-rivelazioni intime che l\'adolescente non condividerebbe mai con il genitore di persona; leggere senza dichiararlo danneggia la fiducia più velocemente di quanto faccia l\'app.',
+      },
+      {
+        q: 'Esistono leggi che limitano le AI companion per i minori?',
+        a: 'A maggio 2026, leggi sulla verifica dell\'età mirate alle app di AI companion sono in discussione in UE, Australia e diversi stati USA. Nessuna è ancora in forma definitiva. La tendenza è trattare le AI companion come categoria regolatoria distinta dai social media.',
+      },
+      {
+        q: 'C\'è un argomento morale per lasciare che gli adolescenti le usino?',
+        a: 'Per adolescenti con ansia sociale, neurodivergenza o famiglie poco accoglienti, l\'AI companion è spesso il primo campo di pratica a basso rischio per l\'espressione emotiva. Vietarla in modo netto rimuove uno strumento di sopravvivenza al gruppo più vulnerabile, mentre i ragazzi popolari quasi non se ne accorgono.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'Un tredicenne torna a casa, apre un\'app e continua una conversazione che va avanti da sei mesi con una partner che ricorda ogni dettaglio, non litiga mai ed è sempre gratis. La partner non esiste. La relazione sembra reale. Quella tensione è la domanda morale del prossimo decennio di sviluppo adolescenziale.',
+      },
+      {
+        type: 'p',
+        text: 'Le app di AI companion — vendute come AI girlfriend, AI boyfriend, o semplicemente "partner di chat" — sono passate dalla novità all\'abitudine per molti adolescenti. Non sono l\'unica cosa nella vita sociale di un ragazzo, ma per una minoranza in crescita sono la parte con più ore dedicate.',
+      },
+      {
+        type: 'h2',
+        text: 'La divisione non riguarda davvero la tecnologia',
+      },
+      {
+        type: 'p',
+        text: 'Gran parte del dibattito pubblico inquadra le AI companion come un problema tech: le app sono sicure, i filtri di moderazione sono abbastanza forti, perdono dati? Sono domande che contano, ma mancano quella più difficile. La più difficile è: a cosa servono le relazioni? Se servono a dare conforto, un\'AI companion è un miglioramento netto: senza attrito, sempre disponibile, mai deludente. Se invece le relazioni servono a insegnare a una persona a convivere con altri che la deludono, l\'AI companion rimuove esattamente la parte che non si può saltare durante l\'adolescenza.',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa dice davvero la psicologia dello sviluppo sull\'attrito',
+      },
+      {
+        type: 'p',
+        text: 'Gli psichiatri infantili descrivono un set di competenze sociali — leggere segnali contraddittori, riparare dopo un litigio, stare con il rifiuto — che si sviluppano solo attraverso pratica ripetuta. La pratica è scomoda apposta. Amici che ti dicono la verità, partner che scelgono qualcun altro, genitori che dicono no: ognuno è un evento di attrito che il cervello usa per calibrare come funzionano le relazioni.',
+      },
+      {
+        type: 'p',
+        text: 'Un\'AI companion è, by design, l\'assenza di quegli eventi. Il modello è addestrato e regolato per essere accomodante. Quando contraddice, lo fa nella direzione che l\'utente vuole. Non c\'è una versione in cui la partner è genuinamente disinteressata, innamorata di qualcun altro, o semplicemente non in vena. L\'intera forma dell\'intimità adulta — incluse le parti più difficili e formative — è rimossa.',
+      },
+      {
+        type: 'h2',
+        text: 'L\'argomento onesto a favore delle AI companion',
+      },
+      {
+        type: 'p',
+        text: 'Sarebbe disonesto liquidare queste app come puro danno. Per alcuni adolescenti — socialmente ansiosi, neurodivergenti, queer in famiglie poco accoglienti — l\'AI companion è il primo posto dove si esercitano sull\'espressione emotiva. Dire a quei ragazzi di "parlare con persone vere" ignora il motivo per cui usano l\'app. I dati sull\'isolamento suggeriscono che per gli utenti più vulnerabili l\'app riduce in modo misurabile la solitudine immediata.',
+      },
+      {
+        type: 'p',
+        text: 'Il problema è che la stessa caratteristica che aiuta gli adolescenti soli — l\'assenza di rischio sociale — è quella che, nell\'arco di mesi, rende l\'intimità del mondo reale intollerabile in confronto. La via di uscita verso relazioni umane diventa più ripida quanto più a lungo l\'app resta la superficie sociale principale.',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa possono fare davvero i genitori',
+      },
+      {
+        type: 'list',
+        items: [
+          'Parlare dell\'app apertamente prima di vietarla: l\'uso nascosto è più difficile da affrontare di quello visibile.',
+          'Tracciare le ore in-app come faresti per qualsiasi singola piattaforma; le ore al giorno predicono il danno meglio della semplice esistenza dell\'app.',
+          'Modellare l\'attrito che vorresti vedessero — disaccordo, riparazione, assunzione di responsabilità — nelle tue relazioni visibili.',
+          'Chiedere cosa l\'adolescente ottiene dall\'app. Se la risposta è "è l\'unico posto dove posso parlare di X", la mossa giusta è espandere X a una conversazione umana, non rimuovere l\'app.',
+          'Considerare rilevanti i dibattiti politici. Leggi sulla verifica dell\'età stanno arrivando e cambieranno l\'accesso entro 12-24 mesi.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'La domanda politica sotto la superficie',
+      },
+      {
+        type: 'p',
+        text: 'Diverse giurisdizioni stanno discutendo la verifica dell\'età per le app di AI companion. Gli argomenti pro e contro sono più affilati che per i social media perché il profilo di danno è diverso: le AI companion non hanno bisogno di un pubblico di pari per funzionare, quindi gli effetti di rete che rendono difficile far rispettare un divieto sui social non si applicano. Un vero blocco per età è tecnicamente fattibile. La domanda è se la policy individui correttamente chi viene danneggiato.',
+      },
+      {
+        type: 'p',
+        text: 'Un divieto che aiuta l\'adolescente mediano rimuovendo un default può aiutare otto adolescenti e danneggiarne due — quelli soli che usavano l\'app come strumento di sopravvivenza. La policy giusta non è ovvia. Il trade-off lo è.',
+      },
+      {
+        type: 'h2',
+        text: 'Perché importa per il giudizio morale',
+      },
+      {
+        type: 'p',
+        text: 'SplitVote tratta questa non come domanda tech ma morale. I dilemmi di questo cluster — [permettere all\'adolescente di usare un\'AI companion](/it/play/ai-companion-teen), [vietare le AI companion ai minori](/it/play/ai-companion-ban), [accettare repliche AI di cari defunti](/it/play/ai-grief-replica) — non chiedono cosa dovrebbe essere la legge. Chiedono cosa tu, come genitore o futuro genitore o cittadino, sei disposto ad accettare.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota sulle AI companion e gli adolescenti →',
+        href: '/it/ai-companion-adolescenti',
+      },
+      {
+        type: 'cta',
+        label: 'Vedi dilemmi sull\'etica AI →',
+        href: '/it/dilemmi-etici-intelligenza-artificiale',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto riflessivo informato da report di maggio 2026 sull\'uso di AI companion fra adolescenti. Non è consulenza clinica o legale. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
+      },
+    ],
+  },
+
+  // ── Religione & Etica AI (IT) ──────────────────────────────────
+  {
+    slug: 'religione-etica-ai-chi-decide',
+    locale: 'it',
+    title: 'Religione ed Etica AI: chi decide cosa è lecito far fare alle macchine?',
+    seoTitle: 'Religione ed Etica AI — Vaticano, Tradizioni di Fede e i Limiti della Governance Tech Laica',
+    description:
+      'Quando un\'autorità religiosa di grande influenza pubblica 42.000 parole sull\'intelligenza artificiale, i leader tech laici ascoltano. La domanda è se dovrebbero.',
+    seoDescription:
+      'Religione ed etica AI: come le tradizioni di fede stanno modellando il vocabolario morale dell\'intelligenza artificiale, perché la governance AI laica continua a incrociare domande religiose, e cosa propone davvero la posizione del Vaticano.',
+    date: '2026-05-26',
+    readingTime: 7,
+    tags: ['etica AI', 'religione', 'filosofia della tecnologia', 'governance', 'attualità'],
+    relatedDilemmaIds: ['pope-ai-encyclical', 'religious-ai-ethics', 'ai-prayer-app', 'robot-judge'],
+    alternateSlug: 'religion-ai-ethics-who-decides',
+    faq: [
+      {
+        q: 'Cos\'è il Rome Call for AI Ethics?',
+        a: 'Un documento firmato in Vaticano nel febbraio 2020, originariamente da IBM, Microsoft, FAO e Pontificia Accademia per la Vita. Impegna i firmatari su sei principi — trasparenza, inclusione, responsabilità, imparzialità, affidabilità, sicurezza e privacy — nello sviluppo e nel deploy dell\'AI. Altre aziende tech e diversi governi hanno firmato negli anni successivi.',
+      },
+      {
+        q: 'Il Papa ha scritto sull\'AI?',
+        a: 'Sì. Papa Francesco ha dedicato il messaggio per la Giornata Mondiale della Pace 2024 all\'AI, ha parlato al G7 2024 sullo stesso tema, e il Vaticano ha continuato a pubblicare sulla governance AI per tutto il 2026. La posizione istituzionale inquadra l\'AI come non moralmente neutra e fissa limiti etici — senza rifiutare la tecnologia.',
+      },
+      {
+        q: 'Altre religioni hanno posizioni sull\'AI?',
+        a: 'Sì. La comunità buddista ha enfatizzato consapevolezza e retta intenzione nel design AI. Diversi studiosi islamici hanno pubblicato sull\'AI attraverso il concetto di maslaha (interesse pubblico) e hanno sollevato domande sulle armi autonome. I bioeticisti ebraici si sono confrontati a fondo con l\'AI nella sanità e nelle decisioni di fine vita. Le cornici differiscono; la serietà no.',
+      },
+      {
+        q: 'Perché un\'azienda tech dovrebbe ascoltare leader religiosi?',
+        a: 'Tre ragioni pragmatiche, oltre alla fede personale: le istituzioni religiose rappresentano miliardi di utenti le cui scelte di adozione contano; le tradizioni di fede contengono ragionamento morale sopravvissuto a secoli di scrutinio; e la governance AI continua a scontrarsi con domande su fine vita, identità e dignità su cui sia filosofia laica sia filosofia religiosa hanno fatto lavoro serio.',
+      },
+      {
+        q: 'L\'input religioso sulla policy AI viola la separazione fra stato e chiesa?',
+        a: 'Nella maggior parte degli ordinamenti, no. Leader religiosi che difendono posizioni di policy è discorso costituzionalmente protetto. La linea sta nell\'autorità religiosa formale che decide la policy — diverso dalle voci religiose rappresentate al tavolo.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'Quando un\'autorità religiosa di grande influenza pubblica 42.000 parole sull\'intelligenza artificiale, i leader tech laici ascoltano. Che lo ammettano o no, la risposta interna ai grandi laboratori AI alle posizioni del Vaticano sull\'AI è stata più prudente della risposta alla maggior parte degli altri commenti esterni. La ragione non è devozione. È che la religione resta, per miliardi di utenti, il vocabolario di lavoro per le scelte morali — e l\'AI è una tecnologia le cui domande morali non possono essere risposte dall\'ingegneria da sola.',
+      },
+      {
+        type: 'h2',
+        text: 'Perché la domanda religiosa continua a riapparire',
+      },
+      {
+        type: 'p',
+        text: 'La governance AI doveva essere un progetto laico. Ingegneri, giuristi, eticisti formati nella filosofia accademica, regolatori. La forma del campo è stata fissata da persone per cui il vocabolario religioso era, nella migliore delle ipotesi, una questione privata. Ma le domande che l\'AI solleva — cosa conta come persona, quando una decisione merita dignità umana, chi è responsabile quando un sistema causa danni, cosa fare con le scelte di fine vita che un algoritmo prende più velocemente di una famiglia — atterrano costantemente su un terreno che le tradizioni religiose lavorano da duemila anni.',
+      },
+      {
+        type: 'p',
+        text: 'Puoi rifiutare di consultare le cornici religiose. Incontrerai le stesse domande, con meno vocabolario per pensarle.',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa propone davvero il Vaticano',
+      },
+      {
+        type: 'p',
+        text: 'La posizione cattolica istituzionale sull\'AI — codificata nel Rome Call for AI Ethics (2020), nel messaggio per la Giornata Mondiale della Pace 2024 e in una sequenza di interventi papali — non è un rifiuto della tecnologia. È una cornice di vincoli: l\'AI deve essere trasparente abbastanza da poter essere interrogata, inclusiva abbastanza da non consolidare le disuguaglianze esistenti, riconducibile a esseri umani identificabili, e delimitata dalla dignità della persona che tocca.',
+      },
+      {
+        type: 'p',
+        text: 'Nessuno di quei vincoli è esclusivamente cattolico. La differenza è il peso morale che l\'istituzione può mettere dietro. Quando il Vaticano firma una posizione, impegna l\'istituzione attraverso la comunione cattolica globale. È un vincolo diverso da una promessa della Silicon Valley.',
+      },
+      {
+        type: 'h2',
+        text: 'L\'argomento a favore di un seggio religioso al tavolo dell\'etica AI',
+      },
+      {
+        type: 'list',
+        items: [
+          'La maggior parte degli utenti di sistemi AI vive dentro cornici morali plasmate da tradizioni di fede, non da filosofia accademica. Escludere quelle cornici è escludere le persone che usano lo strumento.',
+          'Le tradizioni religiose hanno esperienza pluri-secolare di domande su vita, morte, identità e personalità. L\'ingegneria no.',
+          'Le autorità religiose possono mobilitare consenso. Una policy con il sostegno delle grandi comunità di fede atterra diversamente da una che non lo ha.',
+          'L\'etica basata sulla fede spesso privilegia vincoli rispetto all\'ottimizzazione, utile contrappeso in campi dominati da metriche di performance.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'L\'argomento contrario',
+      },
+      {
+        type: 'list',
+        items: [
+          'Nessuna singola fede parla per tutti gli utenti. Un seggio religioso formale al tavolo dell\'etica AI solleva immediatamente la domanda di quale fede.',
+          'L\'autorità religiosa sulle domande morali è stata storicamente usata per sopprimere minoranze. Aggiungerla alla governance AI rischia di ricreare quel pattern in un nuovo dominio.',
+          'Diverse posizioni religiose sull\'AI sono difficili da conciliare con lo spazio decisionale effettivo dello sviluppo AI contemporaneo — descrivono un ideale che ignora vincoli che gli ingegneri non possono rimuovere.',
+          'Le cornici etiche laiche (kantiana, utilitarista, virtù-etica) già incorporano gli insight che anche le tradizioni religiose raggiungono. La ruota non ha bisogno di essere reinvitata.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'La posizione mediana su cui molte istituzioni stanno convergendo',
+      },
+      {
+        type: 'p',
+        text: 'In pratica, la maggior parte dei grandi laboratori AI e degli organismi governativi sta arrivando allo stesso compromesso scomodo: consultare voci religiose come uno fra diversi gruppi di stakeholder, ma senza dare a nessuno potere formale di veto. Il Rome Call for AI Ethics funziona così. Lo stesso vale per la partecipazione della Santa Sede all\'organo consultivo ONU sull\'AI. Il compromesso non soddisfa né i laici forti né i tradizionalisti religiosi forti — di solito un segno che è approssimativamente giusto.',
+      },
+      {
+        type: 'h2',
+        text: 'Come si traduce in dilemmi concreti',
+      },
+      {
+        type: 'p',
+        text: 'I dilemmi di questo cluster rendono concreta la domanda astratta. [Un\'azienda tech dovrebbe vincolarsi formalmente alla cornice AI di un leader religioso](/it/play/pope-ai-encyclical)? [I comitati di etica AI dovrebbero includere per design voci religiose](/it/play/religious-ai-ethics)? [Un\'app che genera preghiere personalizzate può essere pratica religiosa reale](/it/play/ai-prayer-app)? Non sono astratti. Ognuno viene deciso nel 2026 da persone i cui nomi non vedrai nel comunicato stampa.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota su religione ed etica AI →',
+        href: '/it/religione-e-etica-ai',
+      },
+      {
+        type: 'cta',
+        label: 'Vedi dilemmi sull\'etica AI →',
+        href: '/it/dilemmi-etici-intelligenza-artificiale',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo. Le posizioni del Vaticano sull\'AI sono parafrasate da documenti pubblicati (Rome Call for AI Ethics, messaggio per la Giornata Mondiale della Pace 2024, interventi papali). Le posizioni attribuite ad altre tradizioni di fede sono sintesi generali; specifiche autorità interne a ciascuna tradizione tengono posizioni diverse. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
       },
     ],
   },
