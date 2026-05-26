@@ -99,6 +99,186 @@ async function fetchHackerNews() {
   }
 }
 
+// ── 9GAG meme/culture signal (read-only) ───────────────────────
+// Treated as meme/culture only. NOT a factual news source. Items are
+// classified `safe` / `review` / `block`. Suggests possible SplitVote
+// dilemma angles, never creates drafts. If 9GAG blocks or changes HTML,
+// fail soft and keep the rest of the digest working.
+
+const NINEGAG_BLOCK_TOKENS = [
+  // NSFW / explicit content markers
+  'nsfw', 'nude', 'naked', 'porn', 'sex tape', 'onlyfans', 'xxx',
+  'anal', 'penis', 'vagina', 'boobs',
+  // Graphic violence / shock
+  'gore', 'beheading', 'execution', 'mutilat', 'corpse', 'dismember',
+  // Hate signals (broad markers; final call still belongs to editor)
+  'nazi', 'kkk', 'hitler joke',
+]
+
+const NINEGAG_REVIEW_TOKENS = [
+  // Political / news-like (needs factual verification before public use)
+  'politic', 'election', 'president', 'minister', 'congress', 'parliament',
+  'war', 'invasion', 'occupation', 'genocide', 'ceasefire', 'sanction',
+  'protest', 'riot', 'shooting', 'terror', 'attack',
+  // Health / public-policy claims
+  'covid', 'vaccine', 'climate', 'pandemic',
+  // Religion (frequent source of moral-dilemma misfires)
+  'islam', 'christian', 'jewish', 'religion', 'church', 'mosque', 'allah',
+  // Identity / dark humor
+  'suicide', 'self harm', 'gender', 'trans', 'lgbt',
+  // Immigration / border
+  'immigration', 'refugee', 'migrant', 'border',
+]
+
+const ANGLE_TEMPLATES = [
+  { match: ['relationship', 'partner', 'girlfriend', 'boyfriend', 'dating', 'wife', 'husband', 'marriage'],
+    angle: 'Possible angle: a small-betrayal-vs-honesty dilemma in a relationship.' },
+  { match: ['work', 'boss', 'job', 'office', 'colleague', 'coworker', 'manager'],
+    angle: 'Possible angle: loyalty to a colleague vs. honesty with the boss.' },
+  { match: ['parent', 'mom', 'dad', 'mother', 'father', 'kid', 'child', 'teen'],
+    angle: 'Possible angle: parent privacy vs. teen autonomy.' },
+  { match: ['friend', 'friendship', 'best friend'],
+    angle: 'Possible angle: telling a friend an uncomfortable truth vs. protecting their feelings.' },
+  { match: ['ai', 'algorithm', 'chatgpt', 'gpt', 'robot', 'machine learning'],
+    angle: 'Possible angle: should an AI make a decision a human is biased about?' },
+  { match: ['dog', 'cat', 'pet', 'animal', 'shelter'],
+    angle: 'Possible angle: saving your pet vs. minor harm to a stranger.' },
+  { match: ['social media', 'instagram', 'tiktok', 'facebook', 'twitter', 'reddit', 'viral post', 'goes viral'],
+    angle: 'Possible angle: viral content vs. dignity of the people in it.' },
+  { match: ['money', 'rich', 'poor', 'broke', 'salary', 'tax', 'inheritance'],
+    angle: 'Possible angle: a financial choice with a moral cost.' },
+  { match: ['gym', 'fitness', 'diet', 'food', 'cheat day'],
+    angle: 'Possible angle: lifestyle vs. honesty about discipline.' },
+  { match: ['gaming', 'gamer', 'video game', 'speedrun', 'cheat code'],
+    angle: 'Possible angle: cheating in a game vs. winning fairly.' },
+  { match: ['school', 'student', 'teacher', 'exam', 'homework'],
+    angle: 'Possible angle: helping a friend cheat vs. fair competition.' },
+]
+
+function classify9GagItem(it) {
+  const haystack = [
+    String(it.title  || '').toLowerCase(),
+    String(it.section || '').toLowerCase(),
+    ...(Array.isArray(it.tags) ? it.tags.map(t => String(t).toLowerCase()) : []),
+  ].join(' | ')
+
+  for (const tok of NINEGAG_BLOCK_TOKENS)  if (haystack.includes(tok)) return 'block'
+  for (const tok of NINEGAG_REVIEW_TOKENS) if (haystack.includes(tok)) return 'review'
+  return 'safe'
+}
+
+function suggestDilemmaAngle(it) {
+  const haystack = [
+    String(it.title || ''),
+    Array.isArray(it.tags) ? it.tags.join(' ') : '',
+    String(it.section || ''),
+  ].join(' ').toLowerCase()
+  for (const tpl of ANGLE_TEMPLATES) {
+    if (tpl.match.some(k => haystack.includes(k))) return tpl.angle
+  }
+  return 'Brainstorm a moral-dilemma angle from the meme theme above.'
+}
+
+function parseNineGagHtml(html) {
+  const items = []
+
+  // Strategy 1: JSON-LD ItemList blocks (most stable across redesigns).
+  try {
+    const ldRe = /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi
+    for (const m of html.matchAll(ldRe)) {
+      try {
+        const data = JSON.parse(m[1])
+        const entities = Array.isArray(data) ? data : [data]
+        for (const e of entities) {
+          if (e?.['@type'] === 'ItemList' && Array.isArray(e.itemListElement)) {
+            for (const li of e.itemListElement.slice(0, 30)) {
+              const post = li?.item || li
+              const title = post?.name || post?.headline
+              const urlOut = post?.url
+              if (typeof title === 'string' && title.length > 3) {
+                items.push({
+                  title:   title.slice(0, 140),
+                  url:     typeof urlOut === 'string' ? urlOut : '',
+                  tags:    Array.isArray(post?.keywords) ? post.keywords.slice(0, 5) : [],
+                  section: '',
+                })
+              }
+            }
+          }
+        }
+      } catch { /* one block parse fail is fine */ }
+    }
+  } catch { /* JSON-LD strategy failed entirely */ }
+
+  // Strategy 2: data-entry-* attributes (heuristic fallback if JSON-LD absent).
+  if (items.length === 0) {
+    try {
+      const entryRe = /data-entry-url="([^"]+)"[^>]*data-entry-title="([^"]+)"/g
+      for (const m of html.matchAll(entryRe)) {
+        items.push({
+          title:   m[2].slice(0, 140),
+          url:     m[1],
+          tags:    [],
+          section: '',
+        })
+        if (items.length >= 20) break
+      }
+    } catch { /* skip */ }
+  }
+
+  // De-dup by URL or title, cap at 12.
+  const seen = new Set()
+  const dedup = []
+  for (const it of items) {
+    const key = it.url || it.title
+    if (seen.has(key)) continue
+    seen.add(key)
+    dedup.push(it)
+    if (dedup.length >= 12) break
+  }
+  return dedup.map((it, i) => ({
+    source:   '9gag',
+    title:    it.title,
+    url:      it.url,
+    locale:   'en',
+    score:    Math.round(70 - i * 4),
+    velocity: 0,
+    tags:     it.tags,
+    section:  it.section,
+  }))
+}
+
+async function fetchNineGagTrending() {
+  const url = 'https://9gag.com/trending'
+  try {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 6000)
+    const r = await fetch(url, {
+      headers: {
+        'User-Agent':      'Mozilla/5.0 (compatible; splitvote-bot/1.0; +https://splitvote.io)',
+        'Accept':          'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      cache:  'no-store',
+      signal: controller.signal,
+    })
+    clearTimeout(timer)
+    if (!r.ok) {
+      console.log(`[9gag] HTTP ${r.status} — source unavailable, skipping`)
+      return []
+    }
+    const html = await r.text()
+    const items = parseNineGagHtml(html)
+    if (items.length === 0) {
+      console.log('[9gag] HTML did not match known structure — failing soft')
+    }
+    return items
+  } catch (e) {
+    console.log(`[9gag] fetch failed (${e?.message || 'unknown'}) — failing soft`)
+    return []
+  }
+}
+
 async function fetchReddit(subreddit, locale) {
   try {
     const r = await fetch(
@@ -218,13 +398,56 @@ function renderLocaleSection(locale, label, signals) {
   return lines.join('\n')
 }
 
+function renderNineGagSection(items) {
+  const lines = []
+  lines.push('## 9GAG Meme Radar')
+  lines.push('')
+  lines.push('Read-only meme/culture signal — **NOT a factual news source**. Each item is classified `safe` / `review` / `block`. The radar suggests possible SplitVote dilemma angles but never creates drafts. Verify any news-like claim against a primary source before using it publicly.')
+  lines.push('')
+
+  if (items.length === 0) {
+    lines.push('_9GAG source unavailable or returned no parseable posts. Failing soft — rest of the digest is unaffected._')
+    lines.push('')
+    return lines.join('\n')
+  }
+
+  const classified = items.map(it => ({ ...it, status: classify9GagItem(it) }))
+  const safe   = classified.filter(c => c.status === 'safe')
+  const review = classified.filter(c => c.status === 'review')
+  const block  = classified.filter(c => c.status === 'block')
+
+  lines.push(`Found ${items.length} hot meme(s): **${safe.length} safe**, **${review.length} review**, **${block.length} block**.`)
+  lines.push('')
+  lines.push('| # | Status | Title (truncated) | Possible dilemma angle |')
+  lines.push('|---:|---|---|---|')
+  classified.forEach((it, i) => {
+    const emoji = it.status === 'safe' ? '🟢 safe' : it.status === 'review' ? '🟡 review' : '🔴 block'
+    const angle = it.status === 'block' ? '_excluded_' : escapeMd(suggestDilemmaAngle(it))
+    lines.push(`| ${i + 1} | ${emoji} | ${escapeMd(it.title)} | ${angle} |`)
+  })
+  lines.push('')
+
+  if (block.length > 0) {
+    lines.push(`_${block.length} item(s) classified \`block\` and excluded from angle suggestions (NSFW / graphic / hate-speech tokens detected)._`)
+    lines.push('')
+  }
+  if (review.length > 0) {
+    lines.push(`_${review.length} item(s) classified \`review\` — political, religious, or news-like signal. Editor must verify factual claims against a primary source before any public use._`)
+    lines.push('')
+  }
+  lines.push('**Anti-reuse reminder:** Do not reuse 9GAG images, captions, or user posts verbatim in SplitVote dilemmas. These titles are research signal only — paraphrase the underlying theme.')
+  lines.push('')
+  return lines.join('\n')
+}
+
 async function main() {
-  const [wikiEn, wikiIt, rdMain, rdIt, hn] = await Promise.all([
+  const [wikiEn, wikiIt, rdMain, rdIt, hn, nineGag] = await Promise.all([
     fetchWikipediaTrending('en'),
     fetchWikipediaTrending('it'),
     fetchReddit('popular', 'en'),
     fetchReddit('italy', 'it'),
     fetchHackerNews(),
+    fetchNineGagTrending(),
   ])
 
   const annotate = arr => arr.map(s => ({ ...s, fitScore: fitScore(s.title) }))
@@ -257,14 +480,22 @@ async function main() {
   lines.push('## IT trends')
   lines.push('')
   lines.push(renderLocaleSection('it', 'Wikipedia IT + Reddit r/italy', it))
+  lines.push(renderNineGagSection(nineGag))
 
   fs.writeFileSync(out, lines.join('\n'))
 
   const candidatesEn = en.filter(s => classifyFit(s.fitScore) === 'high' && s.score >= 60).length
   const candidatesIt = it.filter(s => classifyFit(s.fitScore) === 'high' && s.score >= 60).length
 
+  // 9GAG status breakdown (meme/culture, not landing candidates).
+  const ng = nineGag.map(it => classify9GagItem(it))
+  const ngSafe   = ng.filter(s => s === 'safe').length
+  const ngReview = ng.filter(s => s === 'review').length
+  const ngBlock  = ng.filter(s => s === 'block').length
+
   console.log(`[trend-digest] en=${en.length} signals, ${candidatesEn} landing candidate(s)`)
   console.log(`[trend-digest] it=${it.length} signals, ${candidatesIt} landing candidate(s)`)
+  console.log(`[trend-digest] 9gag=${nineGag.length} items (safe=${ngSafe}, review=${ngReview}, block=${ngBlock})`)
   console.log(`[trend-digest] report written: ${path.relative(ROOT, out)}`)
 }
 

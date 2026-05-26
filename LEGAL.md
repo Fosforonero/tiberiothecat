@@ -151,6 +151,27 @@ Update this file and the public legal pages when any sprint changes:
 
 ---
 
+## Third-Party Signal Watch List
+
+Read-only third-party sources used by local research tooling (no user data
+involved, no public republication). Listed here so future sprints know
+when to re-evaluate.
+
+### 9GAG — meme/culture signal (added 26 May 2026)
+
+- **Used by**: `scripts/trend-digest.mjs` → `fetchNineGagTrending()`
+- **Surface**: 1 GET to `https://9gag.com/trending` per script run (~weekly), bot-identified UA, `cache: 'no-store'`, fail-soft on any error
+- **What we extract**: post titles + URLs (≤12 items). No images, no captions, no comments, no user data.
+- **What we do with it**: classify `safe` / `review` / `block`; suggest possible dilemma angles for PM brainstorming. **Never** auto-generate drafts, **never** republish 9GAG content verbatim, **never** download images.
+- **Legal posture today**: low risk. robots.txt allows `/trending`. EU DSM Art. 4 TDM exception covers research extraction (9GAG has not opted out machine-readably). No PII processed. No click-wrap ToS accepted (no login).
+- **Re-evaluate if any of the following changes**:
+  - Frequency exceeds weekly, or fetch becomes per-user / per-request
+  - We add logged-in scraping or any session-based access
+  - We start auto-generating publishable content from this signal (would become a content data source — needs Privacy Policy + Terms update)
+  - We republish 9GAG titles/captions/images in any public surface
+  - 9GAG adds explicit machine-readable TDM opt-out (TDMRep meta or robots.txt) — must stop
+  - 9GAG sends a cease-and-desist or blocks the bot UA — stop and reassess
+
 ## End-Of-Day Legal Reconciliation Checklist
 
 Run this after the last code push of the day if any relevant sprint landed:
