@@ -1,10 +1,86 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 25 May 2026 — Two same-day sprints. (1) `DILEMMA-EDITORIAL-SHAPE-GATE-01` committed (`30fe2ac`): AI prompt forces conflict-shaped dilemmas; gate emits four moral-only soft warnings (`abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`) suppressed by explicit tradeoff markers. (2) `DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01` shipped locally: read-only audit script + report. Production pool flag rate: **10.5% approved (34/324 moral), 18.9% drafts (10/53)**. Manual triage on top 30 → ~17% strong-TP, ~37% TP/borderline-TP, ~46% FP/borderline-FP. Recommendation: keep advisory, do NOT hard-reject; queue two follow-ups (`DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` + `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`). 3 untracked artifacts (script + .md + .json) await commit decision.
+Last updated: 25 May 2026 (evening) — Four commits pushed to `origin/main` (`30fe2ac`, `1f0bc39`, `1d9a6c2`, `26e21a3`); Vercel auto-deploy live. Day delivered: (1) `DILEMMA-EDITORIAL-SHAPE-GATE-01` (gate warnings + AI prompt), (2) `DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01` (read-only audit: 10.5% approved / 18.9% drafts flag rate, ~46% FP — keep advisory), (3) Blog portfolio audit against GSC (caveat: "Last 7 days" filter, not full May — directional only), (4) `SEO-LOYALTY-HONESTY-CORNERSTONE-01` (EN+IT loyalty/honesty articles promoted to cornerstone-shape: 4 new H2 + visible FAQ + JSON-LD mirroring). Two reusable skills shipped to `~/.claude/skills/`: `splitvote-compass` (4 modes) + `splitvote-growth` (7 modes with references). 3 Pixie WIP files preserved untouched.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 25 May 2026 (afternoon) — Editorial-warnings dry-run against production pool
+## 0. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
+
+### TL;DR
+
+Final day-arc: promoted EN article `loyalty-vs-honesty-when-they-collide` + IT mirror `lealta-vs-onesta-quando-si-scontrano` to cornerstone-shape per `SPRINT: SEO-LOYALTY-HONESTY-CORNERSTONE-01`. Then pushed all 4 day's commits to `origin/main` (`30fe2ac`, `1f0bc39`, `1d9a6c2`, `26e21a3`). Vercel auto-deploy triggered. Two reusable skills written to user-level `~/.claude/skills/` for cross-session reuse. PM ended day; resumes tomorrow with `compass`.
+
+### Cornerstone changes (`26e21a3`)
+
+`lib/blog.ts` — both EN + IT loyalty/honesty articles:
+
+- Set `dateModified: '2026-05-25'`, `readingTime: 9` (was 5)
+- Expanded `faq:` from 3 → 5 Q&A (both articles)
+- Inserted 4 new H2 sections after intro: (1) definition + distinction, (2) real-life examples — 4 scenes, (3) why the conflict is hard, (4) what your answer reveals
+- Added internal CTA to `/personality` (EN) / `/it/personality` (IT)
+- Added **visible FAQ section** (H2 + 5×(H3+P)) before final cross-link CTAs — mirrors `faq:` exactly so FAQPage JSON-LD is policy-compliant (Google: structured data must reflect visible content)
+
+IT FAQ ordering tuned for exact GSC match on `lealtà vs onestà` (Q1: "Qual è la differenza tra lealtà e onestà?" — order swap from previous version).
+
+EN/IT structural parity: identical section count, identical FAQ count, natural Italian (not literal translations).
+
+### Skills shipped (cross-session reuse, user-level)
+
+- `~/.claude/skills/splitvote-compass/` — 4 modes: default Compass (5-section orient), Polish (UI/UX quality bar), Audit (correctness/robustness/security), Release (pre-flight + GO/NO-GO).
+- `~/.claude/skills/splitvote-growth/` — 7 modes (each with reference file): `audit-seo`, `blog-portfolio-audit`, `content-expansion`, `reddit-intel`, `geo-readiness`, `monetization-safety`, `scenario-intel`. Complements agents `seo-content-reviewer` + `blog-seo-editor`; does not duplicate. Triggers documented in each mode.
+
+These are NOT in the repo (user-level skills directory). They survive across sessions / projects but are not versioned via git.
+
+### Push outcome
+
+```
+git push origin main
+# pushed 4 commits: 30fe2ac → 1f0bc39 → 1d9a6c2 → 26e21a3
+# remote HEAD: 26e21a3
+# Vercel auto-deploy triggered
+```
+
+3 Pixie WIP files explicitly kept out of the push (per PM instruction):
+- `scripts/generate-pixie-assets.mjs` (modified)
+- `scripts/generate-pixie-emoji-assets.py` (untracked)
+- `scripts/normalize-pixie-assets.py` (untracked)
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all routes prerender)
+- `git diff --check` ✅ exit 0
+- `git log origin/main..HEAD` → empty (in sync)
+
+### Hard constraints preserved
+
+- No auth/Stripe/Redis/Supabase changes.
+- No AdSense / GA4 / legal / Cookie Mode changes.
+- No `lib/content-generation-prompts.ts` / `lib/content-quality-gates.ts` changes (still at `30fe2ac`).
+- No static-scenario rewrites.
+- No `AUTO_PUBLISH_DILEMMAS` change.
+- No admin UI change.
+- Pixie WIP files untouched.
+
+### PM-side follow-ups (post-deploy)
+
+- [ ] Verify Vercel deploy `26e21a3` reached `live` state
+- [ ] Smoke test both cornerstone URLs return 200 + contain new sections + FAQPage JSON-LD
+- [ ] Google Rich Results Test on both URLs (FAQPage structured data validation)
+- [ ] GSC → Request Indexing on both URLs
+- [ ] (4–6 weeks) GSC re-export with "Last 28 days" or "Last 3 months" range — current audit used "Last 7 days" only (directional, not statistical)
+
+### Next session — recommended
+
+Resume with `compass`. Most likely next move (PM to confirm):
+
+1. **Cornerstone moral-dilemmas-examples (EN+IT)** — same pattern as loyalty/honesty, applied to a pair already at cornerstone-shape (28 p blocks, 10-13 internal links, 6 related). Missing only visible FAQ + answer-first card.
+2. (Alternative) Batch FAQ-add on 15-18 articles classified `improve` in `reports/blog-portfolio-audit-2026-05-25.md`.
+3. (Alternative) `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` — tighten regexes to drop FP rate ≤ 25%.
+
+---
+
+## 0a. Session 25 May 2026 (afternoon) — Editorial-warnings dry-run against production pool
 
 ### TL;DR
 
@@ -86,7 +162,7 @@ Outputs land in `reports/dynamic-dilemma-editorial-warnings-dryrun-<YYYY-MM-DD>.
 
 ---
 
-## 0a. Session 25 May 2026 (morning) — Dilemma Editorial Shape Gate
+## 0b. Session 25 May 2026 (morning) — Dilemma Editorial Shape Gate
 
 ### TL;DR
 

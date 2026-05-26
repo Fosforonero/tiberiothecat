@@ -3,11 +3,91 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 25 Maggio 2026 — `DILEMMA-EDITORIAL-SHAPE-GATE-01` shipped (local). AI dilemma-generation prompt now forces a "conflict-shaped dilemma" framing (do not ask whether the topic is good/bad — transform into a collision between two defensible fears with explicit costs) and requires the `rationale` field to name the value collision. Quality gate adds four moral-only soft warnings (`abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`) that catch referendum-style framings like "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?" — suppressed when the question carries an explicit tradeoff marker ("più pericoloso ... o ...", "ma raddoppia ... quale ingiustizia accetti", "which cost do you accept"). 8 new vitest cases (21 total in the file). Lifestyle remains exempt. No autopublish / save-mode / Redis / Supabase / legal change.
+Ultimo aggiornamento: 25 Maggio 2026 (sera) — 4 commits pushed to `origin/main` (Vercel auto-deploy live). Day delivered: dilemma editorial-shape gate + dry-run audit (`30fe2ac` + `1f0bc39`), blog portfolio audit against GSC (`1d9a6c2`), and `SEO-LOYALTY-HONESTY-CORNERSTONE-01` (`26e21a3`) — EN+IT loyalty/honesty articles promoted to cornerstone-shape (4 new H2 + visible FAQ + JSON-LD mirroring, `dateModified: 2026-05-25`, `readingTime: 9`). Two reusable skills written to `~/.claude/skills/`: `splitvote-compass` (4 modes) + `splitvote-growth` (7 modes). 3 Pixie WIP files preserved untouched.
 
 ---
 
-## 25 May 2026 — Dilemma Editorial Shape Gate
+## 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
+
+Per `SPRINT: SEO-LOYALTY-HONESTY-CORNERSTONE-01`. Promoted EN article `loyalty-vs-honesty-when-they-collide` + IT mirror `lealta-vs-onesta-quando-si-scontrano` from "good basic article" to cornerstone-shape. Both articles already ranked for cluster keywords (62% of GSC traffic on the 7-day sample); this promotion deepens topic coverage + adds visible FAQ for AdSense + AI-citability (GEO).
+
+### Shipped (`26e21a3`, pushed to origin/main)
+
+- `lib/blog.ts` — both EN + IT loyalty/honesty articles updated:
+  - `dateModified: '2026-05-25'`, `readingTime: 9` (was 5)
+  - `faq:` expanded 3 → 5 Q&A
+  - 4 new H2 sections inserted after intro: definition+distinction / real-life examples (4 scenes) / why the conflict is hard / what your answer reveals
+  - Internal CTA to `/personality` (EN) / `/it/personality` (IT)
+  - **Visible FAQ section** added (H2 + 5×(H3+P)) before final cross-link CTAs — mirrors `faq:` exactly so FAQPage JSON-LD is policy-compliant (Google: structured data must reflect visible content)
+
+IT FAQ ordering tuned for exact GSC match on `lealtà vs onestà` (Q1 reordered).
+
+EN/IT structural parity: identical section count, identical FAQ count, natural Italian (not literal translations).
+
+### Push outcome
+
+```
+git push origin main
+# pushed 4 commits: 30fe2ac → 1f0bc39 → 1d9a6c2 → 26e21a3
+# remote HEAD: 26e21a3
+# Vercel auto-deploy triggered
+```
+
+3 Pixie WIP files explicitly kept out: `scripts/generate-pixie-assets.mjs` (mod), `scripts/generate-pixie-emoji-assets.py` (untracked), `scripts/normalize-pixie-assets.py` (untracked).
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all routes prerender)
+- `git diff --check` ✅ exit 0
+
+### Hard constraints preserved
+
+- No auth/Stripe/Redis/Supabase changes.
+- No AdSense / GA4 / legal / Cookie Mode changes.
+- No `lib/content-generation-prompts.ts` / `lib/content-quality-gates.ts` changes.
+- No static-scenario rewrites.
+- No `AUTO_PUBLISH_DILEMMAS` change.
+- No admin UI change.
+
+### PM-side follow-ups (post-deploy)
+
+- Verify Vercel deploy `26e21a3` reached `live`
+- Smoke test cornerstone URLs (200 + new sections + FAQPage JSON-LD)
+- Google Rich Results Test (FAQPage validation)
+- GSC → Request Indexing on both URLs
+- (4–6 weeks) GSC re-export with "Last 28 days" or "Last 3 months" — current audit used "Last 7 days" only (directional, not statistical)
+
+### Queued follow-ups (cornerstone strategy)
+
+1. **`SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`** — same pattern applied to EN `moral-dilemmas-examples` + IT `dilemmi-morali-esempi`. Both already at 28 p blocks + 10–13 internal links + 6 related. Missing only visible FAQ + answer-first card.
+2. **`SEO-BLOG-FAQ-BATCH-01`** — add FAQ + JSON-LD to 15–18 articles classified `improve` in `reports/blog-portfolio-audit-2026-05-25.md`. Effort-cheap, GEO/citability lift.
+3. **`DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01`** — see "Dilemma Editorial Shape Gate" entry below.
+4. **`ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`** — see "Dilemma Editorial Shape Gate" entry below.
+
+### Skills shipped (user-level, not in repo)
+
+- `~/.claude/skills/splitvote-compass/` — 4 modes: Compass / Polish / Audit / Release.
+- `~/.claude/skills/splitvote-growth/` — 7 modes with reference files: `audit-seo`, `blog-portfolio-audit`, `content-expansion`, `reddit-intel`, `geo-readiness`, `monetization-safety`, `scenario-intel`. Complements existing agents (`seo-content-reviewer`, `blog-seo-editor`) — no duplication.
+
+---
+
+## 25 May 2026 (afternoon) — Blog portfolio audit against GSC
+
+Read-only audit per `SPRINT: BLOG-PORTFOLIO-AUDIT-01`. Output: `reports/blog-portfolio-audit-2026-05-25.md` (`1d9a6c2`).
+
+**Caveat**: GSC export was filtered "Last 7 days" (45 impressions total, 0 clicks). Audit is **directional, not statistical**. Re-export at 28 days / 3 months before any major content decision.
+
+### Key findings
+
+- Inventory: 64 articles (32 EN + 32 IT), 10 with FAQ, all with `alternateSlug` set
+- Cluster 1 (loyalty/honesty) = 62% of GSC impressions → addressed in `26e21a3`
+- 6 cluster maps identified
+- Top 5 actions ordered by ROI/effort
+
+---
+
+## 25 May 2026 (morning) — Dilemma Editorial Shape Gate
 
 PM trigger: Matteo flagged the generated IT dilemma "Se un Paese rifiuta regole sull'AI, gli altri dovrebbero rallentare comunque?" as boring yes/no policy polling — not the conflict-shaped tradeoffs SplitVote promises. Editorial audit recorded in `reports/dilemma-editorial-audit-2026-05-25.md`. Sprint executed per `SPRINT: DILEMMA-EDITORIAL-SHAPE-GATE-01`.
 
