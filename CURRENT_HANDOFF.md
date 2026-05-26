@@ -1,10 +1,72 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 26 May 2026 — Day delivered four pushes (4 commits Vercel-live) + three more local sprints. (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` shipped + pushed (`a59a0eb`) — EN+IT moral-dilemmas-examples promoted to cornerstone (FAQ + JSON-LD-compliant + dateModified). (2) Home daily-pool audit (read-only) found 5/10 next dilemmas missing personal stake, 2/10 wordy without decision verb. (3) `AI-PROMPT-PUNCHY-FRAMING-01` shipped + pushed (`d39ea03` + `db6bd91`) — added 3 SAFETY_RULES (personal-stake mandatory, punchy options 7-14 words, visible decision verb) + 3 gate warnings (`missing_personal_stake`, `wordy_setup_question`, `wordy_option`) + 9 vitest cases + audit script. (4) `AI-TREND-DRAFTS-SCALE-01` (local, awaits push GO) — bump daily AI-generated drafts from 3 to 10 per locale via `DAILY_DILEMMA_DRAFTS_PER_LOCALE` env (default 10, clamped [1,20]) + new read-only weekly trend-digest script for landing-page candidate review. Vitest 139/139.
+Last updated: 26 May 2026 (evening) — Day delivered four pushes (4 commits Vercel-live) + four more local sprints. (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` shipped + pushed (`a59a0eb`). (2) Home daily-pool audit found 5/10 next dilemmas missing personal stake. (3) `AI-PROMPT-PUNCHY-FRAMING-01` shipped + pushed (`d39ea03` + `db6bd91`). (4) `AI-TREND-DRAFTS-SCALE-01` (local) — bump daily AI-generated drafts from 3 to 10 per locale via env. (5) **`TREND-SIGNAL-GOOGLE-FIX-01`** (local) — replaced dead Google Trends RSS source with **Wikipedia top-pageviews** (EN + IT, free, official Wikimedia API) + added **HackerNews top stories** as tech-ethics signal (EN-only). Source weights rebalanced: wikipedia 30%, reddit 25%, rss 20%, hackernews 10%, internal_feedback 15%. `google_trends` weight set to 0 (deprecated but kept in TrendSource type for backward compat with existing Redis drafts). Trend volume nearly tripled in EN (15→37 signals) and almost doubled in IT (15→27). Vitest 139/139.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
+## 0. Session 26 May 2026 (late evening) — `TREND-SIGNAL-GOOGLE-FIX-01`
+
+### TL;DR
+
+This morning's trend-digest revealed Google Trends RSS endpoints (daily + realtime + dailytrends JSON) all return HTTP 404 — Google has discontinued the public free interface. The daily generation cron had been running on Reddit + RSS only. Sprint replaces the dead source with **Wikipedia top-pageviews** (free, official Wikimedia REST API, separate EN + IT projects) and adds **HackerNews top stories** as a complementary tech-ethics signal (EN-only by audience convention). PM picked option B (free alternative source) over option A (remove source entirely) or option C (paid SerpAPI ~$50/mo). Bing was considered and ruled out (no public free trends API since Microsoft moved to paid Azure Cognitive Services).
+
+### Numbers
+
+| Locale | Before (Google + Reddit + RSS) | After (Wikipedia + Reddit + RSS + HN) | Δ |
+|---|---:|---:|---|
+| EN | 15 signals (0 from Google) | 37 signals | +147% |
+| IT | 15 signals (0 from Google) | 27 signals | +80% |
+
+### Files changed (local — awaits PM GO to commit + push)
+
+| File | Change |
+|---|---|
+| `lib/trend-signals.ts` | (a) New fetchers: `fetchWikipediaTrending(locale)` hits `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/{en,it}.wikipedia/all-access/YYYY/MM/DD` (yesterday-2d to dodge Wikimedia's 1-2 day lag), filters meta namespaces (`Main_Page`, `Special:*`, `Wikipedia:*`, `Pagina_principale`, `Speciale:Ricerca`), takes top 10 real topics, view-weighted score 30-100. `fetchHackerNews()` hits Firebase `topstories.json` + per-item `item/{id}.json` in parallel, skips `type:'job'`, takes top 8. (b) Removed `fetchGoogleTrends()` — endpoints all 404. (c) Rebalanced `BASE_WEIGHTS`: wikipedia 0.30, reddit 0.25, rss 0.20, hackernews 0.10, internal_feedback 0.15, google_trends 0 (deprecated but retained in `TrendSource` type for backward compat with existing Redis drafts). (d) `fetchTrendSignals(locale)` now calls Wikipedia + Reddit + RSS + (EN-only) HackerNews. Source-blend math updated. |
+| `lib/dynamic-scenarios.ts` | Added `'wikipedia' \| 'hackernews'` to the parallel `TrendSource` type (line 107) so Redis drafts can carry the new source labels. `'google_trends'` retained for legacy. |
+| `scripts/trend-digest.mjs` | Mirror update: replaced Google Trends + r/popular fetchers with Wikipedia + r/popular + HackerNews. Same meta-namespace filter. Intro copy updated. |
+| `reports/trend-digest-2026-05-26.md` | Regenerated. |
+| `CURRENT_HANDOFF.md` + `ROADMAP.md` | this section. |
+
+### Verification
+
+- `npm run typecheck` ✅
+- `npm run build` ✅ (all routes prerender)
+- `npm run test` ✅ 139/139
+- `git diff --check` ✅ exit 0
+- Manual run of `scripts/trend-digest.mjs` ✅ produces a richer report
+
+### Hard constraints preserved
+
+- HUMAN_ONLY: `AUTO_PUBLISH_DILEMMAS=false` unchanged. Pixie WIP untouched.
+- No Stripe / auth / legal / middleware changes.
+- No Redis schema change beyond expanding the `TrendSource` literal union; existing drafts keep their `trendSource: 'google_trends'` label and continue to parse.
+- No new external paid dependency. Wikimedia REST API requires no auth, has generous rate limits, and is officially supported.
+
+### Backward compat notes
+
+- Existing `dynamic:scenarios` / `dynamic:drafts` entries with `trendSource: 'google_trends'` continue to validate against the expanded union.
+- Admin review UI (if it switches on `trendSource`) needs no change — it already accepts arbitrary `TrendSource` strings.
+- The `ENABLE_X_TRENDS` / `ENABLE_INSTAGRAM_TRENDS` / `ENABLE_TIKTOK_TRENDS` env toggles still work; they just renormalize alongside the new wikipedia/hackernews weights.
+
+### Risks
+
+1. **Wikipedia pageview lag**: Wikimedia's `top/.../YYYY/MM/DD` endpoint is published with a 1-2 day delay. We query `now - 2 days` (UTC) to avoid 404s. Acceptable for daily cron use — the signal is "what was big yesterday", not "what is trending right now".
+2. **HackerNews per-item fetch volume**: 12 parallel item lookups per cron run. Firebase rate limits are generous; not a concern at 1 run/day.
+3. **Wikipedia topical mismatch**: pageview leaders are sometimes celebrities (e.g. "Michael Jackson") or recent films, which are not direct moral-dilemma material. Mitigated by the existing AI prompt that abstracts topics into universal dilemmas, plus the editorial-shape + punchy-framing gates.
+
+### How to throttle (zero-code)
+
+Same as before: `DAILY_DILEMMA_DRAFTS_PER_LOCALE=5` (or any int 1-20) in Vercel Production env.
+
+### Queued follow-ups (carried over)
+
+- `TREND-LANDING-COVERAGE-MATCHER-01` — extend `trend-digest.mjs` with blog/landing cross-ref.
+- `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01` — surface the 7 warning codes in admin review UI.
+- `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` — tighten regex after AI prompt changes settle.
+
+---
+
+## 0a. Session 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
 
 ### TL;DR
 
@@ -75,7 +137,7 @@ Unset → defaults to 10 per locale.
 
 ---
 
-## 0a. Session 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
+## 0b. Session 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
 
 ### TL;DR
 
@@ -114,7 +176,7 @@ PM flagged today's home daily dilemma as incomprehensible. Audit of the next 10 
 
 ---
 
-## 0b. Session 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
+## 0c. Session 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
 
 ### TL;DR
 
@@ -135,7 +197,7 @@ Continuation of yesterday's loyalty/honesty cornerstone work. Promoted EN articl
 
 ---
 
-## 0c. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
+## 0d. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
 
 ### TL;DR
 

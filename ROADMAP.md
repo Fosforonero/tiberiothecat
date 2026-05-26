@@ -3,11 +3,59 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 26 Maggio 2026 (sera) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + one more sprint local (`AI-TREND-DRAFTS-SCALE-01` awaiting push). Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` (EN+IT moral-dilemmas-examples promoted to cornerstone), (2) home daily-pool audit (read-only) revealing 5/10 next dilemmas missing personal stake, (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 new SAFETY_RULES (personal-stake mandatory, punchy options, visible decision verb) + 3 matching gate warnings (`missing_personal_stake`, `wordy_setup_question`, `wordy_option`) + 9 new vitest cases; detection on home pool 1/10 → 8/10 flagged, (4) `AI-TREND-DRAFTS-SCALE-01` — daily AI draft count from 3 to configurable default 10 per locale via `DAILY_DILEMMA_DRAFTS_PER_LOCALE` env, plus a read-only weekly `trend-digest` script for landing-page candidate PM review. Latent finding: Google Trends RSS returns 0 items — cron has been running on Reddit + RSS only for some time. Vitest 139/139. 3 Pixie WIP preserved untouched.
+Ultimo aggiornamento: 26 Maggio 2026 (tarda sera) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + 4 sprint local pendenti push. Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`. (2) Home daily-pool audit. (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 SAFETY_RULES + 3 gate warnings; detection 1/10 → 8/10. (4) `AI-TREND-DRAFTS-SCALE-01` — daily draft count 3 → configurable default 10 per locale via env. (5) `TREND-SIGNAL-GOOGLE-FIX-01` — replaced dead Google Trends RSS with Wikipedia top-pageviews (EN+IT, official Wikimedia REST API) + added HackerNews top stories (EN-only). Trend volume EN 15→37 (+147%), IT 15→27 (+80%). Vitest 139/139. 3 Pixie WIP preserved untouched.
 
 ---
 
-## 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
+## 26 May 2026 (tarda sera) — `TREND-SIGNAL-GOOGLE-FIX-01`
+
+Per latent finding di stamattina: Google Trends RSS / realtime / dailytrends JSON tutti restituiscono HTTP 404. Endpoint discontinuato. Il cron daily-generation girava su Reddit + RSS only. PM ha scelto option B (free alternative source) tra: A rimuovere e rebalance, B sostituzione gratuita, C paid SerpAPI ($50/mese). Bing scartato (no free trends API, solo Azure paid).
+
+### Shipped (local — awaits PM GO to commit + push)
+
+| File | Change |
+|---|---|
+| `lib/trend-signals.ts` | Nuovi fetcher: `fetchWikipediaTrending(locale)` — Wikimedia REST `/api/rest_v1/metrics/pageviews/top/{en,it}.wikipedia/all-access/YYYY/MM/DD` (queries yesterday-2d per lag Wikimedia), filtra meta namespace (`Main_Page`, `Special:*`, `Wikipedia:*`, `Pagina_principale`, `Speciale:Ricerca`), top 10 topic reali, score view-weighted 30-100. `fetchHackerNews()` — Firebase `topstories.json` + per-item lookup parallelo, skip `type:'job'`, top 8. Rimosso `fetchGoogleTrends` (404). Rebilanciato `BASE_WEIGHTS`: wikipedia 0.30, reddit 0.25, rss 0.20, hackernews 0.10, internal_feedback 0.15, google_trends 0. |
+| `lib/dynamic-scenarios.ts` | Espanso `TrendSource` union con `'wikipedia' \| 'hackernews'` (backward compat: `'google_trends'` mantenuto per draft Redis esistenti). |
+| `scripts/trend-digest.mjs` | Mirror dello stesso shift di sorgenti + intro copy update. |
+
+### Numbers
+
+| Locale | Before | After | Δ |
+|---|---:|---:|---|
+| EN | 15 signal (0 Google) | 37 signal | **+147%** |
+| IT | 15 signal (0 Google) | 27 signal | **+80%** |
+
+### Verification
+
+- `npm run typecheck` ✅
+- `npm run build` ✅
+- `npm run test` ✅ 139/139
+- `git diff --check` ✅
+- Digest manual run ✅
+
+### Hard constraints preserved
+
+- HUMAN_ONLY: `AUTO_PUBLISH_DILEMMAS=false` unchanged.
+- No Stripe / auth / legal / middleware / Redis schema changes (solo espansione TrendSource union — backward compat).
+- No new paid dep. Wikimedia REST = no auth, generous rate limits, official.
+- Pixie WIP untouched.
+
+### Risks
+
+1. Wikipedia pageview lag 1-2 days → mitigato con `now - 2d` (UTC). Signal è "what was big yesterday".
+2. HackerNews 12 parallel item fetch / cron run — Firebase rate limit generoso. Niente preoccupazione.
+3. Wikipedia leaders sono spesso celebrities/film. Mitigato dal prompt AI che astrae + dai gate punchy-framing.
+
+### Backward compat
+
+- Drafts esistenti con `trendSource: 'google_trends'` continuano a parsare (union allargata).
+- Admin review UI: nessun cambio richiesto.
+- Toggle `ENABLE_X_TRENDS` / `ENABLE_INSTAGRAM_TRENDS` / `ENABLE_TIKTOK_TRENDS` ancora funzionanti — rinormalizzano sui pesi nuovi.
+
+---
+
+## 26 May 2026 (sera) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
 
 Per PM ask: "site fetches world Google Trends daily, generates ~10 themed dilemmas + landing pages if relevant". Discovery: the trend → AI-draft pipeline already exists at `/api/cron/generate-dilemmas` (06:00 UTC) backed by `lib/trend-signals.ts`. Draft count was hard-coded to 3 per locale. Single knob lifted to 10 per locale (configurable via env, clamped 1-20). Landing pages explicitly NOT auto-generated — instead a read-only weekly `trend-digest` script surfaces landing-page candidates for PM judgment.
 
