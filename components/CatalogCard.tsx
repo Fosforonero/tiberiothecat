@@ -122,8 +122,10 @@ export default function CatalogCard({
               <CatalogCardVoted scenarioId={id} locale={locale} resultsHref={resultsHref} youVotedCopy={c.youVoted} />
             </div>
 
-            {/* Question */}
-            <p className="text-[var(--text)] text-[14.5px] font-semibold leading-[1.4] -tracking-[0.003em] mb-3 [text-wrap:pretty]">
+            {/* Question — clamped to 4 lines + fixed min-height so the
+                option pills (and mini split bar) align at the same Y across
+                cards in the grid regardless of how long each question is. */}
+            <p className="text-[var(--text)] text-[14.5px] font-semibold leading-[1.4] -tracking-[0.003em] mb-3 [text-wrap:pretty] line-clamp-4 min-h-[5.6em]">
               {question}
             </p>
 
@@ -145,10 +147,14 @@ export default function CatalogCard({
               </div>
             </div>
 
-            {/* Mini split bar — only when totalVotes >= 50 (social-proof floor) */}
-            {hasSplit && aPct !== undefined && (
-              <SplitBar a={aPct} b={bPct} size="sm" label={`${aPct}% / ${bPct}%`} />
-            )}
+            {/* Mini split bar slot — fixed height so a card without enough
+                votes (no bar) still aligns its footer with cards that have
+                the bar. Renders the bar only when totalVotes >= 50. */}
+            <div className="h-1">
+              {hasSplit && aPct !== undefined && (
+                <SplitBar a={aPct} b={bPct} size="sm" label={`${aPct}% / ${bPct}%`} />
+              )}
+            </div>
           </div>
         </div>
       </Link>

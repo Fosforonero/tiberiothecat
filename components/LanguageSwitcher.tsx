@@ -46,6 +46,37 @@ function deriveCurrent(pathname: string): Locale {
   return pathname === '/it' || pathname.startsWith('/it/') ? 'it' : 'en'
 }
 
+/**
+ * Read the page's declared cross-locale URL from <link rel="alternate"
+ * hreflang> tags in document.head. Next.js renders these from
+ * `metadata.alternates.languages`. Returns a same-origin path with query
+ * preserved, or null if no matching link is found.
+ *
+ * Covers blog posts and SEO topic landings with `alternateSlug`, plus any
+ * future per-locale slugs that get added without touching this component.
+ */
+function alternateFromHead(target: Locale): string | null {
+  if (typeof document === 'undefined') return null
+  const candidates = target === 'it'
+    ? ['it-IT', 'it']
+    : ['en-US', 'en', 'x-default']
+  for (const lang of candidates) {
+    const link = document.querySelector(
+      `link[rel="alternate"][hreflang="${lang}"]`,
+    ) as HTMLLinkElement | null
+    const href = link?.href
+    if (!href) continue
+    try {
+      const url = new URL(href, window.location.origin)
+      if (url.origin !== window.location.origin) continue
+      return url.pathname + url.search + url.hash
+    } catch {
+      // ignore malformed href
+    }
+  }
+  return null
+}
+
 export default function LanguageSwitcher({ size = 'md' }: Props) {
   const pathname = usePathname() ?? '/'
   const router = useRouter()
@@ -55,7 +86,12 @@ export default function LanguageSwitcher({ size = 'md' }: Props) {
   function switchTo(target: Locale) {
     if (target === current) return
     setLangCookie(target)
-    router.push(alternateLocalePath(pathname, target))
+    // 1) Prefer the page's declared <link rel="alternate" hreflang> — set
+    //    by Next.js from `metadata.alternates.languages` and covers
+    //    dynamic-slug pages (blog posts, SEO topic landings) precisely.
+    // 2) Fallback to the static slug map / prefix toggle in lib/locales.
+    const fromHead = alternateFromHead(target)
+    router.push(fromHead ?? alternateLocalePath(pathname, target))
   }
 
   return isPill ? (
