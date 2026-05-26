@@ -12,6 +12,7 @@ import { VotesChart, SignupsChart } from './AdminCharts'
 import CronDebug from './CronDebug'
 import GenerateDraftPanel from './GenerateDraftPanel'
 import BlogDraftQueue from './BlogDraftQueue'
+import LandingDraftQueue from './LandingDraftQueue'
 import SeedBatchPanel from './SeedBatchPanel'
 import ScenarioQAEditor from './ScenarioQAEditor'
 import ContentSignalsPanel from './ContentSignalsPanel'
@@ -26,8 +27,8 @@ import { getFeedbackBatchDetail } from '@/lib/redis'
 export const metadata = { title: 'Admin' }
 export const dynamic = 'force-dynamic'
 
-type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'content-signals' | 'blog' | 'monetization' | 'roles'
-const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'content-signals', 'blog', 'monetization', 'roles']
+type AdminTab = 'overview' | 'voting' | 'content' | 'content-qa' | 'ai-drafts' | 'content-signals' | 'blog' | 'landing' | 'monetization' | 'roles'
+const VALID_TABS: AdminTab[] = ['overview', 'voting', 'content', 'content-qa', 'ai-drafts', 'content-signals', 'blog', 'landing', 'monetization', 'roles']
 
 interface AdminProps {
   searchParams: { preview?: string; tab?: string }
@@ -264,6 +265,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { id: 'ai-drafts'        as AdminTab, label: 'Bozze AI',         Icon: Zap             },
     { id: 'content-signals'  as AdminTab, label: 'Content Signals',  Icon: Inbox           },
     { id: 'blog'             as AdminTab, label: 'Blog',             Icon: BookOpen        },
+    { id: 'landing'          as AdminTab, label: 'Landing',          Icon: Search          },
     { id: 'monetization'     as AdminTab, label: 'Monetizzazione',   Icon: Star            },
   ] : [
     { id: 'overview'         as AdminTab, label: 'Overview',         Icon: LayoutDashboard },
@@ -273,6 +275,7 @@ export default async function AdminPage({ searchParams }: AdminProps) {
     { id: 'ai-drafts'        as AdminTab, label: 'AI Drafts',        Icon: Zap             },
     { id: 'content-signals'  as AdminTab, label: 'Content Signals',  Icon: Inbox           },
     { id: 'blog'             as AdminTab, label: 'Blog',             Icon: BookOpen        },
+    { id: 'landing'          as AdminTab, label: 'Landing',          Icon: Search          },
     { id: 'monetization'     as AdminTab, label: 'Monetization',     Icon: Star            },
   ]
   const TABS = isSuperAdmin
@@ -741,6 +744,26 @@ export default async function AdminPage({ searchParams }: AdminProps) {
 
           <GenerateDraftPanel />
           <BlogDraftQueue />
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          TAB: Landing
+      ══════════════════════════════════════════════ */}
+      {activeTab === 'landing' && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 flex items-start gap-3">
+            <Search size={16} className="text-cyan-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-bold text-cyan-300 mb-1">Landing page draft queue</p>
+              <p className="text-xs text-white/50 leading-relaxed">
+                Review SEO/GEO landing candidates before implementation. Approve marks a landing as ready for a code sprint;
+                it does not publish a page, update sitemap, or create routes automatically.
+              </p>
+            </div>
+          </div>
+
+          <LandingDraftQueue />
         </div>
       )}
 
