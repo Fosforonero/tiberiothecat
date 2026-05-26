@@ -74,20 +74,33 @@ export default function CatalogToolbar({
     }
   }, [])
 
-  // When pill panel is open and user clicks outside / presses Esc → close.
+  // When user scrolls back up past the threshold the panel reopens inline —
+  // any stale forceOpen state would re-trigger the floating overlay on the
+  // next scroll-down. Reset it.
+  useEffect(() => {
+    if (!scrolled) setForceOpen(false)
+  }, [scrolled])
+
+  // While floating panel is open: close on Esc, outside click, OR scroll.
   useEffect(() => {
     if (!forceOpen) return
+    const initialY = window.scrollY
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setForceOpen(false) }
     const onPointer = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setForceOpen(false)
       }
     }
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - initialY) > 8) setForceOpen(false)
+    }
     window.addEventListener('keydown', onKey)
     window.addEventListener('mousedown', onPointer)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('mousedown', onPointer)
+      window.removeEventListener('scroll', onScroll)
     }
   }, [forceOpen])
 
@@ -184,35 +197,40 @@ export default function CatalogToolbar({
     </>
   )
 
-  // PILL mode: scrolled past threshold AND panel not forced open.
-  // INLINE expanded: top of page (not scrolled).
-  // FLOATING expanded: scrolled + forceOpen (pill stays, panel drops below as overlay).
-  const showPillOnly = scrolled && !forceOpen
+  // Visual states:
+  //   - !scrolled              → full panel inline (top of page)
+  //   - scrolled && !forceOpen → pill only inline (closed)
+  //   - scrolled &&  forceOpen → pill inline + floating panel overlay below
   const showFloating = scrolled && forceOpen
 
   return (
     <div ref={wrapperRef} className="sticky top-[58px] z-40 mb-6">
       <div
         className={[
-          'mx-auto bg-[#0a0a22] border transition-[border-radius,padding,box-shadow] duration-300 ease-out motion-reduce:transition-none',
-          showPillOnly
-            ? 'w-fit max-w-full rounded-full px-4 py-2 cursor-pointer border-[var(--border-hi)] hover:border-[rgba(77,159,255,0.55)] shadow-[0_8px_24px_rgba(0,0,0,0.55),0_0_0_1px_rgba(77,159,255,0.10)_inset]'
-            : 'w-full rounded-2xl px-4 sm:px-5 py-4 border-[var(--border-hi)] shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_0_1px_rgba(77,159,255,0.06)_inset]',
+          'mx-auto bg-[var(--surface-3,#1a1a40)] border transition-[border-radius,padding,box-shadow,background-color] duration-300 ease-out motion-reduce:transition-none',
+          scrolled
+            ? 'w-fit max-w-full rounded-full px-4 py-2 cursor-pointer border-[rgba(77,159,255,0.45)] hover:border-[rgba(77,159,255,0.7)] shadow-[0_8px_28px_rgba(0,0,0,0.6),0_0_0_1px_rgba(77,159,255,0.18)_inset,0_0_24px_rgba(77,159,255,0.12)]'
+            : 'w-full rounded-2xl px-4 sm:px-5 py-4 border-[var(--border-hi)] shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_0_1px_rgba(77,159,255,0.08)_inset]',
         ].join(' ')}
-        role={showPillOnly ? 'button' : undefined}
-        tabIndex={showPillOnly ? 0 : undefined}
-        aria-expanded={!showPillOnly}
+        role={scrolled ? 'button' : undefined}
+        tabIndex={scrolled ? 0 : undefined}
+        aria-expanded={!scrolled || forceOpen}
         aria-controls={showFloating ? 'catalog-filter-panel' : undefined}
-        aria-label={showPillOnly ? filtersLabel : undefined}
-        onClick={showPillOnly ? () => setForceOpen(true) : undefined}
-        onKeyDown={showPillOnly ? (e) => {
+        aria-label={scrolled ? filtersLabel : undefined}
+        onClick={scrolled ? (e) => {
+          // Don't toggle if the click came from inside the floating panel
+          // bubbling through (it shouldn't, but defensive).
+          if ((e.target as HTMLElement).closest('#catalog-filter-panel')) return
+          setForceOpen(v => !v)
+        } : undefined}
+        onKeyDown={scrolled ? (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-            setForceOpen(true)
+            setForceOpen(v => !v)
           }
         } : undefined}
       >
-        {showPillOnly ? (
+        {scrolled ? (
           <div className="flex items-center gap-3 text-[13px] font-semibold whitespace-nowrap">
             <svg aria-hidden="true" viewBox="0 0 16 16" className="w-3.5 h-3.5 text-[var(--neon-blue)] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="7" cy="7" r="5" />
@@ -221,7 +239,10 @@ export default function CatalogToolbar({
             <span className="font-mono tabular-nums text-[var(--text)]">{countLabel}</span>
             <span aria-hidden="true" className="text-[var(--border-hi)]">·</span>
             <span className="text-[var(--muted)] truncate max-w-[140px] sm:max-w-none">{sortLabel}</span>
-            <span aria-hidden="true" className="text-[var(--muted-2,#5e7299)] text-[10px] ml-0.5">▾</span>
+            <span
+              aria-hidden="true"
+              className={`text-[var(--muted-2,#5e7299)] text-[10px] ml-0.5 transition-transform duration-200 motion-reduce:transition-none ${forceOpen ? 'rotate-180' : ''}`}
+            >▾</span>
           </div>
         ) : (
           PanelBody
@@ -233,7 +254,7 @@ export default function CatalogToolbar({
           id="catalog-filter-panel"
           className="absolute top-full left-0 right-0 mt-2 z-50 animate-[slide-down_180ms_ease-out_both] motion-reduce:animate-none"
         >
-          <div className="w-full rounded-2xl px-4 sm:px-5 py-4 bg-[#0a0a22] border border-[var(--border-hi)] shadow-[0_16px_48px_rgba(0,0,0,0.6),0_0_0_1px_rgba(77,159,255,0.08)_inset]">
+          <div className="w-full rounded-2xl px-4 sm:px-5 py-4 bg-[var(--surface-3,#1a1a40)] border border-[rgba(77,159,255,0.35)] shadow-[0_20px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(77,159,255,0.15)_inset,0_0_40px_rgba(77,159,255,0.10)]">
             {PanelBody}
           </div>
         </div>
