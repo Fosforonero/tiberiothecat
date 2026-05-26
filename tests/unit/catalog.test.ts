@@ -10,6 +10,7 @@ import {
   divisivityOf,
   pickDaily,
   pickMostDivisive,
+  pickMostVoted,
   categoryFromSlug,
   slugFromCategory,
   DIVISIVE_MIN_VOTES,
@@ -354,6 +355,34 @@ describe('pickMostDivisive', () => {
   it('returns undefined when no eligible item', () => {
     const onlyTiny = new Map<string, VoteDetail>([['tiny', { a: 25, b: 5 }]])
     expect(pickMostDivisive([items[2]], onlyTiny)).toBeUndefined()
+  })
+})
+
+describe('pickMostVoted', () => {
+  const items: CatalogItem[] = [
+    { id: 'a', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality',  locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'b', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality',  locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'c', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'lifestyle', locale: 'en', isDynamic: false, isLifestyle: true,  freshnessTs: 0 },
+  ]
+
+  it('returns the item with the highest vote count', () => {
+    const votes = new Map<string, number>([['a', 10], ['b', 30]])
+    expect(pickMostVoted(items, votes)?.id).toBe('b')
+  })
+
+  it('falls back to the first item when no votes exist', () => {
+    const votes = new Map<string, number>()
+    expect(pickMostVoted(items, votes)?.id).toBe('a')
+  })
+
+  it('respects excludeId', () => {
+    const votes = new Map<string, number>([['a', 10], ['b', 30]])
+    expect(pickMostVoted(items, votes, 'b')?.id).toBe('a')
+  })
+
+  it('skips lifestyle items', () => {
+    const votes = new Map<string, number>([['c', 999]])
+    expect(pickMostVoted(items, votes)?.id).toBe('a')
   })
 })
 

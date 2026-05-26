@@ -312,3 +312,27 @@ export function pickMostDivisive(
   }
   return best
 }
+
+/**
+ * Pick the most-voted item. Used as fallback for the second featured card
+ * when no item has enough votes for pickMostDivisive. Excludes lifestyle and
+ * the daily pick.
+ */
+export function pickMostVoted(
+  items: CatalogItem[],
+  voteMap: ReadonlyMap<string, number>,
+  excludeId?: string,
+): CatalogItem | undefined {
+  let best: CatalogItem | undefined
+  let bestVotes = -1
+  for (const item of items) {
+    if (item.id === excludeId) continue
+    if (item.isLifestyle) continue
+    const v = voteMap.get(item.id) ?? 0
+    if (v > bestVotes) {
+      bestVotes = v
+      best = item
+    }
+  }
+  return best
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import CatalogSearchInput from '@/components/CatalogSearchInput'
 import SortSelect from '@/components/SortSelect'
@@ -26,29 +26,23 @@ export interface CatalogToolbarCopy {
 }
 
 interface Props {
-  pathBase:        string
-  locale:          'en' | 'it'
-  // Current state values (from URL params, server-resolved).
-  query:           string
-  category:        Category | 'all'
-  sort:            SortMode
-  voteState:       VoteState
-  divisivity:      number
-  // UI props
-  chips:           CategoryChip[]
-  /** Already-formatted count string (e.g. "12 dilemmas") — server-side formatted. */
-  countLabel:      string
-  copy:            CatalogToolbarCopy
+  pathBase:   string
+  locale:     'en' | 'it'
+  query:      string
+  category:   Category | 'all'
+  sort:       SortMode
+  voteState:  VoteState
+  divisivity: number
+  chips:      CategoryChip[]
+  countLabel: string
+  copy:       CatalogToolbarCopy
 }
 
-const DEFAULTS = {
-  q:    '',
-  cat:  'all',
-  sort: 'popular',
-  vs:   'all',
-  div:  0,
-  page: 1,
-}
+const DEFAULTS = { q: '', cat: 'all', sort: 'popular', vs: 'all', div: 0, page: 1 }
+// Collapse the toolbar into a compact pill once the user has scrolled past
+// the hero + featured row. 320px is roughly the bottom of the featured cards
+// on desktop and a bit lower on mobile — close enough on both.
+const SCROLL_COLLAPSE_PX = 320
 
 export default function CatalogToolbar({
   pathBase, locale, query, category, sort, voteState, divisivity,
@@ -58,7 +52,45 @@ export default function CatalogToolbar({
   const pathname = usePathname()
   const base = pathname ?? pathBase
 
-  // Build URL with patched params, stripping defaults for clean canonical.
+  const [scrolled, setScrolled] = useState(false)
+  const [forceOpen, setForceOpen] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let raf = 0
+    const measure = () => {
+      setScrolled(window.scrollY > SCROLL_COLLAPSE_PX)
+      raf = 0
+    }
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(measure)
+    }
+    measure()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  // When pill panel is open and user clicks outside / presses Esc → close.
+  useEffect(() => {
+    if (!forceOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setForceOpen(false) }
+    const onPointer = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setForceOpen(false)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('mousedown', onPointer)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('mousedown', onPointer)
+    }
+  }, [forceOpen])
+
   const buildUrl = useCallback(
     (patch: { q?: string; cat?: Category | 'all'; sort?: SortMode; vs?: VoteState; div?: number; page?: number }) => {
       const next = {
@@ -67,7 +99,7 @@ export default function CatalogToolbar({
         sort: patch.sort ?? sort,
         vs:   patch.vs   ?? voteState,
         div:  patch.div  ?? divisivity,
-        page: patch.page ?? 1,   // any filter change resets page to 1
+        page: patch.page ?? 1,
       }
       const params = new URLSearchParams()
       if (next.q)                            params.set('q',    next.q)
@@ -86,8 +118,12 @@ export default function CatalogToolbar({
     router.replace(buildUrl(patch), { scroll: false })
   }, [router, buildUrl])
 
-  return (
-    <div className="cat-toolbar sticky top-[58px] z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 mb-6 bg-[rgba(7,7,24,0.85)] backdrop-blur-md border-b border-[var(--border)]">
+  const sortLabel = copy.sortOptions[sort]
+  const filtersLabel = locale === 'it' ? 'Filtri' : 'Filters'
+  const closeLabel = locale === 'it' ? 'Chiudi filtri' : 'Close filters'
+
+  const PanelBody = (
+    <>
       {/* Row 1 — search + sort + vote-state + counter */}
       <div className="grid gap-3 mb-3.5 grid-cols-1 lg:grid-cols-[minmax(180px,280px)_auto_auto_1fr] lg:items-center">
         <CatalogSearchInput
@@ -110,9 +146,21 @@ export default function CatalogToolbar({
             ariaLabel={copy.voteStateLabel}
           />
         </div>
-        <span className="font-mono text-[11px] font-semibold text-[var(--muted)] tracking-[0.08em] tabular-nums lg:ml-auto lg:justify-self-end">
-          {countLabel}
-        </span>
+        <div className="flex items-center justify-between gap-3 lg:ml-auto lg:justify-self-end">
+          <span className="font-mono text-[11px] font-semibold text-[var(--muted)] tracking-[0.08em] tabular-nums">
+            {countLabel}
+          </span>
+          {scrolled && forceOpen && (
+            <button
+              type="button"
+              onClick={() => setForceOpen(false)}
+              className="inline-flex items-center justify-center w-7 h-7 text-[12px] font-semibold text-[var(--muted)] hover:text-[var(--text)] rounded-md border border-[var(--border)] hover:border-[var(--border-hi)]"
+              aria-label={closeLabel}
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Row 2 — category chips + divisivity slider */}
@@ -133,6 +181,63 @@ export default function CatalogToolbar({
           suffix={copy.divisivitySuffix}
         />
       </div>
+    </>
+  )
+
+  // PILL mode: scrolled past threshold AND panel not forced open.
+  // INLINE expanded: top of page (not scrolled).
+  // FLOATING expanded: scrolled + forceOpen (pill stays, panel drops below as overlay).
+  const showPillOnly = scrolled && !forceOpen
+  const showFloating = scrolled && forceOpen
+
+  return (
+    <div ref={wrapperRef} className="sticky top-[58px] z-40 mb-6">
+      <div
+        className={[
+          'mx-auto bg-[#0a0a22] border transition-[border-radius,padding,box-shadow] duration-300 ease-out motion-reduce:transition-none',
+          showPillOnly
+            ? 'w-fit max-w-full rounded-full px-4 py-2 cursor-pointer border-[var(--border-hi)] hover:border-[rgba(77,159,255,0.55)] shadow-[0_8px_24px_rgba(0,0,0,0.55),0_0_0_1px_rgba(77,159,255,0.10)_inset]'
+            : 'w-full rounded-2xl px-4 sm:px-5 py-4 border-[var(--border-hi)] shadow-[0_8px_32px_rgba(0,0,0,0.45),0_0_0_1px_rgba(77,159,255,0.06)_inset]',
+        ].join(' ')}
+        role={showPillOnly ? 'button' : undefined}
+        tabIndex={showPillOnly ? 0 : undefined}
+        aria-expanded={!showPillOnly}
+        aria-controls={showFloating ? 'catalog-filter-panel' : undefined}
+        aria-label={showPillOnly ? filtersLabel : undefined}
+        onClick={showPillOnly ? () => setForceOpen(true) : undefined}
+        onKeyDown={showPillOnly ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setForceOpen(true)
+          }
+        } : undefined}
+      >
+        {showPillOnly ? (
+          <div className="flex items-center gap-3 text-[13px] font-semibold whitespace-nowrap">
+            <svg aria-hidden="true" viewBox="0 0 16 16" className="w-3.5 h-3.5 text-[var(--neon-blue)] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="7" cy="7" r="5" />
+              <path d="m11 11 3 3" strokeLinecap="round" />
+            </svg>
+            <span className="font-mono tabular-nums text-[var(--text)]">{countLabel}</span>
+            <span aria-hidden="true" className="text-[var(--border-hi)]">·</span>
+            <span className="text-[var(--muted)] truncate max-w-[140px] sm:max-w-none">{sortLabel}</span>
+            <span aria-hidden="true" className="text-[var(--muted-2,#5e7299)] text-[10px] ml-0.5">▾</span>
+          </div>
+        ) : (
+          PanelBody
+        )}
+      </div>
+
+      {showFloating && (
+        <div
+          id="catalog-filter-panel"
+          className="absolute top-full left-0 right-0 mt-2 z-50 animate-[slide-down_180ms_ease-out_both] motion-reduce:animate-none"
+        >
+          <div className="w-full rounded-2xl px-4 sm:px-5 py-4 bg-[#0a0a22] border border-[var(--border-hi)] shadow-[0_16px_48px_rgba(0,0,0,0.6),0_0_0_1px_rgba(77,159,255,0.08)_inset]">
+            {PanelBody}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

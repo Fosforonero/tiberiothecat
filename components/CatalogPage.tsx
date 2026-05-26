@@ -20,6 +20,7 @@ import {
   divisivityOf,
   pickDaily,
   pickMostDivisive,
+  pickMostVoted,
   categoryCounts,
   categoryFromSlug,
   slugFromCategory,
@@ -193,23 +194,27 @@ export default async function CatalogPage({
 
   // Featured row (computed BEFORE filtering so the user always sees them).
   const dailyItem = pickDaily(allItems)
+  // Primary: most divisive (>=50 votes). Fallback: most-voted item.
   const divisiveItem = pickMostDivisive(allItems, voteDetailMap, dailyItem?.id)
+  const secondaryItem: CatalogItem | undefined =
+    divisiveItem ?? pickMostVoted(allItems, voteMap, dailyItem?.id)
+  const secondaryKind: 'divisive' | 'mostVoted' = divisiveItem ? 'divisive' : 'mostVoted'
 
   const dailyFeatured = dailyItem ? {
     item:  dailyItem,
     votes: voteMap.get(dailyItem.id) ?? 0,
-    aPct:  computePctA(voteDetailMap.get(dailyItem.id)),
+    aPct:  computePctAOrUndefined(voteDetailMap.get(dailyItem.id)),
   } : undefined
-  const divisiveFeatured = divisiveItem ? {
-    item:  divisiveItem,
-    votes: voteMap.get(divisiveItem.id) ?? 0,
-    aPct:  computePctA(voteDetailMap.get(divisiveItem.id)),
+  const secondaryFeatured = secondaryItem ? {
+    item:  secondaryItem,
+    votes: voteMap.get(secondaryItem.id) ?? 0,
+    aPct:  computePctAOrUndefined(voteDetailMap.get(secondaryItem.id)),
   } : undefined
 
   // For the rest of the catalog, exclude featured ids so they don't double-appear.
   const featuredIds = new Set<string>()
-  if (dailyItem)    featuredIds.add(dailyItem.id)
-  if (divisiveItem) featuredIds.add(divisiveItem.id)
+  if (dailyItem)     featuredIds.add(dailyItem.id)
+  if (secondaryItem) featuredIds.add(secondaryItem.id)
   const catalogPool = allItems.filter(i => !featuredIds.has(i.id))
 
   // Voted ids — server-side voted IDs would require a per-request fetch from
@@ -296,7 +301,8 @@ export default async function CatalogPage({
 
         <CatalogFeaturedRow
           daily={dailyFeatured}
-          divisive={divisiveFeatured}
+          secondary={secondaryFeatured}
+          secondaryKind={secondaryKind}
           locale={locale}
           playHrefBase={playHrefBase}
           resultsHrefBase={resultsHrefBase}
@@ -379,13 +385,6 @@ export default async function CatalogPage({
       </div>
     </>
   )
-}
-
-function computePctA(detail: { a: number; b: number } | undefined): number {
-  if (!detail) return 50
-  const total = detail.a + detail.b
-  if (total === 0) return 50
-  return Math.round((detail.a / total) * 100)
 }
 
 function computePctAOrUndefined(detail: { a: number; b: number } | undefined): number | undefined {
