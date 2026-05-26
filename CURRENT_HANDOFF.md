@@ -1,6 +1,117 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 26 May 2026 (notte) — Day delivered four pushes (4 commits Vercel-live) + five more local sprints (cornerstone-2 + punchy gates + count-bump + Wikipedia/HN trend fix + **dilemmas catalog**). Vitest 156/156.
+Last updated: 26 May 2026 (tarda notte) — 7 commit pushati alla mainline durante la giornata. Vitest 184/184. Scenarios 41→47. Landing pages +4. Blog posts +4. Catalog redesign live. 9GAG meme radar shipped.
+
+## -1. Session 26 May 2026 (tarda notte) — Cornerstone duo + catalog polish + 9GAG radar
+
+### TL;DR
+
+Triple play in chiusura giornata: (a) trend-digest digest 9GAG meme radar + LEGAL.md signal watch list, (b) catalog redesign polish con pill toolbar e split-bar gradient, (c) **2 cornerstone SEO sprint completi (AI Companions & Teens + Religion & AI Ethics)** EN+IT con 6 dilemmi + 4 landing + 4 blog articles.
+
+### Commits pushati (questa sessione)
+
+| SHA | Sprint |
+|---|---|
+| `efac5fc` | `feat(trend-digest)`: 9GAG meme radar + LEGAL.md watch list |
+| `6f58c91` | `polish(catalog)`: pill toolbar doubling + bg contrast + auto-close on scroll |
+| `dac7b8a` | `feat(content)`: AI companions + religion-vs-AI cornerstones EN+IT (dilemmi + landing) |
+| `c37b1ac` | `content(blog)`: 2 cornerstone articles EN+IT (4 blog posts totali) |
+| `094f786` | `polish(catalog)`: softer toolbar morph + thicker glossy split bars |
+
+(earlier in the day: `8412636` 500-fix CatalogPage server→client fn, `7ac7369` catalog featured row + percent fix)
+
+### Sprint A — AI Companions & Teen Safety
+
+**Trigger**: trend-digest signal Reddit r/popular #16 (fit🟢high, score 58) — _"The terrifying rise of schoolboys making AI girlfriends"_.
+
+**Dilemmi nuovi** (EN+IT in `lib/scenarios.ts` + `lib/scenarios-it.ts` + insights in `lib/static-insights.ts`):
+- `ai-companion-teen` — Tuo figlio 13yo ha una AI girlfriend, blocchi o lasci?
+- `ai-companion-ban` — Legge che vieta AI companion sotto i 18?
+- `ai-grief-replica` — Replica AI di un caro defunto?
+
+**Landing pages** (in `lib/seo-topics.ts`):
+- EN: `/ai-companions-and-teens`
+- IT: `/it/ai-companion-adolescenti`
+- hreflang via `alternateSlug`, JSON-LD via template `[topicSlug]/page.tsx`
+- Research sources: U.S. Surgeon General + MIT Media Lab Personal Robots Group
+
+**Blog articles** (in `lib/blog.ts`):
+- EN: `/blog/ai-girlfriends-teen-development-risk` (~1100 parole, 5 FAQ, 6 H2)
+- IT: `/blog/ai-girlfriend-adolescenti-rischio-sviluppo` (mirror naturale)
+
+### Sprint B — Religion & AI Ethics
+
+**Trigger**: trend-digest signal r/italy #5 (score 88) _"Magnifica Humanitas, enciclica papale"_ + r/popular #30 _"Pope wrote 42000-word manifesto on AI"_.
+
+**Dilemmi nuovi**:
+- `pope-ai-encyclical` — Azienda tech che si vincola formalmente all'enciclica?
+- `religious-ai-ethics` — Voce religiosa nei comitati etici AI?
+- `ai-prayer-app` — Preghiere generate da AI: devozione o profanazione?
+
+**Landing pages**:
+- EN: `/religion-and-ai-ethics`
+- IT: `/it/religione-e-etica-ai`
+- Research sources: Rome Call for AI Ethics + Oxford Institute for Ethics in AI
+
+**Blog articles**:
+- EN: `/blog/religion-ai-ethics-who-decides` (~1300 parole, 5 FAQ, 7 H2)
+- IT: `/blog/religione-etica-ai-chi-decide` (mirror)
+
+### 9GAG Meme Radar
+
+Aggiunto `fetchNineGagTrending()` a `scripts/trend-digest.mjs`. Fail-soft su qualunque errore (HTTP, timeout, HTML structure change). Classificazione `safe` / `review` / `block` con block-list NSFW/violence/hate + review-list politica/religione/dark-humor. Angle templates per 11 categorie keyword-match → suggerisce angle dilemmi per PM brainstorming (mai auto-genera draft).
+
+Oggi 9GAG ha restituito 0 item parseabili (fail-soft path, HTML non match noti). Sezione "9GAG Meme Radar" nel report digest mostra correttamente _"source unavailable — failing soft"_.
+
+LEGAL.md aggiornato con `Third-Party Signal Watch List` sezione + entry 9GAG con re-evaluate triggers (frequency↑, login scraping, auto-publish da signal, opt-out signal da 9GAG, cease-and-desist).
+
+### Catalog polish iterations
+
+User feedback durante la giornata → 3 commit di polish:
+1. `6f58c91`: bug pill doppia (inline panel + floating overlay rendering simultaneously) → fix conditional. Bg `#0a0a22` → `var(--surface-3)` `#1a1a40` per contrasto. Auto-close su scroll quando floating panel aperto.
+2. `094f786`: animazione "legnosa" → easing Apple `cubic-bezier(0.32, 0.72, 0, 1)`, duration 300→420ms, hover/active scale, crossfade content swap (cat-fade-in 240ms), floating drop-in (cat-drop-in 320ms).
+3. (in `094f786`) split bar featured row: h-1.5→h-[9px] (50% più spessi), gradient orizzontale red→pink + blue→cyan, gloss vertical highlight, glow consistente 10+22px, ring inset sulla track.
+
+### Verification
+
+- `npm run typecheck` ✅ tutti i commit
+- `npm run test` ✅ 184/184 (4 nuovi per pickMostVoted + 18 nuovi static-insights coverage assertions)
+- `npm run build` ✅ tutti i commit (4 nuovi landing pages prerendered + 4 nuovi blog posts)
+- `git diff --check` ✅
+- EN/IT parity preservata su ogni surface
+- Pixie WIP 3 file preservati intoccati
+
+### PM-side follow-up (post-deploy)
+
+1. Verify Vercel deploy `094f786` → live
+2. Visit le 4 nuove URL landing (EN+IT entrambi per ognuno dei 2 cluster)
+3. Google Rich Results Test → ItemList + FAQPage + BreadcrumbList su ognuna
+4. GSC Request Indexing → 4 landing + 4 blog = 8 URL nuovi
+5. Sitemap fetch `/sitemap.xml` → contiene tutte e 8
+6. Mobile QA toolbar pill (320/375/393 + scroll behavior)
+7. Lighthouse mobile su 1 landing + 1 catalog → target ≥90 Performance, ≥95 SEO
+
+### Out of scope / queued sprints (deferred)
+
+- `TREND-LANDING-COVERAGE-MATCHER-01` — cross-ref blog/landing in trend-digest
+- `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01`
+- `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01`
+- `9GAG-PARSE-STRATEGY-V2` — quando 9GAG HTML cambia, aggiungere strategia parsing aggiornata (oggi fail-soft)
+- Blog FAQ batch on 15-18 articoli legacy
+- Sprint A.3 (cluster expansion): "Sleepover decline" article (signal #9), "Used market AI scams" article IT (signal #11)
+- 9GAG fetcher per IT-relevant content (oggi solo EN)
+
+### Anti-regression check (CLAUDE.md)
+
+- Anonymous voting ancora funziona (sprint touched only content + scripts + UI shell, no vote logic)
+- `currentVote` / `can_change_until` invariati
+- "Next dilemma" routing intact (47 statici + dynamic Redis)
+- Share URL non espone voto utente
+- Cache contract: `/play/[id]` force-dynamic, `/results/[id]` revalidate=60, `/moral-dilemmas` force-dynamic, `/[topicSlug]` revalidate=3600, `/blog/[slug]` static — tutti invariati
+- LEGAL.md: aggiornato per 9GAG signal source (NO cambio in user data flow, NO nuovo processor, NO cookie nuovo)
+- HUMAN_ONLY non toccati: auth, Stripe, Redis vote, middleware, admin
+
+---
 
 ## 0. Session 26 May 2026 (notte) — `DILEMMAS-CATALOG-01`
 
