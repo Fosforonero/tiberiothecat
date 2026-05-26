@@ -68,15 +68,28 @@ User-reported bugs caught + fixed first (commit `8dd2fe5`): language switcher wa
 5. Google Rich Results Test on the 4 new URLs
 6. GSC Request Indexing on the 4 new URLs
 
-### Note per domani (Pixie regression to investigate)
+### Note per domani — Pixie sprint combinato
 
-⚠️ **PIXIE-LEVEL-UP-STATE-REGRESSION-01** — User reported i Pixie non sembrano salire di livello e non cambiano stato al passaggio di livello. Da investigare domani. Possible scope:
-- Vote-to-XP wiring in vote API
-- Pixie level state derivation in profile/play page
-- Pixie state SSR vs client revalidation
-- Possible broken-on-save cache invalidation
+⚠️ **PIXIE-LEVEL-UP-STATE-REGRESSION-01 + PIXIE-VISUAL-POLISH-01** — PM ha chiesto di unire i due sprint in un unico pass.
 
-Owner: TBD prossima sessione. Not committed yet — solo nota qui per non perdere il signal.
+**Track 1 — Level/state regression** (functional):
+- I Pixie non sembrano salire di livello e non cambiano stato al passaggio di livello (user-reported 27 May morning)
+- Possible scope: vote-to-XP wiring in vote API, Pixie level derivation in profile/play page, SSR vs client revalidation, cache invalidation
+- Files candidati: `app/api/vote/**`, `lib/redis.ts`, `app/pixie/**`, `components/Pixie*`, `lib/pixie*`
+
+**Track 2 — Visual improvement** (cosmetic):
+- Miglioramento grafico Pixie già in coda da sprint precedenti
+- 3 file WIP nel working tree (carry-over PM):
+  - `scripts/generate-pixie-assets.mjs` (modified)
+  - `scripts/generate-pixie-emoji-assets.py` (untracked)
+  - `scripts/normalize-pixie-assets.py` (untracked)
+- Questi probabilmente ridiventano committable se il visual polish viene shippato
+
+**Approccio consigliato**: audit + bug-hunt prima sul level/state (root cause), poi visual polish nello stesso pass per evitare due deploy. Pairing: `frontend-ui-reviewer` (visual) + `backend-systems-reviewer` (vote→XP→level pipeline).
+
+**HUMAN_ONLY check**: vote API è HUMAN_ONLY area — necessario GO esplicito prima di toccare `app/api/vote/**`. Resto del flusso (componenti Pixie, asset generation, profile page) è SAFE_AUTONOMOUS.
+
+Owner: prossima sessione.
 
 ---
 
