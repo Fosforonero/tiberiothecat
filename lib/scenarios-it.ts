@@ -220,6 +220,40 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionA: 'Salvo il mio partner. Il legame personale viene prima.',
     optionB: 'Salvo il bambino. Una vita futura viene prima.',
   },
+
+  // ── AI COMPANIONS & TEEN SAFETY ─────────────────────────────────
+  'ai-companion-teen': {
+    question: 'Tuo figlio di 13 anni chatta ogni sera con un\'AI companion che ricorda tutto, non litiga mai e sembra una relazione romantica. I voti sono normali. Gli amici diminuiscono.',
+    optionA: 'Blocco l\'app. La prima cotta deve far male e sorprendere — è così che si impara a stare con gli altri.',
+    optionB: 'Lascio andare. Forzarlo offline ora spinge la relazione nel nascondiglio, non la chiude.',
+  },
+  'ai-companion-ban': {
+    question: 'Una legge vieta le AI companion romantiche sotto i 18 anni, con verifica dell\'età obbligatoria. Le ricerche mostrano che la solitudine cala MA si atrofizzano le abilità relazionali dal vivo.',
+    optionA: 'La approvo. Un adolescente non dovrebbe imparare l\'intimità da un sistema progettato per non contraddirlo mai.',
+    optionB: 'La blocco. I ragazzi più soli perderanno l\'app per primi; i popolari non se ne accorgeranno.',
+  },
+  'ai-grief-replica': {
+    question: 'Una startup costruisce repliche AI dei propri cari defunti a partire da messaggi, note vocali e foto. Tuo padre è morto cinque anni fa. La prova è gratuita.',
+    optionA: 'La provo. Sentire la sua voce rispondere a un\'ultima domanda vale il disagio.',
+    optionB: 'Rifiuto. Il lutto funziona perché la conversazione è finalmente finita.',
+  },
+
+  // ── RELIGION & AI ETHICS ────────────────────────────────────────
+  'pope-ai-encyclical': {
+    question: 'Un\'autorità religiosa pubblica un documento di 42.000 parole avvertendo che l\'AI non è moralmente neutra e fissa limiti etici. A una grande azienda tech viene chiesto di vincolarsi formalmente a quei limiti.',
+    optionA: 'Si vincola. Una cornice morale costruita in secoli batte qualunque memo di prodotto trimestrale.',
+    optionB: 'Rifiuta. Regole basate sulla fede non possono vincolare un sistema che serve utenti di ogni credo.',
+  },
+  'religious-ai-ethics': {
+    question: 'Un comitato etico AI ha tre filosofi, due ingegneri, un giurista e nessuna voce religiosa. Miliardi di utenti vengono da tradizioni di fede più antiche dell\'informatica.',
+    optionA: 'Aggiungo un seggio religioso. Escludere il vocabolario morale che la maggior parte degli utenti vive ogni giorno garantisce punti ciechi.',
+    optionB: 'Lo tengo laico. Un privilegio religioso al tavolo finirà per inclinare le decisioni a favore di una comunità rispetto alle altre.',
+  },
+  'ai-prayer-app': {
+    question: 'Un\'app genera preghiere personalizzate, dispensa benedizioni e offre confessione AI. Alcuni utenti dicono che ha approfondito la loro fede. Le istituzioni religiose la chiamano profanazione.',
+    optionA: 'La uso. Se avvicina qualcuno al sacro, il mezzo è secondario.',
+    optionB: 'La rifiuto. Esternalizzare il lavoro interiore a un chatbot trasforma il rito in comodità.',
+  },
 }
 
 export function translateScenarioToItalian<T extends Scenario>(scenario: T): T {

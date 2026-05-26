@@ -362,6 +362,58 @@ export const scenarios: Scenario[] = [
     emoji: '🔥',
     category: 'relationships',
   },
+
+  // ── AI COMPANIONS & TEEN SAFETY ───────────────────────────────
+  {
+    id: 'ai-companion-teen',
+    question: "Your 13-year-old chats every night with an AI companion that remembers everything, never argues, and feels like a romantic partner. Their grades are fine. Their friends are fewer.",
+    optionA: "Block the app. A first crush should hurt and surprise — that's how relationships are learned.",
+    optionB: "Let it run. Forcing them offline now will push the relationship into hiding, not end it.",
+    emoji: '💬',
+    category: 'technology',
+  },
+  {
+    id: 'ai-companion-ban',
+    question: "A law would ban AI romantic companions for anyone under 18, enforced by age verification. Studies show isolation drops AND face-to-face dating skills atrophy.",
+    optionA: "Pass it. A child should not learn intimacy from a system designed to never push back.",
+    optionB: "Block it. The lonely teens who use these apps will lose them first; the popular ones won't notice.",
+    emoji: '🚸',
+    category: 'technology',
+  },
+  {
+    id: 'ai-grief-replica',
+    question: "A startup builds AI replicas of dead loved ones from texts, voice notes, and photos. Your father died five years ago. The trial is free.",
+    optionA: "Try it. Hearing his voice answer one more question is worth the discomfort.",
+    optionB: "Refuse. Grief works because the conversation is finally over.",
+    emoji: '🕯️',
+    category: 'technology',
+  },
+
+  // ── RELIGION & AI ETHICS ──────────────────────────────────────
+  {
+    id: 'pope-ai-encyclical',
+    question: "A major religious leader publishes a 42,000-word document warning that AI is not morally neutral and listing ethical limits. A large tech company is asked to formally commit to those limits.",
+    optionA: "Commit. Frameworks shaped by centuries of moral reasoning beat anything written in a quarterly product memo.",
+    optionB: "Refuse. Faith-based rules cannot bind a system serving users of every belief.",
+    emoji: '⛪',
+    category: 'society',
+  },
+  {
+    id: 'religious-ai-ethics',
+    question: "An AI safety board has three philosophers, two engineers, one lawyer, and no religious voice. Billions of users come from faith traditions older than computing.",
+    optionA: "Add a religious seat. Excluding the moral vocabulary most users live by guarantees blind spots.",
+    optionB: "Keep it secular. Religious privilege at the table will pressure decisions for one community over others.",
+    emoji: '🕊️',
+    category: 'society',
+  },
+  {
+    id: 'ai-prayer-app',
+    question: "An app generates personalised prayers, dispenses blessings, and offers AI confession. Some users say it deepened their faith. Religious institutions call it a desecration.",
+    optionA: "Use it. If it brings someone closer to the sacred, the medium is secondary.",
+    optionB: "Reject it. Outsourcing the inner work to a chatbot turns ritual into convenience.",
+    emoji: '🙏',
+    category: 'society',
+  },
 ]
 
 export const CATEGORIES: { value: Category | 'all'; label: string; emoji: string }[] = [

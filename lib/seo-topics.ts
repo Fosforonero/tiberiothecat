@@ -743,6 +743,134 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false,
   },
+
+  // ── AI Companions & Teens (EN) ────────────────────────────────────────
+  {
+    slug: 'ai-companions-and-teens',
+    locale: 'en',
+    alternateSlug: 'ai-companion-adolescenti',
+    topic: 'AI Companions & Teens',
+    searchIntent: 'ai girlfriend, ai boyfriend, ai companion app, teen ai relationship, ai chatbot teens, character ai safety, ai companion under 18',
+    tension: 'the comfort of artificial intimacy vs the developmental cost of relationships that never push back',
+    headline: 'AI Companions and Teens — When Chatbots Replace First Crushes',
+    intro:
+      'AI companion apps have crossed from novelty to default for many adolescents. A 13-year-old can now have a romantic chat partner that remembers everything, never rejects them, and is always free. Mental-health researchers warn that this rewires how a young person learns relational repair, conflict, and reciprocity — the friction that turns infatuation into character. Lawmakers in several countries are debating age limits. Parents face a hard fork: forbid and risk hidden use, allow and risk dependency. The question is not whether AI companions exist — they do, at scale — but what it means to grow up alongside one.',
+    primaryScenarioId: 'ai-companion-teen',
+    relatedScenarioIds: ['ai-companion-ban', 'ai-grief-replica', 'delete-social-media', 'ai-replaces-jobs'],
+    relatedTopicSlugs: ['ai-ethics-dilemmas', 'religion-and-ai-ethics', 'privacy-ethics'],
+    researchNote:
+      'Pediatric and adolescent-development research increasingly distinguishes between AI use that supports learning and AI relationships that bypass the social friction adolescents need. The Surgeon General report on youth and technology (2023) and ongoing work at MIT Media Lab on social robotics treat AI companionship as a category that demands its own framework, separate from social media.',
+    researchSources: [
+      {
+        title: 'Social Media and Youth Mental Health — Surgeon General Advisory',
+        institution: 'U.S. Department of Health and Human Services',
+        url: 'https://www.hhs.gov/surgeongeneral/priorities/youth-mental-health/social-media/index.html',
+      },
+      {
+        title: 'Personal Robots Group — Research',
+        institution: 'MIT Media Lab',
+        url: 'https://robotic.media.mit.edu/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+
+  // ── AI Companions & Teens (IT) ────────────────────────────────────────
+  {
+    slug: 'ai-companion-adolescenti',
+    locale: 'it',
+    alternateSlug: 'ai-companions-and-teens',
+    topic: 'AI Companion e Adolescenti',
+    searchIntent: 'ai girlfriend italiano, ai companion app, app fidanzata virtuale, chatbot romantico minori, character ai sicurezza adolescenti, ai compagnia minori',
+    tension: 'la comodità di un\'intimità artificiale vs il costo evolutivo di una relazione che non contraddice mai',
+    headline: 'AI Companion e Adolescenti — Quando il Chatbot Sostituisce la Prima Cotta',
+    intro:
+      'Le app di compagnia AI sono passate dalla novità all\'abitudine per molti adolescenti. Un tredicenne può avere oggi un partner romantico digitale che ricorda tutto, non lo respinge mai ed è sempre gratis. Gli psicologi dello sviluppo avvertono che questo riscrive come un ragazzo impara a riparare un litigio, a gestire un conflitto e a reciprocare — quegli attriti che trasformano una cotta in carattere. Diversi paesi stanno discutendo limiti d\'età. I genitori vivono un dilemma duro: vietare e rischiare l\'uso nascosto, o permettere e rischiare la dipendenza. La domanda non è più se le AI companion esistano — esistono e sono diffuse — ma cosa significhi crescere accanto a una di loro.',
+    primaryScenarioId: 'ai-companion-teen',
+    relatedScenarioIds: ['ai-companion-ban', 'ai-grief-replica', 'delete-social-media', 'ai-replaces-jobs'],
+    relatedTopicSlugs: ['dilemmi-etici-intelligenza-artificiale', 'religione-e-etica-ai', 'etica-della-privacy'],
+    researchNote:
+      'La ricerca sullo sviluppo adolescenziale distingue sempre più tra un uso dell\'AI che supporta l\'apprendimento e relazioni AI che aggirano l\'attrito sociale di cui gli adolescenti hanno bisogno. Il rapporto Surgeon General su giovani e tecnologia (2023) e il lavoro del MIT Media Lab sulla robotica sociale trattano la compagnia AI come una categoria che richiede una cornice etica separata dai social media.',
+    researchSources: [
+      {
+        title: 'Social Media and Youth Mental Health — Surgeon General Advisory',
+        institution: 'U.S. Department of Health and Human Services',
+        url: 'https://www.hhs.gov/surgeongeneral/priorities/youth-mental-health/social-media/index.html',
+      },
+      {
+        title: 'Personal Robots Group — Research',
+        institution: 'MIT Media Lab',
+        url: 'https://robotic.media.mit.edu/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+
+  // ── Religion & AI Ethics (EN) ─────────────────────────────────────────
+  {
+    slug: 'religion-and-ai-ethics',
+    locale: 'en',
+    alternateSlug: 'religione-e-etica-ai',
+    topic: 'Religion & AI Ethics',
+    searchIntent: 'religion artificial intelligence ethics, vatican ai policy, papal encyclical ai, faith ai morality, religious view artificial intelligence, ai ethics religious leaders',
+    tension: 'centuries-old moral frameworks vs systems no scripture anticipated',
+    headline: 'Religion and AI Ethics — Who Decides What Machines Are Allowed to Do?',
+    intro:
+      'When a major religious leader publishes a document on artificial intelligence, secular tech leaders pay attention. Religious institutions speak for billions of people whose values shape consumer choices, voting patterns, and the legitimacy of new technologies. The question is whether faith-based ethics belongs in the room where AI policy is written — and if so, whose faith. The answer used to be optional. As AI touches medicine, end-of-life care, surveillance, and identity itself, it has become unavoidable. A century from now, ethicists may look back at this moment as the one where humans decided whether to let centuries of moral reasoning shape silicon, or to start the moral vocabulary over from scratch.',
+    primaryScenarioId: 'pope-ai-encyclical',
+    relatedScenarioIds: ['religious-ai-ethics', 'ai-prayer-app', 'robot-judge', 'mandatory-vaccine'],
+    relatedTopicSlugs: ['ai-ethics-dilemmas', 'ai-companions-and-teens', 'moral-foundations'],
+    researchNote:
+      'The Vatican\'s engagement with AI ethics — including the Rome Call for AI Ethics signed in 2020 — sits alongside formal positions from Buddhist, Islamic, and Jewish institutions on automated decision-making. Academic centres like Oxford\'s Institute for Ethics in AI and Stanford\'s HAI have published on the role of religious moral traditions in shaping AI policy frameworks.',
+    researchSources: [
+      {
+        title: 'Rome Call for AI Ethics',
+        institution: 'Pontifical Academy for Life',
+        url: 'https://www.romecall.org/',
+      },
+      {
+        title: 'Institute for Ethics in AI',
+        institution: 'University of Oxford',
+        url: 'https://www.oxford-aiethics.ox.ac.uk/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+
+  // ── Religion & AI Ethics (IT) ─────────────────────────────────────────
+  {
+    slug: 'religione-e-etica-ai',
+    locale: 'it',
+    alternateSlug: 'religion-and-ai-ethics',
+    topic: 'Religione ed Etica AI',
+    searchIntent: 'religione intelligenza artificiale, etica ai vaticano, enciclica papale ai, fede intelligenza artificiale, magnifica humanitas, autorità religiose ai',
+    tension: 'cornici morali costruite in secoli vs sistemi che nessuna scrittura ha anticipato',
+    headline: 'Religione ed Etica AI — Chi Decide Cosa È Lecito Fare alle Macchine?',
+    intro:
+      'Quando un\'autorità religiosa di grande influenza pubblica un documento sull\'intelligenza artificiale, i leader tech laici ascoltano. Le istituzioni religiose parlano per miliardi di persone i cui valori plasmano scelte di consumo, comportamenti di voto e la legittimità sociale di una nuova tecnologia. La domanda è se l\'etica basata sulla fede debba sedere al tavolo dove si scrive la policy AI — e in caso affermativo, quale fede. Un tempo la risposta era opzionale. Ora che l\'AI tocca medicina, fine vita, sorveglianza e identità, è diventata inevitabile. Tra un secolo gli storici dell\'etica potrebbero guardare a questo momento come a quello in cui l\'umanità ha deciso se lasciare che secoli di ragionamento morale plasmassero il silicio, o se ricominciare il vocabolario etico da zero.',
+    primaryScenarioId: 'pope-ai-encyclical',
+    relatedScenarioIds: ['religious-ai-ethics', 'ai-prayer-app', 'robot-judge', 'mandatory-vaccine'],
+    relatedTopicSlugs: ['dilemmi-etici-intelligenza-artificiale', 'ai-companion-adolescenti', 'fondamenti-morali'],
+    researchNote:
+      'L\'impegno del Vaticano sull\'etica AI — incluso il Rome Call for AI Ethics firmato nel 2020 — si affianca a posizioni ufficiali di istituzioni buddiste, islamiche ed ebraiche sulle decisioni automatizzate. Centri accademici come l\'Institute for Ethics in AI di Oxford e Stanford HAI hanno pubblicato sul ruolo delle tradizioni morali religiose nel modellare le policy AI.',
+    researchSources: [
+      {
+        title: 'Rome Call for AI Ethics',
+        institution: 'Pontifical Academy for Life',
+        url: 'https://www.romecall.org/',
+      },
+      {
+        title: 'Institute for Ethics in AI',
+        institution: 'University of Oxford',
+        url: 'https://www.oxford-aiethics.ox.ac.uk/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {

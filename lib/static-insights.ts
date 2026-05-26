@@ -788,6 +788,122 @@ const STATIC_INSIGHTS: Record<string, LocaleInsight> = {
     },
   },
 
+  // ── AI COMPANIONS & TEEN SAFETY ──────────────────────────────
+  'ai-companion-teen': {
+    en: {
+      body: "The split is not really about technology — it's about what relationships are for. One side treats relationships as a developmental skill that requires friction: the disagreements, the small rejections, the repair after a fight. The other treats relationships as a source of comfort first, with friction as an unfortunate side effect. AI companions optimise away the friction, which is exactly the part adolescents need to learn from.",
+      whyPeopleSplit: "Parents who lived through pre-internet adolescence often treat friction-rich first relationships as constitutive of becoming an adult. Parents closer to the digital generation often see the AI companion as a soft entry into intimacy — better than total isolation, especially for shy or neurodivergent teens. Neither side is wrong about what they're seeing.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat developmental friction as non-substitutable. A relationship that never says no can't teach how to handle no — and there's no clean way to grow up around something that never disagrees with you.",
+        b: "You may treat outright bans as a way to push the behaviour underground rather than end it. Engagement, modelling and conversation may be more effective than prohibition that the teen will simply route around.",
+      },
+    },
+    it: {
+      body: "La divisione non riguarda davvero la tecnologia — riguarda a cosa servono le relazioni. Una parte tratta le relazioni come una competenza evolutiva che richiede attrito: i disaccordi, le piccole rifiuti, la riparazione dopo un litigio. L'altra tratta le relazioni come una fonte di conforto in primo luogo, con l'attrito come effetto collaterale spiacevole. Le AI companion eliminano l'attrito — che è esattamente la parte da cui gli adolescenti devono imparare.",
+      whyPeopleSplit: "I genitori che hanno vissuto un'adolescenza pre-internet tendono a vedere le prime relazioni ricche di attrito come costitutive del diventare adulti. I genitori più vicini alla generazione digitale spesso vedono l'AI companion come un ingresso morbido nell'intimità — meglio dell'isolamento totale, soprattutto per adolescenti timidi o neurodivergenti. Nessuna delle due parti sbaglia su quello che vede.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare l'attrito evolutivo come non sostituibile. Una relazione che non dice mai no non può insegnare come gestire un no — e non c'è modo pulito di crescere accanto a qualcosa che non ti contraddice mai.",
+        b: "Potresti vedere i divieti netti come un modo per spingere il comportamento in clandestinità piuttosto che fermarlo. Coinvolgimento, esempio e conversazione possono essere più efficaci di un divieto che l'adolescente aggirerà comunque.",
+      },
+    },
+  },
+
+  'ai-companion-ban': {
+    en: {
+      body: "The dilemma is whether to protect the average teen at the cost of the marginal one. The data on AI companions is genuinely two-sided: a ban would help most users by removing a default that bypasses real-world social development; the same ban would harm a smaller group for whom the AI companion is the only social presence keeping them going.",
+      whyPeopleSplit: "Some treat policy as a tool for the median user; a ban that helps eight teens out of ten is worth the cost to two. Others treat policy as a question of who pays — and a ban that lifts general wellbeing by hurting the most vulnerable group is morally lopsided in a way the median calculation doesn't capture.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat early-life defaults as the lever where regulation does the most work. Adolescents don't choose to use these apps as deliberate consumers — they meet them as part of the environment, and shaping the environment is what childhood protection is for.",
+        b: "You may treat regressive harm as the disqualifier. A ban that mostly inconveniences popular teens while severing a lifeline for isolated ones isn't really 'protecting youth' — it's protecting one kind of youth from another's coping mechanism.",
+      },
+    },
+    it: {
+      body: "Il dilemma è se proteggere l'adolescente medio al costo di quello marginale. I dati sulle AI companion sono davvero ambivalenti: un divieto aiuterebbe la maggior parte degli utenti rimuovendo un default che bypassa lo sviluppo sociale reale; lo stesso divieto danneggerebbe un gruppo più piccolo per cui l'AI companion è l'unica presenza sociale che li tiene in piedi.",
+      whyPeopleSplit: "Alcuni trattano la policy come uno strumento per l'utente mediano; un divieto che aiuta otto adolescenti su dieci vale il costo per gli altri due. Altri trattano la policy come questione di chi paga — e un divieto che alza il benessere generale a discapito del gruppo più vulnerabile è moralmente squilibrato in un modo che il calcolo mediano non cattura.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere i default della prima età come la leva dove la regolazione lavora di più. Gli adolescenti non scelgono queste app come consumatori deliberati — le incontrano come parte dell'ambiente, e modellare l'ambiente è ciò che protegge l'infanzia.",
+        b: "Potresti vedere il danno regressivo come il fattore squalificante. Un divieto che disturba per lo più adolescenti popolari mentre recide un'ancora per quelli isolati non sta davvero 'proteggendo i giovani' — sta proteggendo un tipo di giovane dal meccanismo di sopravvivenza di un altro.",
+      },
+    },
+  },
+
+  'ai-grief-replica': {
+    en: {
+      body: "Grief is a closed conversation — one of the few experiences where the lack of reply is the point. An AI replica reopens that conversation, which is either healing or a refusal to let healing happen, depending on how you understand what grief is doing. Both readings are defensible.",
+      whyPeopleSplit: "Some treat grief as an emotion to be processed and reduced; if a tool eases the processing, the tool is good. Others treat grief as a relationship the survivor is having with the absence itself — a relationship that needs the absence to do its work. Reintroducing the voice keeps the survivor in a loop that grief was designed to close.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat continued connection as the healthier mode and abrupt loss as the part that creates lasting damage. If a replica softens the cliff edge, the cost-benefit favours softer.",
+        b: "You may treat the closure of conversation as constitutive of mourning. The dead are not silent because we lost their data — they are silent because they are gone, and pretending otherwise is its own injury.",
+      },
+    },
+    it: {
+      body: "Il lutto è una conversazione chiusa — una delle poche esperienze in cui la mancanza di risposta è il punto. Una replica AI riapre quella conversazione, che è guarigione o un rifiuto di lasciare che la guarigione avvenga, a seconda di come capisci cosa stia facendo il lutto. Entrambe le letture sono difendibili.",
+      whyPeopleSplit: "Alcuni trattano il lutto come un'emozione da elaborare e ridurre; se uno strumento facilita l'elaborazione, lo strumento è buono. Altri trattano il lutto come una relazione che il sopravvissuto sta avendo con l'assenza stessa — una relazione che ha bisogno dell'assenza per fare il suo lavoro. Reintrodurre la voce tiene il sopravvissuto in un loop che il lutto era progettato per chiudere.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere la connessione prolungata come la modalità più sana e la perdita improvvisa come la parte che genera danno duraturo. Se una replica addolcisce il salto nel vuoto, il bilancio è a favore del più morbido.",
+        b: "Potresti vedere la chiusura della conversazione come costitutiva del lutto. I morti non sono silenziosi perché abbiamo perso i loro dati — sono silenziosi perché se ne sono andati, e fingere il contrario è già una ferita.",
+      },
+    },
+  },
+
+  // ── RELIGION & AI ETHICS ─────────────────────────────────────
+  'pope-ai-encyclical': {
+    en: {
+      body: "The disagreement is about whose moral vocabulary should bind a system that touches billions. One position treats faith traditions as accumulated moral reasoning — the longest-running ethics experiment we have — and worth deferring to even by secular actors. The other treats them as one tradition among many, with no claim on the choices of a global product.",
+      whyPeopleSplit: "Those who would commit see a tech company alone as too narrow a moral referent for AI; centuries of thinking about persons, dignity, and limits should not be discarded because the institution that holds them is religious. Those who would refuse note that no faith speaks for all users — formal commitment to one would warp choices serving users of every belief and none.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat long-run moral traditions as a corrective to the short-termism of product cycles. A quarterly memo cannot answer a question that took centuries to articulate.",
+        b: "You may treat the universality of a product as incompatible with a particular religious framing. Faith-based limits should inform individual choices, not bind a system that serves people who do not share the faith.",
+      },
+    },
+    it: {
+      body: "Il disaccordo riguarda quale vocabolario morale debba vincolare un sistema che tocca miliardi di persone. Una posizione tratta le tradizioni di fede come ragionamento morale accumulato — il più lungo esperimento etico che abbiamo — e meritevole di rispetto anche da attori laici. L'altra le tratta come una tradizione fra molte, senza pretesa sulle scelte di un prodotto globale.",
+      whyPeopleSplit: "Chi si vincolerebbe vede una sola azienda tech come un referente morale troppo stretto per l'AI; secoli di pensiero su persona, dignità e limiti non vanno scartati perché l'istituzione che li custodisce è religiosa. Chi rifiuterebbe nota che nessuna fede parla per tutti gli utenti — un impegno formale verso una distorcerebbe le scelte di un sistema che serve persone di ogni credo e di nessuno.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare le tradizioni morali di lunga durata come correttivo al breve termine dei cicli di prodotto. Un memo trimestrale non può rispondere a una domanda che ha richiesto secoli per essere formulata.",
+        b: "Potresti vedere l'universalità di un prodotto come incompatibile con una cornice religiosa particolare. I limiti basati sulla fede dovrebbero informare le scelte individuali, non vincolare un sistema che serve persone che non condividono quella fede.",
+      },
+    },
+  },
+
+  'religious-ai-ethics': {
+    en: {
+      body: "The structural question is whether expertise in AI ethics requires lived familiarity with the moral languages users actually speak. Philosophers, engineers and lawyers cover formal frameworks, technical limits and regulatory exposure — but they don't necessarily speak the vocabulary that most users use to make moral choices in their own lives.",
+      whyPeopleSplit: "Those who would add a religious voice see the omission as elitism: governance bodies that exclude the worldview of the average user lose touch with how their decisions land. Those who would keep it secular see formal religious representation as risking privileged influence — once the seat exists, the question of whose religion sits in it becomes politically loaded.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat representation of users' actual moral vocabularies as part of expertise, not separate from it. A committee that cannot speak the language of the people it governs governs from a distance.",
+        b: "You may treat secularity as the only honest framing for a global, multi-faith user base. Add one religious seat and the question becomes whose religion — and that question is harder to answer than the original.",
+      },
+    },
+    it: {
+      body: "La domanda strutturale è se la competenza in etica AI richieda una familiarità vissuta con i linguaggi morali che gli utenti effettivamente parlano. Filosofi, ingegneri e giuristi coprono cornici formali, limiti tecnici ed esposizione regolatoria — ma non parlano necessariamente il vocabolario che la maggior parte degli utenti usa per fare scelte morali nella propria vita.",
+      whyPeopleSplit: "Chi aggiungerebbe una voce religiosa vede l'omissione come elitismo: organismi di governance che escludono la visione del mondo dell'utente medio perdono il contatto con come le loro decisioni atterrano. Chi la terrebbe laica vede la rappresentanza religiosa formale come un rischio di influenza privilegiata — una volta che il seggio esiste, la domanda su quale religione lo occupi diventa politicamente carica.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare la rappresentanza dei vocabolari morali effettivi degli utenti come parte della competenza, non separata da essa. Un comitato che non sa parlare la lingua delle persone che governa, governa da lontano.",
+        b: "Potresti vedere la laicità come l'unico inquadramento onesto per una base utenti globale e multireligiosa. Aggiungi un seggio religioso e la domanda diventa quale religione — e quella domanda è più difficile della precedente.",
+      },
+    },
+  },
+
+  'ai-prayer-app': {
+    en: {
+      body: "The split is between two views of ritual: one sees it as a means to a spiritual end — if the means change but the end is reached, no harm done; the other sees the ritual itself as constitutive of the spiritual end, so a change in the means is a change in what is being achieved.",
+      whyPeopleSplit: "Users who find the app useful often report it lowers the friction of practice — they pray more, they reflect more, they feel closer. Religious institutions that condemn it tend to argue that the friction was the point: the slow, unaided work was the practice, and an app that does it for you delivers a hollow imitation of the outcome.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat spirituality functionally: whatever brings the practitioner closer to the sacred counts as practice, regardless of medium. Tools that lower friction make more practice possible.",
+        b: "You may treat the medium as constitutive of the meaning. Ritual that costs nothing teaches nothing — the work was the practice, and outsourcing it produces convenience disguised as devotion.",
+      },
+    },
+    it: {
+      body: "La divisione è fra due visioni del rito: una lo vede come mezzo per un fine spirituale — se i mezzi cambiano ma il fine è raggiunto, nessun danno; l'altra vede il rito stesso come costitutivo del fine spirituale, quindi un cambio di mezzi è un cambio di ciò che si sta raggiungendo.",
+      whyPeopleSplit: "Gli utenti che trovano l'app utile spesso riferiscono che riduce l'attrito della pratica — pregano di più, riflettono di più, si sentono più vicini. Le istituzioni religiose che la condannano tendono a sostenere che l'attrito era il punto: il lavoro lento e senza aiuto era la pratica, e un'app che lo fa al posto tuo restituisce un'imitazione vuota del risultato.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare la spiritualità in modo funzionale: ciò che avvicina il praticante al sacro conta come pratica, indipendentemente dal mezzo. Strumenti che riducono l'attrito rendono possibile più pratica.",
+        b: "Potresti vedere il mezzo come costitutivo del significato. Un rito che non costa nulla non insegna nulla — il lavoro era la pratica, e esternalizzarlo produce comodità travestita da devozione.",
+      },
+    },
+  },
+
   'save-partner-vs-stranger': {
     en: {
       body: "This is a forced-choice trolley with a wrenching add: one option is the person you've chosen for life, the other is a child who hasn't had a chance to choose anything. Most ethical frameworks accept that special relationships generate special duties — but the asymmetry of the lives at stake (a 5-year-old has a longer future) cuts in the other direction.",
