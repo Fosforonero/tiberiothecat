@@ -3,7 +3,104 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 25 Maggio 2026 (sera) — 4 commits pushed to `origin/main` (Vercel auto-deploy live). Day delivered: dilemma editorial-shape gate + dry-run audit (`30fe2ac` + `1f0bc39`), blog portfolio audit against GSC (`1d9a6c2`), and `SEO-LOYALTY-HONESTY-CORNERSTONE-01` (`26e21a3`) — EN+IT loyalty/honesty articles promoted to cornerstone-shape (4 new H2 + visible FAQ + JSON-LD mirroring, `dateModified: 2026-05-25`, `readingTime: 9`). Two reusable skills written to `~/.claude/skills/`: `splitvote-compass` (4 modes) + `splitvote-growth` (7 modes). 3 Pixie WIP files preserved untouched.
+Ultimo aggiornamento: 26 Maggio 2026 (sera) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + one more sprint local (`AI-TREND-DRAFTS-SCALE-01` awaiting push). Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` (EN+IT moral-dilemmas-examples promoted to cornerstone), (2) home daily-pool audit (read-only) revealing 5/10 next dilemmas missing personal stake, (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 new SAFETY_RULES (personal-stake mandatory, punchy options, visible decision verb) + 3 matching gate warnings (`missing_personal_stake`, `wordy_setup_question`, `wordy_option`) + 9 new vitest cases; detection on home pool 1/10 → 8/10 flagged, (4) `AI-TREND-DRAFTS-SCALE-01` — daily AI draft count from 3 to configurable default 10 per locale via `DAILY_DILEMMA_DRAFTS_PER_LOCALE` env, plus a read-only weekly `trend-digest` script for landing-page candidate PM review. Latent finding: Google Trends RSS returns 0 items — cron has been running on Reddit + RSS only for some time. Vitest 139/139. 3 Pixie WIP preserved untouched.
+
+---
+
+## 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
+
+Per PM ask: "site fetches world Google Trends daily, generates ~10 themed dilemmas + landing pages if relevant". Discovery: the trend → AI-draft pipeline already exists at `/api/cron/generate-dilemmas` (06:00 UTC) backed by `lib/trend-signals.ts`. Draft count was hard-coded to 3 per locale. Single knob lifted to 10 per locale (configurable via env, clamped 1-20). Landing pages explicitly NOT auto-generated — instead a read-only weekly `trend-digest` script surfaces landing-page candidates for PM judgment.
+
+### Shipped (local — awaits PM GO to commit + push)
+
+| File | Change |
+|---|---|
+| `app/api/cron/generate-dilemmas/route.ts` | Replace hard-coded `3` with `parseInt(process.env.DAILY_DILEMMA_DRAFTS_PER_LOCALE ?? '10', 10)`, clamped `[1, 20]`. |
+| `scripts/trend-digest.mjs` (new, 175 LOC) | Read-only digest. Pulls Google Trends RSS US + IT and Reddit r/popular + r/italy hot. Scores each title for moral-dilemma fit via keyword heuristic. Renders `reports/trend-digest-<YYYY-MM-DD>.md`. |
+| `reports/trend-digest-2026-05-26.md` (new) | First digest run. EN: 15 signals, 2 landing candidates. IT: 15 signals, 0 candidates. |
+
+### Latent finding (worth flagging)
+
+`scripts/trend-digest.mjs` showed **0/15 signals from `google_trends`** — all 15 EN signals were Reddit; all 15 IT same. `fetchGoogleTrends()` at `lib/trend-signals.ts:68` hits `https://trends.google.com/trends/trendingsearches/daily/rss?geo=US|IT`; that endpoint looks discontinued. Implication: the daily cron has been generating drafts on Reddit + RSS GDELT/Reuters + internal_feedback only. Not a sprint-1 blocker (signal volume is healthy without Google), but a future sprint needs to either (a) move Google Trends to a maintained source or (b) accept Reddit + RSS as the primary mix.
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all routes prerender)
+- `npm run test` ✅ 139/139 (no regressions)
+- `git diff --check` ✅ exit 0
+
+### Hard constraints preserved
+
+- HUMAN_ONLY: `AUTO_PUBLISH_DILEMMAS=false` unchanged — all 10 daily drafts go to `dynamic:drafts` for manual admin review.
+- No Stripe / auth / legal / middleware changes.
+- No Redis schema change.
+- Pixie WIP untouched.
+- Landing pages and full articles **never** auto-generated.
+
+### How to throttle (zero-code)
+
+Vercel Production env:
+
+```
+DAILY_DILEMMA_DRAFTS_PER_LOCALE=5    # or 7, 10, 12, etc. (clamped to 20)
+```
+
+Unset → defaults to 10 per locale.
+
+### Risk register
+
+1. **AI lazy output on count=10**: asking Claude for 10 dilemmas in one prompt may produce variants of a single archetype. Mitigation: existing `isSimilarToExisting` dedup. Watch `skippedDuplicates` in cron response; if > 4 consistently, split generation in sprint-2.
+2. **Token cost**: 2× per-locale → ~$0.30-0.60/day. Negligible.
+3. **Review bottleneck**: 20 drafts/day = 2-3 min triage if average. If too much, env down.
+4. **Google Trends RSS gone** (see latent finding) — does not block sprint-1, flagged for follow-up.
+
+### Queued follow-ups
+
+#### Queued: `TREND-SIGNAL-GOOGLE-FIX-01`
+
+Investigate Google Trends RSS regression (it returns 0 items). Decide between: (a) pytrends Python wrapper hosted as a separate Vercel-friendly service, (b) SerpAPI (~$50/mo), (c) remove the `google_trends` source and rebalance weights to Reddit + RSS + internal_feedback. Single-file or two-file fix to `lib/trend-signals.ts`. SAFE_AUTONOMOUS investigation; HUMAN_ONLY for paid-source decision.
+
+#### Queued: `TREND-LANDING-COVERAGE-MATCHER-01`
+
+Extend `scripts/trend-digest.mjs` to cross-reference each candidate trend against `lib/blog.ts` slugs and known landing routes (`/loyalty-vs-honesty`, `/moral-dilemmas`, etc.), marking "covered" / "uncovered" automatically. Cuts PM weekly digest review time from 3 min to ~30 seconds. SAFE_AUTONOMOUS. Read-only script edit only.
+
+---
+
+## 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
+
+Per PM trigger: today's home daily dilemma flagged as incomprehensible. Audit of the next 10 home dilemmas (`scripts/audit-home-daily-pool.mjs`, new in this session) found 5/10 missing personal stake, 2/10 wordy without visible decision verb.
+
+### Shipped + pushed (`d39ea03` + `db6bd91`)
+
+| File | Change |
+|---|---|
+| `lib/content-generation-prompts.ts` | 3 new SAFETY_RULES after the existing referendum-framing rule: Personal-stake required ("you / your / yourself" EN, "tu / tuo / tua / tuoi / tue / ti" IT must appear in the question); Punchy options (7-14 words each, lead with imperative/first-person commitment); Visible decision verb (question ends with "?" or "Would you" / "Lo faresti" / "Cosa scegli" / "Accetti…?"). |
+| `lib/content-quality-gates.ts` | 2 new regexes (`PERSONAL_STAKE_RE`, `DECISION_VERB_RE`) + `countWords()` helper + new warning block: `missing_personal_stake`, `wordy_setup_question` (>28 words AND no decision verb), `wordy_option:option{A,B}` (>22 words each). Moral-only, lifestyle exempt. NOT suppressed by `EDITORIAL_TRADEOFF_MARKERS_RE` (structural, not content). |
+| `tests/unit/content-quality-gates.test.ts` | 9 new test cases in a new `describe` block. Test count 122 → 139. |
+| `scripts/audit-home-daily-pool.mjs` (new) | Read-only audit. Replicates `app/page.tsx::HomePage` ordering and prints the next 10 dilemmas the EN home will serve, with editorial-shape + punchy-framing warnings. |
+| `reports/home-daily-pool-audit-2026-05-26.md` | First run. Pool: 172 unique-dynamic + 41 static = 213. Today's id: `ai-en-to-save-your-future-ch-octds`. Detection after the new gates landed: 8/10 flagged. |
+
+### Verification
+
+- `npm run typecheck` ✅
+- `npm run build` ✅
+- `npm run test` ✅ 139/139
+- `git diff --check` ✅
+- `git push origin main` ✅ remote HEAD `db6bd91`
+
+### Hard constraints preserved
+
+- No autopublish change.
+- No Redis / Supabase / Stripe / legal / middleware changes.
+- Lifestyle still exempt from all moral-dilemma soft warnings.
+- Pixie WIP untouched.
+
+---
+
+## 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
+
+Continuation of yesterday's loyalty/honesty cornerstone pattern. Promoted EN article `moral-dilemmas-examples` + IT mirror `dilemmi-morali-esempi` to cornerstone-shape: `dateModified: 2026-05-26`, `readingTime: 8`, 5-entry `faq:` field (EN + IT), visible "Frequently asked questions" / "Domande frequenti" H2 section mirroring the FAQ exactly (FAQPage JSON-LD Google-policy compliant). Natural Italian, not literal translation. EN/IT structural parity. Verification typecheck ✅ + build ✅ (213 routes prerender) + diff-check ✅. Pushed as `a59a0eb`.
 
 ---
 

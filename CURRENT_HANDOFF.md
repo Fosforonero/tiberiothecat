@@ -1,10 +1,141 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 25 May 2026 (evening) — Four commits pushed to `origin/main` (`30fe2ac`, `1f0bc39`, `1d9a6c2`, `26e21a3`); Vercel auto-deploy live. Day delivered: (1) `DILEMMA-EDITORIAL-SHAPE-GATE-01` (gate warnings + AI prompt), (2) `DYNAMIC-DILEMMA-EDITORIAL-WARNINGS-DRYRUN-01` (read-only audit: 10.5% approved / 18.9% drafts flag rate, ~46% FP — keep advisory), (3) Blog portfolio audit against GSC (caveat: "Last 7 days" filter, not full May — directional only), (4) `SEO-LOYALTY-HONESTY-CORNERSTONE-01` (EN+IT loyalty/honesty articles promoted to cornerstone-shape: 4 new H2 + visible FAQ + JSON-LD mirroring). Two reusable skills shipped to `~/.claude/skills/`: `splitvote-compass` (4 modes) + `splitvote-growth` (7 modes with references). 3 Pixie WIP files preserved untouched.
+Last updated: 26 May 2026 — Day delivered four pushes (4 commits Vercel-live) + three more local sprints. (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01` shipped + pushed (`a59a0eb`) — EN+IT moral-dilemmas-examples promoted to cornerstone (FAQ + JSON-LD-compliant + dateModified). (2) Home daily-pool audit (read-only) found 5/10 next dilemmas missing personal stake, 2/10 wordy without decision verb. (3) `AI-PROMPT-PUNCHY-FRAMING-01` shipped + pushed (`d39ea03` + `db6bd91`) — added 3 SAFETY_RULES (personal-stake mandatory, punchy options 7-14 words, visible decision verb) + 3 gate warnings (`missing_personal_stake`, `wordy_setup_question`, `wordy_option`) + 9 vitest cases + audit script. (4) `AI-TREND-DRAFTS-SCALE-01` (local, awaits push GO) — bump daily AI-generated drafts from 3 to 10 per locale via `DAILY_DILEMMA_DRAFTS_PER_LOCALE` env (default 10, clamped [1,20]) + new read-only weekly trend-digest script for landing-page candidate review. Vitest 139/139.
 PM: Matteo
 Implementer: Claude Code (Sonnet 4.6 / Opus 4.7) + Codex (VS Code)
 
-## 0. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
+## 0. Session 26 May 2026 (evening) — `AI-TREND-DRAFTS-SCALE-01` + trend-digest companion
+
+### TL;DR
+
+PM requested: "site fetches world Google Trends daily, generates ~10 themed dilemmas + landing pages if relevant". Discovery: daily-trend → AI-draft pipeline already exists at `/api/cron/generate-dilemmas` (06:00 UTC) using `lib/trend-signals.ts` (Google Trends RSS + Reddit + RSS + internal_feedback), but draft count was hard-coded to 3 per locale. Single knob lifted to 10 per locale (configurable via env, clamped 1-20). Landing pages explicitly NOT auto-generated — instead a separate read-only weekly `trend-digest` script surfaces landing-page candidates for PM judgment.
+
+### Latent finding (worth flagging)
+
+Running `node scripts/trend-digest.mjs` showed **0 / 15 signals came from `google_trends`** (all 15 EN signals were Reddit; all 15 IT same). The `fetchGoogleTrends()` fetcher at `lib/trend-signals.ts:68` calls `https://trends.google.com/trends/trendingsearches/daily/rss?geo=US|IT` and parses RSS — looks like Google has stopped returning items on that endpoint. Implication: the daily cron has been running on Reddit + RSS GDELT/Reuters + internal_feedback only for some time. Not a blocker for sprint-1 (the volume is still healthy), but worth a future sprint to either: (a) switch Google Trends to a maintained source (pytrends Python wrapper requires a separate runtime; SerpAPI ~$50/mo), or (b) accept Reddit + RSS as the primary signal mix and remove the `google_trends` weight branch.
+
+### Files changed (local — awaits PM GO to commit + push)
+
+| File | Change |
+|---|---|
+| `app/api/cron/generate-dilemmas/route.ts` | Line 236 area: replace hard-coded `3` with `parseInt(process.env.DAILY_DILEMMA_DRAFTS_PER_LOCALE ?? '10', 10)`, clamped `[1, 20]`. Comment block tied to `AI-TREND-DRAFTS-SCALE-01` for future archaeology. |
+| `scripts/trend-digest.mjs` (new, 175 LOC) | Read-only script. Pulls Google Trends RSS US + IT and Reddit `r/popular` + `r/italy` hot. Scores each title for moral-dilemma fit via keyword heuristic (ethical/social/relational tokens raise fit; sports/entertainment/products lower it). Renders `reports/trend-digest-<YYYY-MM-DD>.md` with per-locale tables + a "Landing-page candidates" shortlist (fit 🟢 high AND score ≥ 60). |
+| `reports/trend-digest-2026-05-26.md` (new) | First digest run. EN: 15 signals, 2 candidates. IT: 15 signals, 0 candidates. |
+| `CURRENT_HANDOFF.md` + `ROADMAP.md` | this section. |
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green (all routes prerender)
+- `npm run test` ✅ 139/139 (no regressions)
+- `git diff --check` ✅ exit 0
+- Manual run of `scripts/trend-digest.mjs` ✅ produces report
+
+### Hard constraints preserved
+
+- HUMAN_ONLY: `AUTO_PUBLISH_DILEMMAS=false` unchanged — all 10 daily drafts go to `dynamic:drafts` for manual admin review (same flow as the 3 already did).
+- No Stripe / auth / legal / middleware changes.
+- No Redis schema change. No new key written by the digest script.
+- No 3 Pixie WIP touched.
+- Landing pages and full articles are **never** auto-generated — PM judgment only.
+
+### How to run the digest
+
+```bash
+nvm use
+node scripts/trend-digest.mjs
+# → reports/trend-digest-<YYYY-MM-DD>.md
+```
+
+Recommended cadence: weekly (e.g. Monday morning) to pick 1-2 trend-driven landing pages or articles for the week ahead.
+
+### How to throttle daily drafts
+
+Set in Vercel Production env (no code change needed):
+
+```
+DAILY_DILEMMA_DRAFTS_PER_LOCALE=5    # or 7, 10, 12, etc. (max 20)
+```
+
+Unset → defaults to 10 per locale.
+
+### Risk register (sprint-1)
+
+1. **AI lazy output on count=10**: asking Claude for 10 dilemmas in one prompt may produce variants of a single archetype. Mitigation: existing `isSimilarToExisting` dedup filter. Watch `skippedDuplicates` in cron response after the first live run; if > 4, split generation into 2 calls of 5 in sprint-2.
+2. **Token cost**: 2× per-locale generations → ~$0.30-0.60/day. Negligible.
+3. **Review bottleneck**: 20 drafts/day = 2-3 min triage if average. If too much, env down to 5.
+4. **Google Trends RSS gone** (see latent finding above) — does not block sprint-1, but flagged.
+
+### Queued follow-ups
+
+- `TREND-SIGNAL-GOOGLE-FIX-01` — investigate Google Trends RSS regression; decide between pytrends-via-Python-service vs SerpAPI vs removing the weight.
+- `TREND-LANDING-COVERAGE-MATCHER-01` — extend `trend-digest.mjs` to cross-reference each candidate trend against `lib/blog.ts` slugs + existing landing routes to mark "covered / uncovered" automatically (saves PM the manual check).
+- `ADMIN-UI-EDITORIAL-WARNING-SURFACE-01` — surface the 7 punchy-framing warning codes (`abstract_policy_question`, `support_oppose_framing`, `undefined_collective_actor`, `undefined_action_verb`, `missing_personal_stake`, `wordy_setup_question`, `wordy_option`) with distinctive copy in the admin review UI.
+- `DILEMMA-EDITORIAL-WARNINGS-REGEX-TUNING-01` — tighten 4 editorial-shape regexes after AI-PROMPT-PUNCHY-FRAMING-01 has had a few days to generate new drafts; re-run dry-run, target FP ≤ 25%.
+
+---
+
+## 0a. Session 26 May 2026 (afternoon) — `AI-PROMPT-PUNCHY-FRAMING-01`
+
+### TL;DR
+
+PM flagged today's home daily dilemma as incomprehensible. Audit of the next 10 home dilemmas (via `scripts/audit-home-daily-pool.mjs`, new in this session) found 5/10 missing personal stake, 2/10 wordy without visible decision verb. Sprint added 3 SAFETY_RULES to AI generation prompt + 3 matching soft warnings to quality gates + 9 vitest cases. Re-running the audit after the changes: detection went **1/10 → 8/10 flagged**, with the 2 correctly-clean dilemmas containing legitimate "you" + decision verb.
+
+### Files changed (committed, pushed in this session)
+
+| File | Commit | Change |
+|---|---|---|
+| `lib/content-generation-prompts.ts` | `d39ea03` | Added 3 SAFETY_RULES after the existing referendum-framing rule: (1) Personal-stake required — voter must appear via 2nd person ("you/your/yourself" / "tu/tuo/tua/tuoi/tue/ti"). Unacceptable: "Should the justice system X?", "Is it right when a nation Y?". (2) Punchy options — 7-14 words each, lead with imperative/first-person commitment, separated by a period. (3) Visible decision verb — question must end with "?" or close with "Would you...", "Lo faresti?", "Cosa scegli?", "Accetti...?". |
+| `lib/content-quality-gates.ts` | `d39ea03` | Added 2 new regexes (`PERSONAL_STAKE_RE` for 2nd-person pronouns EN+IT, `DECISION_VERB_RE` for the close verbs) + a `countWords()` helper + a new warning block in `runQualityGates`: `missing_personal_stake`, `wordy_setup_question` (qWords > 28 AND no decision verb), `wordy_option:option{A,B}` (each > 22 words). Moral-only, lifestyle exempt. NOT suppressed by `EDITORIAL_TRADEOFF_MARKERS_RE` (these are about structure, not content). |
+| `tests/unit/content-quality-gates.test.ts` | `d39ea03` | Added a new `describe` block with 9 cases: missing-stake fires on policy-referendum framing, suppressed by "your"/"tu"/"tuo"; wordy_setup_question fires above 28 words + no decision verb, suppressed by a closing decision verb; wordy_option:optionA/optionB fire above 22 words; lifestyle exempt; warnings never block `passed=true`. Test count 122 → 139. |
+| `scripts/audit-home-daily-pool.mjs` (new, 215 LOC) | `db6bd91` | Read-only audit. Replicates `app/page.tsx::HomePage` ordering — `[...uniqueDynamicEn, ...staticEn]` with `floor(Date.now() / 86_400_000) % poolLength` — and prints the next 10 dilemmas the EN home will serve, each with editorial-shape + punchy-framing warnings via duplicated regexes. |
+| `reports/home-daily-pool-audit-2026-05-26.md` | `db6bd91` | First run. Pool: 172 unique-dynamic + 41 static = 213. Today's id: `ai-en-to-save-your-future-ch-octds`. Detection 8/10 flagged after the new gates landed. |
+
+### Verification
+
+- `npm run typecheck` ✅ green
+- `npm run build` ✅ green
+- `npm run test` ✅ 139/139 (was 130; +9 new cases)
+- `git diff --check` ✅ exit 0
+- `git push origin main` ✅ remote HEAD `db6bd91`
+
+### Hard constraints preserved
+
+- No autopublish change.
+- No `lib/content-generation-prompts.ts` change beyond the 3 SAFETY_RULES (no prompt-engineering of the JSON schema, no rationale-field changes).
+- No Redis / Supabase / Stripe / legal / middleware changes.
+- Pixie WIP files untouched.
+- Lifestyle still exempt from all moral-dilemma soft warnings via the existing `if (!isLifestyle)` block.
+
+### PM-side follow-ups
+
+- (1–2 days) Verify the next cron run produces noticeably-punchier dilemmas — re-run `node scripts/audit-home-daily-pool.mjs` mid-week and confirm detection rate is dropping below 80% as the AI internalises the new rules.
+- (4–6 weeks) GSC re-export with broader date range to validate cornerstone work (`/blog/loyalty-vs-honesty-when-they-collide` + `/blog/moral-dilemmas-examples` and IT mirrors).
+
+---
+
+## 0b. Session 26 May 2026 (morning) — `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`
+
+### TL;DR
+
+Continuation of yesterday's loyalty/honesty cornerstone work. Promoted EN article `moral-dilemmas-examples` + IT mirror `dilemmi-morali-esempi` to cornerstone-shape: `dateModified: 2026-05-26`, `readingTime: 8`, added `faq:` field (5 Q&A EN + 5 Q&A IT), added visible "Frequently asked questions" / "Domande frequenti" H2 section mirroring the FAQ exactly (FAQPage JSON-LD Google-policy compliant). EN/IT structural parity preserved. Verification: typecheck ✅, build ✅ (213 routes prerender), `git diff --check` ✅. Pushed as `a59a0eb`.
+
+### Files changed (committed + pushed)
+
+| File | Commit | Change |
+|---|---|---|
+| `lib/blog.ts` | `a59a0eb` | EN article `moral-dilemmas-examples` (line ~1295-1660 approx after edits): added `dateModified`, bumped `readingTime`, added `faq:` array with 5 Q&A ("What is a moral dilemma?", "What are some real-life examples...", "What is the most famous moral dilemma?", "Are moral dilemmas only philosophical thought experiments?", "Why do people answer moral dilemmas so differently?"), inserted visible H2 "Frequently asked questions" + 5×(H3+P) before final closing CTAs. IT mirror `dilemmi-morali-esempi` (line ~4900+ after edits) gets the same structure with natural Italian (not literal translations): "Cos'è un dilemma morale?", "Quali sono esempi reali...", "Qual è il dilemma morale più famoso?", "I dilemmi morali sono solo esperimenti filosofici?", "Perché le persone rispondono ai dilemmi morali in modo così diverso?". |
+| `CURRENT_HANDOFF.md` + `ROADMAP.md` | `f3f04ec` (docs sync) | Closed 25 May cornerstone + push session. |
+
+### Verification
+
+- `npm run typecheck` ✅
+- `npm run build` ✅ (all routes prerender)
+- `git push origin main` ✅ remote HEAD before this session ended at `db6bd91`
+
+---
+
+## 0c. Session 25 May 2026 (evening) — Loyalty/Honesty cornerstone + push to origin/main
 
 ### TL;DR
 
