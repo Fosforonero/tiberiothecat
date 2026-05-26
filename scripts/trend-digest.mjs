@@ -26,21 +26,73 @@ const ROOT      = path.resolve(__dirname, '..')
 
 // ── Trend fetchers (mirror lib/trend-signals.ts) ──────────────
 
-async function fetchGoogleTrends(geo, locale) {
+const WIKIPEDIA_META_EN = new Set(['Main_Page', 'Wikipedia', 'Special:Search'])
+const WIKIPEDIA_META_IT = new Set(['Pagina_principale', 'Speciale:Ricerca', 'Wikipedia'])
+
+function isWikipediaTopic(article, locale) {
+  if (!article || article.includes(':')) return false
+  const meta = locale === 'it' ? WIKIPEDIA_META_IT : WIKIPEDIA_META_EN
+  return !meta.has(article)
+}
+
+async function fetchWikipediaTrending(locale) {
   try {
+    const t = new Date(Date.now() - 2 * 86_400_000)
+    const yyyy = t.getUTCFullYear()
+    const mm = String(t.getUTCMonth() + 1).padStart(2, '0')
+    const dd = String(t.getUTCDate()).padStart(2, '0')
+    const project = locale === 'it' ? 'it.wikipedia' : 'en.wikipedia'
     const r = await fetch(
-      `https://trends.google.com/trends/trendingsearches/daily/rss?geo=${geo}`,
-      { cache: 'no-store' },
+      `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${yyyy}/${mm}/${dd}`,
+      {
+        headers: { 'User-Agent': 'splitvote-bot/1.0 (trend-digest)' },
+        cache: 'no-store',
+      },
     )
     if (!r.ok) return []
-    const xml = await r.text()
-    const matches = Array.from(xml.matchAll(/<item>[\s\S]*?<title><!\[CDATA\[(.*?)\]\]><\/title>/g))
-    return matches.slice(0, 15).map((m, i) => ({
-      source:   'google_trends',
-      title:    m[1].trim(),
+    const j = await r.json()
+    const articles = j?.items?.[0]?.articles ?? []
+    const topics = articles.filter(a => isWikipediaTopic(a.article, locale)).slice(0, 12)
+    if (topics.length === 0) return []
+    const maxViews = topics[0].views || 1
+    return topics.map((a, i) => ({
+      source:   'wikipedia',
+      title:    a.article.replace(/_/g, ' '),
+      url:      `https://${project}.org/wiki/${encodeURIComponent(a.article)}`,
       locale,
-      score:    Math.round(100 - i * 6),
-      velocity: Math.round(90 - i * 5),
+      score:    Math.round(30 + (a.views / maxViews) * 70),
+      velocity: Math.round(80 - i * 5),
+    }))
+  } catch {
+    return []
+  }
+}
+
+async function fetchHackerNews() {
+  try {
+    const idsRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { cache: 'no-store' })
+    if (!idsRes.ok) return []
+    const ids = await idsRes.json()
+    const topIds = ids.slice(0, 12)
+    const stories = await Promise.all(topIds.map(async id => {
+      try {
+        const r = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { cache: 'no-store' })
+        if (!r.ok) return null
+        return await r.json()
+      } catch {
+        return null
+      }
+    }))
+    const valid = stories.filter(s => s && typeof s.title === 'string' && s.title.length > 15 && s.type !== 'job').slice(0, 10)
+    if (valid.length === 0) return []
+    const maxScore = valid[0].score || 1
+    return valid.map((s, i) => ({
+      source:   'hackernews',
+      title:    s.title,
+      url:      s.url,
+      locale:   'en',
+      score:    Math.round((s.score / maxScore) * 100),
+      velocity: Math.round(75 - i * 7),
     }))
   } catch {
     return []
@@ -167,17 +219,18 @@ function renderLocaleSection(locale, label, signals) {
 }
 
 async function main() {
-  const [gtEn, gtIt, rdMain, rdIt] = await Promise.all([
-    fetchGoogleTrends('US', 'en'),
-    fetchGoogleTrends('IT', 'it'),
+  const [wikiEn, wikiIt, rdMain, rdIt, hn] = await Promise.all([
+    fetchWikipediaTrending('en'),
+    fetchWikipediaTrending('it'),
     fetchReddit('popular', 'en'),
     fetchReddit('italy', 'it'),
+    fetchHackerNews(),
   ])
 
   const annotate = arr => arr.map(s => ({ ...s, fitScore: fitScore(s.title) }))
 
-  const en = [...annotate(gtEn), ...annotate(rdMain)].sort((a, b) => b.score - a.score)
-  const it = [...annotate(gtIt), ...annotate(rdIt)].sort((a, b) => b.score - a.score)
+  const en = [...annotate(wikiEn), ...annotate(rdMain), ...annotate(hn)].sort((a, b) => b.score - a.score)
+  const it = [...annotate(wikiIt), ...annotate(rdIt)].sort((a, b) => b.score - a.score)
 
   const date = isoDate()
   const out = path.join(ROOT, 'reports', `trend-digest-${date}.md`)
@@ -187,9 +240,7 @@ async function main() {
   lines.push('')
   lines.push('Read-only weekly digest of world trends for SplitVote landing-page / new-article PM review.')
   lines.push('')
-  lines.push('Pulls the same Google Trends RSS + Reddit signals the daily dilemma-generation cron uses, ')
-  lines.push('then scores each title for moral-dilemma fit (keyword heuristic — not semantic). High-fit, ')
-  lines.push('high-score trends are surfaced as landing-page candidates.')
+  lines.push('Pulls the same Wikipedia top-pageviews + Reddit + HackerNews signals the daily dilemma-generation cron uses, then scores each title for moral-dilemma fit (keyword heuristic — not semantic). High-fit, high-score trends are surfaced as landing-page candidates.')
   lines.push('')
   lines.push('**This is a PM-judgment tool. Landing pages and full articles are NEVER auto-generated.**')
   lines.push('')
@@ -202,10 +253,10 @@ async function main() {
   lines.push('')
   lines.push('## EN trends')
   lines.push('')
-  lines.push(renderLocaleSection('en', 'Google Trends US + Reddit r/popular', en))
+  lines.push(renderLocaleSection('en', 'Wikipedia EN + Reddit r/popular + HackerNews', en))
   lines.push('## IT trends')
   lines.push('')
-  lines.push(renderLocaleSection('it', 'Google Trends IT + Reddit r/italy', it))
+  lines.push(renderLocaleSection('it', 'Wikipedia IT + Reddit r/italy', it))
 
   fs.writeFileSync(out, lines.join('\n'))
 

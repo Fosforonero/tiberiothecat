@@ -104,7 +104,7 @@ async function getApprovedScenariosStrict(): Promise<DynamicScenario[]> {
 }
 
 export type DilemmaStatus = 'draft' | 'approved' | 'rejected'
-export type TrendSource   = 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed' | 'openrouter'
+export type TrendSource   = 'wikipedia' | 'hackernews' | 'google_trends' | 'reddit' | 'rss' | 'internal_feedback' | 'mixed' | 'openrouter'
 
 export interface DilemmaScores {
   viralScore:    number  // 0-100
