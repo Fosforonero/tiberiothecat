@@ -4,24 +4,27 @@ import { Suspense } from 'react'
 import JsonLd from '@/components/JsonLd'
 import DilemmaCatalogClient, { type CatalogCopy } from '@/components/DilemmaCatalogClient'
 import { scenarios, CATEGORIES, type Category } from '@/lib/scenarios'
-import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedVotesBatchDetail } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { buildCatalogItems, filterCatalog, sortCatalog, categoryCounts } from '@/lib/catalog'
 
 const BASE_URL = 'https://splitvote.io'
 const PAGE_SIZE = 24
 
-// ISR — catalog content changes at most when admin approves a draft or cron runs.
-// 5 minutes is comfortably fresh and aligns with the underlying vote-batch cache.
-export const revalidate = 300
+// force-dynamic mirrors the home + /trending pattern. ISR was tempting (catalog
+// content changes at most when admin approves or cron runs), but the underlying
+// `getCachedDynamicScenariosByLocale` has its own 1-hour TTL; a build-time fetch
+// hiccup poisoned the cache with [] and the page served static-only for 1h.
+// Per-request Redis read at /moral-dilemmas is acceptable — not a hot path.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   // Mirror the count we'll render. If Redis is unavailable the count falls back
   // to static-only (41) — still accurate, just lower.
   let totalCount = scenarios.length
   try {
-    const dynamic = await getCachedDynamicScenariosByLocale('en')
+    const dynamicAll = await getFreshDynamicScenarios()
     const staticIds = new Set(scenarios.map(s => s.id))
-    totalCount = scenarios.length + dynamic.filter(d => d.locale === 'en' && !staticIds.has(d.id)).length
+    totalCount = scenarios.length + dynamicAll.filter(d => d.locale === 'en' && !staticIds.has(d.id)).length
   } catch { /* keep static fallback */ }
 
   const title = `All Moral Dilemmas — ${totalCount}+ Real Ethical Questions to Vote On`
@@ -64,13 +67,14 @@ const EN_COPY: CatalogCopy = {
 }
 
 export default async function MoralDilemmasPage() {
-  // Fetch dynamic EN scenarios (graceful fallback if Redis down).
-  let dynamicEn: Awaited<ReturnType<typeof getCachedDynamicScenariosByLocale>> = []
+  // Fetch dynamic scenarios fresh on every render — matches home + /trending
+  // pattern (force-dynamic above). Graceful fallback if Redis is unreachable.
+  let dynamicAll: Awaited<ReturnType<typeof getFreshDynamicScenarios>> = []
   try {
-    dynamicEn = await getCachedDynamicScenariosByLocale('en')
+    dynamicAll = await getFreshDynamicScenarios()
   } catch { /* fallback to static only */ }
 
-  const items = buildCatalogItems(scenarios, dynamicEn.filter(d => d.locale === 'en'), 'en')
+  const items = buildCatalogItems(scenarios, dynamicAll.filter(d => d.locale === 'en'), 'en')
   const allIds = items.map(i => i.id)
 
   // Vote totals + per-option detail in parallel.

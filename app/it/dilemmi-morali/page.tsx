@@ -5,13 +5,15 @@ import JsonLd from '@/components/JsonLd'
 import DilemmaCatalogClient, { type CatalogCopy } from '@/components/DilemmaCatalogClient'
 import { scenarios, CATEGORIES, type Category } from '@/lib/scenarios'
 import { CATEGORY_LABELS_IT, translateScenarioToItalian } from '@/lib/scenarios-it'
-import { getCachedDynamicScenariosByLocale, getCachedVotesBatch, getCachedVotesBatchDetail } from '@/lib/cached-data'
+import { getFreshDynamicScenarios, getCachedVotesBatch, getCachedVotesBatchDetail } from '@/lib/cached-data'
 import { buildCatalogItems, sortCatalog, categoryCounts } from '@/lib/catalog'
 
 const BASE_URL = 'https://splitvote.io'
 const PAGE_SIZE = 24
 
-export const revalidate = 300
+// force-dynamic — see EN catalog comment. Catalog needs fresh Redis read per
+// request to avoid build-time empty-cache poisoning.
+export const dynamic = 'force-dynamic'
 
 const IT_CATEGORY_EMOJI: Record<string, string> = {
   all:           '🌐',
@@ -29,9 +31,9 @@ const IT_CATEGORY_EMOJI: Record<string, string> = {
 export async function generateMetadata(): Promise<Metadata> {
   let totalCount = scenarios.length
   try {
-    const dynamic = await getCachedDynamicScenariosByLocale('it')
+    const dynamicAll = await getFreshDynamicScenarios()
     const staticIds = new Set(scenarios.map(s => s.id))
-    totalCount = scenarios.length + dynamic.filter(d => d.locale === 'it' && !staticIds.has(d.id)).length
+    totalCount = scenarios.length + dynamicAll.filter(d => d.locale === 'it' && !staticIds.has(d.id)).length
   } catch { /* keep static fallback */ }
 
   const title = `Tutti i Dilemmi Morali — ${totalCount}+ domande etiche reali da votare`
@@ -74,15 +76,15 @@ const IT_COPY: CatalogCopy = {
 }
 
 export default async function DilemmiMoraliPage() {
-  let dynamicIt: Awaited<ReturnType<typeof getCachedDynamicScenariosByLocale>> = []
+  let dynamicAll: Awaited<ReturnType<typeof getFreshDynamicScenarios>> = []
   try {
-    dynamicIt = await getCachedDynamicScenariosByLocale('it')
+    dynamicAll = await getFreshDynamicScenarios()
   } catch { /* fallback to static only */ }
 
   // Static → Italian translation (mirrors home pattern).
   const staticIt = scenarios.map(translateScenarioToItalian)
 
-  const items = buildCatalogItems(staticIt, dynamicIt.filter(d => d.locale === 'it'), 'it')
+  const items = buildCatalogItems(staticIt, dynamicAll.filter(d => d.locale === 'it'), 'it')
   const allIds = items.map(i => i.id)
 
   const [voteObj, voteDetailObj] = await Promise.all([
