@@ -206,10 +206,14 @@ export default function CatalogToolbar({
   return (
     <div ref={wrapperRef} className="sticky top-[58px] z-40 mb-6">
       <div
+        style={{
+          // Apple-style soft easing for Dynamic Island-like morphs.
+          transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
+        }}
         className={[
-          'mx-auto bg-[var(--surface-3,#1a1a40)] border transition-[border-radius,padding,box-shadow,background-color] duration-300 ease-out motion-reduce:transition-none',
+          'cat-toolbar-shell mx-auto bg-[var(--surface-3,#1a1a40)] border transition-[border-radius,padding,box-shadow,background-color,transform,max-width] duration-[420ms] motion-reduce:transition-none will-change-transform',
           scrolled
-            ? 'w-fit max-w-full rounded-full px-4 py-2 cursor-pointer border-[rgba(77,159,255,0.45)] hover:border-[rgba(77,159,255,0.7)] shadow-[0_8px_28px_rgba(0,0,0,0.6),0_0_0_1px_rgba(77,159,255,0.18)_inset,0_0_24px_rgba(77,159,255,0.12)]'
+            ? 'w-fit max-w-full rounded-full px-4 py-2 cursor-pointer border-[rgba(77,159,255,0.45)] hover:border-[rgba(77,159,255,0.7)] shadow-[0_8px_28px_rgba(0,0,0,0.6),0_0_0_1px_rgba(77,159,255,0.18)_inset,0_0_24px_rgba(77,159,255,0.12)] hover:scale-[1.02] active:scale-[0.98]'
             : 'w-full rounded-2xl px-4 sm:px-5 py-4 border-[var(--border-hi)] shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_0_1px_rgba(77,159,255,0.08)_inset]',
         ].join(' ')}
         role={scrolled ? 'button' : undefined}
@@ -230,29 +234,35 @@ export default function CatalogToolbar({
           }
         } : undefined}
       >
-        {scrolled ? (
-          <div className="flex items-center gap-3 text-[13px] font-semibold whitespace-nowrap">
-            <svg aria-hidden="true" viewBox="0 0 16 16" className="w-3.5 h-3.5 text-[var(--neon-blue)] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="7" cy="7" r="5" />
-              <path d="m11 11 3 3" strokeLinecap="round" />
-            </svg>
-            <span className="font-mono tabular-nums text-[var(--text)]">{countLabel}</span>
-            <span aria-hidden="true" className="text-[var(--border-hi)]">·</span>
-            <span className="text-[var(--muted)] truncate max-w-[140px] sm:max-w-none">{sortLabel}</span>
-            <span
-              aria-hidden="true"
-              className={`text-[var(--muted-2,#5e7299)] text-[10px] ml-0.5 transition-transform duration-200 motion-reduce:transition-none ${forceOpen ? 'rotate-180' : ''}`}
-            >▾</span>
-          </div>
-        ) : (
-          PanelBody
-        )}
+        <div
+          key={scrolled ? 'pill' : 'panel'}
+          className="animate-[cat-fade-in_240ms_cubic-bezier(0.32,0.72,0,1)_both] motion-reduce:animate-none"
+        >
+          {scrolled ? (
+            <div className="flex items-center gap-3 text-[13px] font-semibold whitespace-nowrap">
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="w-3.5 h-3.5 text-[var(--neon-blue)] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="7" cy="7" r="5" />
+                <path d="m11 11 3 3" strokeLinecap="round" />
+              </svg>
+              <span className="font-mono tabular-nums text-[var(--text)]">{countLabel}</span>
+              <span aria-hidden="true" className="text-[var(--border-hi)]">·</span>
+              <span className="text-[var(--muted)] truncate max-w-[140px] sm:max-w-none">{sortLabel}</span>
+              <span
+                aria-hidden="true"
+                style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                className={`text-[var(--muted-2,#5e7299)] text-[10px] ml-0.5 transition-transform duration-[320ms] motion-reduce:transition-none ${forceOpen ? 'rotate-180' : ''}`}
+              >▾</span>
+            </div>
+          ) : (
+            PanelBody
+          )}
+        </div>
       </div>
 
       {showFloating && (
         <div
           id="catalog-filter-panel"
-          className="absolute top-full left-0 right-0 mt-2 z-50 animate-[slide-down_180ms_ease-out_both] motion-reduce:animate-none"
+          className="absolute top-full left-0 right-0 mt-2 z-50 animate-[cat-drop-in_320ms_cubic-bezier(0.32,0.72,0,1)_both] motion-reduce:animate-none"
         >
           <div className="w-full rounded-2xl px-4 sm:px-5 py-4 bg-[var(--surface-3,#1a1a40)] border border-[rgba(77,159,255,0.35)] shadow-[0_20px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(77,159,255,0.15)_inset,0_0_40px_rgba(77,159,255,0.10)]">
             {PanelBody}

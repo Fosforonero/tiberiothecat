@@ -3,6 +3,10 @@
  *
  * Two flat segments side-by-side, total width = 100%. Used on catalog cards
  * (size="sm") and featured row (size="lg"). Server-renderable.
+ *
+ * size="lg" gets a horizontal hue gradient + vertical gloss highlight +
+ * matching neon glow so the bar reads as a satisfying visual finish line
+ * even when one side wins decisively. size="sm" stays flat for catalog grids.
  */
 
 interface Props {
@@ -18,9 +22,18 @@ interface Props {
 export default function SplitBar({ a, b, size = 'sm', label }: Props) {
   const aPct = Math.max(0, Math.min(100, a))
   const bPct = b ?? (100 - aPct)
-  const height = size === 'lg' ? 'h-1.5 rounded-[3px]' : 'h-[3px] rounded-[1.5px]'
-  const glow = size === 'lg' ? 'shadow-[0_0_8px_rgba(255,51,102,0.4)]' : ''
-  const glowB = size === 'lg' ? 'shadow-[0_0_8px_rgba(77,159,255,0.4)]' : ''
+  const isLg = size === 'lg'
+  const sizeClasses = isLg ? 'h-[9px] rounded-full' : 'h-1 rounded-[2px]'
+
+  // Multi-layer background: gloss highlight on top, horizontal hue gradient below.
+  const glossLayer =
+    'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 45%, rgba(0,0,0,0.14) 100%)'
+  const aHue = 'linear-gradient(90deg, #ff5b7d 0%, #ff3366 55%, #d92653 100%)'
+  const bHue = 'linear-gradient(90deg, #4d9fff 0%, #36b8ff 60%, #00d4ff 100%)'
+  const aBg = isLg ? `${glossLayer}, ${aHue}` : '#ff3366'
+  const bBg = isLg ? `${glossLayer}, ${bHue}` : '#4d9fff'
+  const aGlow = isLg ? '0 0 10px rgba(255,51,102,0.55), 0 0 22px rgba(255,51,102,0.18)' : 'none'
+  const bGlow = isLg ? '0 0 10px rgba(77,159,255,0.55), 0 0 22px rgba(0,212,255,0.20)' : 'none'
 
   return (
     <div
@@ -29,16 +42,28 @@ export default function SplitBar({ a, b, size = 'sm', label }: Props) {
       aria-valuenow={aPct}
       aria-valuemin={0}
       aria-valuemax={100}
-      className={`${height} w-full overflow-hidden flex bg-[var(--surface-3,#1a1a40)]`}
+      className={`${sizeClasses} w-full overflow-hidden flex bg-[var(--surface-3,#1a1a40)] ${isLg ? 'ring-1 ring-inset ring-white/[0.04]' : ''}`}
     >
-      <div
-        className={`bg-[var(--accent-a)] h-full transition-[width] duration-300 ease-out ${glow}`}
-        style={{ width: `${aPct}%` }}
-      />
-      <div
-        className={`bg-[var(--accent-b)] h-full transition-[width] duration-300 ease-out ${glowB}`}
-        style={{ width: `${bPct}%` }}
-      />
+      {aPct > 0 && (
+        <div
+          className="h-full transition-[width] duration-500 ease-out motion-reduce:transition-none"
+          style={{
+            width: `${aPct}%`,
+            background: aBg,
+            boxShadow: aGlow,
+          }}
+        />
+      )}
+      {bPct > 0 && (
+        <div
+          className="h-full transition-[width] duration-500 ease-out motion-reduce:transition-none"
+          style={{
+            width: `${bPct}%`,
+            background: bBg,
+            boxShadow: bGlow,
+          }}
+        />
+      )}
     </div>
   )
 }
