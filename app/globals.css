@@ -7,12 +7,15 @@
   --bg:        #070718;
   --surface:   #0f0f2a;
   --surface2:  #141432;
+  --surface-2: #141432;   /* alias for the catalog redesign disciplined-neon spec */
+  --surface-3: #1a1a40;   /* added 26 May 2026 — catalog cards, slider tracks, splitbar bg */
   --border:    #24245a;
   --border-hi: #3a3a80;
   --accent-a:  #ff3366;
   --accent-b:  #4d9fff;
   --text:      #e4eaf6;
   --muted:     #7890b8;
+  --muted-2:   #5e7299;   /* added 26 May 2026 — disciplined-neon dimmer text */
 
   /* ── Neon accent palette ── */
   --neon-blue:   #00d4ff;
@@ -21,6 +24,10 @@
   --neon-green:  #00ff88;
   --neon-yellow: #ffd700;
 }
+
+/* Utility: hide scrollbars on horizontal-scroll chip rows (DILEMMAS-CATALOG-02). */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
 body {
   background-color: var(--bg);

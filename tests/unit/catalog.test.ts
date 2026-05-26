@@ -4,6 +4,14 @@ import {
   filterCatalog,
   sortCatalog,
   categoryCounts,
+  searchCatalog,
+  filterByVoteState,
+  filterByDivisivity,
+  divisivityOf,
+  pickDaily,
+  pickMostDivisive,
+  categoryFromSlug,
+  slugFromCategory,
   DIVISIVE_MIN_VOTES,
   type CatalogItem,
   type VoteDetail,
@@ -204,6 +212,176 @@ describe('sortCatalog — divisive', () => {
   it('returns empty array when voteDetailMap is undefined', () => {
     const sorted = sortCatalog(items, 'divisive', new Map())
     expect(sorted).toEqual([])
+  })
+})
+
+describe('searchCatalog', () => {
+  const items: CatalogItem[] = [
+    { id: 'trolley', question: 'A trolley is heading toward five people', optionA: 'Pull the lever', optionB: 'Do nothing', emoji: '🚋', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'ai-job',  question: 'An AI can do your job at 90% of the cost', optionA: 'Replace you', optionB: 'Keep you',    emoji: '🤖', category: 'technology', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+  ]
+
+  it('returns all items when query is empty or whitespace', () => {
+    expect(searchCatalog(items, '')).toHaveLength(2)
+    expect(searchCatalog(items, '   ')).toHaveLength(2)
+  })
+
+  it('matches case-insensitive substring on question', () => {
+    expect(searchCatalog(items, 'TROLLEY').map(i => i.id)).toEqual(['trolley'])
+  })
+
+  it('matches on optionA / optionB too', () => {
+    expect(searchCatalog(items, 'lever').map(i => i.id)).toEqual(['trolley'])
+    expect(searchCatalog(items, 'replace').map(i => i.id)).toEqual(['ai-job'])
+  })
+
+  it('returns empty when no item matches', () => {
+    expect(searchCatalog(items, 'spaghetti')).toEqual([])
+  })
+})
+
+describe('filterByVoteState', () => {
+  const items: CatalogItem[] = [
+    { id: 'a', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'b', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'c', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+  ]
+  const voted = new Set(['a', 'c'])
+
+  it('returns all on "all"', () => {
+    expect(filterByVoteState(items, 'all', voted)).toHaveLength(3)
+  })
+
+  it('returns only voted ids on "voted"', () => {
+    expect(filterByVoteState(items, 'voted', voted).map(i => i.id)).toEqual(['a', 'c'])
+  })
+
+  it('returns only unvoted ids on "unvoted"', () => {
+    expect(filterByVoteState(items, 'unvoted', voted).map(i => i.id)).toEqual(['b'])
+  })
+
+  it('handles empty voted set correctly', () => {
+    const empty = new Set<string>()
+    expect(filterByVoteState(items, 'voted', empty)).toEqual([])
+    expect(filterByVoteState(items, 'unvoted', empty)).toHaveLength(3)
+  })
+})
+
+describe('divisivityOf', () => {
+  it('returns 100 for exact 50/50 split', () => {
+    expect(divisivityOf({ a: 50, b: 50 })).toBe(100)
+  })
+
+  it('returns 0 for 100/0 split (or empty)', () => {
+    expect(divisivityOf({ a: 100, b: 0 })).toBe(0)
+    expect(divisivityOf({ a: 0, b: 0 })).toBe(0)
+    expect(divisivityOf(undefined)).toBe(0)
+  })
+
+  it('returns roughly 80 for 60/40 split', () => {
+    expect(divisivityOf({ a: 60, b: 40 })).toBe(80)
+  })
+})
+
+describe('filterByDivisivity', () => {
+  const items: CatalogItem[] = [
+    { id: 'fifty',    question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'sixty',    question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'lopsided', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+  ]
+  const detail = new Map<string, VoteDetail>([
+    ['fifty',    { a: 50, b: 50 }],   // div = 100
+    ['sixty',    { a: 60, b: 40 }],   // div = 80
+    ['lopsided', { a: 95, b: 5 }],    // div = 10
+  ])
+
+  it('no-op when threshold is 0', () => {
+    expect(filterByDivisivity(items, 0, detail)).toHaveLength(3)
+  })
+
+  it('keeps items at or above threshold', () => {
+    expect(filterByDivisivity(items, 70, detail).map(i => i.id)).toEqual(['fifty', 'sixty'])
+    expect(filterByDivisivity(items, 90, detail).map(i => i.id)).toEqual(['fifty'])
+  })
+
+  it('excludes items missing vote detail', () => {
+    const partial = new Map<string, VoteDetail>([['fifty', { a: 50, b: 50 }]])
+    expect(filterByDivisivity(items, 50, partial).map(i => i.id)).toEqual(['fifty'])
+  })
+})
+
+describe('pickDaily', () => {
+  it('returns undefined for empty pool', () => {
+    expect(pickDaily([])).toBeUndefined()
+  })
+
+  it('excludes lifestyle items from rotation', () => {
+    const items: CatalogItem[] = [
+      { id: 'life', question: 'q', optionA: 'a', optionB: 'b', emoji: '🎭', category: 'lifestyle', locale: 'en', isDynamic: false, isLifestyle: true, freshnessTs: 0 },
+    ]
+    expect(pickDaily(items)).toBeUndefined()
+  })
+
+  it('returns deterministically the same item on the same UTC day', () => {
+    const items: CatalogItem[] = [
+      { id: 'a', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+      { id: 'b', question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    ]
+    expect(pickDaily(items)).toBe(pickDaily(items))
+  })
+})
+
+describe('pickMostDivisive', () => {
+  const items: CatalogItem[] = [
+    { id: 'fifty',    question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'sixty',    question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+    { id: 'tiny',     question: 'q', optionA: 'a', optionB: 'b', emoji: '⚖️', category: 'morality', locale: 'en', isDynamic: false, isLifestyle: false, freshnessTs: 0 },
+  ]
+  const detail = new Map<string, VoteDetail>([
+    ['fifty', { a: 50, b: 50 }],
+    ['sixty', { a: 60, b: 40 }],
+    ['tiny',  { a: 25, b: 5  }],   // below threshold
+  ])
+
+  it('returns the item with highest divisivity above min-votes floor', () => {
+    expect(pickMostDivisive(items, detail)?.id).toBe('fifty')
+  })
+
+  it('respects excludeId', () => {
+    expect(pickMostDivisive(items, detail, 'fifty')?.id).toBe('sixty')
+  })
+
+  it('returns undefined when no eligible item', () => {
+    const onlyTiny = new Map<string, VoteDetail>([['tiny', { a: 25, b: 5 }]])
+    expect(pickMostDivisive([items[2]], onlyTiny)).toBeUndefined()
+  })
+})
+
+describe('categoryFromSlug / slugFromCategory', () => {
+  it('handles "all" round-trip', () => {
+    expect(categoryFromSlug('all', 'en')).toBe('all')
+    expect(categoryFromSlug('all', 'it')).toBe('all')
+    expect(slugFromCategory('all', 'en')).toBe('all')
+    expect(slugFromCategory('all', 'it')).toBe('all')
+  })
+
+  it('uses raw key as EN slug', () => {
+    expect(categoryFromSlug('technology', 'en')).toBe('technology')
+    expect(slugFromCategory('technology', 'en')).toBe('technology')
+  })
+
+  it('maps IT slug to category and back', () => {
+    expect(categoryFromSlug('tecnologia', 'it')).toBe('technology')
+    expect(slugFromCategory('technology', 'it')).toBe('tecnologia')
+    expect(categoryFromSlug('moralita', 'it')).toBe('morality')
+    expect(categoryFromSlug('relazioni', 'it')).toBe('relationships')
+  })
+
+  it('falls back to "all" for unknown slug', () => {
+    expect(categoryFromSlug('spaghetti', 'en')).toBe('all')
+    expect(categoryFromSlug('spaghetti', 'it')).toBe('all')
+    expect(categoryFromSlug(null, 'en')).toBe('all')
+    expect(categoryFromSlug(undefined, 'it')).toBe('all')
   })
 })
 

@@ -17,7 +17,56 @@ import type { DynamicScenario } from './dynamic-scenarios'
 export type SortMode = 'popular' | 'fresh' | 'divisive'
 export const SORT_MODES: SortMode[] = ['popular', 'fresh', 'divisive']
 
+export type VoteState = 'all' | 'unvoted' | 'voted'
+export const VOTE_STATES: VoteState[] = ['all', 'unvoted', 'voted']
+
 export const DIVISIVE_MIN_VOTES = 50
+
+// OKLCH hue per category for the disciplined-neon dot in chips + cards.
+// Distances ≥ 25° between adjacent categories so they remain distinguishable
+// at a glance (per HANDOFF "regola d'oro").
+export const CATEGORY_HUE: Record<Category, number> = {
+  morality:      45,
+  survival:      25,
+  loyalty:       90,
+  justice:       0,
+  freedom:       150,
+  technology:    200,
+  society:       280,
+  relationships: 330,
+  lifestyle:     60,
+}
+
+// IT slug ↔ category key mapping. The catalog URL on IT must use Italian
+// slugs (HANDOFF: "Slug categoria localizzati"). EN slugs == category keys.
+export const IT_CATEGORY_SLUG: Record<Category, string> = {
+  morality:      'moralita',
+  survival:      'sopravvivenza',
+  loyalty:       'lealta',
+  justice:       'giustizia',
+  freedom:       'liberta',
+  technology:    'tecnologia',
+  society:       'societa',
+  relationships: 'relazioni',
+  lifestyle:     'stile-di-vita',
+}
+
+const IT_SLUG_TO_CATEGORY: Record<string, Category> = Object.fromEntries(
+  (Object.entries(IT_CATEGORY_SLUG) as Array<[Category, string]>).map(([k, v]) => [v, k]),
+)
+
+export function categoryFromSlug(slug: string | null | undefined, locale: 'en' | 'it'): Category | 'all' {
+  if (!slug || slug === 'all') return 'all'
+  if (locale === 'it') return IT_SLUG_TO_CATEGORY[slug] ?? 'all'
+  // EN uses raw category keys as slug.
+  if (slug in CATEGORY_HUE) return slug as Category
+  return 'all'
+}
+
+export function slugFromCategory(category: Category | 'all', locale: 'en' | 'it'): string {
+  if (category === 'all') return 'all'
+  return locale === 'it' ? IT_CATEGORY_SLUG[category] : category
+}
 
 export interface CatalogItem {
   id:          string
@@ -171,4 +220,95 @@ export function categoryCounts(items: CatalogItem[]): Map<Category | 'all', numb
     counts.set(i.category, (counts.get(i.category) ?? 0) + 1)
   }
   return counts
+}
+
+/**
+ * Substring search over question + optionA + optionB. Case-insensitive,
+ * accent-naive (browsers handle that themselves). Empty query is no-op.
+ */
+export function searchCatalog(items: CatalogItem[], query: string): CatalogItem[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return items
+  return items.filter(i =>
+    i.question.toLowerCase().includes(q) ||
+    i.optionA.toLowerCase().includes(q) ||
+    i.optionB.toLowerCase().includes(q),
+  )
+}
+
+/**
+ * Filter by user vote state. 'all' is a no-op. 'voted' requires the id
+ * to be in the votedIds set; 'unvoted' is the complement.
+ */
+export function filterByVoteState(
+  items: CatalogItem[],
+  state: VoteState,
+  votedIds: ReadonlySet<string>,
+): CatalogItem[] {
+  if (state === 'all') return items
+  if (state === 'voted')   return items.filter(i => votedIds.has(i.id))
+  return items.filter(i => !votedIds.has(i.id))
+}
+
+/**
+ * Compute divisivity 0..100 from vote detail. 100 = exact 50/50, 0 = 100/0.
+ * Returns 0 if the item has no detail (treated as not-divisive).
+ */
+export function divisivityOf(detail: VoteDetail | undefined): number {
+  if (!detail) return 0
+  const total = detail.a + detail.b
+  if (total === 0) return 0
+  const pctA = (detail.a / total) * 100
+  return Math.round(100 - 2 * Math.abs(50 - pctA))
+}
+
+/**
+ * Filter by minimum divisivity. 0 is a no-op. Items without vote detail
+ * are excluded (we can't compute divisivity for them).
+ */
+export function filterByDivisivity(
+  items: CatalogItem[],
+  minDivisivity: number,
+  voteDetailMap: ReadonlyMap<string, VoteDetail>,
+): CatalogItem[] {
+  if (minDivisivity <= 0) return items
+  return items.filter(i => divisivityOf(voteDetailMap.get(i.id)) >= minDivisivity)
+}
+
+/**
+ * Pick the deterministic daily dilemma from a moral-only pool.
+ * Uses `daysSinceEpoch % poolLength` so it rotates once per day UTC.
+ */
+export function pickDaily(items: CatalogItem[]): CatalogItem | undefined {
+  const pool = items.filter(i => !i.isLifestyle)
+  if (pool.length === 0) return undefined
+  const days = Math.floor(Date.now() / 86_400_000)
+  return pool[days % pool.length]
+}
+
+/**
+ * Pick the most divisive of the week — the item with divisivity closest
+ * to 50/50 and >= DIVISIVE_MIN_VOTES total votes. Used for the featured row.
+ * Excludes the daily pick so the two cards don't collide.
+ */
+export function pickMostDivisive(
+  items: CatalogItem[],
+  voteDetailMap: ReadonlyMap<string, VoteDetail>,
+  excludeId?: string,
+): CatalogItem | undefined {
+  let best: CatalogItem | undefined
+  let bestDivisivity = -1
+  for (const item of items) {
+    if (item.id === excludeId) continue
+    if (item.isLifestyle) continue
+    const detail = voteDetailMap.get(item.id)
+    if (!detail) continue
+    if (detail.a + detail.b < DIVISIVE_MIN_VOTES) continue
+    const div = divisivityOf(detail)
+    if (div > bestDivisivity) {
+      bestDivisivity = div
+      best = item
+    }
+  }
+  return best
 }
