@@ -1,6 +1,86 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 26 May 2026 (tarda notte) — 7 commit pushati alla mainline durante la giornata. Vitest 184/184. Scenarios 41→47. Landing pages +4. Blog posts +4. Catalog redesign live. 9GAG meme radar shipped.
+Last updated: 27 May 2026 (morning) — Sprint A.3 cluster expansion shipped + 2 user-reported bug fixes (language switcher slug mismatch, catalog card pill alignment). Vitest 184/184. Scenarios 47→51. Landing pages +2. Blog posts +2.
+
+## -2. Session 27 May 2026 (morning) — Sprint A.3 + 2 bug fixes
+
+### TL;DR
+
+User-reported bugs caught + fixed first (commit `8dd2fe5`): language switcher was hitting "Dilemma not found" 404 on /moral-dilemmas ↔ /it/dilemmi-morali toggle because `alternateLocalePath()` did a pure /it prefix swap. Catalog card option pills were vertically misaligned across grid cells due to variable question line counts. Both fixed in one commit. Then Sprint A.3 (`2a5ceac`): Sleepover Decline cluster EN + AI Scam Economy cluster IT, riding yesterday's trend-digest signal investment.
+
+### Commits pushati (questa sessione)
+
+| SHA | Sprint |
+|---|---|
+| `8dd2fe5` | `fix(catalog)`: language-switcher slug map + catalog card pill alignment |
+| `2a5ceac` | `feat(content)`: Sprint A.3 cluster expansion — Sleepover decline + AI scams |
+
+### Bug fix 1 — Language switcher slug mismatch (`8dd2fe5`)
+
+**Root cause**: `alternateLocalePath()` in [lib/locales.ts](lib/locales.ts) did a pure prefix toggle, so `/moral-dilemmas` → `/it/moral-dilemmas` (404, the IT slug is `dilemmi-morali`). Same pattern for `/topics` ↔ `/it/temi` and `/would-you-rather-questions` ↔ `/it/domande-would-you-rather`. The user landed on the `[topicSlug]` 404 page after toggling locale on the catalog.
+
+**Fix**:
+1. Added `EN_TO_IT_SEGMENT` static map for the 3 reserved per-locale base paths in `lib/locales.ts`
+2. Refactored `alternateLocalePath()` to preserve query/hash and consult the map for the first segment before falling back to prefix toggle
+3. Enhanced `LanguageSwitcher.tsx` to read `<link rel="alternate" hreflang>` from `document.head` as primary source — covers ALL dynamic-slug pages (blog posts with `alternateSlug`, SEO topic landings) that declare `metadata.alternates.languages`. Static slug map remains as fallback.
+
+### Bug fix 2 — Catalog card option pill misalignment (`8dd2fe5`)
+
+**Root cause**: `CatalogCard.tsx` question paragraph had no height constraint, so 3-line vs 5-line questions made the option pill rows land at different Y positions across grid cells, breaking visual rhythm.
+
+**Fix**: locked the question paragraph to `line-clamp-4 min-h-[5.6em]` (4 lines worth at leading-1.4) + wrapped the mini split bar in a fixed `h-1` slot so cards under the 50-vote social-proof floor still align their footer with cards that have the bar.
+
+### Sprint A.3 — Cluster expansion (`2a5ceac`)
+
+**Trigger**: yesterday's trend digest surfaced 2 secondary signals worth a leaner cornerstone treatment.
+
+**Sleepover Decline (EN-only)** — Anglo-cultural artefact, doesn't translate to IT naturally
+- Dilemmas (bilingual for parity test): `sleepover-9yo`, `helicopter-gps-teen`
+- Landing EN: `/sleepover-decline-parenting`
+- Blog EN: `/blog/why-sleepovers-are-disappearing` (~1100 words, 5 FAQ, 6 H2)
+- Research: Let Grow Foundation + Jonathan Haidt research hub
+
+**AI Scam Economy (IT-only)** — Italian used-market context, AGCM-specific
+- Dilemmas (bilingual): `ai-fake-review`, `scalper-bot`
+- Landing IT: `/it/mercato-ai-truffe-online`
+- Blog IT: `/blog/truffe-ai-mercato-usato-italia` (~1300 words, 5 FAQ, 6 H2)
+- Research: AGCM provvedimenti + Akerlof's "Market for Lemons" (Nobel 2001)
+
+### Test maintenance
+
+`tests/unit/next-dilemma-affinity.test.ts` had a hard-coded assumption "relationships has exactly 4 static dilemmas". With `relationships` growing from 4 → 6 (sleepover-9yo + helicopter-gps-teen), the "fall through when pool < 3" test broke. Fixed with a dynamic `slice(2)` so the test scales with corpus growth.
+
+### Verification
+
+- `npm run typecheck` ✅ both commits
+- `npm run test` ✅ 184/184
+- `npm run build` ✅
+- `git diff --check` ✅
+- EN/IT parity preserved
+- Pixie WIP 3 file preservati intoccati
+
+### PM-side follow-up (post-deploy)
+
+1. Test language switch on `/moral-dilemmas` ↔ `/it/dilemmi-morali` (the bug Matteo reported)
+2. Verify catalog card pill alignment on the 18-card grid
+3. Visit the 2 new landings (`/sleepover-decline-parenting` + `/it/mercato-ai-truffe-online`)
+4. Visit the 2 new blog posts
+5. Google Rich Results Test on the 4 new URLs
+6. GSC Request Indexing on the 4 new URLs
+
+### Note per domani (Pixie regression to investigate)
+
+⚠️ **PIXIE-LEVEL-UP-STATE-REGRESSION-01** — User reported i Pixie non sembrano salire di livello e non cambiano stato al passaggio di livello. Da investigare domani. Possible scope:
+- Vote-to-XP wiring in vote API
+- Pixie level state derivation in profile/play page
+- Pixie state SSR vs client revalidation
+- Possible broken-on-save cache invalidation
+
+Owner: TBD prossima sessione. Not committed yet — solo nota qui per non perdere il signal.
+
+---
+
+## -1. Session 26 May 2026 (tarda notte) — Cornerstone duo + catalog polish + 9GAG radar
 
 ## -1. Session 26 May 2026 (tarda notte) — Cornerstone duo + catalog polish + 9GAG radar
 
