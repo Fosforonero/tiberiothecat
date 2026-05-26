@@ -311,8 +311,15 @@ export default async function ItPage() {
               Tecnologia
             </Link>
             <Link
-              href="/it/temi"
+              href="/it/dilemmi-morali"
               className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-blue-500/30 hover:border-blue-500/60 text-xs text-blue-300/80 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
+            >
+              Tutti i dilemmi
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/it/temi"
+              className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
             >
               Tutti i temi
               <span aria-hidden="true">→</span>

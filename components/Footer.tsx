@@ -62,6 +62,10 @@ export default function Footer() {
         </a>
       </p>
       <p className="flex items-center justify-center gap-4 flex-wrap mb-3">
+        <a href={isIT ? '/it/dilemmi-morali' : '/moral-dilemmas'} className="hover:text-white transition-colors">
+          {isIT ? 'Tutti i dilemmi' : 'All dilemmas'}
+        </a>
+        <span>·</span>
         <a href={isIT ? '/it/blog' : '/blog'} className="hover:text-white transition-colors">
           Blog
         </a>

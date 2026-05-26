@@ -89,12 +89,23 @@ export default function TopicsHubPageIT() {
         <span aria-hidden="true">🗂</span> Temi
       </h1>
 
-      <p className="text-[var(--muted)] text-base leading-relaxed max-w-2xl mb-10">
+      <p className="text-[var(--muted)] text-base leading-relaxed max-w-2xl mb-6">
         Questi sono <strong className="text-white">temi interattivi di dilemmi</strong>, non
         articoli da enciclopedia. Ogni tema inquadra una tensione morale, collega alla filosofia
         e alla ricerca sottostante, e ti lascia votare sul dilemma reale che lo ancora — il tuo
         voto viene contato insieme al resto del mondo.
       </p>
+
+      <div className="mb-10">
+        <Link
+          href="/it/dilemmi-morali"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/15 text-sm text-blue-300 font-semibold transition-colors"
+        >
+          <span aria-hidden="true">🔍</span>
+          Oppure sfoglia il catalogo completo dei dilemmi
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
 
       <div className="neon-divider mb-10 max-w-xs" />
 

@@ -96,12 +96,23 @@ export default function TopicsHubPageEN() {
         <span aria-hidden="true">🗂</span> Topics
       </h1>
 
-      <p className="text-[var(--muted)] text-base leading-relaxed max-w-2xl mb-10">
+      <p className="text-[var(--muted)] text-base leading-relaxed max-w-2xl mb-6">
         These are <strong className="text-white">interactive dilemma topics</strong>, not encyclopedia
         articles. Each topic frames a moral tension, links to the underlying philosophy and research,
         and lets you vote on the real dilemma that anchors it — your vote gets counted alongside the
         rest of the world&apos;s.
       </p>
+
+      <div className="mb-10">
+        <Link
+          href="/moral-dilemmas"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/15 text-sm text-blue-300 font-semibold transition-colors"
+        >
+          <span aria-hidden="true">🔍</span>
+          Or browse the full catalog of all dilemmas
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
 
       <div className="neon-divider mb-10 max-w-xs" />
 

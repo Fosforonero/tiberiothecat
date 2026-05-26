@@ -137,7 +137,7 @@ export default async function CategoryPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-4 py-16">
         {/* Breadcrumb */}
         <nav className="text-xs text-[var(--muted)] mb-8" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-white transition-colors">All dilemmas</Link>
+          <Link href="/moral-dilemmas" className="hover:text-white transition-colors">All dilemmas</Link>
           <span className="mx-2">›</span>
           <span className="text-white">{cat.label}</span>
         </nav>

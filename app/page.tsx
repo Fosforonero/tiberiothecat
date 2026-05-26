@@ -295,8 +295,15 @@ export default async function HomePage() {
               Technology
             </Link>
             <Link
-              href="/topics"
+              href="/moral-dilemmas"
               className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-blue-500/30 hover:border-blue-500/60 text-xs text-blue-300/80 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 transition-all"
+            >
+              All dilemmas
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/topics"
+              className="inline-flex items-center gap-1 px-3.5 py-2 min-h-[36px] rounded-full border border-[var(--border)] hover:border-blue-500/40 text-xs text-[var(--muted)] hover:text-white bg-[var(--surface)]/40 hover:bg-[var(--surface)] transition-all"
             >
               All topics
               <span aria-hidden="true">→</span>

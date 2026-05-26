@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TrendingUp, Compass, Sparkles, BookOpen } from 'lucide-react'
+import { TrendingUp, Compass, Sparkles, BookOpen, Layers } from 'lucide-react'
 import { useLocale } from '@/hooks/useLocale'
 
 /**
@@ -24,6 +24,13 @@ type NavItem = {
 }
 
 const EN_LINKS: NavItem[] = [
+  {
+    href: '/moral-dilemmas',
+    label: 'Dilemmas',
+    icon: Layers,
+    color: 'text-[var(--muted)] hover:text-blue-300 hover:bg-blue-500/10 hover:border-blue-500/20',
+    activeColor: 'text-blue-300 bg-blue-500/15 border-blue-500/30',
+  },
   {
     href: '/trending',
     label: 'Trending',
@@ -55,6 +62,13 @@ const EN_LINKS: NavItem[] = [
 ]
 
 const IT_LINKS: NavItem[] = [
+  {
+    href: '/it/dilemmi-morali',
+    label: 'Dilemmi',
+    icon: Layers,
+    color: 'text-[var(--muted)] hover:text-blue-300 hover:bg-blue-500/10 hover:border-blue-500/20',
+    activeColor: 'text-blue-300 bg-blue-500/15 border-blue-500/30',
+  },
   {
     href: '/it/trending',
     label: 'Tendenze',

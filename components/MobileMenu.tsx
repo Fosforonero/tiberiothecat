@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import { useLocale } from '@/hooks/useLocale'
 import {
   Menu, X, TrendingUp, Scale, Cpu, Users, Heart, Zap,
-  HelpCircle, Compass, UserPlus, Home, BookOpen,
+  HelpCircle, Compass, UserPlus, Home, BookOpen, Layers,
   LayoutDashboard, LogOut, Mail, Sparkles, Star, ShoppingBag,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -132,6 +132,13 @@ export default function MobileMenu() {
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
             <Home size={15} className="text-white/40 flex-shrink-0" />
             <span style={LABEL}>Home</span>
+          </Link>
+
+          <Link href={isIT ? '/it/dilemmi-morali' : '/moral-dilemmas'} onClick={close} role="menuitem" style={ITEM}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+            <Layers size={15} className="text-blue-400 flex-shrink-0" />
+            <span style={LABEL}>{isIT ? 'Dilemmi' : 'Dilemmas'}</span>
           </Link>
 
           <Link href={isIT ? '/it/trending' : '/trending'} onClick={close} role="menuitem" style={ITEM}
