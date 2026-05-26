@@ -904,6 +904,84 @@ const STATIC_INSIGHTS: Record<string, LocaleInsight> = {
     },
   },
 
+  // ── PARENTING CULTURE & CHILDHOOD AUTONOMY ───────────────────
+  'sleepover-9yo': {
+    en: {
+      body: "Sleepovers used to be a default. They have quietly become an opt-in event most parents skip — for safety reasons, for unfamiliarity with the host family, for the soft shift in what childhood is allowed to risk. The question forces you to weigh a small probability of harm against a large loss of practice at being away from home.",
+      whyPeopleSplit: "Parents who let their child go treat first-night-away as constitutive of growing up: the small fear is the experience, and protecting kids from every unknown adult flattens the social texture they need. Parents who decline note that the risk profile has changed (smartphones, sleep environments, unknown family habits) and that postponing is reversible while a bad first sleepover is not.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat childhood autonomy as a resource that has to be spent in real situations, not just talked about. Trust between you and your child grows by being tested in small, recoverable ways.",
+        b: "You may treat first-time-away as a decision where 'we don't know enough' is the responsible answer until you do. Sleepovers will be available next year too; missed safety calls won't be.",
+      },
+    },
+    it: {
+      body: "Una volta i pigiama party erano la norma. Sono diventati silenziosamente un evento opzionale che la maggior parte dei genitori salta — per sicurezza, perché non si conosce abbastanza la famiglia che ospita, per il lento spostamento di ciò che all'infanzia è permesso rischiare. La domanda ti costringe a pesare una piccola probabilità di danno contro una grande perdita di pratica nell'essere lontano da casa.",
+      whyPeopleSplit: "I genitori che lasciano andare trattano la prima notte fuori come costitutiva del crescere: la piccola paura è l'esperienza, e proteggere i bambini da ogni adulto sconosciuto appiattisce la trama sociale di cui hanno bisogno. I genitori che rifiutano notano che il profilo di rischio è cambiato (smartphone, ambienti del sonno, abitudini familiari sconosciute) e che rimandare è reversibile, mentre un primo pigiama party andato male no.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere l'autonomia infantile come una risorsa che va spesa in situazioni reali, non solo parlata. La fiducia fra te e tuo figlio cresce solo se messa alla prova in modi piccoli e recuperabili.",
+        b: "Potresti vedere la prima volta fuori come una decisione in cui 'non ne sappiamo abbastanza' è la risposta responsabile finché non ne sai di più. I pigiama party saranno disponibili anche l'anno prossimo; le call di sicurezza saltate no.",
+      },
+    },
+  },
+
+  'helicopter-gps-teen': {
+    en: {
+      body: "The disagreement is about what safety norms mean once they become unanimous. If every parent in the friend group tracks their kid, the family that refuses turns its teen into a visible exception — which has social costs of its own. The choice is between adopting a norm you don't fully endorse and standing apart from a shift you think is wrong.",
+      whyPeopleSplit: "Parents who turn it on treat safety norms as ratchets: once the floor moves, you accept the new floor unless you have a strong reason. Parents who refuse treat surveillance norms as the kind of ratchet that needs to be resisted before it locks in — once tracking is normal, the absence of tracking becomes suspect, and 'trust without GPS' stops being a practical option.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat the social cost of being the family that refuses as real and non-trivial. Standards for what protective parenting looks like have moved; sitting out the move is its own statement, one your teen may not want to be a part of.",
+        b: "You may treat constant monitoring as something that erodes the very trust it was meant to protect. A teen who has never been off the leash never learns that they can be off it — and the parent who never lets go never learns either.",
+      },
+    },
+    it: {
+      body: "Il disaccordo riguarda cosa significhino le norme di sicurezza una volta che diventano unanimi. Se ogni genitore del gruppo di amici traccia il proprio figlio, la famiglia che rifiuta trasforma il proprio adolescente in un'eccezione visibile — e questo ha costi sociali suoi. La scelta è fra adottare una norma che non condividi pienamente e tirarti fuori da uno spostamento che ritieni sbagliato.",
+      whyPeopleSplit: "I genitori che attivano il GPS trattano le norme di sicurezza come cricchetti: una volta che il pavimento si è spostato, accetti il nuovo livello a meno che tu non abbia una ragione forte. I genitori che rifiutano trattano le norme di sorveglianza come il tipo di cricchetto che va opposto prima che si fissi — una volta che il tracciamento è normale, la sua assenza diventa sospetta, e 'fiducia senza GPS' smette di essere un'opzione praticabile.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare il costo sociale di essere la famiglia che rifiuta come reale e non banale. Lo standard di cosa significhi genitorialità protettiva si è spostato; non seguire lo spostamento è una presa di posizione di per sé — una che il tuo adolescente potrebbe non voler condividere.",
+        b: "Potresti vedere il monitoraggio costante come qualcosa che erode la fiducia stessa che doveva proteggere. Un adolescente mai uscito dal guinzaglio non impara mai di poterne fare a meno — e il genitore che non lo molla non lo impara nemmeno lui.",
+      },
+    },
+  },
+
+  // ── AI SCAM ECONOMY ──────────────────────────────────────────
+  'ai-fake-review': {
+    en: {
+      body: "The dilemma is what happens when the rules of a market degrade and you discover that everyone else has already adapted. Refusing to use AI-generated reviews protects your integrity but may destroy your shop; using them protects the shop but turns you into one more node in the deception you used to despise.",
+      whyPeopleSplit: "Some treat the surrounding cheating as moral cover: the platform refuses to verify, the customer cannot tell the difference, and refusing to play makes you the only person paying the cost of honesty. Others treat the choice as character-defining: once you do it, you become someone who will do it again, and the small businesses that hold the line eventually become the trustworthy ones when the platform corrects.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat business ethics as situational: rules that no one enforces are not rules, and unilateral compliance with a defunct norm is self-harm dressed as virtue.",
+        b: "You may treat integrity as a long-term asset: the AI-review market will be cleaned up either by regulation or by customer revolt, and the shops still standing after the cleanup will be the ones that didn't participate.",
+      },
+    },
+    it: {
+      body: "Il dilemma è cosa succede quando le regole di un mercato si degradano e scopri che tutti gli altri si sono già adattati. Rifiutare le recensioni generate da AI protegge la tua integrità ma può distruggere il tuo negozio; usarle protegge il negozio ma ti trasforma in un altro nodo dell'inganno che prima disprezzavi.",
+      whyPeopleSplit: "Alcuni trattano il barare diffuso come copertura morale: la piattaforma rifiuta di verificare, il cliente non vede la differenza, e rifiutarsi di giocare ti rende l'unico a pagare il costo dell'onestà. Altri trattano la scelta come ridefinizione di carattere: una volta che lo fai diventi qualcuno che lo rifarà, e i piccoli negozi che tengono la linea diventeranno alla fine quelli affidabili quando la piattaforma correggerà.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere l'etica degli affari come situazionale: regole che nessuno applica non sono regole, e l'osservanza unilaterale di una norma estinta è auto-danno travestito da virtù.",
+        b: "Potresti vedere l'integrità come asset di lungo periodo: il mercato delle recensioni AI verrà ripulito o dalla regolazione o dalla rivolta dei clienti, e i negozi ancora in piedi dopo la pulizia saranno quelli che non hanno partecipato.",
+      },
+    },
+  },
+
+  'scalper-bot': {
+    en: {
+      body: "The trap is collective-action: if you refuse the bot, you lose; if everyone refuses, no one loses. The question asks whether you trust collective behaviour enough to be the one who holds out, knowing the others may not.",
+      whyPeopleSplit: "Some treat the situation as a defection game already lost: enough bots are running that holding out is just declining to compete, and the people who 'win' are the ones who recognise the new rules first. Others treat the holdout as load-bearing: bot economics depend on a critical mass of human buyers, and every human who refuses moves the equilibrium back toward the queue actually working.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat the queue as already broken and refuse to subsidise the people who broke it by buying their resale markup. If you can't beat the system, joining it is more honest than pretending it works.",
+        b: "You may treat collective restraint as the only thing that makes any market human. Refusing the bot is a vote, even if it loses today — and the vote only matters if the people who agree with you also cast it.",
+      },
+    },
+    it: {
+      body: "La trappola è collettiva: se tu rifiuti il bot, perdi; se tutti rifiutano, nessuno perde. La domanda è se ti fidi del comportamento collettivo abbastanza da essere quello che resiste, sapendo che gli altri potrebbero non farlo.",
+      whyPeopleSplit: "Alcuni vedono la situazione come un gioco di defezione già perso: abbastanza bot stanno girando che resistere significa solo rinunciare a competere, e chi 'vince' è chi riconosce per primo le nuove regole. Altri vedono il resistere come portante: l'economia dei bot dipende da una massa critica di compratori umani, e ogni umano che rifiuta sposta l'equilibrio verso una coda che funziona davvero.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere la coda come già rotta e rifiutare di sussidiare chi l'ha rotta comprando il loro mark-up di rivendita. Se non puoi battere il sistema, unirti è più onesto che fingere che funzioni.",
+        b: "Potresti vedere la moderazione collettiva come l'unica cosa che rende un mercato umano. Rifiutare il bot è un voto, anche se oggi perde — e il voto conta solo se chi è d'accordo con te lo esprime anche lui.",
+      },
+    },
+  },
+
   'save-partner-vs-stranger': {
     en: {
       body: "This is a forced-choice trolley with a wrenching add: one option is the person you've chosen for life, the other is a child who hasn't had a chance to choose anything. Most ethical frameworks accept that special relationships generate special duties — but the asymmetry of the lives at stake (a 5-year-old has a longer future) cuts in the other direction.",

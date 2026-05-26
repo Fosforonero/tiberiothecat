@@ -4754,6 +4754,118 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+
+  // ── Sleepover Decline (EN-only — Anglo cultural artefact) ──────
+  {
+    slug: 'why-sleepovers-are-disappearing',
+    locale: 'en',
+    title: 'Why Sleepovers Are Disappearing — and What Childhood Lost With Them',
+    seoTitle: 'Why Sleepovers Are Disappearing — Helicopter Parenting, Child Safety, and the Independence Gap',
+    description:
+      'A generation ago the first sleepover was a rite of passage. Today it has quietly become opt-out. The shift is partly about safety and partly about something harder to name.',
+    seoDescription:
+      'Why sleepovers are disappearing in American and British childhood: the parenting culture shift, the safety arguments, the developmental costs of less unsupervised time, and how families are negotiating the new norm.',
+    date: '2026-05-27',
+    readingTime: 5,
+    tags: ['parenting', 'child development', 'helicopter parenting', 'current events'],
+    relatedDilemmaIds: ['sleepover-9yo', 'helicopter-gps-teen', 'ai-companion-teen', 'delete-social-media'],
+    faq: [
+      {
+        q: 'At what age is a sleepover developmentally appropriate?',
+        a: 'Most pediatric guidance places the typical window between 7 and 10, but readiness is individual. Signs include the child being able to articulate basic comfort needs, separating from a parent for a full evening without distress, and the host parents being someone you would call before midnight without hesitation.',
+      },
+      {
+        q: 'Are sleepovers actually unsafe?',
+        a: 'The absolute risk of harm at a sleepover is low. The arguments for declining are usually about specific concerns — unknown adults in the home, screen-time and content access you don\'t control, sleep environment — rather than statistical danger. The risk profile of a single sleepover is much smaller than the risk profile of a year of social media use.',
+      },
+      {
+        q: 'How do I say no without isolating my child?',
+        a: 'Decline the sleepover but propose a generous substitute: "She can stay until 10pm and I\'ll come pick her up." This preserves the social event without the overnight component you\'re not ready for, and it telegraphs that the no is about overnight specifically, not about the friend.',
+      },
+      {
+        q: 'How do I handle "but everyone else does"?',
+        a: 'In most peer groups, "everyone" is actually two or three families. Ask the child for names. The conversation moves from a vague social pressure to a concrete list, and the concrete list is much easier to evaluate.',
+      },
+      {
+        q: 'Does declining sleepovers cause anxiety later?',
+        a: 'The research is suggestive rather than conclusive. Developmental psychologists like Jonathan Haidt argue that the broader decline in unsupervised, low-stakes-away-from-home time correlates with rising adolescent anxiety. A single declined sleepover does nothing; a consistent pattern of declining all overnight experiences does, eventually, leave a teen without a script for being on their own.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'A generation ago, the first sleepover was a small rite of passage. A kid packed a sleeping bag, watched a movie they were a little too young for, and came home the next morning either braver or quieter. Today, in a growing number of American and British neighborhoods, the sleepover has quietly become opt-out. Many parents decline. Many host families have stopped offering.',
+      },
+      {
+        type: 'p',
+        text: 'The reasons are partly about safety, partly about not knowing the host family well, and partly about a slow shift in what childhood is allowed to risk. None of the reasons are wrong. All of them have a cost.',
+      },
+      {
+        type: 'h2',
+        text: 'What changed',
+      },
+      {
+        type: 'p',
+        text: 'Three things moved at once. First, the legible safety information about strangers and home environments got more granular: predator registries, peanut allergies, vaping in the host bathroom, screen content on a friend\'s shared tablet at 1am. The information was always there in principle; the internet made it actionable. Second, parents became more reachable in real time, which made the cost of one missed update feel higher than it would have to a parent in 1995. Third, the parenting community itself shifted toward a norm where opting out of overnight events was no longer considered overcautious.',
+      },
+      {
+        type: 'h2',
+        text: 'The argument for the new caution',
+      },
+      {
+        type: 'p',
+        text: 'It is not paranoid to want to know who else lives in the house, what is on the home wifi at midnight, whether the host parents drink, or whether a teenage older sibling has free run of the rooms while the parents sleep. These are real categories of risk that the previous generation\'s sleepover defaults largely ignored. A parent who declines a sleepover because they have not met the host couple yet is doing a recognisable form of due diligence, not panicking.',
+      },
+      {
+        type: 'h2',
+        text: 'The case for letting them go',
+      },
+      {
+        type: 'p',
+        text: 'The opposing argument is usually framed as "kids need independence" but the more honest version is narrower: kids need low-stakes practice at being away from a parent. A sleepover is one of the few remaining venues where a child experiences a different family\'s rhythms — different bedtime, different breakfast, a different parent gently correcting them — and learns that the world is bigger than the household they came from. Walking to school, riding the bus alone, summer camp: each of these has been quietly trimmed. The sleepover is one of the last common ones left.',
+      },
+      {
+        type: 'p',
+        text: 'Researchers including Jonathan Haidt and Lenore Skenazy argue that the cumulative decline in unsupervised, low-stakes away-from-home time correlates with the rise in adolescent anxiety we have measured since roughly 2012. The causal story is not settled. The pattern is.',
+      },
+      {
+        type: 'h2',
+        text: 'A workable middle',
+      },
+      {
+        type: 'list',
+        items: [
+          'Meet the host parents before saying yes. Coffee for twenty minutes is not overcautious — it is the kind of pre-check that lets you say yes with more confidence later.',
+          'Start with daytime visits before overnights. A long Saturday at the friend\'s house tells you 80% of what you need to know about the household dynamic.',
+          'Propose a 10pm pickup as a first overnight rehearsal. Half the social experience, none of the unknowns of overnight.',
+          'Be honest about which concerns are about the child and which are about the host family. Conflating them makes the no harder to revisit later.',
+          'Track what the child actually loses by not going. If "everyone else is going" turns out to mean "two close friends are going", the cost of declining is higher than a generic norm-pressure framing suggests.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Why this matters for moral judgment',
+      },
+      {
+        type: 'p',
+        text: 'The dilemma SplitVote frames — [should you let your 9-year-old go to a first sleepover at a family you don\'t know well](/play/sleepover-9yo) — is not a question about sleepovers. It is a question about how you weigh small known risks against the cumulative invisible cost of declining them. The same shape recurs in other 2026 parenting questions: [should you turn on 24/7 GPS tracking on your teen](/play/helicopter-gps-teen), [should you let your child use an AI companion app](/play/ai-companion-teen). Each is asking the same underlying question with different surface details.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote on the sleepover decline →',
+        href: '/sleepover-decline-parenting',
+      },
+      {
+        type: 'cta',
+        label: 'See parenting dilemmas →',
+        href: '/category/relationships',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Reflective content informed by research from the Let Grow Foundation and Jonathan Haidt\'s ongoing work on adolescent independence. Not clinical or pediatric advice. The SplitVote scenarios are hypothetical and intended for moral reflection, not parenting recommendations.',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -9351,6 +9463,126 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo. Le posizioni del Vaticano sull\'AI sono parafrasate da documenti pubblicati (Rome Call for AI Ethics, messaggio per la Giornata Mondiale della Pace 2024, interventi papali). Le posizioni attribuite ad altre tradizioni di fede sono sintesi generali; specifiche autorità interne a ciascuna tradizione tengono posizioni diverse. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
+      },
+    ],
+  },
+
+  // ── Truffe AI Online (IT-only — contesto mercato usato italiano) ──
+  {
+    slug: 'truffe-ai-mercato-usato-italia',
+    locale: 'it',
+    title: 'Truffe AI nel Mercato Usato — Come Cambia l\'Etica Quando Tutti Iniziano a Barare',
+    seoTitle: 'Truffe AI Online — Recensioni False, Bot Bagarini e l\'Etica del Mercato Usato 2026',
+    description:
+      'Recensioni gonfiate da AI, foto false, bot che esauriscono ogni drop in trenta secondi. Il piccolo venditore onesto è l\'unico a pagare il prezzo dell\'integrità.',
+    seoDescription:
+      'Truffe AI nel mercato usato italiano: come le piattaforme premiano chi bara, perché i venditori onesti escono per primi, l\'analisi di George Akerlof sui "mercati a lemons" applicata al 2026.',
+    date: '2026-05-27',
+    readingTime: 6,
+    tags: ['etica AI', 'mercato usato', 'truffe online', 'attualità', 'commercio'],
+    relatedDilemmaIds: ['ai-fake-review', 'scalper-bot', 'deepfake-expose', 'ai-replaces-jobs'],
+    faq: [
+      {
+        q: 'È legale generare recensioni con AI?',
+        a: 'In Italia il Codice del Consumo (D.Lgs. 206/2005) e la Direttiva UE 2019/2161 (Omnibus) qualificano le recensioni false o sponsorizzate non dichiarate come pratiche commerciali sleali. L\'AGCM ha sanzionato diverse piattaforme negli ultimi anni. La sanzione è certa; il rilevamento è raro.',
+
+      },
+      {
+        q: 'Come riconosco una recensione AI?',
+        a: 'I segnali più affidabili sono: linguaggio molto fluente ma poco specifico ("ottimo prodotto, lo consiglio"), assenza di dettagli concreti sul prodotto, profili recensori con storia di acquisti molto distanti tematicamente, picchi anomali di recensioni nello stesso giorno. Gli strumenti automatici di rilevamento esistono ma falliscono regolarmente.',
+      },
+      {
+        q: 'Cosa fa AGCM per fermare le truffe AI sui marketplace?',
+        a: 'L\'Autorità ha avviato istruttorie su recensioni, prezzi opachi e modalità di vendita su diverse piattaforme di e-commerce. Le sanzioni esistono ma sono lente; il ciclo di vita di una recensione falsa è in genere più corto del ciclo di vita di un\'istruttoria.',
+      },
+      {
+        q: 'Posso usare bot per comprare biglietti per concerti o sneaker?',
+        a: 'In Italia la Legge di Bilancio 2017 ha vietato l\'uso di software per acquisto massivo di biglietti per eventi di spettacolo. Per altre categorie (sneaker, console, prodotti tech) la situazione è meno definita ma spesso il singolo marketplace vieta i bot nei propri Terms of Service.',
+      },
+      {
+        q: 'Cosa cambia per il piccolo venditore onesto?',
+        a: 'Tutto. Quando il prezzo medio di mercato si forma includendo l\'inflazione da recensioni false e il rivenduto a 4x dei bagarini, il venditore onesto si trova in svantaggio strutturale. La letteratura di Akerlof ("market for lemons") prevede che in mercati con asimmetria informativa i venditori onesti escano per primi — proprio quello che sta succedendo.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'Il mercato dell\'usato online in Italia è arrivato a un punto di rottura quotidiano: recensioni gonfiate da AI generativa, foto di prodotto false, bagarini con bot che esauriscono ogni drop limitato in trenta secondi. Le piattaforme verificano poco, i clienti non riescono a distinguere, e i piccoli venditori onesti si trovano a competere contro avversari che hanno semplicemente smesso di seguire le regole.',
+      },
+      {
+        type: 'p',
+        text: 'La domanda non è più se il sistema sia rotto — lo è — ma se valga la pena, eticamente, comportarsi come se non lo fosse. Ogni piccolo commerciante affronta questo bivio ogni mese: aderire alla degenerazione o pagare il prezzo dell\'onestà unilaterale.',
+      },
+      {
+        type: 'h2',
+        text: 'Cos\'è cambiato negli ultimi 24 mesi',
+      },
+      {
+        type: 'p',
+        text: 'Tre cose sono accadute insieme. Le AI generative sono diventate abbastanza convincenti da produrre recensioni che superano qualsiasi controllo automatico delle piattaforme. I bot scalper hanno raggiunto un livello di sofisticazione tale che un drop di prodotto limitato si esaurisce prima che un essere umano possa cliccare. Le piattaforme — Amazon, Subito, Vinted, eBay — hanno scelto di non investire pesantemente nella verifica, perché la massa di vendite gonfiate è anche massa di commissioni incassate.',
+      },
+      {
+        type: 'p',
+        text: 'Il risultato è un mercato dove l\'onestà unilaterale è una tassa. Il piccolo venditore che si rifiuta di gonfiare le proprie recensioni vede il proprio rating fermo a 4,5 mentre concorrenti meno scrupolosi viaggiano sul 4,9. Il consumatore non distingue. Il piccolo vende meno.',
+      },
+      {
+        type: 'h2',
+        text: 'L\'argomento per usare anche tu le recensioni AI',
+      },
+      {
+        type: 'p',
+        text: 'La versione lucida dell\'argomento "lo fanno tutti" non è cinica, è pragmatica. Quando una piattaforma rifiuta di verificare, quando il cliente non può capire la differenza, quando il sistema premia attivamente chi bara, l\'osservanza unilaterale di una regola estinta è auto-danno travestito da virtù. Il commerciante che chiude perché ha rifiutato di gonfiare le recensioni non viene ricordato come un eroe morale; viene ricordato come uno che non ha capito i tempi.',
+      },
+      {
+        type: 'p',
+        text: 'E c\'è un secondo argomento più sottile. Se il sistema viene comunque corretto — da una regolazione AGCM più stringente, da una rivolta dei consumatori, dall\'arrivo di un competitor che premia l\'onestà — il piccolo che ha aderito alle recensioni AI avrà perso la sua reputazione personale per niente. Ma il piccolo che ha chiuso prima della correzione avrà perso comunque.',
+      },
+      {
+        type: 'h2',
+        text: 'L\'argomento per rifiutare comunque',
+      },
+      {
+        type: 'p',
+        text: 'L\'argomento opposto è più antico ma altrettanto serio. George Akerlof ha vinto il Nobel nel 2001 in parte per aver mostrato matematicamente cosa succede ai mercati dove i compratori non possono distinguere qualità: il prezzo crolla, i venditori onesti escono per primi, e alla fine resta solo il livello peggiore. Il "market for lemons" descrive esattamente il nostro 2026.',
+      },
+      {
+        type: 'p',
+        text: 'Ma Akerlof descrive anche la condizione di uscita: la fiducia. I mercati a "lemons" si correggono solo quando un sottoinsieme di venditori dimostra credibilmente di essere diverso. Se tutti aderiscono al barare, la correzione non arriva mai. Il negozio onesto che resiste è, in questa lettura, l\'unica precondizione perché il mercato torni a funzionare.',
+      },
+      {
+        type: 'h2',
+        text: 'Il quadro pratico',
+      },
+      {
+        type: 'list',
+        items: [
+          'AGCM sta intensificando le istruttorie su recensioni e prezzi opachi — il rischio sanzionatorio per chi adotta pratiche AI ingannevoli è in crescita.',
+          'Le piattaforme stesse iniziano a vendere strumenti di verifica come servizio premium — il segnale che riconoscono il problema strutturale che hanno creato.',
+          'I consumatori italiani sotto i 35 anni mostrano una distrust crescente verso recensioni online e si affidano sempre più a creator e nicchie verticali — segnale che il bypass del marketplace è in corso.',
+          'La Legge di Bilancio 2017 ha già vietato i bot per i biglietti — precedente legislativo che può estendersi ad altre categorie.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Perché conta per il giudizio morale',
+      },
+      {
+        type: 'p',
+        text: 'I dilemmi SplitVote di questo cluster — [usare AI per gonfiare le proprie recensioni quando tutti lo fanno](/it/play/ai-fake-review), [usare un bot scalper per comprare prima dei bagarini](/it/play/scalper-bot) — non chiedono cosa sarebbe la regola perfetta. Chiedono cosa tu, da piccolo venditore o consumatore italiano nel 2026, sei disposto a fare per restare nel gioco senza diventare il problema.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota sulle truffe AI nel mercato online →',
+        href: '/it/mercato-ai-truffe-online',
+      },
+      {
+        type: 'cta',
+        label: 'Vedi dilemmi su tecnologia →',
+        href: '/it/category/technology',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo informato da provvedimenti AGCM e dalla letteratura economica sui mercati ad asimmetria informativa (Akerlof 1970). Non è consulenza legale o commerciale. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
       },
     ],
   },

@@ -254,6 +254,30 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionA: 'La uso. Se avvicina qualcuno al sacro, il mezzo è secondario.',
     optionB: 'La rifiuto. Esternalizzare il lavoro interiore a un chatbot trasforma il rito in comodità.',
   },
+
+  // ── PARENTING CULTURE & CHILDHOOD AUTONOMY ────────────────────
+  'sleepover-9yo': {
+    question: 'Tuo figlio di 9 anni è invitato al primo pigiama party da un amico. I genitori che ospitano sono gentili, ma li conosci poco. A scuola pochi bambini fanno ancora pigiama party.',
+    optionA: 'Lo lascio andare. Un\'infanzia senza piccoli rischi è solo attesa sorvegliata.',
+    optionB: 'Rifiuto con tatto. La fiducia si costruisce prima; il pigiama party può aspettare.',
+  },
+  'helicopter-gps-teen': {
+    question: 'Tutti gli amici di tuo figlio quattordicenne condividono il GPS 24/7 con i genitori. Tuo figlio dice che ormai è normale. Tu sei cresciuto senza nulla di tutto questo.',
+    optionA: 'Lo attivo. La soglia di sicurezza si è spostata; rifiutare lo rende l\'eccezione.',
+    optionB: 'Rifiuto. Un adolescente sempre tracciato non impara mai a essere degno di fiducia fuori dal nostro sguardo.',
+  },
+
+  // ── AI SCAM ECONOMY ───────────────────────────────────────────
+  'ai-fake-review': {
+    question: 'Il tuo piccolo negozio online ha 4,5 stelle; i concorrenti a 4,9 stanno usando AI per generare centinaia di recensioni elogiative. Potresti raggiungerli in un pomeriggio. Nessuno verifica.',
+    optionA: 'Lo faccio. Recensioni oneste non possono vincere contro una piattaforma che premia il gonfiaggio.',
+    optionB: 'Rifiuto. Una volta cominciato non sei più distinguibile dagli operatori che disprezzi.',
+  },
+  'scalper-bot': {
+    question: 'Una serie limitata si esaurisce in 30 secondi. I bagarini con bot AI rivendono a 4x il prezzo. Potresti comprare un abbonamento bot e unirti — oppure restare nella coda umana e perdere.',
+    optionA: 'Compro il bot. Il sistema è già rotto; non usarlo è una tassa sull\'onestà.',
+    optionB: 'Resto umano. Se tutti rifiutano, i bot non hanno mercato; se ti unisci, la coda umana sparisce per sempre.',
+  },
 }
 
 export function translateScenarioToItalian<T extends Scenario>(scenario: T): T {

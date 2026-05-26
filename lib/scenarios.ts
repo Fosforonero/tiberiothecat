@@ -414,6 +414,42 @@ export const scenarios: Scenario[] = [
     emoji: '🙏',
     category: 'society',
   },
+
+  // ── PARENTING CULTURE & CHILDHOOD AUTONOMY ────────────────────
+  {
+    id: 'sleepover-9yo',
+    question: "Your 9-year-old has been invited to a friend's first sleepover. The host parents are friendly but you don't know them well. Most kids at school don't do sleepovers anymore.",
+    optionA: "Let them go. Childhood without small risks is just supervised waiting.",
+    optionB: "Decline politely. Trust is built first; sleepovers can wait.",
+    emoji: '🌙',
+    category: 'relationships',
+  },
+  {
+    id: 'helicopter-gps-teen',
+    question: "Your 14-year-old's friends all have 24/7 GPS sharing with their parents. Your teen says it's normal now. You grew up with none of it.",
+    optionA: "Turn it on. The baseline of safety has shifted; refusing makes them the exception.",
+    optionB: "Refuse. A teen who is always tracked never learns to be trusted out of sight.",
+    emoji: '📍',
+    category: 'relationships',
+  },
+
+  // ── AI SCAM ECONOMY ───────────────────────────────────────────
+  {
+    id: 'ai-fake-review',
+    question: "Your small online shop has 4.5 stars; competitors at 4.9 are using AI to generate hundreds of glowing reviews. You could match them in an afternoon. No one verifies.",
+    optionA: "Do it. Honest reviews can't win against the platform that rewards inflation.",
+    optionB: "Refuse. Once you start, you're indistinguishable from the operators you despise.",
+    emoji: '⭐',
+    category: 'technology',
+  },
+  {
+    id: 'scalper-bot',
+    question: "A limited drop sells out in 30 seconds. Resellers using AI bots resell at 4x. You could buy one bot subscription and join — or wait in the human queue and lose.",
+    optionA: "Buy the bot. The system is already broken; not using one is a tax on honesty.",
+    optionB: "Stay human. If everyone refuses, the bots have no market; if you join, the queue is gone forever.",
+    emoji: '🤖',
+    category: 'technology',
+  },
 ]
 
 export const CATEGORIES: { value: Category | 'all'; label: string; emoji: string }[] = [

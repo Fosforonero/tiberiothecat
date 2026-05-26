@@ -103,16 +103,17 @@ describe('getFreshNextScenarioId — same-category affinity', () => {
   })
 
   it('falls through to cross-category dynamic top-half when category resolves but primary pool has < 3', () => {
-    // Use a category with the smallest static count (relationships = 4).
-    // Voting 3 of 4 leaves 1 fresh static (counted in same-cat pool). Add
-    // a dynamicPool that has 0 same-cat dynamics → primary pool size = 1 < 3
-    // → fall through. The fallback prefers the top-half of dynamicPool.
+    // Pick relationships and vote ALL but one (excluding the current id)
+    // so the fresh same-cat pool has exactly 1 item < 3 regardless of how
+    // many relationships dilemmas the corpus grows to. Add a dynamicPool
+    // with 0 same-cat dynamics → primary pool size stays 1 → fall through.
     const relStaticIds = scenarios
       .filter(s => s.category === 'relationships')
       .map(s => s.id)
     const currentId = relStaticIds[0]
-    const votedIds = new Set(relStaticIds.slice(1, 3)) // voted 2 of 4 (current excluded too → 1 fresh same-cat)
-    // Actually: excluded = current + 2 voted = 3 → fresh same-cat = 4 - 3 = 1
+    // voted = all relationships from index 2 onwards.
+    // excluded = {current=[0]} ∪ {voted=[2..N-1]} → fresh same-cat = {[1]} → size 1 < 3.
+    const votedIds = new Set(relStaticIds.slice(2))
     const dynamicPool: ScoredFixture[] = [
       { id: 'dyn-other-1', category: 'society',   scores: { finalScore: 90 } },
       { id: 'dyn-other-2', category: 'freedom',   scores: { finalScore: 80 } },

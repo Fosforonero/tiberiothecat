@@ -871,6 +871,68 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false,
   },
+
+  // ── The decline of sleepovers (EN-only — Anglo-cultural artefact) ─────
+  {
+    slug: 'sleepover-decline-parenting',
+    locale: 'en',
+    topic: 'Sleepover Decline',
+    searchIntent: 'are sleepovers safe, sleepover age, kids sleepover decline, why parents stopped letting kids sleep over, helicopter parenting sleepovers',
+    tension: 'protective parenting vs the small risks that practice independence is built on',
+    headline: 'The Decline of the Sleepover — When Did Childhood Stop Risking the Night?',
+    intro:
+      'A generation ago, the first sleepover was a rite of passage. Today, in many neighborhoods, it has quietly become an opt-out event most families skip. The shift is partly about safety, partly about not knowing the other parents well enough, partly about a culture that has narrowed what childhood is allowed to risk. Researchers studying adolescent development describe a slow erosion of low-stakes, away-from-home experiences — the ones that used to teach children how to be away from a parent before being away counted. The question is whether the modern caution has prevented harm or just shifted it onto a slower timeline.',
+    primaryScenarioId: 'sleepover-9yo',
+    relatedScenarioIds: ['helicopter-gps-teen', 'ai-companion-teen', 'delete-social-media'],
+    relatedTopicSlugs: ['ai-companions-and-teens', 'moral-foundations'],
+    researchNote:
+      'Developmental psychologists including Jonathan Haidt and Lenore Skenazy have argued that the decline in unsupervised time — including sleepovers and walking-to-school — correlates with rising anxiety in adolescents. The clinical consensus is unsettled: protective gains and developmental costs are both real and hard to disentangle in a single generation.',
+    researchSources: [
+      {
+        title: 'Let Grow — Research on Childhood Independence',
+        institution: 'Let Grow Foundation',
+        url: 'https://letgrow.org/research/',
+      },
+      {
+        title: 'The Anxious Generation — Research Hub',
+        institution: 'After Babel / Jonathan Haidt',
+        url: 'https://www.anxiousgeneration.com/research',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+
+  // ── AI scam economy (IT-only — IT used-market context) ─────────────────
+  {
+    slug: 'mercato-ai-truffe-online',
+    locale: 'it',
+    topic: 'Truffe AI Online',
+    searchIntent: 'truffe ai online, recensioni false ai, bagarini bot biglietti, mercato usato truffe ia, scalper italia, recensioni amazon false',
+    tension: 'la sopravvivenza nel mercato vs la complicità con un sistema che si sta degradando',
+    headline: 'Truffe AI Online — Quando il Mercato Premia Chi Bara Meglio',
+    intro:
+      'Il mercato dell\'usato tech in Italia è arrivato a un punto di rottura quotidiano: recensioni gonfiate da AI generative, foto di prodotto false, bagarini con bot che esauriscono ogni drop limitato in trenta secondi. Le piattaforme verificano poco, i clienti non riescono a distinguere, e i venditori onesti si trovano a competere contro avversari che hanno semplicemente smesso di seguire le regole. La domanda non è più se il sistema sia rotto — lo è — ma se valga la pena, eticamente, comportarsi come se non lo fosse. Ogni piccolo commerciante affronta questo bivio ogni mese: aderire alla degenerazione o pagare il prezzo dell\'onestà unilaterale.',
+    primaryScenarioId: 'ai-fake-review',
+    relatedScenarioIds: ['scalper-bot', 'deepfake-expose', 'ai-replaces-jobs'],
+    relatedTopicSlugs: ['dilemmi-etici-intelligenza-artificiale', 'ai-companion-adolescenti'],
+    researchNote:
+      'L\'Autorità Garante della Concorrenza e del Mercato (AGCM) ha avviato negli ultimi anni istruttorie su piattaforme di e-commerce per pratiche di recensione e prezzo opache. La letteratura sui mercati a "lemons" di George Akerlof descrive il meccanismo: quando i compratori non possono distinguere qualità, il prezzo crolla e i venditori onesti escono per primi.',
+    researchSources: [
+      {
+        title: 'AGCM — Comunicati su pratiche commerciali scorrette',
+        institution: 'Autorità Garante della Concorrenza e del Mercato',
+        url: 'https://www.agcm.it/dotcmsdoc/allegati-news/',
+      },
+      {
+        title: 'The Market for Lemons (Akerlof 1970)',
+        institution: 'Quarterly Journal of Economics',
+        url: 'https://www.jstor.org/stable/1879431',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {
