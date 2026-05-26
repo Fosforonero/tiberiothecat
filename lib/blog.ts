@@ -1302,10 +1302,33 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       "The most famous moral dilemmas with concrete examples — from the trolley problem to AI ethics. See live SplitVote poll results for each one.",
     date: '2026-04-27',
-    readingTime: 6,
+    dateModified: '2026-05-26',
+    readingTime: 8,
     tags: ['moral dilemmas', 'examples', 'ethics', 'philosophy'],
     alternateSlug: 'dilemmi-morali-esempi',
     relatedDilemmaIds: ['trolley', 'organ-harvest', 'lifeboat', 'cure-secret', 'memory-erase', 'truth-friend'],
+    faq: [
+      {
+        q: 'What is a moral dilemma?',
+        a: "A moral dilemma is a situation where two genuine values collide and you can only honour one. Both options have real consequences, neither is clearly wrong on ethical grounds, and the choice reveals which value you actually prioritise — not which one you say you do. A hard problem is not automatically a dilemma; it becomes one only when the two sides are both defensible.",
+      },
+      {
+        q: 'What are some real-life examples of moral dilemmas?',
+        a: "Beyond the classic trolley problem, real-life moral dilemmas include telling a friend their partner is cheating, reporting a close friend for a serious crime, accepting an inheritance from someone you considered immoral, deciding whether a doctor should reveal a devastating diagnosis, and choosing between saving a relative or a stranger who could help many others. The shared shape is the same: two values you hold, one decision that cannot honour both.",
+      },
+      {
+        q: 'What is the most famous moral dilemma?',
+        a: "The trolley problem, introduced by philosopher Philippa Foot in 1967, is the most cited moral dilemma in modern ethics. A runaway trolley will kill five people unless you divert it to kill one. The split among voters is far more balanced than most people expect before they actually have to choose — which is precisely why it has lasted for decades as a teaching tool.",
+      },
+      {
+        q: 'Are moral dilemmas only philosophical thought experiments?',
+        a: "No — most real moral dilemmas happen in everyday life, not in philosophy classrooms. They appear in workplaces (cover for a colleague or report them?), families (tell the truth or protect someone from pain?), medicine (full disclosure or compassionate filtering?), and law (loyalty to a friend or to justice?). The thought experiments simplify these everyday tensions so they can be analysed; the underlying conflicts are real.",
+      },
+      {
+        q: 'Why do people answer moral dilemmas so differently?',
+        a: "Because people implicitly use different ethical frameworks. Consequentialists weigh outcomes (the most lives saved wins). Deontologists weigh actions themselves (some acts are wrong regardless of consequences). Virtue ethicists ask what a person of integrity would do. Most people carry all three frameworks at once — until a dilemma forces them into direct conflict, and then one framework wins. Vote splits of 40/60 or 45/55 across thousands of voters reflect this underlying disagreement, not confusion.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -1556,6 +1579,50 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: "Want to see what the world would actually choose? Try SplitVote and compare your answers with other users.",
+      },
+      {
+        type: 'h2',
+        text: 'Frequently asked questions',
+      },
+      {
+        type: 'h3',
+        text: 'What is a moral dilemma?',
+      },
+      {
+        type: 'p',
+        text: "A moral dilemma is a situation where two genuine values collide and you can only honour one. Both options have real consequences, neither is clearly wrong on ethical grounds, and the choice reveals which value you actually prioritise — not which one you say you do. A hard problem is not automatically a dilemma; it becomes one only when the two sides are both defensible.",
+      },
+      {
+        type: 'h3',
+        text: 'What are some real-life examples of moral dilemmas?',
+      },
+      {
+        type: 'p',
+        text: "Beyond the classic trolley problem, real-life moral dilemmas include telling a friend their partner is cheating, reporting a close friend for a serious crime, accepting an inheritance from someone you considered immoral, deciding whether a doctor should reveal a devastating diagnosis, and choosing between saving a relative or a stranger who could help many others. The shared shape is the same: two values you hold, one decision that cannot honour both.",
+      },
+      {
+        type: 'h3',
+        text: 'What is the most famous moral dilemma?',
+      },
+      {
+        type: 'p',
+        text: "The trolley problem, introduced by philosopher Philippa Foot in 1967, is the most cited moral dilemma in modern ethics. A runaway trolley will kill five people unless you divert it to kill one. The split among voters is far more balanced than most people expect before they actually have to choose — which is precisely why it has lasted for decades as a teaching tool.",
+      },
+      {
+        type: 'h3',
+        text: 'Are moral dilemmas only philosophical thought experiments?',
+      },
+      {
+        type: 'p',
+        text: "No — most real moral dilemmas happen in everyday life, not in philosophy classrooms. They appear in workplaces (cover for a colleague or report them?), families (tell the truth or protect someone from pain?), medicine (full disclosure or compassionate filtering?), and law (loyalty to a friend or to justice?). The thought experiments simplify these everyday tensions so they can be analysed; the underlying conflicts are real.",
+      },
+      {
+        type: 'h3',
+        text: 'Why do people answer moral dilemmas so differently?',
+      },
+      {
+        type: 'p',
+        text: "Because people implicitly use different ethical frameworks. Consequentialists weigh outcomes (the most lives saved wins). Deontologists weigh actions themselves (some acts are wrong regardless of consequences). Virtue ethicists ask what a person of integrity would do. Most people carry all three frameworks at once — until a dilemma forces them into direct conflict, and then one framework wins. Vote splits of 40/60 or 45/55 across thousands of voters reflect this underlying disagreement, not confusion.",
       },
       {
         type: 'cta',
@@ -4910,10 +4977,33 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "I dilemmi morali più famosi con esempi concreti. Dal problema del tram all'etica dell'IA — con i risultati dei sondaggi SplitVote in tempo reale.",
     date: '2026-04-27',
-    readingTime: 6,
+    dateModified: '2026-05-26',
+    readingTime: 8,
     tags: ['dilemmi morali', 'esempi', 'etica', 'filosofia'],
     alternateSlug: 'moral-dilemmas-examples',
     relatedDilemmaIds: ['trolley', 'organ-harvest', 'lifeboat', 'cure-secret', 'memory-erase', 'truth-friend'],
+    faq: [
+      {
+        q: 'Cos\'è un dilemma morale?',
+        a: "Un dilemma morale è una situazione in cui due valori veri si scontrano e puoi onorarne uno solo. Entrambe le opzioni hanno conseguenze reali, nessuna è chiaramente sbagliata sul piano etico, e la scelta rivela quale valore privilegi davvero — non quale dici di privilegiare. Un problema difficile non è automaticamente un dilemma: lo diventa quando i due lati sono entrambi difendibili.",
+      },
+      {
+        q: 'Quali sono esempi reali di dilemmi morali?',
+        a: "Oltre al classico problema del tram, i dilemmi morali della vita reale includono dire a un amico che il suo partner lo tradisce, denunciare un amico stretto per un reato grave, accettare un'eredità da una persona che ritenevi immorale, decidere se un medico debba rivelare una diagnosi devastante, scegliere tra salvare una persona cara o uno sconosciuto che potrebbe aiutarne molti. La forma è sempre la stessa: due valori che tieni entrambi, una decisione che non può onorarli tutti e due.",
+      },
+      {
+        q: 'Qual è il dilemma morale più famoso?',
+        a: "Il problema del tram, introdotto dalla filosofa Philippa Foot nel 1967, è il dilemma morale più citato dell'etica moderna. Un tram fuori controllo ucciderà cinque persone a meno che tu non lo devii a uccidere una sola persona. La divisione tra chi vota è molto più equilibrata di quanto ci si aspetti prima di dover scegliere davvero — ed è proprio per questo che è rimasto uno strumento didattico per decenni.",
+      },
+      {
+        q: 'I dilemmi morali sono solo esperimenti filosofici?',
+        a: "No — la maggior parte dei dilemmi morali reali avviene nella vita di tutti i giorni, non nelle aule di filosofia. Si presentano al lavoro (coprire un collega o denunciarlo?), in famiglia (dire la verità o proteggere qualcuno dal dolore?), in medicina (rivelare tutto o filtrare con compassione?), in giustizia (essere leali a un amico o alla legge?). Gli esperimenti filosofici semplificano queste tensioni quotidiane per poterle analizzare, ma i conflitti sottostanti sono reali.",
+      },
+      {
+        q: 'Perché le persone rispondono ai dilemmi morali in modo così diverso?',
+        a: "Perché usano implicitamente quadri etici diversi. I consequenzialisti pesano i risultati (vince ciò che salva più vite). I deontologi pesano le azioni in sé (alcuni atti sono sbagliati indipendentemente dalle conseguenze). L'etica delle virtù chiede cosa farebbe una persona integra. La maggior parte di noi porta dentro tutti e tre i quadri contemporaneamente — finché un dilemma li mette in conflitto diretto, e a quel punto ne vince uno. Le divisioni di voto 40/60 o 45/55 su migliaia di utenti riflettono questo disaccordo strutturale, non confusione.",
+      },
+    ],
     content: [
       {
         type: 'p',
@@ -5164,6 +5254,50 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'p',
         text: 'Vuoi vedere cosa sceglierebbe davvero il mondo? Prova SplitVote e confronta le tue risposte con altri utenti.',
+      },
+      {
+        type: 'h2',
+        text: 'Domande frequenti',
+      },
+      {
+        type: 'h3',
+        text: 'Cos\'è un dilemma morale?',
+      },
+      {
+        type: 'p',
+        text: "Un dilemma morale è una situazione in cui due valori veri si scontrano e puoi onorarne uno solo. Entrambe le opzioni hanno conseguenze reali, nessuna è chiaramente sbagliata sul piano etico, e la scelta rivela quale valore privilegi davvero — non quale dici di privilegiare. Un problema difficile non è automaticamente un dilemma: lo diventa quando i due lati sono entrambi difendibili.",
+      },
+      {
+        type: 'h3',
+        text: 'Quali sono esempi reali di dilemmi morali?',
+      },
+      {
+        type: 'p',
+        text: "Oltre al classico problema del tram, i dilemmi morali della vita reale includono dire a un amico che il suo partner lo tradisce, denunciare un amico stretto per un reato grave, accettare un'eredità da una persona che ritenevi immorale, decidere se un medico debba rivelare una diagnosi devastante, scegliere tra salvare una persona cara o uno sconosciuto che potrebbe aiutarne molti. La forma è sempre la stessa: due valori che tieni entrambi, una decisione che non può onorarli tutti e due.",
+      },
+      {
+        type: 'h3',
+        text: 'Qual è il dilemma morale più famoso?',
+      },
+      {
+        type: 'p',
+        text: "Il problema del tram, introdotto dalla filosofa Philippa Foot nel 1967, è il dilemma morale più citato dell'etica moderna. Un tram fuori controllo ucciderà cinque persone a meno che tu non lo devii a uccidere una sola persona. La divisione tra chi vota è molto più equilibrata di quanto ci si aspetti prima di dover scegliere davvero — ed è proprio per questo che è rimasto uno strumento didattico per decenni.",
+      },
+      {
+        type: 'h3',
+        text: 'I dilemmi morali sono solo esperimenti filosofici?',
+      },
+      {
+        type: 'p',
+        text: "No — la maggior parte dei dilemmi morali reali avviene nella vita di tutti i giorni, non nelle aule di filosofia. Si presentano al lavoro (coprire un collega o denunciarlo?), in famiglia (dire la verità o proteggere qualcuno dal dolore?), in medicina (rivelare tutto o filtrare con compassione?), in giustizia (essere leali a un amico o alla legge?). Gli esperimenti filosofici semplificano queste tensioni quotidiane per poterle analizzare, ma i conflitti sottostanti sono reali.",
+      },
+      {
+        type: 'h3',
+        text: 'Perché le persone rispondono ai dilemmi morali in modo così diverso?',
+      },
+      {
+        type: 'p',
+        text: "Perché usano implicitamente quadri etici diversi. I consequenzialisti pesano i risultati (vince ciò che salva più vite). I deontologi pesano le azioni in sé (alcuni atti sono sbagliati indipendentemente dalle conseguenze). L'etica delle virtù chiede cosa farebbe una persona integra. La maggior parte di noi porta dentro tutti e tre i quadri contemporaneamente — finché un dilemma li mette in conflitto diretto, e a quel punto ne vince uno. Le divisioni di voto 40/60 o 45/55 su migliaia di utenti riflettono questo disaccordo strutturale, non confusione.",
       },
       {
         type: 'cta',
