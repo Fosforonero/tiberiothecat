@@ -233,7 +233,13 @@ export async function GET(request: NextRequest) {
         // feedbackHint stays empty — generation proceeds without it
       }
 
-      const rawDilemmas = await generateDilemmas(signals, locale, 3, feedbackHint)
+      // AI-TREND-DRAFTS-SCALE-01 (26 May 2026) — daily draft count per locale.
+      // Default 10; configurable via env so PM can throttle if review bottleneck.
+      // Hard clamp [1, 20] to bound prompt size and token cost.
+      const draftCount = Math.max(1, Math.min(20,
+        parseInt(process.env.DAILY_DILEMMA_DRAFTS_PER_LOCALE ?? '10', 10),
+      ))
+      const rawDilemmas = await generateDilemmas(signals, locale, draftCount, feedbackHint)
       const now = new Date().toISOString()
 
       // Validate + score + dedup
