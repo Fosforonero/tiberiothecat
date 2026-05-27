@@ -2126,6 +2126,13 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'consequentialism-the-greatest-good',
+    image: {
+      src:    '/blog/consequentialism.jpg',
+      alt:    "Abstract editorial illustration: weighing outcomes and consequences (consequentialism)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'en',
     title: 'Consequentialism: The Greatest Good for the Greatest Number',
     seoTitle: 'Consequentialism Explained — Why the Math of Morality Has Limits',
@@ -2273,6 +2280,13 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'deontology-some-things-are-always-wrong',
+    image: {
+      src:    '/blog/deontology.jpg',
+      alt:    "Abstract editorial illustration: fixed moral rules and duty (deontology)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'en',
     title: 'Deontology: Some Things Are Always Wrong, No Matter the Outcome',
     seoTitle: 'Deontology Explained — When Rules Matter More Than Results',
@@ -2420,6 +2434,13 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'virtue-ethics-what-would-a-good-person-do',
+    image: {
+      src:    '/blog/virtue-ethics.jpg',
+      alt:    "Abstract editorial illustration: character and the golden mean (virtue ethics)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'en',
     title: 'Virtue Ethics: What Would a Good Person Do?',
     seoTitle: "Virtue Ethics Explained — Aristotle, Character, and the Good Life",
@@ -2829,6 +2850,13 @@ const EN_POSTS: BlogPost[] = [
   },
   {
     slug: 'moral-foundations-theory-why-good-people-disagree',
+    image: {
+      src:    '/blog/moral-foundations.jpg',
+      alt:    "Abstract editorial illustration: the plural foundations of morality",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'en',
     title: 'Moral Foundations Theory — Why Good People Disagree',
     seoTitle: 'Moral Foundations Theory: Why Good People Have Completely Different Ethics',
@@ -7518,6 +7546,13 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'consequenzialismo-il-bene-maggiore',
+    image: {
+      src:    '/blog/consequentialism.jpg',
+      alt:    "Illustrazione editoriale astratta: pesare gli esiti e le conseguenze (consequenzialismo)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'it',
     title: 'Consequenzialismo: Il Bene Maggiore per il Maggior Numero',
     seoTitle: 'Consequenzialismo — Perché la Matematica della Morale Ha i Suoi Limiti',
@@ -7665,6 +7700,13 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'deontologia-alcune-cose-sono-sempre-sbagliate',
+    image: {
+      src:    '/blog/deontology.jpg',
+      alt:    "Illustrazione editoriale astratta: le regole morali e il dovere (deontologia)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'it',
     title: 'Deontologia: Alcune Cose Sono Sempre Sbagliate, Qualunque Sia il Risultato',
     seoTitle: 'Deontologia — Quando le Regole Contano Più dei Risultati',
@@ -7812,6 +7854,13 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'etica-della-virtu-cosa-farebbe-una-persona-buona',
+    image: {
+      src:    '/blog/virtue-ethics.jpg',
+      alt:    "Illustrazione editoriale astratta: il carattere e la giusta misura (etica della virtù)",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'it',
     title: 'Etica della Virtù: Cosa Farebbe una Persona di Buon Carattere?',
     seoTitle: "Etica della Virtù — Aristotele, il Carattere e la Vita Buona",
@@ -8221,6 +8270,13 @@ const IT_POSTS: BlogPost[] = [
   },
   {
     slug: 'teoria-fondamenti-morali',
+    image: {
+      src:    '/blog/moral-foundations.jpg',
+      alt:    "Illustrazione editoriale astratta: i fondamenti morali",
+      width:  1200,
+      height: 630,
+      showInArticle: true,
+    },
     locale: 'it',
     title: 'La Teoria dei Fondamenti Morali — Perché le Persone Oneste Non Sono d\'Accordo',
     seoTitle: 'Teoria dei Fondamenti Morali: Perché Persone Ragionevoli Hanno Etiche Completamente Diverse',
