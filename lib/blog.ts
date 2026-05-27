@@ -4866,6 +4866,118 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'moral-dilemmas-test-what-your-choices-reveal',
+    locale: 'en',
+    title: 'Moral Dilemmas: What Your Choices Really Reveal',
+    seoTitle: 'Moral Dilemmas: What Your Choices Reveal | Situational Test',
+    description:
+      'A moral dilemma forces a choice between two defensible but conflicting options. How you choose reveals how you reason — not who is right.',
+    seoDescription:
+      'What moral dilemmas and situational dilemmas are, why they have no right answer, and what the way you respond says about you. With real scenarios you can vote on. Not a psychometric test or diagnosis.',
+    date: '2026-05-27',
+    dateModified: '2026-05-27',
+    readingTime: 8,
+    tags: ['moral dilemmas', 'moral psychology', 'decision making', 'situational dilemmas'],
+    relatedDilemmaIds: ['stolen-credit', 'rule-exception-manager', 'friend-cheats-exam', 'cover-coworker-error', 'promotion-fire-teammate'],
+    alternateSlug: 'dilemmi-morali-test-cosa-rivelano-le-tue-scelte',
+    faq: [
+      {
+        q: 'Do moral dilemmas have a right answer?',
+        a: 'A genuine moral dilemma is exactly the one where reasonable people still disagree after seeing all the facts. There are defensible answers — ones you can argue for — but none that leaves no moral cost. That is different from a hard choice, where a clearer option exists once you reason calmly.',
+      },
+      {
+        q: "What's the difference between a moral dilemma and an aptitude test?",
+        a: 'A moral dilemma puts two values in conflict (loyalty vs honesty, fairness vs care) with no correct answer. A selection aptitude test, by contrast, looks for answers deemed right for a role. SplitVote\'s situational dilemmas are for reflection and discussion, not to measure or select anyone.',
+      },
+      {
+        q: 'What does the way I answer say about me?',
+        a: 'Your answers suggest how you weigh things: outcomes or principles, the people close to you or rules applied equally, the moment or the precedent. It is a starting point for understanding yourself, not a fixed label — change the scenario and your instinct often changes too.',
+      },
+      {
+        q: 'Are situational dilemmas used for job interviews?',
+        a: 'No. SplitVote offers situational dilemmas for curiosity and self-knowledge, not as a personnel-selection tool or a validated assessment. If you are preparing for a real selection process, rely on the official materials from whoever runs it.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'A moral dilemma puts you in front of two choices that are both defensible but in conflict: whatever you pick, something breaks. How you choose reveals how you reason — not whether you are right.',
+      },
+      {
+        type: 'p',
+        text: "That is what makes them uncomfortable and revealing at once. Alongside the big philosophical dilemmas, a more everyday kind has spread: [situational dilemmas](/situational-dilemmas) — small day-to-day situations, at work, among friends, in the family, where the choice is binary and the stakes are social, not abstract. They are the most direct way to notice what you actually do when no one is watching.",
+      },
+      {
+        type: 'h2',
+        text: 'What moral and situational dilemmas are',
+      },
+      {
+        type: 'p',
+        text: 'A [moral dilemma](/blog/what-is-a-moral-dilemma) is a situation where two values point in opposite directions and you cannot honour both. A situational dilemma is its everyday version: a coworker takes credit for your idea, a friend cheats on a test, you are the one who has to decide whether to make an exception to a rule. No trolleys, no extreme scenarios — just choices you might actually face this week.',
+      },
+      {
+        type: 'p',
+        text: "The difference from a selection test is sharp. An aptitude test looks for the 'right' answer for a role. A situational dilemma, the way SplitVote uses it, has no correct answer: it lets you see how you weigh things, and compare your gut with how SplitVote voters chose.",
+      },
+      {
+        type: 'h2',
+        text: 'Why your choices reveal a style, not a score',
+      },
+      {
+        type: 'p',
+        text: 'Three great traditions of moral thought explain why we split. Those who look at outcomes pick what produces the best result ([consequentialism](/blog/consequentialism-the-greatest-good)). Those who look at principles check the action against rules that do not bend ([deontology](/blog/deontology-some-things-are-always-wrong)). Those who look at character ask what a good person would do ([virtue ethics](/blog/virtue-ethics-what-would-a-good-person-do)). On the same dilemma they often reach different verdicts — and that is the point.',
+      },
+      {
+        type: 'p',
+        text: 'That is why your answers suggest a decision style, not a score. Do you weigh outcomes or principles more? The people close to you or rules applied equally? The present moment or the precedent you set? These are tendencies, not labels: shift the scenario and your choice often shifts too.',
+      },
+      {
+        type: 'h2',
+        text: '5 situational dilemmas to try now',
+      },
+      {
+        type: 'list',
+        items: [
+          '[A coworker takes credit for your idea](/play/stolen-credit) — correct them in front of everyone or raise it privately later?',
+          '[You\'re the manager and someone asks for a rule exception](/play/rule-exception-manager) — equal treatment for all or care for the single case?',
+          '[Your best friend cheats on a competitive exam](/play/friend-cheats-exam) — protect your friend or the honest candidate who lost the place?',
+          '[You find a coworker\'s error that will harm customers](/play/cover-coworker-error) — report it or quietly help cover it?',
+          '[You get the promotion only by firing a teammate you respect](/play/promotion-fire-teammate) — accept or decline?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Test yourself with situational dilemmas →',
+        href: '/situational-dilemmas',
+      },
+      {
+        type: 'h2',
+        text: 'What these dilemmas are NOT',
+      },
+      {
+        type: 'p',
+        text: "They are not a validated psychological test, a diagnosis, or a personnel-selection tool. They are prompts for reflection and discussion. The value is not in a final score, but in noticing your first instinct and then asking why — and in discovering that serious, honest people often choose the opposite of you.",
+      },
+      {
+        type: 'disclaimer',
+        text: 'SplitVote dilemmas are hypothetical and meant for curiosity and self-knowledge. They are not a psychometric test, a clinical assessment, or a selection tool. The percentages show how SplitVote voters chose, not a representative sample of the population.',
+      },
+      {
+        type: 'h2',
+        text: 'How SplitVote shows you how the world votes',
+      },
+      {
+        type: 'p',
+        text: 'On every dilemma you vote anonymously and immediately see how SplitVote voters split. You can [browse the full catalog of moral dilemmas](/moral-dilemmas), filter by category, and sort by the most divisive. And if you vote on several dilemmas, you can discover your [moral profile](/personality): the archetype that emerges from your choices.',
+      },
+      {
+        type: 'cta',
+        label: 'Discover your moral profile →',
+        href: '/personality',
+      },
+    ],
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -9589,6 +9701,7 @@ const IT_POSTS: BlogPost[] = [
   {
     slug: 'dilemmi-morali-test-cosa-rivelano-le-tue-scelte',
     locale: 'it',
+    alternateSlug: 'moral-dilemmas-test-what-your-choices-reveal',
     title: 'Dilemmi morali: cosa rivelano davvero le tue scelte',
     seoTitle: 'Dilemmi morali: cosa rivelano le tue scelte | Test situazionali',
     description:

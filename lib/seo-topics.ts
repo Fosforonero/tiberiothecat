@@ -936,6 +936,7 @@ export const SEO_TOPICS: SeoTopic[] = [
   {
     slug: 'test-situazionali',
     locale: 'it',
+    alternateSlug: 'situational-dilemmas',
     topic: 'Dilemmi situazionali',
     searchIntent: 'dilemmi situazionali, test situazionale, cosa faresti se, domande etiche sul lavoro, test scelte morali, dilemmi quotidiani, come reagisci sotto pressione',
     tension: 'fare la cosa giusta in astratto contro proteggere le persone vicine quando la scelta è concreta e quotidiana',
@@ -947,6 +948,24 @@ export const SEO_TOPICS: SeoTopic[] = [
     relatedTopicSlugs: ['lealta-vs-onesta', 'psicologia-morale-sperimentale', 'fondamenti-morali'],
     researchNote:
       "La ricerca sul giudizio in situazioni realistiche studia come le persone scelgono di fronte a piccoli conflitti quotidiani di valori, non come dicono che sceglierebbero. Questi scenari sono pensati per riflessione e confronto: non sono un test psicometrico, una diagnosi o uno strumento di selezione del personale.",
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'situational-dilemmas',
+    locale: 'en',
+    alternateSlug: 'test-situazionali',
+    topic: 'Situational Dilemmas',
+    searchIntent: 'situational dilemmas, what would you do if, everyday ethical dilemmas at work, moral choice scenarios, situational judgment questions, hard choices test',
+    tension: 'doing the abstractly right thing vs protecting the people close to you when the choice is concrete and everyday',
+    headline: 'Situational Dilemmas — What You\'d Really Do When No One Is Watching',
+    intro:
+      "A coworker takes credit for your idea. A friend cheats on a test and beats an honest candidate. You're the one who has to decide whether to bend a rule for someone who deserves it. Situational dilemmas are the everyday choices where two right things collide: honesty and loyalty, fairness and care, the moment and the precedent. They have no correct answer and measure no aptitude — they're a way to see how you actually reason when the stakes are real but small, and to compare your gut with people who chose the opposite. Pick a side, see how the vote splits, and ask yourself why.",
+    primaryScenarioId: 'stolen-credit',
+    relatedScenarioIds: ['rule-exception-manager', 'friend-cheats-exam', 'cover-coworker-error', 'promotion-fire-teammate', 'group-project-freeloader'],
+    relatedTopicSlugs: ['loyalty-vs-honesty', 'experimental-moral-psychology', 'moral-foundations'],
+    researchNote:
+      "Research on judgment in realistic situations studies how people actually choose when small everyday value conflicts arise, not how they say they would. These scenarios are built for reflection and discussion: they are not a psychometric test, a diagnosis, or a personnel-selection tool.",
     status: 'published',
     noindexUntilReady: false,
   },
