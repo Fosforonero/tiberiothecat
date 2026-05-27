@@ -180,8 +180,9 @@ function LoginForm() {
           <a href={locale === 'it' ? '/it' : '/'} className="inline-block mb-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/brand/splitvote_wordmark.png"
+              src="/brand/splitvote_wordmark.webp"
               alt="SplitVote"
+              width={138}
               height={32}
               className="h-8 w-auto mx-auto"
             />
