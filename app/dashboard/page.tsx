@@ -293,9 +293,12 @@ export default async function DashboardPage() {
           the hero avatar above. */}
       <CompanionDisplay
         species={effectiveSpecies}
+        progressionSpecies={companionSpecies}
         pixieXp={pixieXp as PixieXpMap}
         votesCount={votesCount}
         xp={xp}
+        userId={user.id}
+        enableLevelUpModal
       />
 
       {/* ── Pixie / Cosmetics (unified species + skins + frames + glow + name color) ── */}

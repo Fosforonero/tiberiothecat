@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getProfilePixieSrc, getEffectiveSpecies } from '@/lib/pixie'
+import { getProfilePixieSrc, getEffectiveSpecies, getProgressionSpecies } from '@/lib/pixie'
 
 describe('getProfilePixieSrc', () => {
   it('returns null when use_pixie_avatar is false', () => {
@@ -79,15 +79,27 @@ describe('getProfilePixieSrc', () => {
     expect(getProfilePixieSrc(null, { ignoreToggle: true })).toBeNull()
   })
 
-  it('prefers active Pixie skin species over companion_species', () => {
-    // User picked spark in onboarding but equipped Pixie Devil from store.
-    // Helper resolves to devil — what the user actually wants to see.
+  it('renders the active skin sprite but derives stage from companion progression (B2)', () => {
+    // User picked spark in onboarding, equipped Pixie Devil from the store, and
+    // has accrued 10 votes on their permanent companion (spark).
+    // B2: sprite = devil (cosmetic), stage = spark progression (10 votes → stage 2).
     expect(getProfilePixieSrc({
       use_pixie_avatar: true,
       companion_species: 'spark',
-      pixie_xp: { active: 'pixie_devil', devil: 10 },
+      pixie_xp: { active: 'pixie_devil', spark: 10 },
       votes_count: 0,
     })).toBe('/pixie/devil/pixie-devil-stage-2.png')
+  })
+
+  it('cosmetic skin key never drives the level — only companion_species does (B2)', () => {
+    // Even if the skin's own key carries votes, the level comes from the
+    // permanent companion. spark=0 → stage 1, despite devil=500.
+    expect(getProfilePixieSrc({
+      use_pixie_avatar: true,
+      companion_species: 'spark',
+      pixie_xp: { active: 'pixie_devil', devil: 500, spark: 0 },
+      votes_count: 0,
+    })).toBe('/pixie/devil/pixie-devil-stage-1.png')
   })
 
   it('falls back to companion_species when no pixie skin is active', () => {
@@ -97,6 +109,24 @@ describe('getProfilePixieSrc', () => {
       pixie_xp: { banana: 50 },
       votes_count: 0,
     })).toBe('/pixie/banana/pixie-banana-stage-3.png')
+  })
+})
+
+describe('getProgressionSpecies', () => {
+  it('ignores the active cosmetic skin and returns the permanent companion', () => {
+    expect(getProgressionSpecies({
+      companion_species: 'banana',
+      // active skin must NOT affect progression species
+    })).toBe('banana')
+  })
+
+  it('normalises legacy "nova" to scintille', () => {
+    expect(getProgressionSpecies({ companion_species: 'nova' })).toBe('scintille')
+  })
+
+  it('defaults to spark when missing', () => {
+    expect(getProgressionSpecies(null)).toBe('spark')
+    expect(getProgressionSpecies({ companion_species: null })).toBe('spark')
   })
 })
 

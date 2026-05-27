@@ -20,7 +20,15 @@ import dynamic from 'next/dynamic'
 const PixieLevelUpModal = dynamic(() => import('./PixieLevelUpModal'), { ssr: false })
 
 interface Props {
+  /** Species used to RENDER the sprite/emoji — the active cosmetic skin if equipped. */
   species: CompanionSpecies
+  /**
+   * Species that owns the PROGRESSION (XP/level/stage). Defaults to `species`.
+   * Under the B2 model, a cosmetic skin renders via `species` but the level
+   * is earned by the permanent companion — pass the permanent species here
+   * so the stage doesn't reset to 1 when a skin is equipped.
+   */
+  progressionSpecies?: CompanionSpecies
   /** Global votes — kept for fallback when pixieXp is absent */
   votesCount: number
   /** Per-species XP map. When provided, stage/progress are derived per species. */
@@ -42,11 +50,15 @@ const IT_STAGE_LABELS: Record<number, string> = {
 }
 
 export default function CompanionDisplay({
-  species, votesCount, pixieXp, xp = 0, compact = false,
+  species, progressionSpecies, votesCount, pixieXp, xp = 0, compact = false,
   locale = 'en', userId, enableLevelUpModal = false,
 }: Props) {
   const IT = locale === 'it'
   const companion = COMPANION_MAP[species] ?? COMPANION_MAP['spark']
+  // B2: render the sprite/emoji via `species` (active skin) but derive the
+  // stage from `progSpecies` (permanent companion). Defaults to `species`
+  // so callers that don't equip skins (e.g. /u/[id]) keep working unchanged.
+  const progSpecies = progressionSpecies ?? species
   // Per-species XP is authoritative once any species has data.
   // Guard: an empty map {} means the per-species system hasn't kicked in yet for
   // this user (migration not yet applied) — fall back to global votesCount so the
@@ -54,7 +66,7 @@ export default function CompanionDisplay({
   // Once the map has any key at all, use per-species votes for every species,
   // even if a newly-equipped species sits at 0.
   const hasPerSpeciesTracking = Boolean(pixieXp && Object.keys(pixieXp).length > 0)
-  const speciesVotes = hasPerSpeciesTracking ? getSpeciesVotes(pixieXp!, species) : 0
+  const speciesVotes = hasPerSpeciesTracking ? getSpeciesVotes(pixieXp!, progSpecies) : 0
   const effectiveVotes = hasPerSpeciesTracking ? speciesVotes : votesCount
   const stage = getCompanionStage(effectiveVotes)
 

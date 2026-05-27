@@ -81,15 +81,19 @@ export function getProfilePixieSrc(
   if (!profile) return null
   if (!options.ignoreToggle && !profile.use_pixie_avatar) return null
 
-  const species = getEffectiveSpecies(profile)
+  // B2: Pixie skins are cosmetic only. The rendered sprite follows the
+  // active skin (effective species), but the stage/level is derived from
+  // the permanent companion's progression — never the cosmetic skin.
+  const renderSpecies = getEffectiveSpecies(profile)
+  const progressionSpecies = getProgressionSpecies(profile)
   const pixieXp = profile.pixie_xp ?? {}
   const hasPixieXp = Object.keys(pixieXp).length > 0
   const speciesVotes = hasPixieXp
-    ? getSpeciesVotes(pixieXp as PixieXpMap, species)
+    ? getSpeciesVotes(pixieXp as PixieXpMap, progressionSpecies)
     : 0
   const effectiveVotes = hasPixieXp ? speciesVotes : (profile.votes_count ?? 0)
   const stage = getCompanionStage(effectiveVotes)
-  return getPixieImagePath(species, stage)
+  return getPixieImagePath(renderSpecies, stage)
 }
 
 /**
@@ -111,6 +115,23 @@ export function getEffectiveSpecies(profile: {
   if (active?.startsWith('pixie_')) {
     return pixieItemToSpecies(active)
   }
+  return getProgressionSpecies(profile)
+}
+
+/**
+ * Resolve the species that owns the user's PROGRESSION (XP / level / stage).
+ *
+ * This is always the permanent `companion_species` set during onboarding —
+ * NOT the cosmetic skin in `pixie_xp.active`. Under the B2 model, equipping a
+ * market skin changes only the rendered sprite (getEffectiveSpecies); the
+ * level a user has earned belongs to their permanent companion. Per-species
+ * XP (`/api/pixie/xp`) is keyed on this same `companion_species`, so the
+ * display reads the same key the XP writer increments.
+ */
+export function getProgressionSpecies(profile: {
+  companion_species?: string | null
+} | null | undefined): CompanionSpecies {
+  if (!profile) return 'spark'
   const raw = (profile.companion_species as string | null) ?? 'spark'
   // Defensive: legacy rows may carry "nova" instead of "scintille".
   return (SPECIES_ALIAS[raw] ?? raw) as CompanionSpecies
