@@ -1,6 +1,64 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 27 May 2026 (morning) — Sprint A.3 cluster expansion shipped + 2 user-reported bug fixes (language switcher slug mismatch, catalog card pill alignment). Vitest 184/184. Scenarios 47→51. Landing pages +2. Blog posts +2.
+Last updated: 27 May 2026 (afternoon) — Push batch di 3 commit su `origin/main` (`d475dcc` + `968154c` + `b8196c9`), smoke test live verde, SEO cluster dilemmi situazionali IT shipped. Pixie visual affidato a Codex. Vitest 188/188. Scenarios 51→59 (+8 situazionali). Landing +1, blog +1.
+
+## -3. Session 27 May 2026 (afternoon) — Push batch + SEO situational cluster + Pixie→Codex
+
+### TL;DR
+
+Tre cose in una sessione: (1) chiuso il debito di commit non pushati con un **batch push unico** di 3 commit (`d475dcc` governance push-cadence, `968154c` Pixie Track 1 level/state fix, `b8196c9` SEO cluster) → `origin/main` allineato, un solo deploy Vercel; (2) shippato **SEO-DILEMMI-MORALI-PSICOATTITUDINALI-01** (cluster IT-first dilemmi situazionali); (3) il **visual Pixie** (`spark` square-card) è stato **affidato a Codex** con brief dedicato — deferred lato nostro, nessun asset `public/pixie/**` toccato.
+
+### Commits pushati (questa sessione)
+
+| SHA | Sprint |
+|---|---|
+| `d475dcc` | `docs(governance)`: push cadence rule (era local da giorni) |
+| `968154c` | `fix(pixie)`: restore level-up modal + derive stage from companion, not skin (Track 1) |
+| `b8196c9` | `feat(content)`: SEO cluster dilemmi situazionali IT |
+
+### SEO cluster (`b8196c9`) — solo 5 file lib
+
+- **+8 dilemmi situazionali EN+IT** (`lib/scenarios.ts` + `lib/scenarios-it.ts`): `stolen-credit`, `cover-coworker-error`, `rule-exception-manager`, `promotion-fire-teammate`, `friend-cheats-exam`, `overpaid-change`, `friend-partner-cheating`, `group-project-freeloader`. Categorie esistenti, niente nuova categoria.
+- **+8 static-insights EN+IT** (`lib/static-insights.ts`) — coverage test + AdSlot gating.
+- **Cornerstone IT** (`lib/blog.ts`): `dilemmi-morali-test-cosa-rivelano-le-tue-scelte` (4 FAQ → FAQPage, disclaimer anti-claim, internal links).
+- **Landing IT** (`lib/seo-topics.ts`): `SeoTopic` `test-situazionali` (data-driven, `/it/test-situazionali`, auto in sitemap + `/it/temi`).
+- Posizionamento: termini onesti ("dilemmi/test situazionali"), **no** claim test validato/diagnosi/selezione personale; nessun portale esterno citato. **IT-first** intenzionale: mirror EN di landing+articolo = follow-up sprint-2 (gli 8 dilemmi sono già EN+IT).
+
+### Smoke test live (post-deploy `b8196c9`) — verde
+
+- `/it/test-situazionali` 200 · cornerstone 200 · `/it/play/stolen-credit` + mirror EN 200 · `/it/play/friend-cheats-exam` 200
+- `sitemap.xml` contiene landing + nuovo blog slug
+- JSON-LD: landing → ItemList + BreadcrumbList (indicizzabile, no noindex); articolo → BlogPosting + FAQPage (4 Question/Answer) + internal link alla landing ×2
+- Nota: landing senza hreflang (no `alternateSlug` EN) — atteso per IT-first, non un bug.
+
+### Pixie visual → Codex
+
+Brief autosufficiente in `reports/pixie-explore/CODEX-HANDOFF-pixie-spark.md` (read-only handoff). Approcci già bocciati in sessione (procedurale = qualità inferiore agli originali; AI text-to-image Pollinations/FLUX v1-v4 = personaggio diverso/identità persa). Direzione: img2img sui PNG originali, stage fisicamente distinti, square-card. Sprint roadmap: `PIXIE-SPARK-SQUARE-CARD-ASSET-01` resta queued/deferred lato nostro finché Codex non rientra con output da review.
+
+### Working tree residuo (post-sessione)
+
+```
+ M ROADMAP.md                              ← aggiornato in questa sessione (sync docs)
+ M scripts/generate-pixie-assets.mjs       ← Pixie WIP carry-over (mie edit reverted, NON committare)
+?? reports/pixie-explore/                  ← artefatti review + brief Codex (NON committare)
+?? reports/trend-content-pack-2026-05-26.md
+?? scripts/generate-pixie-emoji-assets.py  ← Pixie WIP carry-over
+?? scripts/normalize-pixie-assets.py       ← Pixie WIP carry-over
+```
+
+### Anti-regression check (CLAUDE.md)
+
+- Voto anonimo invariato (sprint = solo content/data lib, no vote logic)
+- `currentVote` / `can_change_until` invariati · next-dilemma routing intatto
+- Cache contract invariato: `/play/[id]` force-dynamic, `/results/[id]` revalidate=60, `/[topicSlug]` revalidate, `/blog/[slug]` static
+- HUMAN_ONLY non toccati: auth, Stripe, Redis vote, middleware, admin
+- Pixie WIP 3 file preservati intoccati
+
+### Next best action (prossima sessione)
+
+PM-side: GSC Request Indexing + Rich Results Test sulle nuove URL (cluster di oggi + i cluster precedenti). In coda: review output Codex sui Pixie spark prima di toccare `public/pixie/**`; Stripe live card QA (launch blocker); AdSense recrawl.
+
+---
 
 ## -2. Session 27 May 2026 (morning) — Sprint A.3 + 2 bug fixes
 

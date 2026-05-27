@@ -3,7 +3,51 @@
 > Piattaforma globale di behavioral data gamificata.
 > Dilemmi morali in tempo reale → profili morali → loop virali → insight aggregati.
 
-Ultimo aggiornamento: 26 Maggio 2026 (notte) — Day shipped + pushed (`a59a0eb`, `d39ea03`, `db6bd91`) + 5 sprint local pendenti push, di cui l'ultimo è `DILEMMAS-CATALOG-01` (nuova pagina catalogo `/moral-dilemmas` + mirror IT, filtro 9 categorie + sort popular/fresh/divisive + paginazione 24/pagina + CTA dalla home + sitemap, vitest 156/156). Day delivered: (1) `SEO-MORAL-DILEMMAS-EXAMPLES-CORNERSTONE-01`. (2) Home daily-pool audit. (3) `AI-PROMPT-PUNCHY-FRAMING-01` — 3 SAFETY_RULES + 3 gate warnings; detection 1/10 → 8/10. (4) `AI-TREND-DRAFTS-SCALE-01` — daily draft count 3 → configurable default 10 per locale via env. (5) `TREND-SIGNAL-GOOGLE-FIX-01` — replaced dead Google Trends RSS with Wikipedia top-pageviews (EN+IT, official Wikimedia REST API) + added HackerNews top stories (EN-only). Trend volume EN 15→37 (+147%), IT 15→27 (+80%). Vitest 139/139. 3 Pixie WIP preserved untouched.
+Ultimo aggiornamento: 27 Maggio 2026 (pomeriggio) — push batch di 3 commit completato su `origin/main` (`d475dcc` governance push-cadence + `968154c` Pixie Track 1 level/state fix + `b8196c9` SEO cluster dilemmi situazionali IT). Smoke test live verde. Pixie visual polish **affidato a Codex** (sprint `PIXIE-SPARK-SQUARE-CARD-ASSET-01`, deferred lato nostro): direzione approvata per `spark` = square-card sprite completo con sfondo navy, margini ampi, Pixie centrato leggermente basso e stage fisicamente distinti; non usare le generazioni Pollinations/FLUX precedenti come riferimento. Nessun asset `public/pixie/**` toccato.
+
+---
+
+## Queued — `PIXIE-SPARK-SQUARE-CARD-ASSET-01`
+
+Stato: deferred per decisione PM. Non procedere finché non viene riaperto esplicitamente.
+
+Obiettivo futuro: rifare `spark` 6-stage come sprite square-card, partendo dalla direzione visiva approvata in chat il 27 May 2026: stesso blob giallo lucido shipped, occhi grandi, crest a fulmine, sfondo navy, card quadrata con respiro e margini; ogni stage deve aggiungere un tratto fisico leggibile (nodi, stella, shoulder plates, circuiti/orb, corona) invece di crescere solo con aura/glow.
+
+Vincoli:
+- Non usare le generazioni testuali Pollinations/FLUX precedenti: perdono identità o stile.
+- Non crop stretto sul personaggio: ogni mini immagine deve restare una square card completa.
+- Prima output solo in `reports/pixie-explore/`, con compare HTML current/new/64px.
+- Non sovrascrivere `public/pixie/**`, non committare asset, non pushare senza GO esplicito.
+- I 3 Pixie WIP carry-over restano fuori commit finché il visual polish non è shippabile.
+
+Follow-up se riaperto:
+1. Generare/estrarre solo `spark` 1→6 in formato quadrato completo.
+2. Produrre `large` + `256` + preview 64px in review.
+3. Chiedere approvazione visiva prima di sostituire gli asset shipped.
+4. Solo dopo valutare rollout a free/premium/market/admin species in mini-batch.
+
+## 27 May 2026 (pomeriggio) — `SEO-DILEMMI-MORALI-PSICOATTITUDINALI-01` (shipped, pushed `b8196c9`)
+
+Cluster IT-first per intercettare il segnale GSC su "dilemmi morali", estendendolo all'intent adiacente "dilemmi/test situazionali" (giudizio in scelte quotidiane), senza claim psicometrici/diagnosi/selezione del personale e senza citare portali esterni.
+
+### Shipped (commit `b8196c9`, 5 file lib)
+
+| File | Change |
+|---|---|
+| `lib/scenarios.ts` + `lib/scenarios-it.ts` | +8 dilemmi situazionali EN+IT: `stolen-credit`, `cover-coworker-error`, `rule-exception-manager`, `promotion-fire-teammate`, `friend-cheats-exam`, `overpaid-change`, `friend-partner-cheating`, `group-project-freeloader`. Categorie esistenti (loyalty/morality/justice/relationships), niente nuova categoria. |
+| `lib/static-insights.ts` | +8 insight EN+IT completi (body/whyPeopleSplit/A/B) — richiesti dal coverage test + gating AdSslot. Nessun claim vietato. |
+| `lib/blog.ts` | Cornerstone IT `dilemmi-morali-test-cosa-rivelano-le-tue-scelte` (answer-first, 4 FAQ → FAQPage, disclaimer anti-claim, internal links a dilemmi + personality + catalogo + filosofia). |
+| `lib/seo-topics.ts` | Landing IT `SeoTopic` `test-situazionali` (data-driven, servita da `/it/[topicSlug]`, auto in sitemap + hub `/it/temi`). |
+
+### Verification + smoke test live
+- typecheck ✅ · 188/188 test ✅ · build ✅ · `git diff --check` ✅
+- Live (post-deploy `b8196c9`): `/it/test-situazionali` 200, cornerstone 200, `/it/play/stolen-credit` + mirror EN 200; sitemap contiene landing + blog slug; JSON-LD ItemList+Breadcrumb (landing) e BlogPosting+FAQPage 4Q (articolo).
+
+### IT-first esplicito (parità deferita)
+Landing + cornerstone sono **IT-only** (scopo: segnale GSC italiano). I mirror EN di landing+articolo sono il follow-up sprint-2. Gli 8 dilemmi sono già EN+IT (parità preservata sul corpus).
+
+### PM-side follow-up
+GSC Request Indexing + Google Rich Results Test su `/it/test-situazionali` e sul nuovo cornerstone.
 
 ---
 
