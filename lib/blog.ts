@@ -2046,10 +2046,17 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'What is consequentialism? How does it work, where does it break down, and what real dilemmas does it struggle to answer? Explore the ethics of outcomes through five thought experiments.',
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['consequentialism', 'utilitarianism', 'ethics', 'moral philosophy', 'trolley problem'],
     relatedDilemmaIds: ['trolley', 'pandemic-dose', 'organ-harvest', 'rich-or-fair', 'universal-basic-income'],
     alternateSlug: 'consequenzialismo-il-bene-maggiore',
+    faq: [
+      { q: "What is consequentialism in simple terms?", a: "Consequentialism is the idea that an action is right or wrong based only on its results. The best choice is the one that produces the most good, or the least harm, for everyone affected. Utilitarianism is its most famous version." },
+      { q: "What's the difference between consequentialism and utilitarianism?", a: "Utilitarianism is a type of consequentialism. It adds a specific measure of “good” — usually happiness or well-being. Other consequentialists may measure outcomes differently, for example by suffering avoided or preferences satisfied." },
+      { q: "What is the main criticism of consequentialism?", a: "That it can justify actions most people find clearly wrong — punishing an innocent person, or sacrificing one to save five — whenever the totals come out ahead. Critics say it treats individuals as means to an aggregate, ignoring rights and how an outcome is reached." },
+      { q: "How is consequentialism different from deontology?", a: "Consequentialism looks only at results; deontology looks at the action itself, holding that some acts are wrong even when they produce a better outcome. Faced with the trolley problem, a consequentialist focuses on the body count, a deontologist on whether you are actively causing a death." },
+    ],
     content: [
       {
         type: 'p',
@@ -2138,6 +2145,42 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: "SplitVote presents ethical dilemmas for reflection and discussion. References to philosophical frameworks are for context only — the goal is to help you reflect, not to provide academic instruction. Results represent our community's votes, not scientific conclusions.",
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What is consequentialism in simple terms?",
+      },
+      {
+        type: 'p',
+        text: "Consequentialism is the idea that an action is right or wrong based only on its results. The best choice is the one that produces the most good, or the least harm, for everyone affected. Utilitarianism is its most famous version.",
+      },
+      {
+        type: 'h3',
+        text: "What's the difference between consequentialism and utilitarianism?",
+      },
+      {
+        type: 'p',
+        text: "Utilitarianism is a type of consequentialism. It adds a specific measure of “good” — usually happiness or well-being. Other consequentialists may measure outcomes differently, for example by suffering avoided or preferences satisfied.",
+      },
+      {
+        type: 'h3',
+        text: "What is the main criticism of consequentialism?",
+      },
+      {
+        type: 'p',
+        text: "That it can justify actions most people find clearly wrong — punishing an innocent person, or sacrificing one to save five — whenever the totals come out ahead. Critics say it treats individuals as means to an aggregate, ignoring rights and how an outcome is reached.",
+      },
+      {
+        type: 'h3',
+        text: "How is consequentialism different from deontology?",
+      },
+      {
+        type: 'p',
+        text: "Consequentialism looks only at results; deontology looks at the action itself, holding that some acts are wrong even when they produce a better outcome. Faced with the trolley problem, a consequentialist focuses on the body count, a deontologist on whether you are actively causing a death.",
+      },
     ],
   },
   {
@@ -2150,10 +2193,17 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       "What is deontology? How does Kant's categorical imperative work, where does duty-based ethics break down, and what dilemmas test it most sharply? Explore the ethics of rules and duties.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['deontology', 'Kant', 'ethics', 'moral philosophy', 'duty'],
     relatedDilemmaIds: ['whistleblower', 'cover-accident', 'innocent-juror', 'mandatory-vaccine'],
     alternateSlug: 'deontologia-alcune-cose-sono-sempre-sbagliate',
+    faq: [
+      { q: "What is deontology in simple terms?", a: "Deontology is the view that the morality of an action depends on whether it follows a duty or rule, not on its consequences. Some acts — lying, killing an innocent, breaking a promise — are treated as wrong in themselves, even when they would lead to a better outcome." },
+      { q: "Who is the most famous deontologist?", a: "Immanuel Kant. His “categorical imperative” says you should act only on principles you could will everyone to follow, and that you should treat people always as ends in themselves, never merely as means." },
+      { q: "What's the main objection to deontology?", a: "That rigidly following a rule can lead to disastrous results — refusing to lie even when a lie would save lives. Critics argue that ignoring consequences entirely can itself be a kind of moral failure." },
+      { q: "How does deontology answer the trolley problem?", a: "Many deontologists distinguish between actively causing harm and merely allowing it. Pulling the lever actively kills one person, which can violate a duty not to use someone as a means — so some deontologists refuse, even though five would die." },
+    ],
     content: [
       {
         type: 'p',
@@ -2242,6 +2292,42 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: "SplitVote presents ethical dilemmas for reflection and discussion. References to philosophical frameworks are for context only — the goal is to help you reflect, not to provide academic instruction. Results represent our community's votes, not scientific conclusions.",
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What is deontology in simple terms?",
+      },
+      {
+        type: 'p',
+        text: "Deontology is the view that the morality of an action depends on whether it follows a duty or rule, not on its consequences. Some acts — lying, killing an innocent, breaking a promise — are treated as wrong in themselves, even when they would lead to a better outcome.",
+      },
+      {
+        type: 'h3',
+        text: "Who is the most famous deontologist?",
+      },
+      {
+        type: 'p',
+        text: "Immanuel Kant. His “categorical imperative” says you should act only on principles you could will everyone to follow, and that you should treat people always as ends in themselves, never merely as means.",
+      },
+      {
+        type: 'h3',
+        text: "What's the main objection to deontology?",
+      },
+      {
+        type: 'p',
+        text: "That rigidly following a rule can lead to disastrous results — refusing to lie even when a lie would save lives. Critics argue that ignoring consequences entirely can itself be a kind of moral failure.",
+      },
+      {
+        type: 'h3',
+        text: "How does deontology answer the trolley problem?",
+      },
+      {
+        type: 'p',
+        text: "Many deontologists distinguish between actively causing harm and merely allowing it. Pulling the lever actively kills one person, which can violate a duty not to use someone as a means — so some deontologists refuse, even though five would die.",
+      },
     ],
   },
   {
@@ -2254,10 +2340,17 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       "What is virtue ethics? How does Aristotle's approach to moral character differ from consequentialism and deontology? Explore the ethics of who you are, not just what you do.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['virtue ethics', 'Aristotle', 'ethics', 'moral character', 'moral philosophy'],
     relatedDilemmaIds: ['truth-friend', 'forgive-cheater', 'sibling-secret', 'love-or-career'],
     alternateSlug: 'etica-della-virtu-cosa-farebbe-una-persona-buona',
+    faq: [
+      { q: "What is virtue ethics in simple terms?", a: "Virtue ethics focuses on character rather than rules or outcomes. Instead of asking “what should I do?”, it asks “what would a good person do?” — and aims to become the kind of person who acts well out of habit and judgment." },
+      { q: "Who founded virtue ethics?", a: "Aristotle is its central figure. He argued that we become good by practising good actions, developing virtues like courage, honesty, and justice as stable traits, and that flourishing comes from living according to them." },
+      { q: "What is a virtue, exactly?", a: "A virtue is a well-rooted disposition to feel and act well, often described as a balance between two extremes. Courage, for example, sits between recklessness and cowardice. Virtues are built through practice, not just understood in theory." },
+      { q: "How is virtue ethics different from consequentialism and deontology?", a: "Consequentialism judges outcomes and deontology judges rules, while virtue ethics judges character. It is less about scoring a single act and more about who you are becoming — which is why it can guide you even when no rule or calculation settles the case." },
+    ],
     content: [
       {
         type: 'p',
@@ -2353,6 +2446,42 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "SplitVote presents ethical dilemmas for reflection and discussion. References to philosophical frameworks are for context only — the goal is to help you reflect, not to provide academic instruction. Results represent our community's votes, not scientific conclusions.",
+      },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What is virtue ethics in simple terms?",
+      },
+      {
+        type: 'p',
+        text: "Virtue ethics focuses on character rather than rules or outcomes. Instead of asking “what should I do?”, it asks “what would a good person do?” — and aims to become the kind of person who acts well out of habit and judgment.",
+      },
+      {
+        type: 'h3',
+        text: "Who founded virtue ethics?",
+      },
+      {
+        type: 'p',
+        text: "Aristotle is its central figure. He argued that we become good by practising good actions, developing virtues like courage, honesty, and justice as stable traits, and that flourishing comes from living according to them.",
+      },
+      {
+        type: 'h3',
+        text: "What is a virtue, exactly?",
+      },
+      {
+        type: 'p',
+        text: "A virtue is a well-rooted disposition to feel and act well, often described as a balance between two extremes. Courage, for example, sits between recklessness and cowardice. Virtues are built through practice, not just understood in theory.",
+      },
+      {
+        type: 'h3',
+        text: "How is virtue ethics different from consequentialism and deontology?",
+      },
+      {
+        type: 'p',
+        text: "Consequentialism judges outcomes and deontology judges rules, while virtue ethics judges character. It is less about scoring a single act and more about who you are becoming — which is why it can guide you even when no rule or calculation settles the case.",
       },
     ],
   },
@@ -2620,10 +2749,17 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       "Moral Foundations Theory reveals why people disagree on ethics: we use different moral foundations — Care, Fairness, Loyalty, Authority, Sanctity, Liberty. Discover yours on SplitVote.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['moral psychology', 'moral foundations', 'Jonathan Haidt', 'ethics', 'political psychology'],
     relatedDilemmaIds: ['trolley', 'innocent-juror', 'truth-friend', 'surveillance-city', 'mandatory-vaccine'],
     alternateSlug: 'teoria-fondamenti-morali',
+    faq: [
+      { q: "What is Moral Foundations Theory?", a: "Moral Foundations Theory proposes that human moral judgments are built on a small set of intuitive foundations — such as care, fairness, loyalty, authority, and sanctity. People and cultures rely on these to different degrees, which is part of why they disagree." },
+      { q: "Who developed Moral Foundations Theory?", a: "It was developed by psychologist Jonathan Haidt and colleagues. Their work suggests that moral reasoning often follows fast, intuitive reactions rather than producing them." },
+      { q: "What are the main moral foundations?", a: "The most commonly cited are care/harm, fairness/cheating, loyalty/betrayal, authority/subversion, and sanctity/degradation. Some versions add liberty/oppression. Each captures a different kind of moral concern." },
+      { q: "Why does the theory say good people disagree?", a: "Because people weight the foundations differently. Someone who prioritises care and fairness may clash with someone who also weights loyalty and authority heavily — both are reasoning morally, just from different starting intuitions." },
+    ],
     content: [
       {
         type: 'p',
@@ -2751,6 +2887,42 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "Moral Foundations Theory is a theoretical framework in moral psychology, not a validated psychological test. References to Haidt and colleagues' work are for contextual background only. SplitVote dilemmas are for reflection and discussion — not clinical assessment. Results represent our community's votes, not scientific conclusions about individual personalities.",
+      },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What is Moral Foundations Theory?",
+      },
+      {
+        type: 'p',
+        text: "Moral Foundations Theory proposes that human moral judgments are built on a small set of intuitive foundations — such as care, fairness, loyalty, authority, and sanctity. People and cultures rely on these to different degrees, which is part of why they disagree.",
+      },
+      {
+        type: 'h3',
+        text: "Who developed Moral Foundations Theory?",
+      },
+      {
+        type: 'p',
+        text: "It was developed by psychologist Jonathan Haidt and colleagues. Their work suggests that moral reasoning often follows fast, intuitive reactions rather than producing them.",
+      },
+      {
+        type: 'h3',
+        text: "What are the main moral foundations?",
+      },
+      {
+        type: 'p',
+        text: "The most commonly cited are care/harm, fairness/cheating, loyalty/betrayal, authority/subversion, and sanctity/degradation. Some versions add liberty/oppression. Each captures a different kind of moral concern.",
+      },
+      {
+        type: 'h3',
+        text: "Why does the theory say good people disagree?",
+      },
+      {
+        type: 'p',
+        text: "Because people weight the foundations differently. Someone who prioritises care and fairness may clash with someone who also weights loyalty and authority heavily — both are reasoning morally, just from different starting intuitions.",
       },
     ],
   },
@@ -6917,10 +7089,17 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "Cos'è il consequenzialismo? Come funziona, dove si rompe, e quali dilemmi reali fatica ad affrontare? Esplora l'etica dei risultati attraverso cinque scenari.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['consequenzialismo', 'utilitarismo', 'etica', 'filosofia morale', 'problema del carrello'],
     relatedDilemmaIds: ['trolley', 'pandemic-dose', 'organ-harvest', 'rich-or-fair', 'universal-basic-income'],
     alternateSlug: 'consequentialism-the-greatest-good',
+    faq: [
+      { q: "Cos’è il consequenzialismo in parole semplici?", a: "Il consequenzialismo è l’idea che un’azione sia giusta o sbagliata solo in base ai suoi risultati. La scelta migliore è quella che produce più bene, o meno danno, per tutte le persone coinvolte. L’utilitarismo ne è la versione più famosa." },
+      { q: "Che differenza c’è tra consequenzialismo e utilitarismo?", a: "L’utilitarismo è un tipo di consequenzialismo: aggiunge una misura precisa del “bene”, di solito la felicità o il benessere. Altri consequenzialisti possono misurare gli esiti in modo diverso, per esempio in termini di sofferenza evitata o preferenze soddisfatte." },
+      { q: "Qual è la critica principale al consequenzialismo?", a: "Che può giustificare azioni che quasi tutti trovano chiaramente sbagliate — punire un innocente, o sacrificare una persona per salvarne cinque — ogni volta che i conti tornano. I critici dicono che tratta gli individui come mezzi per un totale, ignorando i diritti e il peso di come si arriva al risultato." },
+      { q: "In cosa differisce dalla deontologia?", a: "Il consequenzialismo guarda solo ai risultati; la deontologia guarda all’azione in sé, sostenendo che certi atti restano sbagliati anche se producono un esito migliore. Davanti al problema del carrello, il consequenzialista pensa al numero di vite, il deontologo a se stai causando attivamente una morte." },
+    ],
     content: [
       {
         type: 'p',
@@ -7009,6 +7188,42 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. I riferimenti a framework filosofici sono solo contestuali — l'obiettivo è aiutarti a riflettere, non fornire istruzione accademica. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche.",
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Cos’è il consequenzialismo in parole semplici?",
+      },
+      {
+        type: 'p',
+        text: "Il consequenzialismo è l’idea che un’azione sia giusta o sbagliata solo in base ai suoi risultati. La scelta migliore è quella che produce più bene, o meno danno, per tutte le persone coinvolte. L’utilitarismo ne è la versione più famosa.",
+      },
+      {
+        type: 'h3',
+        text: "Che differenza c’è tra consequenzialismo e utilitarismo?",
+      },
+      {
+        type: 'p',
+        text: "L’utilitarismo è un tipo di consequenzialismo: aggiunge una misura precisa del “bene”, di solito la felicità o il benessere. Altri consequenzialisti possono misurare gli esiti in modo diverso, per esempio in termini di sofferenza evitata o preferenze soddisfatte.",
+      },
+      {
+        type: 'h3',
+        text: "Qual è la critica principale al consequenzialismo?",
+      },
+      {
+        type: 'p',
+        text: "Che può giustificare azioni che quasi tutti trovano chiaramente sbagliate — punire un innocente, o sacrificare una persona per salvarne cinque — ogni volta che i conti tornano. I critici dicono che tratta gli individui come mezzi per un totale, ignorando i diritti e il peso di come si arriva al risultato.",
+      },
+      {
+        type: 'h3',
+        text: "In cosa differisce dalla deontologia?",
+      },
+      {
+        type: 'p',
+        text: "Il consequenzialismo guarda solo ai risultati; la deontologia guarda all’azione in sé, sostenendo che certi atti restano sbagliati anche se producono un esito migliore. Davanti al problema del carrello, il consequenzialista pensa al numero di vite, il deontologo a se stai causando attivamente una morte.",
+      },
     ],
   },
   {
@@ -7021,10 +7236,17 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "Cos'è la deontologia? Come funziona l'imperativo categorico di Kant e dove si rompe l'etica del dovere? Esplora i dilemmi che mettono alla prova le regole morali.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['deontologia', 'Kant', 'etica', 'filosofia morale', 'dovere morale'],
     relatedDilemmaIds: ['whistleblower', 'cover-accident', 'innocent-juror', 'mandatory-vaccine'],
     alternateSlug: 'deontology-some-things-are-always-wrong',
+    faq: [
+      { q: "Cos’è la deontologia in parole semplici?", a: "La deontologia sostiene che la moralità di un’azione dipende dal rispetto di un dovere o di una regola, non dalle sue conseguenze. Alcuni atti — mentire, uccidere un innocente, rompere una promessa — sono considerati sbagliati in sé, anche quando porterebbero a un esito migliore." },
+      { q: "Chi è il deontologo più famoso?", a: "Immanuel Kant. Il suo “imperativo categorico” dice di agire solo secondo principi che vorresti tutti seguissero, e di trattare le persone sempre come fini in sé, mai soltanto come mezzi." },
+      { q: "Qual è l’obiezione principale alla deontologia?", a: "Che seguire una regola in modo rigido può portare a esiti disastrosi — rifiutarsi di mentire anche quando una bugia salverebbe delle vite. I critici sostengono che ignorare del tutto le conseguenze sia a sua volta una forma di fallimento morale." },
+      { q: "Come risponde la deontologia al problema del carrello?", a: "Molti deontologi distinguono tra causare attivamente un danno e permetterlo soltanto. Tirare la leva uccide attivamente una persona, e questo può violare il dovere di non usare qualcuno come mezzo — perciò alcuni si rifiutano, anche se così muoiono in cinque." },
+    ],
     content: [
       {
         type: 'p',
@@ -7113,6 +7335,42 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. I riferimenti a framework filosofici sono solo contestuali — l'obiettivo è aiutarti a riflettere, non fornire istruzione accademica. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche.",
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Cos’è la deontologia in parole semplici?",
+      },
+      {
+        type: 'p',
+        text: "La deontologia sostiene che la moralità di un’azione dipende dal rispetto di un dovere o di una regola, non dalle sue conseguenze. Alcuni atti — mentire, uccidere un innocente, rompere una promessa — sono considerati sbagliati in sé, anche quando porterebbero a un esito migliore.",
+      },
+      {
+        type: 'h3',
+        text: "Chi è il deontologo più famoso?",
+      },
+      {
+        type: 'p',
+        text: "Immanuel Kant. Il suo “imperativo categorico” dice di agire solo secondo principi che vorresti tutti seguissero, e di trattare le persone sempre come fini in sé, mai soltanto come mezzi.",
+      },
+      {
+        type: 'h3',
+        text: "Qual è l’obiezione principale alla deontologia?",
+      },
+      {
+        type: 'p',
+        text: "Che seguire una regola in modo rigido può portare a esiti disastrosi — rifiutarsi di mentire anche quando una bugia salverebbe delle vite. I critici sostengono che ignorare del tutto le conseguenze sia a sua volta una forma di fallimento morale.",
+      },
+      {
+        type: 'h3',
+        text: "Come risponde la deontologia al problema del carrello?",
+      },
+      {
+        type: 'p',
+        text: "Molti deontologi distinguono tra causare attivamente un danno e permetterlo soltanto. Tirare la leva uccide attivamente una persona, e questo può violare il dovere di non usare qualcuno come mezzo — perciò alcuni si rifiutano, anche se così muoiono in cinque.",
+      },
     ],
   },
   {
@@ -7125,10 +7383,17 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "Cos'è l'etica della virtù? Come si differenzia l'approccio di Aristotele rispetto a consequenzialismo e deontologia? Esplora l'etica di chi sei, non solo di cosa fai.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['etica della virtù', 'Aristotele', 'etica', 'carattere morale', 'filosofia morale'],
     relatedDilemmaIds: ['truth-friend', 'forgive-cheater', 'sibling-secret', 'love-or-career'],
     alternateSlug: 'virtue-ethics-what-would-a-good-person-do',
+    faq: [
+      { q: "Cos’è l’etica della virtù in parole semplici?", a: "L’etica della virtù si concentra sul carattere invece che su regole o risultati. Non chiede “cosa devo fare?”, ma “cosa farebbe una persona buona?” — e punta a diventare il tipo di persona che agisce bene per abitudine e discernimento." },
+      { q: "Chi ha fondato l’etica della virtù?", a: "Aristotele ne è la figura centrale. Sosteneva che si diventa buoni praticando azioni buone, sviluppando virtù come coraggio, onestà e giustizia come tratti stabili, e che la realizzazione nasce dal vivere secondo esse." },
+      { q: "Cos’è esattamente una virtù?", a: "Una virtù è una disposizione radicata a sentire e agire bene, spesso descritta come un equilibrio tra due estremi. Il coraggio, per esempio, sta tra la temerarietà e la vigliaccheria. Le virtù si costruiscono con la pratica, non si capiscono solo in teoria." },
+      { q: "In cosa si differenzia da consequenzialismo e deontologia?", a: "Il consequenzialismo giudica i risultati e la deontologia le regole, mentre l’etica della virtù giudica il carattere. Conta meno il punteggio di una singola azione e più la persona che stai diventando — ed è per questo che può guidarti anche quando nessuna regola o calcolo risolve il caso." },
+    ],
     content: [
       {
         type: 'p',
@@ -7224,6 +7489,42 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "SplitVote presenta dilemmi etici per la riflessione e il confronto. I riferimenti a framework filosofici sono solo contestuali — l'obiettivo è aiutarti a riflettere, non fornire istruzione accademica. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche.",
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Cos’è l’etica della virtù in parole semplici?",
+      },
+      {
+        type: 'p',
+        text: "L’etica della virtù si concentra sul carattere invece che su regole o risultati. Non chiede “cosa devo fare?”, ma “cosa farebbe una persona buona?” — e punta a diventare il tipo di persona che agisce bene per abitudine e discernimento.",
+      },
+      {
+        type: 'h3',
+        text: "Chi ha fondato l’etica della virtù?",
+      },
+      {
+        type: 'p',
+        text: "Aristotele ne è la figura centrale. Sosteneva che si diventa buoni praticando azioni buone, sviluppando virtù come coraggio, onestà e giustizia come tratti stabili, e che la realizzazione nasce dal vivere secondo esse.",
+      },
+      {
+        type: 'h3',
+        text: "Cos’è esattamente una virtù?",
+      },
+      {
+        type: 'p',
+        text: "Una virtù è una disposizione radicata a sentire e agire bene, spesso descritta come un equilibrio tra due estremi. Il coraggio, per esempio, sta tra la temerarietà e la vigliaccheria. Le virtù si costruiscono con la pratica, non si capiscono solo in teoria.",
+      },
+      {
+        type: 'h3',
+        text: "In cosa si differenzia da consequenzialismo e deontologia?",
+      },
+      {
+        type: 'p',
+        text: "Il consequenzialismo giudica i risultati e la deontologia le regole, mentre l’etica della virtù giudica il carattere. Conta meno il punteggio di una singola azione e più la persona che stai diventando — ed è per questo che può guidarti anche quando nessuna regola o calcolo risolve il caso.",
       },
     ],
   },
@@ -7491,10 +7792,17 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "La Teoria dei Fondamenti Morali spiega perché le persone non sono d'accordo sull'etica: usiamo fondamenti diversi — Cura, Equità, Lealtà, Autorità, Sacralità, Libertà. Scopri i tuoi su SplitVote.",
     date: '2026-05-10',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['psicologia morale', 'fondamenti morali', 'Jonathan Haidt', 'etica', 'psicologia politica'],
     relatedDilemmaIds: ['trolley', 'innocent-juror', 'truth-friend', 'surveillance-city', 'mandatory-vaccine'],
     alternateSlug: 'moral-foundations-theory-why-good-people-disagree',
+    faq: [
+      { q: "Cos’è la teoria dei fondamenti morali?", a: "La teoria dei fondamenti morali propone che i giudizi morali umani si basino su un piccolo insieme di fondamenti intuitivi — come cura, equità, lealtà, autorità e sacralità. Persone e culture vi si appoggiano in misura diversa, ed è in parte per questo che non sono d’accordo." },
+      { q: "Chi ha sviluppato la teoria dei fondamenti morali?", a: "È stata sviluppata dallo psicologo Jonathan Haidt e dai suoi colleghi. Il loro lavoro suggerisce che il ragionamento morale spesso segue reazioni rapide e intuitive, più che produrle." },
+      { q: "Quali sono i principali fondamenti morali?", a: "I più citati sono cura/danno, equità/inganno, lealtà/tradimento, autorità/sovversione e sacralità/degrado. Alcune versioni aggiungono libertà/oppressione. Ognuno coglie un tipo diverso di preoccupazione morale." },
+      { q: "Perché la teoria dice che le persone buone non sono d’accordo?", a: "Perché pesano i fondamenti in modo diverso. Chi dà priorità a cura ed equità può scontrarsi con chi dà molto peso anche a lealtà e autorità — entrambi ragionano moralmente, semplicemente da intuizioni di partenza diverse." },
+    ],
     content: [
       {
         type: 'p',
@@ -7622,6 +7930,42 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: "La Teoria dei Fondamenti Morali è un framework teorico della psicologia morale, non un test psicologico validato. I riferimenti al lavoro di Haidt e colleghi sono solo contestuali. I dilemmi di SplitVote sono per la riflessione e il confronto — non per una valutazione clinica. I risultati rappresentano i voti della nostra community, non conclusioni scientifiche sulla personalità individuale.",
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Cos’è la teoria dei fondamenti morali?",
+      },
+      {
+        type: 'p',
+        text: "La teoria dei fondamenti morali propone che i giudizi morali umani si basino su un piccolo insieme di fondamenti intuitivi — come cura, equità, lealtà, autorità e sacralità. Persone e culture vi si appoggiano in misura diversa, ed è in parte per questo che non sono d’accordo.",
+      },
+      {
+        type: 'h3',
+        text: "Chi ha sviluppato la teoria dei fondamenti morali?",
+      },
+      {
+        type: 'p',
+        text: "È stata sviluppata dallo psicologo Jonathan Haidt e dai suoi colleghi. Il loro lavoro suggerisce che il ragionamento morale spesso segue reazioni rapide e intuitive, più che produrle.",
+      },
+      {
+        type: 'h3',
+        text: "Quali sono i principali fondamenti morali?",
+      },
+      {
+        type: 'p',
+        text: "I più citati sono cura/danno, equità/inganno, lealtà/tradimento, autorità/sovversione e sacralità/degrado. Alcune versioni aggiungono libertà/oppressione. Ognuno coglie un tipo diverso di preoccupazione morale.",
+      },
+      {
+        type: 'h3',
+        text: "Perché la teoria dice che le persone buone non sono d’accordo?",
+      },
+      {
+        type: 'p',
+        text: "Perché pesano i fondamenti in modo diverso. Chi dà priorità a cura ed equità può scontrarsi con chi dà molto peso anche a lealtà e autorità — entrambi ragionano moralmente, semplicemente da intuizioni di partenza diverse.",
       },
     ],
   },
