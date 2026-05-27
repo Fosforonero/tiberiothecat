@@ -72,7 +72,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'Learn what a moral dilemma is, why they have no clean answer, the difference from a hard choice, and what philosophers and psychologists actually say. With real examples you can vote on.',
     date: '2026-04-27',
-    dateModified: '2026-05-17',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['ethics', 'philosophy', 'moral psychology'],
     relatedDilemmaIds: ['trolley', 'cure-secret', 'memory-erase'],
@@ -183,6 +183,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Educational content, not professional advice.',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What's the difference between a moral dilemma and an ethical dilemma?",
+      },
+      {
+        type: 'p',
+        text: "In everyday use the two are interchangeable. Some philosophers reserve \"ethical dilemma\" for conflicts inside a single professional code (a doctor weighing patient confidentiality against family disclosure) and \"moral dilemma\" for broader conflicts between personal values. Both describe situations where every option breaks something.",
+      },
+      {
+        type: 'h3',
+        text: "Do moral dilemmas have right answers?",
+      },
+      {
+        type: 'p',
+        text: "Genuine moral dilemmas are the ones where reasonable people disagree even after looking at every fact. There may be defensible answers — answers you can argue for — but no answer that does not leave a moral remainder. Hard choices are different: they look like dilemmas but a clearer option exists once you reason carefully.",
+      },
+      {
+        type: 'h3',
+        text: "What's the most famous moral dilemma?",
+      },
+      {
+        type: 'p',
+        text: "The trolley problem, introduced by philosopher Philippa Foot in 1967. It asks whether you should divert a runaway trolley to kill one person instead of five. It became famous because almost everyone says yes — and then refuses the \"footbridge\" variant where you have to push someone instead. The asymmetry is the interesting part.",
+      },
+      {
+        type: 'h3',
+        text: "How do philosophers actually try to solve them?",
+      },
+      {
+        type: 'p',
+        text: "Three traditions dominate. Consequentialists pick whichever option produces the best outcome. Deontologists check the action against absolute rules (do not kill, do not lie). Virtue ethicists ask what a person of good character would do. They often arrive at different verdicts — which is part of why the dilemmas keep mattering.",
+      },
+      {
+        type: 'h3',
+        text: "Can a moral dilemma have only one option?",
+      },
+      {
+        type: 'p',
+        text: "Yes — these are called \"single-option dilemmas.\" You have only one course of action, but taking it still violates something you value (a doctor forced to triage in a mass casualty event, for example). The dilemma is in the moral cost, not in the choice between two alternatives.",
+      },
     ],
   },
   {
@@ -201,7 +245,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'The trolley problem in 800 words: Foot 1967, Thomson\'s footbridge, the loop case, what fMRI studies showed, and what 40M autonomous-vehicle votes revealed about cross-cultural difference.',
     date: '2026-04-27',
-    dateModified: '2026-05-17',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['trolley problem', 'ethics', 'philosophy', 'classic dilemmas', 'moral psychology'],
     relatedDilemmaIds: ['trolley', 'organ-harvest'],
@@ -310,6 +354,50 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Educational content, not professional advice.',
+      },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "Who invented the trolley problem?",
+      },
+      {
+        type: 'p',
+        text: "Philosopher Philippa Foot, in a 1967 paper called \"The Problem of Abortion and the Doctrine of the Double Effect.\" She used a runaway tram, not a trolley, and her real target was not driving ethics but the philosophical doctrine that distinguishes intended consequences from foreseen-but-unintended ones.",
+      },
+      {
+        type: 'h3',
+        text: "What is the difference between the lever and the footbridge versions?",
+      },
+      {
+        type: 'p',
+        text: "The body count is identical — one death prevents five. The mechanism differs. In the lever case the death is a side effect of diverting the threat. In the footbridge case you use a person as an object to stop it. Most people accept the first and refuse the second, which is the asymmetry that made the puzzle famous.",
+      },
+      {
+        type: 'h3',
+        text: "What do most people actually choose?",
+      },
+      {
+        type: 'p',
+        text: "In large international surveys, roughly 80-90% of respondents pull the lever and only about 30% push the man off the footbridge. The gap is robust across age, education and most cultures, though the exact numbers shift.",
+      },
+      {
+        type: 'h3',
+        text: "Has the trolley problem ever affected the real world?",
+      },
+      {
+        type: 'p',
+        text: "Yes. When Mercedes-Benz had to decide how its autonomous cars should prioritise lives in unavoidable collisions, the conversation explicitly invoked the trolley problem. MIT's Moral Machine experiment collected ~40 million votes on autonomous-vehicle dilemmas; the results have been cited in policy debates from the EU to Singapore.",
+      },
+      {
+        type: 'h3',
+        text: "Is the trolley problem a useful philosophy tool or a \"philosophy meme\"?",
+      },
+      {
+        type: 'p',
+        text: "Both. Many ethicists argue the original framing is artificial and that real moral life rarely allows clean utilitarian arithmetic. Others say that is precisely why it is useful: it isolates a single conflict — consequences vs. constraints — and lets researchers measure how people reason when nothing else is in the way.",
       },
     ],
   },
@@ -4385,7 +4473,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'What moral injury is, how it differs from PTSD and ordinary guilt, the Litz 2009 research that named it, and why it produces the most charged ethical dilemmas in modern work and family life.',
     date: '2026-05-15',
-    dateModified: '2026-05-17',
+    dateModified: '2026-05-27',
     readingTime: 7,
     tags: ['moral injury', 'psychology', 'guilt', 'ethics', 'moral psychology'],
     relatedDilemmaIds: ['whistleblower', 'cover-accident', 'report-friend', 'innocent-juror'],
@@ -4491,6 +4579,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Educational and reflective content, not mental-health advice or diagnosis. If you recognise these patterns in your own life and they are causing distress, the US Veterans Crisis Line (988, press 1) and equivalent national services can route you to clinicians trained in moral-injury-aware care.',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "Is moral injury the same as PTSD?",
+      },
+      {
+        type: 'p',
+        text: "No. PTSD is a clinical diagnosis tied to a fear-based response to a life-threatening event. Moral injury is a distinct construct — defined in the foundational [Litz et al. 2009 paper](https://www.sciencedirect.com/science/article/abs/pii/S0272735809001135) — focused on guilt, shame, and existential conflict after acts or omissions that violated deeply held values. They can co-occur. They can also occur independently, and they respond to different therapeutic frames.",
+      },
+      {
+        type: 'h3',
+        text: "Who studies moral injury today?",
+      },
+      {
+        type: 'p',
+        text: "The US Department of Veterans Affairs (VA), via the [National Center for PTSD](https://www.ptsd.va.gov/professional/treat/cooccurring/moral_injury.asp), maintains active research and clinician training. The concept is increasingly applied to healthcare workers (especially post-COVID triage), aid workers, judges, and people in family caregiving roles.",
+      },
+      {
+        type: 'h3',
+        text: "Can moral injury happen outside war or medicine?",
+      },
+      {
+        type: 'p',
+        text: "Yes. The structural conditions — being forced into an action that betrays a value you hold, with no clean alternative — appear in many ordinary contexts: corporate layoffs you have to deliver, custody disputes you mediate, content moderation work, even staying silent in a family during cruelty. The pain pattern is the same; only the stage changes.",
+      },
+      {
+        type: 'h3',
+        text: "How do clinicians treat moral injury?",
+      },
+      {
+        type: 'p',
+        text: "There is no single approved protocol. Approaches with the most research base include Adaptive Disclosure (Litz), Cognitive Processing Therapy adapted for moral injury, and group-based work that pairs ethical reasoning with grief processing. Faith-based and secular variants both exist. Generic talk therapy alone is often considered insufficient.",
+      },
+      {
+        type: 'h3',
+        text: "How is moral injury different from \"moral distress\"?",
+      },
+      {
+        type: 'p',
+        text: "Moral distress (Andrew Jameton, nursing ethics, 1984) describes the felt experience of knowing what is right but being prevented from doing it. Moral injury is what can follow when distress is chronic, when an act is actually carried out, or when no morally acceptable option ever existed. Distress is the warning sign; injury is the wound.",
+      },
     ],
   },
   {
@@ -4503,7 +4635,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'What limerence is (Tennov 1979), why uncertainty fuels it, how it differs from love, attachment, and addiction — and the moral dilemmas it creates around commitment, honesty and boundaries.',
     date: '2026-05-15',
-    dateModified: '2026-05-17',
+    dateModified: '2026-05-27',
     readingTime: 7,
     tags: ['limerence', 'relationships', 'psychology', 'romantic obsession', 'moral psychology'],
     relatedDilemmaIds: ['love-or-career', 'truth-friend', 'sibling-secret', 'memory-erase'],
@@ -4600,6 +4732,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Educational and reflective content, not relationship or mental-health advice. If limerence is interfering with daily functioning, sleep, or your existing commitments, a licensed therapist familiar with attachment work is the right resource.',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "Who coined the term \"limerence\"?",
+      },
+      {
+        type: 'p',
+        text: "Psychologist Dorothy Tennov, in her 1979 book *Love and Limerence: The Experience of Being in Love*. She built the construct from hundreds of interviews and used it specifically to name the involuntary, intrusive, hope-driven state that did not match the existing concepts of \"love\" or \"infatuation.\"",
+      },
+      {
+        type: 'h3',
+        text: "Is limerence the same as being in love?",
+      },
+      {
+        type: 'p',
+        text: "No. Tennov's distinction: love can survive certainty about the other person; limerence often collapses without ambiguity. Limerence is characterised by intrusive thoughts about a \"limerent object,\" extreme emotional swings tied to perceived signals, and a hope of reciprocation that the mind keeps replenishing. Stable mutual love does not need this churn.",
+      },
+      {
+        type: 'h3',
+        text: "Is limerence a mental health diagnosis?",
+      },
+      {
+        type: 'p',
+        text: "No. It is not listed in the DSM-5 or ICD-11. Some clinicians treat severe cases as a form of [obsessive-compulsive spectrum behaviour](https://www.psychologytoday.com/us/basics/limerence), and the concept has had a research resurgence since 2020, but there is no agreed clinical definition or treatment protocol. Use the term descriptively, not diagnostically.",
+      },
+      {
+        type: 'h3',
+        text: "How is limerence different from a crush?",
+      },
+      {
+        type: 'p',
+        text: "Crushes are usually shorter, lower-intensity, and the person can still focus on other parts of their life. Limerence is consuming: people report it interferes with work, sleep, eating, and their existing relationships. Tennov's interview subjects described episodes lasting anywhere from 18 months to several years.",
+      },
+      {
+        type: 'h3',
+        text: "Why does uncertainty intensify it?",
+      },
+      {
+        type: 'p',
+        text: "Intermittent reinforcement — the same principle behind slot machines — produces the strongest behavioural conditioning. A delayed reply, an ambiguous gesture, or a half-open door keeps the mind generating hope and replaying micro-signals. A clear yes (or a clear no) usually breaks the loop. The dilemma is that this means honesty can be the most loving response.",
+      },
     ],
   },
   {
@@ -4684,6 +4860,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'AI girlfriends and chatbot companions are crossing from novelty to default for teens. Mental-health researchers, parents, and policymakers are starting to ask: what does a relationship that cannot disappoint teach a 13-year-old about love?',
     date: '2026-05-26',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['ai ethics', 'teen mental health', 'ai companions', 'parenting', 'current events'],
     relatedDilemmaIds: ['ai-companion-teen', 'ai-companion-ban', 'ai-grief-replica', 'delete-social-media'],
@@ -4799,6 +4976,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Reflective content informed by reporting from May 2026 on AI companion use among adolescents. Not clinical or legal advice. The SplitVote scenarios are hypothetical and intended for moral reflection, not policy recommendations.',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "At what age is an AI companion app considered safe for a teen?",
+      },
+      {
+        type: 'p',
+        text: "There is no clinical consensus. Most major AI companion apps require users to be 13 or 18 depending on the country, but enforcement relies on self-declared age. Adolescent psychiatrists generally treat the 12–16 window as the highest-risk period for forming substitutive relationships, because identity and attachment patterns are still being calibrated.",
+      },
+      {
+        type: 'h3',
+        text: "Do AI girlfriends cause loneliness or relieve it?",
+      },
+      {
+        type: 'p',
+        text: "Early studies suggest both, for different users. For socially isolated teens, the app can reduce immediate loneliness; for socially active teens, it tends to displace real-world practice. The single biggest predictor of harm is hours-per-day spent in the app, not the existence of the app itself.",
+      },
+      {
+        type: 'h3',
+        text: "Should parents read their teen’s AI girlfriend chats?",
+      },
+      {
+        type: 'p',
+        text: "Most adolescent-development experts recommend disclosure (\"I may check in\") rather than covert reading. The conversations often include intimate self-disclosure the teen would never share with the parent in person; reading without disclosure damages trust faster than the AI app does.",
+      },
+      {
+        type: 'h3',
+        text: "Are there laws restricting AI companions for minors?",
+      },
+      {
+        type: 'p',
+        text: "As of 2026, age-verification laws targeting AI companion apps are being debated in the EU, Australia, and several U.S. states. None has passed in final form. The trend is toward treating AI companions as a distinct regulatory category, separate from social media.",
+      },
+      {
+        type: 'h3',
+        text: "What is the moral case for letting teens use them?",
+      },
+      {
+        type: 'p',
+        text: "For teens with social anxiety, neurodivergence, or unsupportive home environments, the AI companion is often the first low-stakes practice ground for emotional expression. Banning it outright removes a coping tool from the most vulnerable group while the popular kids barely notice.",
+      },
     ],
   },
 
@@ -4813,6 +5034,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'Religion and AI ethics: how faith traditions are shaping the moral vocabulary of artificial intelligence, why secular AI governance keeps running into religious questions, and what the Vatican\'s position actually proposes.',
     date: '2026-05-26',
+    dateModified: '2026-05-27',
     readingTime: 7,
     tags: ['ai ethics', 'religion', 'philosophy of technology', 'governance', 'current events'],
     relatedDilemmaIds: ['pope-ai-encyclical', 'religious-ai-ethics', 'ai-prayer-app', 'robot-judge'],
@@ -4924,6 +5146,50 @@ const EN_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Educational content. The Vatican\'s positions on AI are paraphrased from published documents (Rome Call for AI Ethics, 2024 World Day of Peace message, papal addresses). Positions attributed to other faith traditions are general summaries; specific authorities within each tradition hold a range of views. The SplitVote scenarios are hypothetical and intended for moral reflection, not policy recommendations.',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "What is the Rome Call for AI Ethics?",
+      },
+      {
+        type: 'p',
+        text: "A document signed at the Vatican in February 2020, originally by IBM, Microsoft, the FAO, and the Pontifical Academy for Life. It commits signatories to six principles — transparency, inclusion, responsibility, impartiality, reliability, and security and privacy — when developing and deploying AI. Other tech firms and several governments have signed in the years since.",
+      },
+      {
+        type: 'h3',
+        text: "Has the Pope written about AI?",
+      },
+      {
+        type: 'p',
+        text: "Yes. Pope Francis dedicated his 2024 World Day of Peace message to AI, addressed the G7 in 2024 on the same topic, and the Vatican has continued to publish on AI governance through 2026. The institutional position consistently frames AI as not morally neutral and lists ethical limits — without rejecting the technology itself.",
+      },
+      {
+        type: 'h3',
+        text: "Do other religions have positions on AI?",
+      },
+      {
+        type: 'p',
+        text: "Yes. The Buddhist community has emphasised mindfulness and right intention in AI design. Several Islamic scholars have published on AI through the lens of maslaha (public interest) and have raised questions about autonomous weapons. Jewish bioethicists have engaged closely with AI in healthcare and end-of-life decisions. The frameworks differ; the seriousness does not.",
+      },
+      {
+        type: 'h3',
+        text: "Why would a tech company listen to religious leaders?",
+      },
+      {
+        type: 'p',
+        text: "Three pragmatic reasons beyond personal belief: religious institutions represent billions of users whose adoption decisions matter; faith traditions encode moral reasoning that survived centuries of scrutiny; and AI governance keeps colliding with end-of-life, identity, and dignity questions where secular philosophy and religious philosophy have both done serious work.",
+      },
+      {
+        type: 'h3',
+        text: "Is religious input on AI policy a violation of separation of church and state?",
+      },
+      {
+        type: 'p',
+        text: "Not in most legal systems. Religious leaders advocating for policy positions is constitutionally protected speech. The line is at formal religious authority deciding the policy — which is different from religious voices being represented in the room.",
+      },
     ],
   },
 
@@ -4938,6 +5204,7 @@ const EN_POSTS: BlogPost[] = [
     seoDescription:
       'Why sleepovers are disappearing in American and British childhood: the parenting culture shift, the safety arguments, the developmental costs of less unsupervised time, and how families are negotiating the new norm.',
     date: '2026-05-27',
+    dateModified: '2026-05-27',
     readingTime: 5,
     tags: ['parenting', 'child development', 'helicopter parenting', 'current events'],
     relatedDilemmaIds: ['sleepover-9yo', 'helicopter-gps-teen', 'ai-companion-teen', 'delete-social-media'],
@@ -5035,6 +5302,50 @@ const EN_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Reflective content informed by research from the Let Grow Foundation and Jonathan Haidt\'s ongoing work on adolescent independence. Not clinical or pediatric advice. The SplitVote scenarios are hypothetical and intended for moral reflection, not parenting recommendations.',
+      },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "At what age is a sleepover developmentally appropriate?",
+      },
+      {
+        type: 'p',
+        text: "Most pediatric guidance places the typical window between 7 and 10, but readiness is individual. Signs include the child being able to articulate basic comfort needs, separating from a parent for a full evening without distress, and the host parents being someone you would call before midnight without hesitation.",
+      },
+      {
+        type: 'h3',
+        text: "Are sleepovers actually unsafe?",
+      },
+      {
+        type: 'p',
+        text: "The absolute risk of harm at a sleepover is low. The arguments for declining are usually about specific concerns — unknown adults in the home, screen-time and content access you don't control, sleep environment — rather than statistical danger. The risk profile of a single sleepover is much smaller than the risk profile of a year of social media use.",
+      },
+      {
+        type: 'h3',
+        text: "How do I say no without isolating my child?",
+      },
+      {
+        type: 'p',
+        text: "Decline the sleepover but propose a generous substitute: \"She can stay until 10pm and I'll come pick her up.\" This preserves the social event without the overnight component you're not ready for, and it telegraphs that the no is about overnight specifically, not about the friend.",
+      },
+      {
+        type: 'h3',
+        text: "How do I handle \"but everyone else does\"?",
+      },
+      {
+        type: 'p',
+        text: "In most peer groups, \"everyone\" is actually two or three families. Ask the child for names. The conversation moves from a vague social pressure to a concrete list, and the concrete list is much easier to evaluate.",
+      },
+      {
+        type: 'h3',
+        text: "Does declining sleepovers cause anxiety later?",
+      },
+      {
+        type: 'p',
+        text: "The research is suggestive rather than conclusive. Developmental psychologists like Jonathan Haidt argue that the broader decline in unsupervised, low-stakes-away-from-home time correlates with rising adolescent anxiety. A single declined sleepover does nothing; a consistent pattern of declining all overnight experiences does, eventually, leave a teen without a script for being on their own.",
       },
     ],
   },
@@ -5148,6 +5459,42 @@ const EN_POSTS: BlogPost[] = [
         label: 'Discover your moral profile →',
         href: '/personality',
       },
+      {
+        type: 'h2',
+        text: "Frequently asked questions",
+      },
+      {
+        type: 'h3',
+        text: "Do moral dilemmas have a right answer?",
+      },
+      {
+        type: 'p',
+        text: "A genuine moral dilemma is exactly the one where reasonable people still disagree after seeing all the facts. There are defensible answers — ones you can argue for — but none that leaves no moral cost. That is different from a hard choice, where a clearer option exists once you reason calmly.",
+      },
+      {
+        type: 'h3',
+        text: "What's the difference between a moral dilemma and an aptitude test?",
+      },
+      {
+        type: 'p',
+        text: "A moral dilemma puts two values in conflict (loyalty vs honesty, fairness vs care) with no correct answer. A selection aptitude test, by contrast, looks for answers deemed right for a role. SplitVote's situational dilemmas are for reflection and discussion, not to measure or select anyone.",
+      },
+      {
+        type: 'h3',
+        text: "What does the way I answer say about me?",
+      },
+      {
+        type: 'p',
+        text: "Your answers suggest how you weigh things: outcomes or principles, the people close to you or rules applied equally, the moment or the precedent. It is a starting point for understanding yourself, not a fixed label — change the scenario and your instinct often changes too.",
+      },
+      {
+        type: 'h3',
+        text: "Are situational dilemmas used for job interviews?",
+      },
+      {
+        type: 'p',
+        text: "No. SplitVote offers situational dilemmas for curiosity and self-knowledge, not as a personnel-selection tool or a validated assessment. If you are preparing for a real selection process, rely on the official materials from whoever runs it.",
+      },
     ],
   },
 ]
@@ -5163,6 +5510,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "Scopri cos'è un dilemma morale, perché non hanno una risposta giusta, e perché affrontarli rivela i tuoi valori autentici. Con esempi reali e dilemmi da provare.",
     date: '2026-04-27',
+    dateModified: '2026-05-27',
     readingTime: 3,
     tags: ['etica', 'filosofia', 'psicologia morale'],
     relatedDilemmaIds: ['trolley', 'cure-secret', 'memory-erase'],
@@ -5239,6 +5587,50 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale.',
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Che differenza c'è tra dilemma morale e dilemma etico?",
+      },
+      {
+        type: 'p',
+        text: "Nell'uso quotidiano i due termini sono praticamente intercambiabili. Alcuni filosofi riservano \"dilemma etico\" ai conflitti interni a un codice professionale (un medico che pesa la riservatezza del paziente contro l'informazione alla famiglia) e \"dilemma morale\" ai conflitti più ampi fra valori personali. In entrambi i casi descrivono situazioni in cui ogni opzione rompe qualcosa.",
+      },
+      {
+        type: 'h3',
+        text: "I dilemmi morali hanno una risposta giusta?",
+      },
+      {
+        type: 'p',
+        text: "Un vero dilemma morale è proprio quello in cui persone ragionevoli continuano a non essere d'accordo anche dopo aver visto tutti i fatti. Possono esistere risposte difendibili — risposte che si possono argomentare — ma nessuna lascia il bilancio morale del tutto in pari. Le scelte difficili sono un'altra cosa: sembrano dilemmi, ma con un ragionamento attento emerge un'opzione più chiara.",
+      },
+      {
+        type: 'h3',
+        text: "Qual è il dilemma morale più famoso?",
+      },
+      {
+        type: 'p',
+        text: "Il problema del carrello, introdotto dalla filosofa Philippa Foot nel 1967. Chiede se sia accettabile deviare un carrello fuori controllo per uccidere una persona invece di cinque. È diventato celebre perché quasi tutti rispondono di sì — e poi rifiutano la variante \"del ponte\", in cui bisogna spingere fisicamente qualcuno. L'asimmetria fra le due risposte è la parte interessante.",
+      },
+      {
+        type: 'h3',
+        text: "Come provano davvero a risolverli i filosofi?",
+      },
+      {
+        type: 'p',
+        text: "Tre tradizioni dominano la discussione. I consequenzialisti scelgono l'opzione che produce il miglior risultato. I deontologi verificano se l'azione rispetta regole assolute (non uccidere, non mentire). L'etica delle virtù chiede invece cosa farebbe una persona di carattere virtuoso. Spesso le tre prospettive arrivano a verdetti diversi — ed è in parte per questo che i dilemmi continuano a contare.",
+      },
+      {
+        type: 'h3',
+        text: "Un dilemma morale può avere una sola opzione?",
+      },
+      {
+        type: 'p',
+        text: "Sì — si chiamano \"dilemmi a opzione unica\". Hai un solo corso d'azione possibile, ma compierlo viola comunque qualcosa a cui tieni (un medico obbligato a fare triage in un'emergenza di massa, per esempio). Il dilemma sta nel costo morale, non nella scelta fra alternative.",
+      },
     ],
   },
   {
@@ -5257,6 +5649,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       "Capire il problema del carrello: la sua origine con Philippa Foot, la variante del ponte, e cosa mostrano i sondaggi globali sul ragionamento etico di fronte alla vita e alla morte.",
     date: '2026-04-27',
+    dateModified: '2026-05-27',
     readingTime: 4,
     tags: ['problema del carrello', 'etica', 'filosofia', 'dilemmi classici'],
     relatedDilemmaIds: ['trolley', 'organ-harvest'],
@@ -5363,6 +5756,50 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo, non consulenza professionale.',
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Chi ha inventato il problema del carrello?",
+      },
+      {
+        type: 'p',
+        text: "La filosofa Philippa Foot, in un saggio del 1967 intitolato \"The Problem of Abortion and the Doctrine of the Double Effect\". Nella versione originale parlava di un tram fuori controllo, non di un carrello, e il suo vero bersaglio non era l'etica della guida ma la dottrina filosofica che distingue le conseguenze volute da quelle previste ma non intenzionali.",
+      },
+      {
+        type: 'h3',
+        text: "Qual è la differenza fra la versione della leva e quella del ponte?",
+      },
+      {
+        type: 'p',
+        text: "Il bilancio dei morti è identico — una vittima per salvarne cinque. Cambia il meccanismo. Nel caso della leva la morte è un effetto collaterale del deviare la minaccia. Nel caso del ponte usi una persona come oggetto per fermarla. La maggior parte delle persone accetta la prima e rifiuta la seconda: è proprio questa asimmetria ad aver reso celebre il problema.",
+      },
+      {
+        type: 'h3',
+        text: "Cosa scelgono davvero le persone?",
+      },
+      {
+        type: 'p',
+        text: "In grandi sondaggi internazionali, circa l'80-90% tira la leva e solo intorno al 30% spinge la persona dal ponte. Il divario è robusto attraverso età, istruzione e quasi tutte le culture, anche se i numeri esatti oscillano.",
+      },
+      {
+        type: 'h3',
+        text: "Il problema del carrello ha mai influenzato il mondo reale?",
+      },
+      {
+        type: 'p',
+        text: "Sì. Quando Mercedes-Benz ha dovuto decidere come le sue auto a guida autonoma dovessero ordinare la priorità delle vite in collisioni inevitabili, il dibattito ha richiamato esplicitamente il problema del carrello. L'esperimento Moral Machine del MIT ha raccolto circa 40 milioni di voti su dilemmi di guida autonoma; i risultati sono stati citati in discussioni di policy dall'UE a Singapore.",
+      },
+      {
+        type: 'h3',
+        text: "È uno strumento filosofico utile o solo un \"meme filosofico\"?",
+      },
+      {
+        type: 'p',
+        text: "Entrambe le cose. Molti eticisti sostengono che la cornice originale sia artificiale e che la vita morale reale raramente permetta un'aritmetica utilitarista così pulita. Altri rispondono che è proprio questo a renderlo utile: isola un singolo conflitto — conseguenze contro vincoli — e permette ai ricercatori di misurare come le persone ragionano quando nient'altro interferisce.",
       },
     ],
   },
@@ -9428,6 +9865,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       'Scopri cos’è la ferita morale, come si distingue dalla colpa ordinaria, e perché crea dilemmi su lavoro, famiglia, lealtà e perdono di sé.',
     date: '2026-05-15',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['ferita morale', 'psicologia', 'colpa', 'etica'],
     relatedDilemmaIds: ['whistleblower', 'cover-accident', 'report-friend', 'innocent-juror'],
@@ -9504,6 +9942,50 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Contenuto educativo e riflessivo, non consulenza psicologica né diagnosi. Contesto informato dai materiali del National Center for PTSD sulla ferita morale.',
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "La ferita morale è la stessa cosa del PTSD?",
+      },
+      {
+        type: 'p',
+        text: "No. Il PTSD è una diagnosi clinica legata a una risposta basata sulla paura dopo un evento che minaccia la vita. La ferita morale è un costrutto distinto — definito nel saggio fondativo di Litz e colleghi del 2009 — concentrato su colpa, vergogna e conflitto esistenziale dopo atti od omissioni che hanno violato valori profondamente sentiti. Possono coesistere. Possono anche presentarsi indipendentemente, e rispondono a cornici terapeutiche diverse.",
+      },
+      {
+        type: 'h3',
+        text: "Chi studia oggi la ferita morale?",
+      },
+      {
+        type: 'p',
+        text: "Il National Center for PTSD del Dipartimento dei Veterani statunitense mantiene ricerca attiva e formazione clinica sul tema. Il concetto viene applicato sempre più anche a operatori sanitari (soprattutto dopo il triage Covid), operatori umanitari, giudici e persone in ruoli di caregiving familiare.",
+      },
+      {
+        type: 'h3',
+        text: "Può capitare al di fuori della guerra o della medicina?",
+      },
+      {
+        type: 'p',
+        text: "Sì. Le condizioni strutturali — essere costretti a un'azione che tradisce un valore a cui si tiene, senza un'alternativa pulita — compaiono in molti contesti ordinari: licenziamenti aziendali che si è obbligati a comunicare, mediazioni di affidamento, lavoro di moderazione dei contenuti, persino il rimanere in silenzio dentro una famiglia durante episodi di crudeltà. Il pattern del dolore è lo stesso; cambia solo il palcoscenico.",
+      },
+      {
+        type: 'h3',
+        text: "Come la trattano i clinici?",
+      },
+      {
+        type: 'p',
+        text: "Non esiste un protocollo unico approvato. Gli approcci con la base di ricerca più solida sono l'Adaptive Disclosure (Litz), la Cognitive Processing Therapy adattata alla ferita morale, e i percorsi di gruppo che combinano ragionamento etico ed elaborazione del lutto. Esistono varianti laiche e a base religiosa. La sola terapia conversazionale generica è spesso considerata insufficiente.",
+      },
+      {
+        type: 'h3',
+        text: "Che differenza c'è fra ferita morale e \"disagio morale\"?",
+      },
+      {
+        type: 'p',
+        text: "Il disagio morale (Andrew Jameton, etica infermieristica, 1984) descrive l'esperienza di sapere qual è la cosa giusta ma essere impediti dal farla. La ferita morale è ciò che può seguire quando il disagio diventa cronico, quando un atto viene effettivamente compiuto, o quando non è mai esistita un'opzione moralmente accettabile. Il disagio è il segnale d'allarme; la ferita è la lesione.",
+      },
     ],
   },
   {
@@ -9516,6 +9998,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       'Esplora la limerence attraverso dilemmi etici: ossessione romantica, ambiguità, dipendenza emotiva, confessione, impegno e confini.',
     date: '2026-05-15',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['limerence', 'relazioni', 'psicologia', 'ossessione romantica'],
     relatedDilemmaIds: ['love-or-career', 'truth-friend', 'sibling-secret', 'memory-erase'],
@@ -9595,6 +10078,50 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo e riflessivo, non consulenza relazionale o psicologica. Contesto informato dal concetto di limerence di Dorothy Tennov e dalla letteratura psicologica successiva.',
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Chi ha coniato il termine \"limerence\"?",
+      },
+      {
+        type: 'p',
+        text: "La psicologa Dorothy Tennov, nel libro del 1979 *Love and Limerence: The Experience of Being in Love*. Lo costruì a partire da centinaia di interviste, e lo usò proprio per nominare lo stato involontario, intrusivo, alimentato dalla speranza, che non rientrava nei concetti già esistenti di \"amore\" o \"infatuazione\".",
+      },
+      {
+        type: 'h3',
+        text: "Limerence ed essere innamorati sono la stessa cosa?",
+      },
+      {
+        type: 'p',
+        text: "No. La distinzione di Tennov: l'amore sopravvive alla certezza sull'altra persona, la limerence spesso crolla quando l'ambiguità sparisce. Si caratterizza per pensieri intrusivi sull'\"oggetto limerente\", oscillazioni emotive estreme legate ai segnali percepiti, e una speranza di reciprocità che la mente continua a rigenerare. Un amore mutuo e stabile non ha bisogno di questo turbinio.",
+      },
+      {
+        type: 'h3',
+        text: "La limerence è una diagnosi clinica?",
+      },
+      {
+        type: 'p',
+        text: "No. Non compare nel DSM-5 né nell'ICD-11. Alcuni clinici trattano i casi gravi come un comportamento riconducibile allo spettro ossessivo-compulsivo, e il concetto ha avuto una ripresa di interesse nella ricerca dopo il 2020, ma non c'è una definizione clinica condivisa né un protocollo di trattamento. Va usato in senso descrittivo, non diagnostico.",
+      },
+      {
+        type: 'h3',
+        text: "Che differenza c'è fra limerence e una cotta?",
+      },
+      {
+        type: 'p',
+        text: "Le cotte sono di solito più brevi, meno intense, e la persona riesce ancora a concentrarsi su altre parti della propria vita. La limerence è totalizzante: chi la vive racconta che interferisce con lavoro, sonno, alimentazione e relazioni esistenti. Le interviste di Tennov descrivevano episodi che andavano da 18 mesi a diversi anni.",
+      },
+      {
+        type: 'h3',
+        text: "Perché l'incertezza la rende più forte?",
+      },
+      {
+        type: 'p',
+        text: "Il rinforzo intermittente — lo stesso principio dietro le slot machine — produce il condizionamento comportamentale più potente. Una risposta ritardata, un gesto ambiguo, una porta socchiusa: tutto questo tiene la mente a generare speranze e a rileggere micro-segnali. Un sì chiaro (o un no chiaro) di solito spezza il loop. Il dilemma è che spesso, allora, la sincerità è la risposta più amorevole.",
       },
     ],
   },
@@ -9680,6 +10207,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       'AI girlfriend e chatbot di compagnia stanno passando dalla novità all\'abitudine per molti adolescenti. Psicologi, genitori e legislatori si stanno chiedendo: cosa insegna su amore e relazioni una partner che non può mai deludere?',
     date: '2026-05-26',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['etica AI', 'salute mentale adolescenti', 'AI companion', 'genitorialità', 'attualità'],
     relatedDilemmaIds: ['ai-companion-teen', 'ai-companion-ban', 'ai-grief-replica', 'delete-social-media'],
@@ -9795,6 +10323,50 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Contenuto riflessivo informato da report di maggio 2026 sull\'uso di AI companion fra adolescenti. Non è consulenza clinica o legale. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "A che età un'app di AI companion è considerata sicura per un adolescente?",
+      },
+      {
+        type: 'p',
+        text: "Non c'è consenso clinico. La maggior parte delle app principali richiede 13 o 18 anni a seconda del paese, ma l'enforcement si basa sull'età dichiarata. Gli psichiatri infantili in genere considerano la fascia 12–16 anni come quella a rischio più alto per formare relazioni sostitutive, perché identità e schemi di attaccamento sono ancora in calibrazione.",
+      },
+      {
+        type: 'h3',
+        text: "Le AI girlfriend causano solitudine o la riducono?",
+      },
+      {
+        type: 'p',
+        text: "Studi iniziali suggeriscono entrambe le cose, in utenti diversi. Per adolescenti socialmente isolati l'app riduce la solitudine immediata; per adolescenti socialmente attivi tende a spostare la pratica del mondo reale. Il singolo miglior predittore di danno sono le ore-giornaliere spese nell'app, non l'esistenza dell'app in sé.",
+      },
+      {
+        type: 'h3',
+        text: "I genitori dovrebbero leggere le chat dell'AI girlfriend del figlio?",
+      },
+      {
+        type: 'p',
+        text: "La maggior parte degli esperti di sviluppo adolescenziale raccomanda dichiarazione preventiva (\"potrei controllare\") piuttosto che lettura nascosta. Le conversazioni spesso contengono auto-rivelazioni intime che l'adolescente non condividerebbe mai con il genitore di persona; leggere senza dichiararlo danneggia la fiducia più velocemente di quanto faccia l'app.",
+      },
+      {
+        type: 'h3',
+        text: "Esistono leggi che limitano le AI companion per i minori?",
+      },
+      {
+        type: 'p',
+        text: "A maggio 2026, leggi sulla verifica dell'età mirate alle app di AI companion sono in discussione in UE, Australia e diversi stati USA. Nessuna è ancora in forma definitiva. La tendenza è trattare le AI companion come categoria regolatoria distinta dai social media.",
+      },
+      {
+        type: 'h3',
+        text: "C'è un argomento morale per lasciare che gli adolescenti le usino?",
+      },
+      {
+        type: 'p',
+        text: "Per adolescenti con ansia sociale, neurodivergenza o famiglie poco accoglienti, l'AI companion è spesso il primo campo di pratica a basso rischio per l'espressione emotiva. Vietarla in modo netto rimuove uno strumento di sopravvivenza al gruppo più vulnerabile, mentre i ragazzi popolari quasi non se ne accorgono.",
+      },
     ],
   },
 
@@ -9809,6 +10381,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       'Religione ed etica AI: come le tradizioni di fede stanno modellando il vocabolario morale dell\'intelligenza artificiale, perché la governance AI laica continua a incrociare domande religiose, e cosa propone davvero la posizione del Vaticano.',
     date: '2026-05-26',
+    dateModified: '2026-05-27',
     readingTime: 7,
     tags: ['etica AI', 'religione', 'filosofia della tecnologia', 'governance', 'attualità'],
     relatedDilemmaIds: ['pope-ai-encyclical', 'religious-ai-ethics', 'ai-prayer-app', 'robot-judge'],
@@ -9920,6 +10493,50 @@ const IT_POSTS: BlogPost[] = [
         type: 'disclaimer',
         text: 'Contenuto educativo. Le posizioni del Vaticano sull\'AI sono parafrasate da documenti pubblicati (Rome Call for AI Ethics, messaggio per la Giornata Mondiale della Pace 2024, interventi papali). Le posizioni attribuite ad altre tradizioni di fede sono sintesi generali; specifiche autorità interne a ciascuna tradizione tengono posizioni diverse. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
       },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "Cos'è il Rome Call for AI Ethics?",
+      },
+      {
+        type: 'p',
+        text: "Un documento firmato in Vaticano nel febbraio 2020, originariamente da IBM, Microsoft, FAO e Pontificia Accademia per la Vita. Impegna i firmatari su sei principi — trasparenza, inclusione, responsabilità, imparzialità, affidabilità, sicurezza e privacy — nello sviluppo e nel deploy dell'AI. Altre aziende tech e diversi governi hanno firmato negli anni successivi.",
+      },
+      {
+        type: 'h3',
+        text: "Il Papa ha scritto sull'AI?",
+      },
+      {
+        type: 'p',
+        text: "Sì. Papa Francesco ha dedicato il messaggio per la Giornata Mondiale della Pace 2024 all'AI, ha parlato al G7 2024 sullo stesso tema, e il Vaticano ha continuato a pubblicare sulla governance AI per tutto il 2026. La posizione istituzionale inquadra l'AI come non moralmente neutra e fissa limiti etici — senza rifiutare la tecnologia.",
+      },
+      {
+        type: 'h3',
+        text: "Altre religioni hanno posizioni sull'AI?",
+      },
+      {
+        type: 'p',
+        text: "Sì. La comunità buddista ha enfatizzato consapevolezza e retta intenzione nel design AI. Diversi studiosi islamici hanno pubblicato sull'AI attraverso il concetto di maslaha (interesse pubblico) e hanno sollevato domande sulle armi autonome. I bioeticisti ebraici si sono confrontati a fondo con l'AI nella sanità e nelle decisioni di fine vita. Le cornici differiscono; la serietà no.",
+      },
+      {
+        type: 'h3',
+        text: "Perché un'azienda tech dovrebbe ascoltare leader religiosi?",
+      },
+      {
+        type: 'p',
+        text: "Tre ragioni pragmatiche, oltre alla fede personale: le istituzioni religiose rappresentano miliardi di utenti le cui scelte di adozione contano; le tradizioni di fede contengono ragionamento morale sopravvissuto a secoli di scrutinio; e la governance AI continua a scontrarsi con domande su fine vita, identità e dignità su cui sia filosofia laica sia filosofia religiosa hanno fatto lavoro serio.",
+      },
+      {
+        type: 'h3',
+        text: "L'input religioso sulla policy AI viola la separazione fra stato e chiesa?",
+      },
+      {
+        type: 'p',
+        text: "Nella maggior parte degli ordinamenti, no. Leader religiosi che difendono posizioni di policy è discorso costituzionalmente protetto. La linea sta nell'autorità religiosa formale che decide la policy — diverso dalle voci religiose rappresentate al tavolo.",
+      },
     ],
   },
 
@@ -9934,6 +10551,7 @@ const IT_POSTS: BlogPost[] = [
     seoDescription:
       'Truffe AI nel mercato usato italiano: come le piattaforme premiano chi bara, perché i venditori onesti escono per primi, l\'analisi di George Akerlof sui "mercati a lemons" applicata al 2026.',
     date: '2026-05-27',
+    dateModified: '2026-05-27',
     readingTime: 6,
     tags: ['etica AI', 'mercato usato', 'truffe online', 'attualità', 'commercio'],
     relatedDilemmaIds: ['ai-fake-review', 'scalper-bot', 'deepfake-expose', 'ai-replaces-jobs'],
@@ -10039,6 +10657,50 @@ const IT_POSTS: BlogPost[] = [
       {
         type: 'disclaimer',
         text: 'Contenuto educativo informato da provvedimenti AGCM e dalla letteratura economica sui mercati ad asimmetria informativa (Akerlof 1970). Non è consulenza legale o commerciale. Gli scenari SplitVote sono ipotetici e pensati per riflessione morale, non come raccomandazioni di policy.',
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "È legale generare recensioni con AI?",
+      },
+      {
+        type: 'p',
+        text: "In Italia il Codice del Consumo (D.Lgs. 206/2005) e la Direttiva UE 2019/2161 (Omnibus) qualificano le recensioni false o sponsorizzate non dichiarate come pratiche commerciali sleali. L'AGCM ha sanzionato diverse piattaforme negli ultimi anni. La sanzione è certa; il rilevamento è raro.",
+      },
+      {
+        type: 'h3',
+        text: "Come riconosco una recensione AI?",
+      },
+      {
+        type: 'p',
+        text: "I segnali più affidabili sono: linguaggio molto fluente ma poco specifico (\"ottimo prodotto, lo consiglio\"), assenza di dettagli concreti sul prodotto, profili recensori con storia di acquisti molto distanti tematicamente, picchi anomali di recensioni nello stesso giorno. Gli strumenti automatici di rilevamento esistono ma falliscono regolarmente.",
+      },
+      {
+        type: 'h3',
+        text: "Cosa fa AGCM per fermare le truffe AI sui marketplace?",
+      },
+      {
+        type: 'p',
+        text: "L'Autorità ha avviato istruttorie su recensioni, prezzi opachi e modalità di vendita su diverse piattaforme di e-commerce. Le sanzioni esistono ma sono lente; il ciclo di vita di una recensione falsa è in genere più corto del ciclo di vita di un'istruttoria.",
+      },
+      {
+        type: 'h3',
+        text: "Posso usare bot per comprare biglietti per concerti o sneaker?",
+      },
+      {
+        type: 'p',
+        text: "In Italia la Legge di Bilancio 2017 ha vietato l'uso di software per acquisto massivo di biglietti per eventi di spettacolo. Per altre categorie (sneaker, console, prodotti tech) la situazione è meno definita ma spesso il singolo marketplace vieta i bot nei propri Terms of Service.",
+      },
+      {
+        type: 'h3',
+        text: "Cosa cambia per il piccolo venditore onesto?",
+      },
+      {
+        type: 'p',
+        text: "Tutto. Quando il prezzo medio di mercato si forma includendo l'inflazione da recensioni false e il rivenduto a 4x dei bagarini, il venditore onesto si trova in svantaggio strutturale. La letteratura di Akerlof (\"market for lemons\") prevede che in mercati con asimmetria informativa i venditori onesti escano per primi — proprio quello che sta succedendo.",
       },
     ],
   },
@@ -10151,6 +10813,42 @@ const IT_POSTS: BlogPost[] = [
         type: 'cta',
         label: 'Scopri il tuo profilo morale →',
         href: '/it/personality',
+      },
+      {
+        type: 'h2',
+        text: "Domande frequenti",
+      },
+      {
+        type: 'h3',
+        text: "I dilemmi morali hanno una risposta giusta?",
+      },
+      {
+        type: 'p',
+        text: "Un vero dilemma morale è proprio quello in cui persone ragionevoli restano in disaccordo anche dopo aver visto tutti i fatti. Esistono risposte difendibili — che puoi argomentare — ma nessuna che non lasci un costo morale. È diverso da una scelta difficile, dove un'opzione più chiara esiste se ragioni con calma.",
+      },
+      {
+        type: 'h3',
+        text: "Che differenza c'è tra un dilemma morale e un test psicoattitudinale?",
+      },
+      {
+        type: 'p',
+        text: "Un dilemma morale mette in conflitto due valori (lealtà contro onestà, equità contro cura) senza una risposta corretta. Un test attitudinale di selezione, invece, cerca risposte ritenute giuste per un ruolo. I dilemmi situazionali di SplitVote servono a riflettere e confrontarsi, non a misurare o selezionare nessuno.",
+      },
+      {
+        type: 'h3',
+        text: "Cosa dice di me il modo in cui rispondo?",
+      },
+      {
+        type: 'p',
+        text: "Le tue risposte suggeriscono come pesi le cose: gli esiti o i principi, le persone vicine o le regole uguali per tutti, il momento o il precedente. È un punto di partenza per capirti meglio, non un'etichetta fissa: cambiando lo scenario, spesso cambia anche il tuo istinto.",
+      },
+      {
+        type: 'h3',
+        text: "I dilemmi situazionali servono per i colloqui di lavoro?",
+      },
+      {
+        type: 'p',
+        text: "No. SplitVote propone dilemmi situazionali per curiosità e autoconoscenza, non come strumento di selezione del personale né come valutazione validata. Se stai preparando una selezione reale, affidati ai materiali ufficiali di chi conduce la prova.",
       },
     ],
   },
