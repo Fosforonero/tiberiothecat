@@ -278,6 +278,48 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionA: 'Compro il bot. Il sistema è già rotto; non usarlo è una tassa sull\'onestà.',
     optionB: 'Resto umano. Se tutti rifiutano, i bot non hanno mercato; se ti unisci, la coda umana sparisce per sempre.',
   },
+
+  // ── DILEMMI SITUAZIONALI (scelte di tutti i giorni) ──────────────
+  'stolen-credit': {
+    question: 'In riunione un collega presenta come sua un\'idea tua e il capo resta colpito. Parlare adesso significa contraddirlo davanti a tutti.',
+    optionA: 'Reclamo il merito sul momento. Che tutti sappiano che era mia.',
+    optionB: 'Lascio correre ora e ne parlo in privato dopo.',
+  },
+  'cover-coworker-error': {
+    question: 'Noti l\'errore di un collega che danneggerà i clienti in modo silenzioso. Nessun altro se n\'è accorto, e segnalarlo metterebbe il collega in seri guai.',
+    optionA: 'Lo segnalo. I clienti vengono prima del collega.',
+    optionB: 'Lo aiuto a sistemarlo in silenzio e resta tra noi due.',
+  },
+  'rule-exception-manager': {
+    question: 'Sei il responsabile. Un dipendente affidabile ti chiede di derogare a una regola chiara per una vera emergenza familiare — ma concederlo crea un precedente che gli altri pretenderanno.',
+    optionA: 'Applico la regola per tutti. Equità significa nessuna eccezione.',
+    optionB: 'Faccio l\'eccezione. Le persone contano più del precedente.',
+  },
+  'promotion-fire-teammate': {
+    question: 'Ti offrono la promozione per cui lavori da anni, a una condizione: devi licenziare un membro del team che stimi e che non ha fatto nulla di sbagliato.',
+    optionA: 'Accetto. Lo farà comunque qualcuno; meglio che sia io.',
+    optionB: 'Rifiuto. Non comprerò il mio futuro col suo posto.',
+  },
+  'friend-cheats-exam': {
+    question: 'Il tuo migliore amico bara a un concorso e ottiene un posto che un candidato onesto ha appena perso. Solo tu l\'hai visto.',
+    optionA: 'Lo segnalo. Il candidato onesto merita quel posto.',
+    optionB: 'Resto leale. Proteggo il mio amico e non dico nulla.',
+  },
+  'overpaid-change': {
+    question: 'Un cassiere stanco ti dà 50 euro di resto in più. Non se ne accorgerà, ma alla chiusura la differenza uscirà probabilmente dalle sue tasche.',
+    optionA: 'Li restituisco. L\'errore non deve costargli.',
+    optionB: 'Li tengo. Me li ha dati lui; non è un problema mio.',
+  },
+  'friend-partner-cheating': {
+    question: 'Vedi per caso una prova chiara che il partner di un caro amico lo tradisce. Dirglielo gli farà crollare il mondo; tacere ti rende parte del segreto.',
+    optionA: 'Glielo dico. Merita di sapere la verità.',
+    optionB: 'Non mi intrometto. Non sta a me rivelarlo.',
+  },
+  'group-project-freeloader': {
+    question: 'Un membro del gruppo non ha quasi fatto nulla, ma avrà lo stesso merito e lo stesso voto degli altri. Chi vi valuta sta per decidere.',
+    optionA: 'Lo dico a chi valuta. Il merito deve rispecchiare il lavoro fatto.',
+    optionB: 'Sto zitto. Me lo assorbo invece di farlo affondare.',
+  },
 }
 
 export function translateScenarioToItalian<T extends Scenario>(scenario: T): T {

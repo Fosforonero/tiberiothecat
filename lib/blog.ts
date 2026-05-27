@@ -9586,6 +9586,117 @@ const IT_POSTS: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: 'dilemmi-morali-test-cosa-rivelano-le-tue-scelte',
+    locale: 'it',
+    title: 'Dilemmi morali: cosa rivelano davvero le tue scelte',
+    seoTitle: 'Dilemmi morali: cosa rivelano le tue scelte | Test situazionali',
+    description:
+      'Un dilemma morale ti mette davanti a due scelte difendibili ma in conflitto. Come scegli racconta il tuo stile di ragionamento — non chi ha ragione.',
+    seoDescription:
+      'Cosa sono i dilemmi morali e i dilemmi situazionali, perché non hanno una risposta giusta, e cosa dice di te il modo in cui rispondi. Con esempi reali su cui votare. Non è un test psicometrico né una diagnosi.',
+    date: '2026-05-27',
+    dateModified: '2026-05-27',
+    readingTime: 8,
+    tags: ['dilemmi morali', 'psicologia morale', 'processo decisionale', 'dilemmi situazionali'],
+    relatedDilemmaIds: ['stolen-credit', 'rule-exception-manager', 'friend-cheats-exam', 'cover-coworker-error', 'promotion-fire-teammate'],
+    faq: [
+      {
+        q: 'I dilemmi morali hanno una risposta giusta?',
+        a: "Un vero dilemma morale è proprio quello in cui persone ragionevoli restano in disaccordo anche dopo aver visto tutti i fatti. Esistono risposte difendibili — che puoi argomentare — ma nessuna che non lasci un costo morale. È diverso da una scelta difficile, dove un'opzione più chiara esiste se ragioni con calma.",
+      },
+      {
+        q: "Che differenza c'è tra un dilemma morale e un test psicoattitudinale?",
+        a: 'Un dilemma morale mette in conflitto due valori (lealtà contro onestà, equità contro cura) senza una risposta corretta. Un test attitudinale di selezione, invece, cerca risposte ritenute giuste per un ruolo. I dilemmi situazionali di SplitVote servono a riflettere e confrontarsi, non a misurare o selezionare nessuno.',
+      },
+      {
+        q: 'Cosa dice di me il modo in cui rispondo?',
+        a: "Le tue risposte suggeriscono come pesi le cose: gli esiti o i principi, le persone vicine o le regole uguali per tutti, il momento o il precedente. È un punto di partenza per capirti meglio, non un'etichetta fissa: cambiando lo scenario, spesso cambia anche il tuo istinto.",
+      },
+      {
+        q: 'I dilemmi situazionali servono per i colloqui di lavoro?',
+        a: 'No. SplitVote propone dilemmi situazionali per curiosità e autoconoscenza, non come strumento di selezione del personale né come valutazione validata. Se stai preparando una selezione reale, affidati ai materiali ufficiali di chi conduce la prova.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'Un dilemma morale ti mette davanti a due scelte entrambe difendibili ma in conflitto: qualunque cosa scegli, qualcosa si rompe. Il modo in cui scegli racconta come ragioni — non se hai ragione.',
+      },
+      {
+        type: 'p',
+        text: "È questo che li rende scomodi e rivelatori insieme. Negli ultimi anni, accanto ai grandi dilemmi filosofici, si sono diffusi i [dilemmi situazionali](/it/test-situazionali): piccole situazioni di tutti i giorni — al lavoro, tra amici, in famiglia — dove la scelta è binaria e la posta è sociale, non astratta. Sono il modo più diretto per accorgersi di cosa fai davvero quando nessuno ti guarda.",
+      },
+      {
+        type: 'h2',
+        text: 'Cosa sono i dilemmi morali e situazionali',
+      },
+      {
+        type: 'p',
+        text: 'Un [dilemma morale](/it/blog/cos-e-un-dilemma-morale) è una situazione in cui due valori puntano in direzioni opposte e non puoi onorarli entrambi. Un dilemma situazionale è la sua versione quotidiana: un collega si prende il merito di una tua idea, un amico bara a un concorso, sei tu a dover decidere se fare un\'eccezione a una regola. Niente tram, niente scenari estremi — solo scelte che potresti affrontare davvero questa settimana.',
+      },
+      {
+        type: 'p',
+        text: "La differenza con un test di selezione è netta. Una prova attitudinale cerca la risposta 'giusta' per un ruolo. Un dilemma situazionale, nel modo in cui lo usa SplitVote, non ha una risposta corretta: serve a farti vedere come pesi le cose, e a confrontare il tuo istinto con quello di chi vota su SplitVote.",
+      },
+      {
+        type: 'h2',
+        text: 'Perché le tue scelte rivelano uno stile, non un voto',
+      },
+      {
+        type: 'p',
+        text: 'Tre grandi tradizioni del pensiero morale spiegano perché ci dividiamo. Chi guarda agli esiti sceglie ciò che produce il risultato migliore ([consequenzialismo](/it/blog/consequenzialismo-il-bene-maggiore)). Chi guarda ai principi controlla l\'azione contro regole che non si piegano ([deontologia](/it/blog/deontologia-alcune-cose-sono-sempre-sbagliate)). Chi guarda al carattere si chiede cosa farebbe una persona buona ([etica della virtù](/it/blog/etica-della-virtu-cosa-farebbe-una-persona-buona)). Sullo stesso dilemma arrivano spesso a verdetti diversi — ed è questo il punto.',
+      },
+      {
+        type: 'p',
+        text: 'Per questo le tue risposte suggeriscono uno stile decisionale, non un punteggio. Pesi di più gli esiti o i principi? Le persone vicine o le regole uguali per tutti? Il momento presente o il precedente che crei? Sono tendenze, non etichette: spostando lo scenario, spesso si sposta anche la tua scelta.',
+      },
+      {
+        type: 'h2',
+        text: '5 dilemmi situazionali da provare ora',
+      },
+      {
+        type: 'list',
+        items: [
+          '[Un collega si prende il merito della tua idea](/it/play/stolen-credit) — lo correggi davanti a tutti o ne parli in privato dopo?',
+          '[Sei il responsabile e ti chiedono un\'eccezione alla regola](/it/play/rule-exception-manager) — equità uguale per tutti o cura del caso singolo?',
+          '[Il tuo migliore amico bara a un concorso](/it/play/friend-cheats-exam) — proteggi lui o il candidato onesto che ha perso il posto?',
+          '[Scopri l\'errore di un collega che danneggerà i clienti](/it/play/cover-coworker-error) — lo segnali o lo aiuti a coprirlo?',
+          '[Avrai la promozione solo licenziando un compagno che stimi](/it/play/promotion-fire-teammate) — accetti o rinunci?',
+        ],
+      },
+      {
+        type: 'cta',
+        label: 'Mettiti alla prova con i dilemmi situazionali →',
+        href: '/it/test-situazionali',
+      },
+      {
+        type: 'h2',
+        text: 'Cosa NON sono questi dilemmi',
+      },
+      {
+        type: 'p',
+        text: 'Non sono un test psicologico validato, una diagnosi, né uno strumento di selezione del personale. Sono spunti di riflessione e confronto. Il valore non sta in un punteggio finale, ma nel notare il tuo primo istinto e poi chiederti perché — e nello scoprire che persone serie e oneste scelgono spesso il contrario di te.',
+      },
+      {
+        type: 'disclaimer',
+        text: 'I dilemmi di SplitVote sono ipotetici e pensati per curiosità e autoconoscenza. Non costituiscono un test psicometrico, una valutazione clinica o uno strumento di selezione. Le percentuali mostrano come ha votato chi usa SplitVote, non un campione rappresentativo della popolazione.',
+      },
+      {
+        type: 'h2',
+        text: 'Come SplitVote ti mostra come vota il mondo',
+      },
+      {
+        type: 'p',
+        text: 'Su ogni dilemma voti in modo anonimo e subito dopo vedi come si è diviso il voto di chi usa SplitVote. Puoi [sfogliare il catalogo completo dei dilemmi morali](/it/dilemmi-morali), filtrare per categoria e ordinare per quelli più divisivi. E se voti su più dilemmi, puoi scoprire il [tuo profilo morale](/it/personality): l\'archetipo che emerge dalle tue scelte.',
+      },
+      {
+        type: 'cta',
+        label: 'Scopri il tuo profilo morale →',
+        href: '/it/personality',
+      },
+    ],
+  },
 ]
 
 export const allPosts: BlogPost[] = [...EN_POSTS, ...IT_POSTS]

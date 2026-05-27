@@ -450,6 +450,72 @@ export const scenarios: Scenario[] = [
     emoji: '🤖',
     category: 'technology',
   },
+
+  // ── SITUATIONAL JUDGMENT (everyday choices) ───────────────────
+  {
+    id: 'stolen-credit',
+    question: "In a meeting, a coworker presents your idea as their own and the boss is impressed. Speaking up now means contradicting them in front of everyone.",
+    optionA: 'Claim the credit on the spot. Let the room know it was yours.',
+    optionB: 'Let it slide now and raise it privately later.',
+    emoji: '💡',
+    category: 'loyalty',
+  },
+  {
+    id: 'cover-coworker-error',
+    question: "You spot a coworker's mistake that will quietly harm customers. No one else has noticed, and flagging it will get your colleague in serious trouble.",
+    optionA: 'Report it. The customers come before your colleague.',
+    optionB: 'Quietly help fix it and keep it between you two.',
+    emoji: '🙈',
+    category: 'morality',
+  },
+  {
+    id: 'rule-exception-manager',
+    question: "You're the manager. A reliable employee asks you to bend a clear rule for a genuine family emergency — but granting it sets a precedent others will expect.",
+    optionA: 'Apply the rule equally. Fairness means no exceptions.',
+    optionB: 'Make the exception. People matter more than the precedent.',
+    emoji: '📋',
+    category: 'justice',
+  },
+  {
+    id: 'promotion-fire-teammate',
+    question: "You're offered the promotion you've worked years for — on one condition: you must lay off a teammate you respect and who has done nothing wrong.",
+    optionA: 'Accept. Someone will do it anyway; better it be you.',
+    optionB: 'Decline. You will not buy your future with their job.',
+    emoji: '📈',
+    category: 'loyalty',
+  },
+  {
+    id: 'friend-cheats-exam',
+    question: "Your best friend cheats on a competitive exam and wins a place that an honest stranger just lost. Only you saw it happen.",
+    optionA: 'Report it. The honest candidate deserves that place.',
+    optionB: 'Stay loyal. Protect your friend and say nothing.',
+    emoji: '📝',
+    category: 'loyalty',
+  },
+  {
+    id: 'overpaid-change',
+    question: "A tired cashier hands you €50 too much in change. They will not notice, but the shortfall will likely come out of their own pocket at closing.",
+    optionA: 'Give it back. The mistake should not cost them.',
+    optionB: 'Keep it. They handed it over; not your problem.',
+    emoji: '💶',
+    category: 'morality',
+  },
+  {
+    id: 'friend-partner-cheating',
+    question: "You accidentally see clear proof that a close friend's partner is cheating. Telling them will blow up their world; staying quiet makes you part of the secret.",
+    optionA: 'Tell your friend. They deserve to know the truth.',
+    optionB: 'Stay out of it. It is not yours to reveal.',
+    emoji: '📱',
+    category: 'relationships',
+  },
+  {
+    id: 'group-project-freeloader',
+    question: "A teammate did almost none of the work but will share the same credit and grade as everyone else. The person assessing you is about to decide.",
+    optionA: 'Tell the assessor. Credit should match the work done.',
+    optionB: 'Stay quiet. Absorb it rather than throw them under the bus.',
+    emoji: '🧑‍🤝‍🧑',
+    category: 'justice',
+  },
 ]
 
 export const CATEGORIES: { value: Category | 'all'; label: string; emoji: string }[] = [

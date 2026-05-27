@@ -1000,6 +1000,158 @@ const STATIC_INSIGHTS: Record<string, LocaleInsight> = {
       },
     },
   },
+
+  'stolen-credit': {
+    en: {
+      body: "This is a situational-judgment classic: a clash between protecting your own standing and protecting the relationship. Nobody is dying here, which is exactly why it's revealing — the stakes are social, and your reflex shows how you weigh fairness to yourself against the cost of an awkward confrontation.",
+      whyPeopleSplit: "People who act on the spot read silence as quietly endorsing the lie; people who wait read a public correction as a status fight that makes everyone, including them, look worse. Both want credit assigned correctly — they disagree on the timing and the audience.",
+      whatYourAnswerMaySuggest: {
+        a: "You may value clear, immediate fairness over social comfort — letting a false claim stand even for an hour feels like complicity you don't want your name attached to.",
+        b: "You may value de-escalation and read the private channel as more effective — you'd rather fix the record without handing the room a spectacle that overshadows the work itself.",
+      },
+    },
+    it: {
+      body: "È un classico del giudizio situazionale: lo scontro tra proteggere la tua posizione e proteggere la relazione. Qui non muore nessuno, ed è proprio questo a renderlo rivelatore — la posta è sociale, e il tuo riflesso mostra come pesi l'equità verso te stesso contro il costo di un confronto imbarazzante.",
+      whyPeopleSplit: "Chi agisce sul momento legge il silenzio come un avallo tacito della bugia; chi aspetta legge la correzione pubblica come una lotta di status che fa fare brutta figura a tutti, sé compreso. Entrambi vogliono che il merito sia assegnato bene — discordano su tempi e pubblico.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti dare valore a un'equità chiara e immediata più che al comfort sociale — lasciar passare una falsa attribuzione anche solo per un'ora ti sembra una complicità che non vuoi sul tuo nome.",
+        b: "Potresti dare valore alla de-escalation e ritenere il canale privato più efficace — preferisci correggere i fatti senza regalare alla sala una scena che oscura il lavoro stesso.",
+      },
+    },
+  },
+
+  'cover-coworker-error': {
+    en: {
+      body: "The conflict is between a duty to people you'll never meet (the customers harmed) and loyalty to someone right in front of you. The detail that no one noticed is the whole test: it removes external pressure and leaves only what you think is right when getting away with silence is easy.",
+      whyPeopleSplit: "One side treats harm to customers as the fixed point — a colleague's discomfort doesn't outweigh people being quietly hurt. The other treats the relationship and proportional response as the fixed point — fixing it discreetly protects the customers too, without ending a career over one mistake.",
+      whatYourAnswerMaySuggest: {
+        a: "You may anchor on accountability and the people downstream of the error — once real harm is in play, protecting a colleague by hiding it makes you part of the harm.",
+        b: "You may anchor on loyalty and proportionality — the goal is to stop the harm, and you can do that quietly without turning one human error into someone's ruin.",
+      },
+    },
+    it: {
+      body: "Il conflitto è tra un dovere verso persone che non incontrerai mai (i clienti danneggiati) e la lealtà verso qualcuno che hai davanti. Il dettaglio che nessuno se n'è accorto è tutto il test: toglie la pressione esterna e lascia solo ciò che ritieni giusto quando farla franca col silenzio è facile.",
+      whyPeopleSplit: "Una parte tratta il danno ai clienti come il punto fermo — il disagio di un collega non pesa più di persone danneggiate in silenzio. L'altra tratta la relazione e la risposta proporzionata come il punto fermo — sistemarlo con discrezione protegge anche i clienti, senza distruggere una carriera per un errore.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti ancorarti alla responsabilità e alle persone a valle dell'errore — quando c'è un danno reale, proteggere un collega nascondendolo ti rende parte del danno.",
+        b: "Potresti ancorarti alla lealtà e alla proporzionalità — l'obiettivo è fermare il danno, e puoi farlo in silenzio senza trasformare un errore umano nella rovina di qualcuno.",
+      },
+    },
+  },
+
+  'rule-exception-manager': {
+    en: {
+      body: "This is the fairness-as-consistency versus fairness-as-care tension, seen from the seat that has to decide. The rule exists to treat everyone the same; the emergency is real and specific. The precedent worry is what makes it hard — a yes here is implicitly a yes to everyone who asks next.",
+      whyPeopleSplit: "People who apply the rule treat predictability as the deepest fairness — exceptions quietly become privileges for whoever is best at asking. People who make the exception treat rigid uniformity as a failure of judgment — a rule that can't bend for a genuine emergency is being served instead of serving.",
+      whatYourAnswerMaySuggest: {
+        a: "You may see equal treatment as the thing that protects the powerless — the moment exceptions start, the people without the confidence to ask lose out, so you hold the line.",
+        b: "You may see rules as tools for human ends, not ends in themselves — when a real emergency meets a rule, judgment should win, and you'll manage the precedent rather than punish a person for it.",
+      },
+    },
+    it: {
+      body: "È la tensione tra equità-come-coerenza ed equità-come-cura, vista dalla poltrona che deve decidere. La regola esiste per trattare tutti allo stesso modo; l'emergenza è reale e specifica. È la preoccupazione del precedente a renderlo difficile — un sì qui è implicitamente un sì a chiunque lo chieda dopo.",
+      whyPeopleSplit: "Chi applica la regola tratta la prevedibilità come l'equità più profonda — le eccezioni diventano in silenzio privilegi per chi sa chiedere meglio. Chi fa l'eccezione tratta l'uniformità rigida come un fallimento del giudizio — una regola che non si piega per una vera emergenza viene servita invece di servire.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti vedere la parità di trattamento come ciò che protegge i più deboli — appena iniziano le eccezioni, chi non ha il coraggio di chiedere ci rimette, quindi tieni la linea.",
+        b: "Potresti vedere le regole come strumenti per fini umani, non come fini in sé — quando una vera emergenza incontra una regola, deve vincere il giudizio, e gestirai il precedente invece di punire una persona.",
+      },
+    },
+  },
+
+  'promotion-fire-teammate': {
+    en: {
+      body: "The cost of advancement is made literal: your future is offered in exchange for someone else's job, and that person hasn't earned the fall. The 'someone will do it anyway' line is the real pressure point — it asks whether being the instrument of harm is different from the harm merely happening.",
+      whyPeopleSplit: "One side separates the outcome from the actor — the layoff is the company's decision, and refusing only means a stranger does it while you forfeit a future you've earned. The other refuses to launder the act through inevitability — being the hand that signs it is a moral fact about you, regardless of what others would do.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat the structure as the cause and yourself as a replaceable role — declining doesn't save your teammate, so you take the future you worked for rather than martyr it for nothing.",
+        b: "You may treat your own agency as non-transferable — 'someone would anyway' doesn't make your signature clean, and a future built on that specific act would not feel like yours.",
+      },
+    },
+    it: {
+      body: "Il prezzo dell'avanzamento è reso letterale: il tuo futuro è offerto in cambio del posto di qualcun altro, e quella persona non si è meritata la caduta. La frase 'lo farà comunque qualcuno' è il vero punto di pressione — chiede se essere lo strumento del danno sia diverso dal danno che semplicemente accade.",
+      whyPeopleSplit: "Una parte separa l'esito dall'attore — il licenziamento è una decisione aziendale, e rifiutare significa solo che lo fa uno sconosciuto mentre tu rinunci a un futuro guadagnato. L'altra rifiuta di ripulire l'atto attraverso l'inevitabilità — essere la mano che firma è un fatto morale su di te, qualunque cosa farebbero gli altri.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare la struttura come la causa e te stesso come un ruolo sostituibile — rifiutare non salva il collega, quindi prendi il futuro per cui hai lavorato invece di sacrificarlo per nulla.",
+        b: "Potresti trattare la tua capacità di agire come non trasferibile — 'tanto lo farebbe qualcuno' non rende pulita la tua firma, e un futuro costruito su quell'atto preciso non lo sentiresti tuo.",
+      },
+    },
+  },
+
+  'friend-cheats-exam': {
+    en: {
+      body: "Loyalty and justice point in opposite directions, and the honest stranger gives the conflict a face. Reporting protects a fair process and a person you'll never meet; staying silent protects the friend you do know. The fact that only you saw it removes every motive except what you think you owe.",
+      whyPeopleSplit: "One side treats the fairness of the contest as something it's everyone's job to defend — looking away makes you complicit in the theft of the honest candidate's place. The other treats deep loyalty as a duty that doesn't switch off the moment a friend errs, especially when reporting them is irreversible.",
+      whatYourAnswerMaySuggest: {
+        a: "You may weight impartial fairness above personal ties — the honest candidate's loss is concrete, and a friendship isn't a license to absorb someone else's stolen opportunity.",
+        b: "You may weight loyalty and second chances above enforcing the rule yourself — you'd rather confront your friend than be the one who ends their future over a single bad decision.",
+      },
+    },
+    it: {
+      body: "Lealtà e giustizia puntano in direzioni opposte, e il candidato onesto dà un volto al conflitto. Segnalare protegge un processo equo e una persona che non incontrerai mai; tacere protegge l'amico che conosci. Il fatto che l'abbia visto solo tu toglie ogni movente tranne ciò che ritieni di dovere.",
+      whyPeopleSplit: "Una parte tratta l'equità del concorso come qualcosa che spetta a tutti difendere — voltarsi dall'altra parte ti rende complice del furto del posto del candidato onesto. L'altra tratta la lealtà profonda come un dovere che non si spegne appena un amico sbaglia, soprattutto quando segnalarlo è irreversibile.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti pesare l'equità imparziale più dei legami personali — la perdita del candidato onesto è concreta, e un'amicizia non è una licenza per assorbire l'opportunità rubata a un altro.",
+        b: "Potresti pesare la lealtà e le seconde possibilità più dell'applicare tu stesso la regola — preferiresti affrontare l'amico piuttosto che essere chi gli chiude il futuro per una sola pessima scelta.",
+      },
+    },
+  },
+
+  'overpaid-change': {
+    en: {
+      body: "A small, low-stakes moment that quietly tests default honesty. The twist is the cashier: keeping the money isn't victimless, because the shortfall likely lands on a tired worker, not a faceless company. That detail is what separates a reflex about 'free money' from a choice about a specific person.",
+      whyPeopleSplit: "People who return it treat the error as not theirs to profit from, especially when a named person eats the loss. People who keep it treat the handover as final, or discount the harm because it's small and uncertain — they didn't cause the mistake and aren't obliged to fix it.",
+      whatYourAnswerMaySuggest: {
+        a: "You may treat honesty as the same whether or not anyone is watching, and the cashier's likely loss makes the right move feel obvious rather than optional.",
+        b: "You may treat windfalls as fair game once they're in your hand, drawing the line at things you actively took rather than mistakes that simply landed on you.",
+      },
+    },
+    it: {
+      body: "Un momento piccolo e a bassa posta che mette alla prova, in sordina, l'onestà di base. Il colpo di scena è il cassiere: tenere i soldi non è senza vittime, perché la differenza ricade probabilmente su un lavoratore stanco, non su un'azienda senza volto. È quel dettaglio a separare un riflesso da 'soldi gratis' da una scelta su una persona precisa.",
+      whyPeopleSplit: "Chi li restituisce tratta l'errore come qualcosa da cui non gli spetta guadagnare, soprattutto quando a rimetterci è una persona con un nome. Chi li tiene tratta la consegna come definitiva, o sconta il danno perché piccolo e incerto — non ha causato l'errore e non si sente obbligato a ripararlo.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti trattare l'onestà come la stessa cosa che ti guardino o no, e la probabile perdita del cassiere rende la scelta giusta ovvia più che facoltativa.",
+        b: "Potresti trattare le fortune capitate come legittime una volta in mano, tracciando il limite su ciò che prendi attivamente e non sugli errori che semplicemente ti arrivano addosso.",
+      },
+    },
+  },
+
+  'friend-partner-cheating': {
+    en: {
+      body: "You're handed a secret you didn't ask for, and either choice has a cost. Telling risks being the messenger who detonates a friend's life on evidence they may question; staying silent makes you a quiet keeper of a betrayal that's happening to someone you love. Accidental discovery is key — you have no stake except the friendship.",
+      whyPeopleSplit: "One side treats a close friend's right to know the truth as overriding — withholding it, however kindly meant, is deciding for them what they can handle. The other treats it as not theirs to reveal — secondhand proof is fragile, relationships are private, and the messenger often pays a price that doesn't help anyone.",
+      whatYourAnswerMaySuggest: {
+        a: "You may believe a real friend owes the truth even when it hurts — letting them live inside a lie you can see feels like a deeper betrayal than the awkwardness of telling.",
+        b: "You may believe some truths aren't yours to deliver — you'd rather not insert yourself into a relationship you only glimpsed from outside, where you could be wrong about what you saw.",
+      },
+    },
+    it: {
+      body: "Ti ritrovi un segreto che non hai chiesto, e ogni scelta ha un costo. Dirlo rischia di farti il messaggero che fa esplodere la vita di un amico su una prova che potrebbe mettere in dubbio; tacere ti rende il custode silenzioso di un tradimento che sta accadendo a qualcuno che ami. La scoperta casuale è la chiave — non hai alcun interesse tranne l'amicizia.",
+      whyPeopleSplit: "Una parte tratta il diritto di un caro amico a sapere la verità come prevalente — nascondergliela, per quanto in buona fede, significa decidere al posto suo cosa può reggere. L'altra la tratta come non sua da rivelare — una prova di seconda mano è fragile, le relazioni sono private, e il messaggero spesso paga un prezzo che non aiuta nessuno.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti credere che un vero amico meriti la verità anche quando fa male — lasciarlo vivere dentro una bugia che tu vedi ti sembra un tradimento più profondo dell'imbarazzo di dirglielo.",
+        b: "Potresti credere che certe verità non spetti a te consegnarle — preferiresti non inserirti in una relazione che hai solo intravisto da fuori, dove potresti sbagliarti su ciò che hai visto.",
+      },
+    },
+  },
+
+  'group-project-freeloader': {
+    en: {
+      body: "Justice meets the social cost of being the one who speaks. The freeloader gains from a shared reward they didn't earn; saying so is fair but turns you into the accuser. With the assessor about to decide, silence isn't neutral — it lets the misattribution stand.",
+      whyPeopleSplit: "One side treats credit-tracking as basic fairness — rewards untethered from effort corrode every future group, so accuracy is worth the discomfort. The other treats not throwing someone under the bus as the higher value, absorbing the unfairness rather than becoming the person who tanked a teammate.",
+      whatYourAnswerMaySuggest: {
+        a: "You may believe credit should track contribution, and that staying silent quietly trains everyone that coasting works — so you accept the awkward role of correcting the record.",
+        b: "You may believe loyalty and grace outrank strict desert here — the unfairness stings, but publicly sinking a teammate costs more of your character than the credit is worth.",
+      },
+    },
+    it: {
+      body: "La giustizia incontra il costo sociale di essere chi parla. Chi non ha lavorato guadagna da una ricompensa condivisa che non si è meritato; dirlo è giusto ma ti trasforma nell'accusatore. Con chi valuta in procinto di decidere, il silenzio non è neutro — lascia in piedi l'attribuzione sbagliata.",
+      whyPeopleSplit: "Una parte tratta il tracciamento del merito come equità di base — ricompense slegate dallo sforzo corrodono ogni gruppo futuro, quindi l'accuratezza vale il disagio. L'altra tratta il non far affondare qualcuno come il valore più alto, assorbendo l'ingiustizia invece di diventare chi ha rovinato un compagno.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti credere che il merito debba seguire il contributo, e che tacere insegni in sordina a tutti che approfittarsene funziona — quindi accetti il ruolo scomodo di correggere i fatti.",
+        b: "Potresti credere che lealtà e indulgenza qui contino più del merito stretto — l'ingiustizia brucia, ma affondare pubblicamente un compagno costa al tuo carattere più di quanto valga il riconoscimento.",
+      },
+    },
+  },
 }
 
 export function getStaticInsight(id: string, locale: 'en' | 'it'): DynamicExpertInsight | undefined {

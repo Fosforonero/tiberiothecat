@@ -933,6 +933,23 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false,
   },
+  {
+    slug: 'test-situazionali',
+    locale: 'it',
+    topic: 'Dilemmi situazionali',
+    searchIntent: 'dilemmi situazionali, test situazionale, cosa faresti se, domande etiche sul lavoro, test scelte morali, dilemmi quotidiani, come reagisci sotto pressione',
+    tension: 'fare la cosa giusta in astratto contro proteggere le persone vicine quando la scelta è concreta e quotidiana',
+    headline: 'Dilemmi Situazionali — Cosa Faresti Davvero Quando Nessuno Ti Guarda',
+    intro:
+      "Un collega si prende il merito della tua idea. Un amico bara a un concorso e batte un candidato onesto. Sei tu a dover decidere se fare un\'eccezione a una regola per chi se la merita. I dilemmi situazionali sono le scelte di tutti i giorni in cui due cose giuste si scontrano: l\'onestà e la lealtà, l\'equità e la cura, il momento e il precedente. Non hanno una risposta corretta e non misurano nessuna attitudine — servono a vedere come ragioni davvero quando la posta è reale ma piccola, e a confrontare il tuo istinto con quello di chi sceglie il contrario. Scegli, scopri come si divide il voto, e chiediti perché.",
+    primaryScenarioId: 'stolen-credit',
+    relatedScenarioIds: ['rule-exception-manager', 'friend-cheats-exam', 'cover-coworker-error', 'promotion-fire-teammate', 'group-project-freeloader'],
+    relatedTopicSlugs: ['lealta-vs-onesta', 'psicologia-morale-sperimentale', 'fondamenti-morali'],
+    researchNote:
+      "La ricerca sul giudizio in situazioni realistiche studia come le persone scelgono di fronte a piccoli conflitti quotidiani di valori, non come dicono che sceglierebbero. Questi scenari sono pensati per riflessione e confronto: non sono un test psicometrico, una diagnosi o uno strumento di selezione del personale.",
+    status: 'published',
+    noindexUntilReady: false,
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {
