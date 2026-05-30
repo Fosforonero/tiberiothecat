@@ -194,15 +194,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     },
-    // /store intentionally excluded from sitemap while pre-launch — page
-    // also carries `robots: { index: false, follow: true }`. See
+    // /store and /login intentionally excluded from sitemap — utility/pre-launch
+    // pages that carry `robots: { index: false }`. See
     // reports/adsense-low-value-remediation-audit-2026-05-19.md.
-    {
-      url: `${BASE}/login`,
-      lastModified: STATIC_LAST_MOD,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    },
     // Legal
     {
       url: `${BASE}/privacy`,
