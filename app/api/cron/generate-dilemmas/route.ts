@@ -234,10 +234,12 @@ export async function GET(request: NextRequest) {
       }
 
       // AI-TREND-DRAFTS-SCALE-01 (26 May 2026) — daily draft count per locale.
-      // Default 10; configurable via env so PM can throttle if review bottleneck.
-      // Hard clamp [1, 20] to bound prompt size and token cost.
+      // Default lowered 10→5 (10 Jun 2026 audit): generation was outpacing
+      // review capacity (~800 scenarios, drafts capped at 120 with silent
+      // overflow discard). Content supply is not the constraint right now.
+      // Configurable via env; hard clamp [1, 20] bounds prompt size and cost.
       const draftCount = Math.max(1, Math.min(20,
-        parseInt(process.env.DAILY_DILEMMA_DRAFTS_PER_LOCALE ?? '10', 10),
+        parseInt(process.env.DAILY_DILEMMA_DRAFTS_PER_LOCALE ?? '5', 10),
       ))
       const rawDilemmas = await generateDilemmas(signals, locale, draftCount, feedbackHint)
       const now = new Date().toISOString()
