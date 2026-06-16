@@ -1,6 +1,78 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 10 Jun 2026 (sera) — Audit generale + 6 fix locali (non pushati). Tutti verificati: typecheck ✅, 188/188 test ✅, build ✅, git diff --check ✅. Da pushare domani con GO esplicito.
+Last updated: 17 Jun 2026 (notte) — Content sprint: 3 dilemmi fixati + 4 nuovi + 5 articoli blog EN+IT + 4 SEO topic EN+IT. Typecheck ✅, build ✅, git diff --check ✅. Commit `27d93ad`. **NON pushato** — hold Matteo (vuole valutare altri dilemmi prima).
+
+## 0. Session 17 Jun 2026 — Content sprint + GSC intelligence (non pushato)
+
+### TL;DR
+
+Sprint contenuti completato. Tutto in locale, non pushato. Hold esplicito di Matteo.
+
+### Commit locale
+
+| Cosa | File/i |
+|---|---|
+| Fix 3 dilemmi deboli (confess-crime, zombie-apocalypse, truth-friend) | `lib/scenarios.ts`, `lib/scenarios-it.ts` |
+| 4 nuovi dilemmi (ai-work-disclosure, teen-influencer-secret, climate-flight, ai-friend-reveal) | `lib/scenarios.ts`, `lib/scenarios-it.ts` |
+| 4 expert insights per nuovi dilemmi EN+IT | `lib/static-insights.ts` |
+| 5 articoli blog EN+IT (why-you-change-your-mind, moral-dilemmas-at-work, would-you-trust-a-robot-judge, loyalty-vs-justice-what-the-data-says, trolley-problem-60-years) + IT mirror | `lib/blog.ts` |
+| 4 SEO topic pairs EN+IT (ethical-dilemmas, would-you-rather-hard, moral-psychology-test, workplace-dilemmas) | `lib/seo-topics.ts` |
+
+### Stato verifica
+
+- `npm run typecheck` ✅ zero errori
+- `npm run build` ✅ tutte le route statiche
+- `git diff --check` ✅
+
+### GSC intelligence — query in arrivo su SplitVote
+
+Da analizzare in sessione futura. Query trovate su GSC che indicano opportunità:
+
+**Footbridge/fat-man cluster** (alto volume, zero copertura):
+- "trolley problem footbridge variant approval rate"
+- "What is the difference between the trolley dilemma and the footbridge dilemma?"
+- "What percentage of people would pull the lever in the trolley problem?"
+- "What was Philippa Foot's answer to the trolley problem?"
+
+**Tassonomia 4 tipi** (snippet Google già occupato, ma SplitVote può fare una landing con dati reali):
+- "What are the 4 types of ethical dilemmas?" → Truth vs Loyalty, Individual vs Community, Short-term vs Long-term, Justice vs Mercy
+
+### Prossimi dilemmi proposti (da valutare con Matteo)
+
+Vedi proposta completa sotto nella sezione "Dilemmi proposti 17 Jun".
+
+### Azioni richieste prima del push
+
+1. GO di Matteo per pushare il commit `27d93ad`
+2. Decidere quali nuovi dilemmi aggiungere (vedi proposta sotto)
+3. Valutare data-story "percentuali reali SplitVote sul trolley problem" come pagina SEO unica
+
+---
+
+## Dilemmi proposti 17 Jun — gap su "4 tipi" + footbridge
+
+**Gap analisi sul catalogo attuale (63 dilemmi):**
+- Truth vs Loyalty: ben coperto (friend-cheats-exam, report-friend, confess-crime, truth-friend, sibling-secret…)
+- Individual vs Community: buona copertura (mandatory-vaccine, privacy-terror, surveillance-city, pandemic-dose…)
+- Short-term vs Long-term: **sottorappresentato** — solo climate-flight e tax-billionaires
+- Justice vs Mercy: parziale (death-row-exonerated, innocent-juror, mercy-kill) — mancano casi di vita quotidiana
+- Footbridge/fat-man variant: **assente** (abbiamo `trolley` ma non la variante passerella)
+
+**Proposta 5 nuovi dilemmi:**
+
+1. `fat-man` (morality) — variante passerella del trolley. Sei su un ponte sopra i binari. Un tram sfrenato sta per travolgere 5 persone. Accanto a te c'è una persona corpulenta: spingendola giù fermeresti il tram e salveresti i 5. Non puoi saltare tu — sei troppo leggero. OptA: La spingi. OptB: Non lo fai. → Copre direttamente le query GSC + divide le persone molto di più della leva (85% vs 25–30%)
+
+2. `river-factory` (society) — Short-term vs Long-term. Sei il nuovo ispettore ambientale in una piccola città. L'unico datore di lavoro — 800 posti — inquina lentamente il fiume. Tra 15 anni il danno alla salute sarà misurabile, ma oggi non è acuto. Potresti chiuderli subito o dare loro 2 anni. OptA: Chiudi oggi. OptB: Dai tempo.
+
+3. `reformed-offender` (society) — Justice vs Mercy reale. Chi ti ha rapinato a mano armata 12 anni fa ha scontato la pena, ha una famiglia e lavora con i ragazzi a rischio. Una scuola ti chiama per un reference check, non sapendo che sei la vittima. OptA: Dici la verità sulla rapina. OptB: Non dici nulla che possa distruggerlo.
+
+4. `inherited-secret` (family/morality) — Truth vs Loyalty, versione nuova. Tuo padre, sul letto di morte, ti rivela di aver modificato in segreto il testamento 20 anni fa per dare di più a tuo fratello che stava attraversando un momento difficile. Tuo fratello non lo sa. Tuo padre ti chiede di mantenere il segreto. Tu sei l'esecutore testamentario. OptA: Dici la verità a tuo fratello. OptB: Onori il desiderio di tuo padre.
+
+5. `debt-childhood` (morality) — Short-term vs Long-term, scelta individuale. Potresti fare un debito significativo per dare ai tuoi figli un'infanzia straordinaria (scuole migliori, esperienze, viaggi). Passeresti i tuoi anni 60 a lavorare per ripagarlo e loro non sapranno mai il sacrificio. Se non lo fai, avranno un'infanzia solida ma ordinaria e tu avrai una pensione tranquilla. OptA: Fai il debito. OptB: Non lo fai.
+
+**Priorità suggerita:** `fat-man` per primo (impatto SEO immediato), poi `river-factory` e `reformed-offender` per riequilibrare i cluster.
+
+---
 
 ## -1. Session 10 Jun 2026 — Audit generale + fix batch (local, non pushati)
 
