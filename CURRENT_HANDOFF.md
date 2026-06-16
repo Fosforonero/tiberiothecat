@@ -1,6 +1,54 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 27 May 2026 (afternoon) — Push batch di 3 commit su `origin/main` (`d475dcc` + `968154c` + `b8196c9`), smoke test live verde, SEO cluster dilemmi situazionali IT shipped. Pixie visual affidato a Codex. Vitest 188/188. Scenarios 51→59 (+8 situazionali). Landing +1, blog +1.
+Last updated: 10 Jun 2026 (sera) — Audit generale + 6 fix locali (non pushati). Tutti verificati: typecheck ✅, 188/188 test ✅, build ✅, git diff --check ✅. Da pushare domani con GO esplicito.
+
+## -1. Session 10 Jun 2026 — Audit generale + fix batch (local, non pushati)
+
+### TL;DR
+
+Audit completo del progetto (zero visitatori, AdSense rejected, Stripe Premium mai concesso, share loop k-factor ≈ 0). Identificati e fixati 6 problemi critici, tutti in locale. **Niente pushato** — in attesa di GO esplicito domani.
+
+### Commit locali (non pushati, da verificare con `git log origin/main..HEAD`)
+
+| Fix | File/i |
+|---|---|
+| UX: grace countdown rimosso dal primo voto | `app/play/[id]/VoteClientPage.tsx` |
+| SEO: noindex /results + sitemap cleanup + fake dateModified rimosso | `app/results/[id]/page.tsx`, `app/it/results/[id]/page.tsx`, `app/sitemap.ts` |
+| Share: curiosity gap (niente % né winner in nessun testo di share) | `app/results/[id]/ResultsClientPage.tsx` |
+| Share: CTA spostato sopra "Next dilemma" (peak emotion) | `app/results/[id]/ResultsClientPage.tsx` |
+| Stripe P0: idempotency wired + subscription lifecycle (activate/revoke/reactivate) | `app/api/stripe/webhook/route.ts` |
+| Cron: draft AI 10→5/giorno per locale | `app/api/cron/generate-dilemmas/route.ts` |
+
+### Stato verifica
+
+- `npm run typecheck` ✅ zero errori
+- `npm run test` ✅ 188/188
+- `npm run build` ✅ (route statiche prerenderizzate)
+- `git diff --check` ✅
+
+### Azioni PM-side richieste (prima del Premium QA live)
+
+1. **Stripe Dashboard → Webhooks**: aggiungere `customer.subscription.updated` e `customer.subscription.deleted` agli eventi dell'endpoint — senza questi la revoca non arriva mai.
+2. **Supabase**: verificare che `migration_v11_stripe_webhook_events.sql` sia applicata (il codice fail-opena se manca, ma senza tabella niente idempotency).
+3. **Residuo noto**: l'immagine OG `dilemma-result-card` nei link preview mostra ancora le percentuali — sprint a parte se decidi di fissarlo.
+
+### Working tree (post-sessione)
+
+```
+ M scripts/generate-pixie-assets.mjs       ← Pixie WIP carry-over (NON committare)
+?? reports/blog-image-explore/             ← NON committare
+?? reports/pixie-explore/                  ← NON committare
+?? reports/trend-content-pack-2026-05-26.md ← NON committare
+?? scripts/generate-pixie-emoji-assets.py  ← Pixie WIP carry-over (NON committare)
+?? scripts/normalize-pixie-assets.py       ← Pixie WIP carry-over (NON committare)
+```
+
+### Next best action (prossima sessione)
+
+1. **Push GO**: dare GO per pushare i commit locali (1 push = 1 deploy Vercel).
+2. **Stripe Dashboard**: aggiungere i 2 eventi webhook mancanti (5 min, PM-side).
+3. **AdSense**: se sono passati ~9 giorni dalla remediation del 30 mag, inviare richiesta di re-review.
+4. **Blog fosforonero.com**: 6 articoli proposti in sessione — articolo #1 ("zero visitatori dopo 6 settimane: autopsia") è il più forte per distribuzione su Reddit/HN + backlink reale.
 
 ## -3. Session 27 May 2026 (afternoon) — Push batch + SEO situational cluster + Pixie→Codex
 
