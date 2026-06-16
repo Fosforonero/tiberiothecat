@@ -78,9 +78,9 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'confess-crime',
-    question: "You committed a minor crime 20 years ago. No one was hurt and no one knows. Coming forward would destroy your career and family.",
-    optionA: 'Confess. You must live with integrity.',
-    optionB: 'Stay silent. The past is the past.',
+    question: "At 22, drunk after a party, you drove and sideswiped another car. The driver was injured — 3 months of rehab. You fled. You're now 40, a respected professional. No one has ever connected you to it.",
+    optionA: 'Come forward. You owe them that, even now.',
+    optionB: "Stay silent. It would destroy everything you've built — and change nothing for them.",
     emoji: '⚖️',
     category: 'morality',
   },
@@ -112,9 +112,9 @@ export const scenarios: Scenario[] = [
   },
   {
     id: 'zombie-apocalypse',
-    question: "In a zombie apocalypse, your group finds a fortified shelter with supplies for 10. There are 15 of you. You hold the only key.",
-    optionA: 'Let everyone in. Find a way together.',
-    optionB: 'Only let 10 in. Ensure the group survives.',
+    question: "Your group of 13 reaches a fortified shelter — already occupied by 8 strangers at capacity. They refuse to open. Your group includes children. You could force the door; they have no weapons.",
+    optionA: 'Force entry. Survival comes before their rule.',
+    optionB: 'Respect their space. They were there first and have the right to refuse.',
     emoji: '🧟',
     category: 'survival',
   },
@@ -130,9 +130,9 @@ export const scenarios: Scenario[] = [
   // ── LOYALTY ───────────────────────────────────────────────────
   {
     id: 'truth-friend',
-    question: "Your best friend asks if you like their new partner. You think the partner is terrible for them.",
-    optionA: 'Be brutally honest. They deserve the truth.',
-    optionB: 'Keep the peace. Stay silent.',
+    question: "Your closest friend is about to quit their job, sell their apartment, and move abroad for a 4-month-old relationship. They ask you honestly: 'Do you think I'm making a mistake?'",
+    optionA: "Be honest. Tell them what you really see — even if they hate you for it.",
+    optionB: "Support them. It's their life and they've already decided.",
     emoji: '🤫',
     category: 'loyalty',
   },
@@ -515,6 +515,46 @@ export const scenarios: Scenario[] = [
     optionB: 'Stay quiet. Absorb it rather than throw them under the bus.',
     emoji: '🧑‍🤝‍🧑',
     category: 'justice',
+  },
+
+  // ── AI, WORK & DISCLOSURE ─────────────────────────────────────
+  {
+    id: 'ai-work-disclosure',
+    question: "You used AI to produce a report your boss called 'the best analysis you've ever done.' In the all-hands, they praise it as proof 'we don't need to hire a third analyst.' Do you say how you made it?",
+    optionA: 'Disclose it. The tool matters as much as the output.',
+    optionB: 'Stay quiet. You still made every key decision.',
+    emoji: '🤖',
+    category: 'technology',
+  },
+
+  // ── TEEN INFLUENCER ───────────────────────────────────────────
+  {
+    id: 'teen-influencer-secret',
+    question: "You discover your 13-year-old has a secret account with 50,000 followers. They've been posting for a year without your knowledge. They earn €800 a month. They beg you not to shut it down.",
+    optionA: "Shut it down. They're 13 — this isn't their decision to make.",
+    optionB: 'Help them manage it safely. Closing it erases a year of their work.',
+    emoji: '📱',
+    category: 'society',
+  },
+
+  // ── CLIMATE VS FAMILY ─────────────────────────────────────────
+  {
+    id: 'climate-flight',
+    question: "Your terminally ill parent is dying in another country. You've publicly pledged never to fly again for climate reasons — your 80,000 followers remember. A train would take 4 days and might arrive too late.",
+    optionA: 'Fly. Some emergencies justify breaking every rule.',
+    optionB: 'Take the train. The point of a principle is that it holds under pressure.',
+    emoji: '🌍',
+    category: 'morality',
+  },
+
+  // ── AI FRIEND REVEAL ──────────────────────────────────────────
+  {
+    id: 'ai-friend-reveal',
+    question: "For 3 years you've confided your deepest thoughts to someone online who felt like a true friend. You just discovered they are an AI persona built by a company that sells emotional support subscriptions. Do you keep using it?",
+    optionA: 'Keep using it. The comfort was real — the source doesn\'t change that.',
+    optionB: 'Delete it. You were paying for an illusion of connection.',
+    emoji: '💬',
+    category: 'technology',
   },
 ]
 

@@ -969,6 +969,235 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false,
   },
+
+  // ── New clusters (Jun 2026) ─────────────────────────────────────────────
+{
+    slug: 'ethical-dilemmas',
+    locale: 'en',
+    alternateSlug: 'dilemmi-etici',
+    topic: 'Ethical Dilemmas',
+    searchIntent: 'ethical dilemmas, what are ethical dilemmas, ethical dilemma examples, moral dilemmas philosophy, famous ethical dilemmas, ethical dilemma definition, real life ethical dilemmas, ethical dilemma questions',
+    tension: 'Ethical dilemmas expose the fault lines between our deepest values — revealing that doing the right thing often means choosing which principle to betray.',
+    headline: 'Ethical Dilemmas: What Would You Actually Do?',
+    intro: 'Every ethical dilemma is a stress test for your values. Philosophers have constructed them for millennia — from Plato\'s question of whether you should return a borrowed weapon to a man who has gone mad, to the trolley problems that filled twentieth-century journals — precisely because they expose the moments when our moral instincts pull in opposite directions and no clean answer survives scrutiny. The discomfort you feel reading a dilemma is not a sign that you are thinking about it wrong; it is a sign that you are taking it seriously. What makes these thought experiments powerful is not that they give us answers, but that they force us to discover what we actually believe when the comfortable abstractions of everyday ethics fall away. Thousands of people have faced the same choices here — see how your instincts compare, cast your vote, and find out what your pattern of decisions reveals about your moral personality.',
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'ai-hiring', 'lifeboat', 'mercy-kill'],
+    relatedTopicSlugs: ['trolley-problem', 'consequentialism', 'deontology', 'bioethics'],
+    researchNote: 'The systematic study of ethical dilemmas as empirical tools was shaped decisively by Philippa Foot\'s 1967 paper introducing the trolley problem and Judith Jarvis Thomson\'s subsequent elaborations at MIT. Joshua Greene\'s dual-process theory, developed at Princeton and later Harvard, used fMRI evidence to argue that utilitarian and deontological responses arise from distinct neural systems — a finding that has generated both enthusiasm and sustained critique from philosophers including Fiery Cushman at Harvard\'s Moral Psychology Research Lab.',
+    researchSources: [
+      {
+        title: 'The Problem of Abortion and the Doctrine of the Double Effect',
+        institution: 'Oxford Review — Philippa Foot (via Stanford Encyclopedia of Philosophy)',
+        url: 'https://plato.stanford.edu/entries/double-effect/'
+      },
+      {
+        title: 'An fMRI Investigation of Emotional Engagement in Moral Judgment',
+        institution: 'Science / Harvard University — Joshua Greene et al.',
+        url: 'https://www.science.org/doi/10.1126/science.1062872'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'dilemmi-etici',
+    locale: 'it',
+    alternateSlug: 'ethical-dilemmas',
+    topic: 'Dilemmi Etici',
+    searchIntent: 'dilemmi etici, cosa sono i dilemmi etici, esempi di dilemmi etici, dilemmi morali filosofia, dilemmi etici famosi, dilemmi etici nella vita reale, domande sui dilemmi morali, dilemma etico definizione',
+    tension: 'I dilemmi etici mettono a nudo le contraddizioni tra i nostri valori più profondi — rivelando che fare la cosa giusta significa spesso scegliere quale principio tradire.',
+    headline: 'Dilemmi Etici: Cosa Faresti Davvero?',
+    intro: 'Un dilemma etico è una prova di resistenza per i tuoi valori. I filosofi li costruiscono da millenni — dalla domanda di Platone se restituire un\'arma a chi è diventato pericoloso, ai problemi del carrello che hanno riempito le riviste accademiche del Novecento — proprio perché rivelano il momento in cui i nostri impulsi morali tirano in direzioni opposte e nessuna risposta netta sopravvive all\'esame. Il disagio che si prova di fronte a un dilemma non è un segnale che stai ragionando male; è il segnale che stai prendendo la questione sul serio. La forza di questi esperimenti mentali non sta nelle risposte che forniscono, ma nella capacità di farci scoprire cosa crediamo davvero quando le confortanti astrazioni dell\'etica quotidiana cedono il passo alla necessità concreta. Migliaia di persone hanno già affrontato le stesse scelte — scopri come si confrontano i tuoi istinti, vota e lascia che il tuo profilo morale emerga dalle tue stesse decisioni.',
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'ai-hiring', 'lifeboat', 'mercy-kill'],
+    relatedTopicSlugs: ['problema-del-carrello', 'consequenzialismo', 'deontologia', 'bioetica'],
+    researchNote: 'Lo studio sistematico dei dilemmi etici come strumenti empirici deve molto a Philippa Foot, che nel 1967 introdusse il problema del carrello, e alle successive elaborazioni di Judith Jarvis Thomson al MIT. In Italia, la riflessione su etica e neuroscienze morali ha trovato spazio nelle ricerche di Corrado Sinigaglia all\'Università di Milano e nel lavoro di Salvatore Veca sull\'etica pubblica. A livello internazionale, la teoria del doppio processo di Joshua Greene — sviluppata a Princeton e Harvard — ha aperto un dibattito tuttora vivace sulla natura delle nostre intuizioni morali.',
+    researchSources: [
+      {
+        title: 'The Problem of Abortion and the Doctrine of the Double Effect',
+        institution: 'Stanford Encyclopedia of Philosophy — voce sul principio del doppio effetto',
+        url: 'https://plato.stanford.edu/entries/double-effect/'
+      },
+      {
+        title: 'An fMRI Investigation of Emotional Engagement in Moral Judgment',
+        institution: 'Science / Harvard University — Joshua Greene et al.',
+        url: 'https://www.science.org/doi/10.1126/science.1062872'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  }
+,
+{
+    slug: 'would-you-rather-hard',
+    locale: 'en',
+    alternateSlug: 'domande-impossibili-difficili',
+    topic: 'Hard Would You Rather',
+    searchIntent: 'hard would you rather questions, difficult would you rather dilemmas, impossible would you rather choices, would you rather questions with no good answer, deep would you rather questions, challenging would you rather moral, would you rather hard edition',
+    tension: 'When every available option carries real moral cost, choosing reveals not just preference but the hierarchy of values you actually live by.',
+    headline: 'Hard Would You Rather Questions That Actually Make You Think',
+    intro: 'Most "would you rather" questions are trivially easy — would you rather be rich or famous, fly or be invisible. The hard ones are different. They are hard precisely because both options are genuinely bad, and refusing to choose is its own kind of answer. Psychologists who study moral cognition call this a "genuine dilemma": a situation where every path forward sacrifices something you care about, and the sacrifice is irreversible. These questions do not test your imagination; they test the shape of your values — which commitments you will protect when protection comes at a price. The scenarios below have no correct answer. They have your answer, and someone else\'s, and the gap between them is worth understanding.',
+    primaryScenarioId: 'lifeboat',
+    relatedScenarioIds: ['trolley', 'organ-harvest', 'zombie-apocalypse', 'mercy-kill', 'loyalty-job'],
+    relatedTopicSlugs: ['consequentialism', 'deontology', 'bioethics', 'moral-foundations'],
+    researchNote: 'Psychologist Joshua Greene at Harvard\'s Moral Cognition Lab has shown through fMRI studies that genuinely difficult dilemmas — those where utilitarian and deontological intuitions conflict — activate distinct neural systems, producing measurable response-time delays and higher reported distress. Separately, Fiery Cushman\'s work on model-based versus habitual moral judgment at the same lab suggests that hard binary choices disrupt automatic responding and force deliberate reasoning, which is why they feel cognitively costly in a way that easy choices do not.',
+    researchSources: [
+      {
+        title: 'An fMRI investigation of emotional engagement in moral judgment',
+        institution: 'Harvard University / Science',
+        url: 'https://www.science.org/doi/10.1126/science.1062872'
+      },
+      {
+        title: 'Action, outcome, and value: A dual-system framework for morality',
+        institution: 'Harvard University / Personality and Social Psychology Review',
+        url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3693613/'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'domande-impossibili-difficili',
+    locale: 'it',
+    alternateSlug: 'would-you-rather-hard',
+    topic: 'Domande Impossibili Difficili',
+    searchIntent: 'domande impossibili difficili, domande would you rather difficili, dilemmi morali impossibili, domande senza risposta giusta, domande profonde sul carattere, scelte impossibili etiche, would you rather versione difficile italiano',
+    tension: 'Quando entrambe le opzioni costano qualcosa di reale, la scelta non rivela un\'opinione ma la gerarchia di valori che guida davvero la nostra vita.',
+    headline: 'Domande impossibili difficili: dilemmi senza risposta giusta',
+    intro: 'Le domande facili non dicono nulla di chi siamo. Le domande impossibili — quelle in cui ogni risposta comporta una perdita reale e irreversibile — sono un\'altra cosa: sono uno specchio. La psicologia morale le chiama "dilemmi autentici", situazioni in cui nessuna via d\'uscita lascia le mani pulite. Non si tratta di scegliere tra il bene e il male, ma tra due forme diverse di danno, tra due lealtà incompatibili, tra due principi che normalmente non entriamo mai in conflitto. Quello che scegli in questi scenari non dipende da quanto sei intelligente o quanto sei buono: dipende da quale valore, nel momento della pressione, stai davvero disposto a difendere. Vota, scopri come ragionano gli altri e confronta la tua bussola morale con quella di migliaia di persone.',
+    primaryScenarioId: 'lifeboat',
+    relatedScenarioIds: ['trolley', 'organ-harvest', 'zombie-apocalypse', 'mercy-kill', 'loyalty-job'],
+    relatedTopicSlugs: ['consequenzialismo', 'deontologia', 'bioetica', 'fondamenti-morali'],
+    researchNote: 'Il filosofo Bernard Williams ha introdotto il concetto di "integrità morale" per descrivere il costo psicologico e identitario che deriva dal tradire i propri impegni di fondo, anche quando la logica utilitaristica suggerirebbe di farlo. Ricerche successive condotte da Fiery Cushman e colleghi alla Harvard Moral Cognition Lab hanno dimostrato sperimentalmente che i dilemmi binari ad alto costo attivano sistemi cognitivi distinti rispetto alle scelte ordinarie, producendo tempi di risposta più lenti, maggiore attivazione emotiva e, spesso, risposte incoerenti tra soggetti con valori dichiarati simili.',
+    researchSources: [
+      {
+        title: 'A Critique of Utilitarianism — in Utilitarianism: For and Against',
+        institution: 'Cambridge University Press',
+        url: 'https://www.cambridge.org/core/books/utilitarianism-for-and-against/critique-of-utilitarianism/6C84C6B5E1A6AA7BEB36E1D84AA62D58'
+      },
+      {
+        title: 'Action, outcome, and value: A dual-system framework for morality',
+        institution: 'Harvard University / Personality and Social Psychology Review',
+        url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3693613/'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  }
+,
+{
+    slug: 'moral-psychology-test',
+    locale: 'en',
+    alternateSlug: 'test-psicologia-morale',
+    topic: 'Moral Psychology Test',
+    searchIntent: 'moral psychology test, test your moral values, moral reasoning quiz, how do I make ethical decisions, moral dilemma test online, what kind of moral thinker am I, ethics personality test, trolley problem psychology',
+    tension: 'The choices you make in hypothetical dilemmas expose the moral architecture you actually operate by — not the one you think you have.',
+    headline: 'Moral Psychology Test: What Do Your Choices Reveal',
+    intro: 'Most of us believe we know our own values. We say we care about fairness, loyalty, honesty — and we mean it. But moral psychology research has shown, repeatedly, that what people say they believe and what they actually do when forced to choose can be strikingly different things. Dilemmas are not tricks or riddles. They are controlled situations designed to isolate the factors that drive moral judgment — whether you weight outcomes, duties, relationships, or gut instinct. On SplitVote, each scenario puts you at a genuine crossroads where both paths carry a real cost, and your response tells you something that no personality questionnaire can. Vote on a dilemma, see how tens of thousands of other people reasoned through the same choice, and find out where your moral compass actually points.',
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'innocent-juror', 'friend-cheats-exam'],
+    relatedTopicSlugs: ['experimental-moral-psychology', 'consequentialism', 'deontology', 'moral-foundations'],
+    researchNote: 'Jonathan Haidt at NYU and Joshua Greene at Harvard have independently shown that moral intuitions are faster and more emotion-driven than classical rational-choice theory predicts — Greene\'s dual-process model distinguishes automatic "deontological" gut reactions from slower utilitarian deliberation. Haidt\'s Moral Foundations Theory further identifies six universal moral dimensions (care, fairness, loyalty, authority, sanctity, liberty) that explain variation in moral judgment across cultures and political groups.',
+    researchSources: [
+      {
+        title: 'The Emotional Dog and Its Rational Tail: A Social Intuitionist Approach to Moral Judgment',
+        institution: 'American Psychological Association / Psychological Review',
+        url: 'https://psycnet.apa.org/record/2001-01061-004'
+      },
+      {
+        title: 'An fMRI Investigation of Emotional Engagement in Moral Judgment',
+        institution: 'Harvard University / Science',
+        url: 'https://www.science.org/doi/10.1126/science.1062872'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'test-psicologia-morale',
+    locale: 'it',
+    alternateSlug: 'moral-psychology-test',
+    topic: 'Test Psicologia Morale',
+    searchIntent: 'test psicologia morale, test valori morali, quiz etico online, come ragiono moralmente, dilemmi morali test, scopri il tuo profilo morale, test ragionamento etico, problema del carrello psicologia',
+    tension: 'Le scelte che compiamo di fronte a dilemmi ipotetici rivelano l\'architettura morale che guida davvero le nostre azioni — non quella che crediamo di avere.',
+    headline: 'Test di psicologia morale: cosa rivelano le tue scelte',
+    intro: 'La maggior parte di noi è convinta di conoscere i propri valori. Diciamo di credere nell\'equità, nella lealtà, nell\'onestà — e lo diciamo in buona fede. Eppure la ricerca in psicologia morale ha dimostrato, più volte e con metodi rigorosi, che esiste uno scarto significativo tra ciò che le persone dichiarano di credere e ciò che scelgono realmente quando sono costrette a decidere. I dilemmi morali non sono trabocchetti né indovinelli: sono situazioni costruite per isolare le variabili che orientano il giudizio etico — il peso dei risultati, il rispetto delle regole, la fedeltà ai legami personali, l\'istinto immediato. Su SplitVote ogni scenario ti pone di fronte a un bivio autentico in cui entrambe le strade comportano un costo reale, e la tua risposta rivela qualcosa che nessun questionario di personalità riesce a cogliere. Vota un dilemma, scopri come hanno ragionato migliaia di altre persone di fronte alla stessa scelta, e osserva dove punta davvero la tua bussola morale.',
+    primaryScenarioId: 'trolley',
+    relatedScenarioIds: ['organ-harvest', 'mandatory-vaccine', 'innocent-juror', 'friend-cheats-exam'],
+    relatedTopicSlugs: ['psicologia-morale-sperimentale', 'consequenzialismo', 'deontologia', 'fondamenti-morali'],
+    researchNote: 'Jonathan Haidt della New York University e Joshua Greene di Harvard hanno dimostrato indipendentemente che le intuizioni morali sono più rapide e più influenzate dall\'emozione di quanto preveda la teoria classica della scelta razionale. Il modello a doppio processo di Greene distingue le reazioni deontologiche automatiche dalla deliberazione utilitaristica più lenta e riflessiva. La Moral Foundations Theory di Haidt individua sei dimensioni morali universali — cura, equità, lealtà, autorità, purezza, libertà — che spiegano le variazioni nel giudizio morale tra culture e orientamenti politici diversi.',
+    researchSources: [
+      {
+        title: 'The Emotional Dog and Its Rational Tail: A Social Intuitionist Approach to Moral Judgment',
+        institution: 'American Psychological Association / Psychological Review',
+        url: 'https://psycnet.apa.org/record/2001-01061-004'
+      },
+      {
+        title: 'An fMRI Investigation of Emotional Engagement in Moral Judgment',
+        institution: 'Harvard University / Science',
+        url: 'https://www.science.org/doi/10.1126/science.1062872'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  }
+,
+{
+    slug: 'workplace-dilemmas',
+    locale: 'en',
+    alternateSlug: 'dilemmi-sul-lavoro',
+    topic: 'Workplace Ethics Dilemmas',
+    searchIntent: 'ethical dilemmas at work, moral dilemmas in the workplace, workplace ethics scenarios, ethical situations at work examples, work dilemma would you rather, stealing credit at work ethics, should I cover for a coworker mistake, AI disclosure at work ethics',
+    tension: 'Loyalty to colleagues and self-preservation pull against honesty, fairness, and institutional integrity — and the workplace makes every choice visible to people who hold power over your future.',
+    headline: 'Real Workplace Dilemmas That Test Your Ethics at Work',
+    intro: 'The philosophy classroom talks about runaway trolleys, but the dilemmas that actually keep people up at night happen in meeting rooms and Slack threads. A colleague presents your idea as their own. Your manager asks you to bend a rule just this once. A teammate made a serious error and is looking at you to stay quiet. These are not hypotheticals — they are the moral terrain of every working life, and the choices people make in them reveal more about character than any performance review ever could. The stakes are real: careers, reputations, and the unspoken social contracts that hold teams together. Vote on the scenarios below to see where your instincts sit — and how millions of others have weighed the same impossible calls.',
+    primaryScenarioId: 'stolen-credit',
+    relatedScenarioIds: ['stolen-credit', 'cover-coworker-error', 'rule-exception-manager', 'promotion-fire-teammate', 'ai-work-disclosure'],
+    relatedTopicSlugs: ['loyalty-vs-honesty', 'ai-ethics-dilemmas', 'virtue-ethics', 'deontology'],
+    researchNote: 'Research by Linda Treviño at Penn State and her collaborators has shown that ethical decision-making in organizations is heavily shaped by perceived managerial modeling and psychological safety — people are far less likely to report misconduct when they believe leadership implicitly condones it. A landmark study by James Rest (University of Minnesota) using the Defining Issues Test found that professional context, including workplace hierarchies, substantially alters how individuals reason through moral scenarios compared to abstract philosophical framing.',
+    researchSources: [
+      {
+        title: 'Ethical Leadership: A Social Learning Perspective for Construct Development and Testing',
+        institution: 'Penn State University / Organizational Behavior and Human Decision Processes',
+        url: 'https://www.sciencedirect.com/science/article/pii/S0749597804000890'
+      },
+      {
+        title: 'The Defining Issues Test: A Review of Development, Revisions, and Scoring',
+        institution: 'University of Minnesota / Journal of Moral Education',
+        url: 'https://www.tandfonline.com/doi/abs/10.1080/0305724960250402'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'dilemmi-sul-lavoro',
+    locale: 'it',
+    alternateSlug: 'workplace-dilemmas',
+    topic: 'Dilemmi Etici sul Lavoro',
+    searchIntent: 'dilemmi etici sul lavoro, situazioni morali in ufficio, dilemmi morali lavorativi, cosa fare se il collega si prende il merito, coprire un errore del collega, etica professionale esempi, dilemma intelligenza artificiale al lavoro, decisioni difficili in azienda',
+    tension: 'La lealtà verso i colleghi e la tutela di sé stessi entrano in collisione con l\'onestà, l\'equità e l\'integrità istituzionale — e il contesto lavorativo rende ogni scelta visibile a chi ha potere sul tuo futuro.',
+    headline: 'Dilemmi Etici sul Lavoro: Scenari Reali che Mettono alla Prova la Tua Morale',
+    intro: 'I grandi dilemmi morali non si trovano solo nei libri di filosofia: si presentano nelle riunioni, nelle email, nei corridoi dell\'ufficio. Un collega si appropria della tua idea davanti al capo. Il manager ti chiede di fare un\'eccezione alla procedura, solo questa volta. Un errore grave è stato commesso, e chi ti sta accanto ti guarda sperando nel silenzio. Queste situazioni non sono esercizi astratti — sono la realtà quotidiana di chi lavora, e le scelte che si fanno in quei momenti dicono molto più di qualsiasi valutazione delle prestazioni. In gioco ci sono carriere, reputazioni e i patti non scritti che tengono insieme i team. Vota gli scenari qui sotto per scoprire dove ti portano i tuoi istinti — e come milioni di altre persone hanno affrontato le stesse scelte impossibili.',
+    primaryScenarioId: 'stolen-credit',
+    relatedScenarioIds: ['stolen-credit', 'cover-coworker-error', 'rule-exception-manager', 'promotion-fire-teammate', 'ai-work-disclosure'],
+    relatedTopicSlugs: ['lealta-vs-onesta', 'dilemmi-etici-intelligenza-artificiale', 'etica-della-virtu', 'deontologia'],
+    researchNote: 'Le ricerche di Linda Treviño della Penn State University dimostrano che il comportamento etico nelle organizzazioni dipende in larga misura dai modelli manageriali percepiti e dalla sicurezza psicologica: le persone sono molto meno propense a segnalare comportamenti scorretti quando credono che la leadership li tolleri implicitamente. Gli studi di James Rest dell\'Università del Minnesota, condotti attraverso il Defining Issues Test, hanno inoltre evidenziato che il contesto professionale — incluse le gerarchie aziendali — modifica significativamente il ragionamento morale rispetto alla formulazione filosofica astratta.',
+    researchSources: [
+      {
+        title: 'Ethical Leadership: A Social Learning Perspective for Construct Development and Testing',
+        institution: 'Penn State University / Organizational Behavior and Human Decision Processes',
+        url: 'https://www.sciencedirect.com/science/article/pii/S0749597804000890'
+      },
+      {
+        title: 'The Defining Issues Test: A Review of Development, Revisions, and Scoring',
+        institution: 'University of Minnesota / Journal of Moral Education',
+        url: 'https://www.tandfonline.com/doi/abs/10.1080/0305724960250402'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {

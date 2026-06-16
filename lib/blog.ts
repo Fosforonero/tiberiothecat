@@ -5525,6 +5525,877 @@ const EN_POSTS: BlogPost[] = [
       },
     ],
   },
+
+  {
+  slug: 'why-you-change-your-mind',
+  locale: 'en',
+  title: 'Why You Change Your Mind Halfway Through a Moral Dilemma',
+  seoTitle: 'Why You Change Your Mind on Moral Dilemmas | SplitVote',
+  description: 'That moment you hover over an answer and switch — it\'s not confusion. It\'s your brain\'s two moral systems colliding in real time.',
+  seoDescription: 'Why do people reverse their answer halfway through a moral dilemma? Science explains the collision of gut instinct and rational thought. Find out which system wins.',
+  date: '2026-06-16',
+  readingTime: 6,
+  tags: ['moral psychology', 'decision making', 'moral intuition', 'cognitive bias', 'ethical reasoning'],
+  relatedDilemmaIds: ['trolley', 'fat-man', 'organ-harvest', 'mercy-kill', 'innocent-juror'],
+  alternateSlug: 'perche-cambi-risposta-a-meta-dilemma',
+  faq: [
+    {
+      q: 'Why do I change my mind halfway through a moral dilemma?',
+      a: 'You change your mind because two competing mental systems activate at different speeds. Your fast, emotional System 1 fires an immediate gut reaction. As you read further, your slower, analytical System 2 kicks in and reframes the scenario logically — and the two systems often reach opposite conclusions. The switch is not inconsistency; it is your brain processing the problem at greater depth.'
+    },
+    {
+      q: 'Is hesitating on ethical questions a sign of moral weakness?',
+      a: 'No. Research in moral psychology suggests the opposite: people who hesitate longer on genuine ethical dilemmas tend to be more morally sensitive, not less. Hesitation reflects awareness of competing values and real costs. Quick, unconflicted answers sometimes indicate that one dimension of the dilemma has not been fully registered.'
+    },
+    {
+      q: 'What is moral dumbfounding?',
+      a: 'Moral dumbfounding, described by psychologist Jonathan Haidt, is the experience of feeling certain that something is wrong while being unable to articulate a coherent reason why. In Haidt\'s classic sibling scenario experiment, most participants condemned the act immediately but, when their objections were systematically countered, fell back on "I just know it\'s wrong." This suggests moral judgments are often emotionally driven first and rationally justified afterward.'
+    },
+    {
+      q: 'What is the difference between the trolley problem and the footbridge dilemma?',
+      a: 'Both scenarios involve sacrificing one person to save five, making them structurally identical in utilitarian terms. The difference is physical proximity and personal force: in the trolley problem you pull a lever, while in the footbridge dilemma you push someone off a bridge with your own hands. Most people who pull the lever refuse to push. This gap reveals that moral judgment is powerfully shaped by emotional framing, not just logical outcomes.'
+    },
+    {
+      q: 'Do moral dilemmas have correct answers?',
+      a: 'Most genuine moral dilemmas do not have universally correct answers — that is precisely what makes them dilemmas. They are designed to place competing ethical values in direct conflict. What they reveal is not whether you are right or wrong, but which values you prioritize and how your reasoning system handles genuine moral tension.'
+    }
+  ],
+  content: [
+    {
+      type: 'p',
+      text: 'You are reading a moral dilemma. Your finger — or cursor — hovers. You have already committed, mentally, to an answer. Then something in the second sentence shifts the weight, and you switch. It happens in under three seconds, and it leaves a faint unease behind: did you just reveal something about yourself, or did you just get confused? The answer, it turns out, is far more interesting than either option.'
+    },
+    {
+      type: 'h2',
+      text: 'Two Brains, One Dilemma'
+    },
+    {
+      type: 'p',
+      text: 'Psychologist Daniel Kahneman\'s landmark work on dual-process theory describes two modes of thinking that operate in parallel but rarely in harmony. System 1 is fast, automatic, and emotionally charged — it generates an answer before you have finished reading the question. System 2 is slow, deliberate, and effortful — it arrives later, checks the math, and sometimes overrides the first verdict. Moral dilemmas are uniquely good at forcing these two systems into direct conflict, because they are designed so that the emotionally obvious answer and the logically defensible answer point in opposite directions.'
+    },
+    {
+      type: 'p',
+      text: 'When you change your answer halfway through a scenario, you are not being indecisive. You are watching, in real time, the handoff between System 1 and System 2. The first response was a reflex. The second is a recalibration. Which one reflects the "real you" is one of the central unresolved questions in moral philosophy — and possibly the wrong question to ask.'
+    },
+    {
+      type: 'h2',
+      text: 'Haidt\'s Uncomfortable Discovery: We Decide First, Then Explain'
+    },
+    {
+      type: 'p',
+      text: 'In the early 2000s, social psychologist Jonathan Haidt ran a deceptively simple experiment. He presented participants with a scenario: two consenting adult siblings, alone on a trip, decide to have sex once, use contraception, keep it entirely private, and both report feeling closer afterward. Participants almost universally said it was wrong. Then Haidt systematically dismantled every objection — no harm, no victims, no psychological damage reported, no social consequences. And something revealing happened: most participants did not change their verdict. They said, in various phrasings, "I can\'t explain it, but I know it\'s wrong."'
+    },
+    {
+      type: 'p',
+      text: 'Haidt called this phenomenon moral dumbfounding. His interpretation was provocative: moral reasoning, he argued, is mostly post-hoc rationalization. We experience a moral emotion first — usually disgust, care, or fairness — and we construct arguments afterward to justify it. The arguments feel like the cause of our judgment, but they are actually its servants. This does not mean moral reasoning is useless; it means the order of operations is not what we assume it to be.'
+    },
+    {
+      type: 'h2',
+      text: 'What Hesitation Actually Signals'
+    },
+    {
+      type: 'p',
+      text: 'SplitVote aggregates millions of responses across hundreds of dilemmas, and one pattern appears consistently: the scenarios that generate the most answer-switching and the longest response times are not the hardest to understand — they are the ones that pit two deeply held values against each other with no clean escape. Hesitation, in this context, is not a sign of confusion. It is a sign that both horns of the dilemma have registered.'
+    },
+    {
+      type: 'p',
+      text: 'People who answer instantly on genuinely complex dilemmas often report having keyed in on one dimension — the outcome, or the rule — while not fully processing the cost on the other side. Moral sensitivity, researchers have found, correlates with response latency on dilemmas that involve genuine value conflict. In other words, if you hovered, you were paying attention.'
+    },
+    {
+      type: 'h2',
+      text: 'The Trolley and the Bridge: Same Numbers, Different Feelings'
+    },
+    {
+      type: 'p',
+      text: 'No pair of thought experiments demonstrates the reversal effect more cleanly than the trolley problem and the footbridge dilemma. In the trolley scenario, a runaway tram will kill five people unless you pull a lever to divert it onto a side track, where it will kill one. Most people pull the lever. In the footbridge version, the only way to stop the tram is to push a large man off a bridge in front of it, killing him but saving the five. Most people refuse to push — even though the arithmetic is identical.'
+    },
+    {
+      type: 'p',
+      text: 'Philosopher Judith Jarvis Thomson introduced the footbridge variant precisely to isolate this asymmetry. The difference is not logical: it is visceral. Pulling a lever is abstract and distanced; pushing a person with your hands is intimate and brutal. Brain imaging studies, including work by Joshua Greene at Harvard, show that personal force scenarios light up the medial prefrontal cortex and the amygdala — regions associated with emotional processing — far more intensely than impersonal ones. Your reversal on these scenarios is not philosophical inconsistency. It is your emotional architecture responding to a feature of the situation that pure logic does not capture.'
+    },
+    {
+      type: 'list',
+      items: [
+        'Impersonal harm (lever, button) activates utilitarian reasoning more readily',
+        'Personal force (pushing, direct contact) triggers emotional aversion regardless of outcome calculus',
+        'The gap between the two responses is larger in people with higher empathy scores',
+        'Framing the same act as "redirecting" versus "using as a means" shifts majority votes significantly',
+        'Cross-cultural data shows the lever/bridge gap holds across very different moral traditions'
+      ]
+    },
+    {
+      type: 'h2',
+      text: 'Framing Effects: The Same Dilemma, Dressed Differently'
+    },
+    {
+      type: 'p',
+      text: 'Beyond the trolley family, framing effects pervade moral judgment in ways that are difficult to detect from the inside. Studies by Amos Tversky and Daniel Kahneman demonstrated that presenting the same choice as "saves 200 lives" versus "400 people die" produces dramatically different responses, even though the two descriptions are logically equivalent. Moral dilemmas exploit this relentlessly: the word "push" versus "redirect," the word "sacrifice" versus "kill," the presence of a name versus an anonymous count — all of these shift the emotional valence of an otherwise unchanged scenario.'
+    },
+    {
+      type: 'p',
+      text: 'When you change your answer mid-dilemma, it is often because you have re-read a phrase and a different frame snapped into focus. The scenario has not changed. Your mental model of it has. This is not irrationality — it is evidence that you are sensitive to morally relevant features of the description, even ones the scenario designer did not intend to embed.'
+    },
+    {
+      type: 'h3',
+      text: 'The Role of Moral Emotions'
+    },
+    {
+      type: 'p',
+      text: 'Disgust, empathy, guilt, and indignation are not noise in the moral reasoning system — they are load-bearing structures. Research by Jonathan Haidt and Jesse Graham maps moral judgment onto six distinct foundations: care, fairness, loyalty, authority, sanctity, and liberty. Different people weight these foundations differently, and dilemmas that force trade-offs between them produce the strongest hesitation. When your gut says one thing and your inner accountant says another, you are experiencing the collision of two foundations that you hold simultaneously, neither of which you are willing to abandon cleanly.'
+    },
+    {
+      type: 'h2',
+      text: 'Reversal Is the Point'
+    },
+    {
+      type: 'p',
+      text: 'The philosopher Derek Parfit argued that moral intuitions are not obstacles to ethical clarity — they are evidence. Strong intuitions that survive reflection carry evidential weight about what matters, even when we cannot fully articulate why. The reversal you experience halfway through a hard dilemma is a version of that process compressed into seconds: an intuition fires, reflection interrogates it, and the result is either confirmation or revision. Either outcome is productive.'
+    },
+    {
+      type: 'p',
+      text: 'Moral dilemmas are not tests you pass or fail. They are structured mirrors. What they reveal is not your score on some universal ethical scale, but the particular architecture of your values: which commitments feel non-negotiable, which trade-offs you can stomach, and where your emotional responses and analytical judgments pull in different directions. The dilemma does not grade your answer. It maps your terrain.'
+    },
+    {
+      type: 'h2',
+      text: 'Next Time You Hover — Which System Do You Trust?'
+    },
+    {
+      type: 'p',
+      text: 'There is no settled consensus in moral psychology on whether System 1 or System 2 is the more reliable guide to ethical truth. Utilitarians tend to trust the calm calculation of System 2; deontologists often argue that the visceral refusal to use a person as a means — even when the math favors it — is tracking something real that consequentialist arithmetic misses. Virtue ethicists might say the answer depends on the quality of the character doing the intuiting.'
+    },
+    {
+      type: 'p',
+      text: 'What the science does suggest is this: the moment of reversal is worth pausing on. Not to second-guess yourself into paralysis, but to notice what changed. Did a new detail land? Did a different frame click into place? Did empathy for a character suddenly spike? That micro-moment of switching is where your moral cognition is most legible — to yourself and, in aggregate form, to the researchers and platforms trying to understand what humans actually value when the stakes feel real.'
+    },
+    {
+      type: 'cta',
+      label: 'Pull the lever — or not. See how the world splits.',
+      href: '/play/trolley'
+    },
+    {
+      type: 'disclaimer',
+      text: 'SplitVote presents moral dilemmas for reflection and discussion. All voting data is anonymous and aggregated. Nothing on this platform constitutes professional ethical, legal, or psychological advice.'
+    }
+  ]
+},
+  {
+  slug: 'moral-dilemmas-at-work',
+  locale: 'en',
+  title: 'Moral Dilemmas at Work: The Ethical Choices Nobody Talks About',
+  seoTitle: 'Moral Dilemmas at Work: Ethical Choices at the Office',
+  description: 'Stolen credit, covered mistakes, unfair promotions — the real moral dilemmas most people face aren\'t hypothetical. They happen at work, every day.',
+  seoDescription: 'Discover why workplace moral dilemmas are harder than textbook ethics — and how research explains the choices people make. Test your own instincts on SplitVote.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['workplace ethics', 'moral dilemmas', 'professional integrity', 'ethical decision making', 'work psychology'],
+  relatedDilemmaIds: ['stolen-credit', 'cover-coworker-error', 'rule-exception-manager', 'promotion-fire-teammate', 'ai-work-disclosure'],
+  alternateSlug: 'dilemmi-morali-al-lavoro',
+  faq: [
+    {
+      q: 'What are common moral dilemmas in the workplace?',
+      a: 'The most common workplace moral dilemmas include taking credit for others\' work, deciding whether to cover for a colleague\'s mistake, accepting a promotion that comes at a teammate\'s expense, breaking company rules to help a specific person, and deciding how much to disclose about AI assistance in your work. These are real conflicts between competing values — loyalty, fairness, honesty, and self-interest — that most employees encounter at some point in their careers.'
+    },
+    {
+      q: 'How do you handle an ethical dilemma at work?',
+      a: 'A useful framework is to first separate what is legal from what is ethical — they are not the same. Then identify whose interests are affected and how seriously. Consider what a trusted mentor would think if they watched you decide. Ask whether you could defend your choice openly, not just to your manager but to the person most harmed by your action. Finally, notice whether you are rationalising ("everyone does it") rather than reasoning — that distinction often reveals the right path.'
+    },
+    {
+      q: 'What should you do if a coworker takes credit for your work?',
+      a: 'Document your contributions with timestamps — emails, shared docs, version histories. Address the situation directly with the colleague first if the relationship allows it, since it may be unintentional. If it recurs or affects your career, raise it with your manager with specific evidence rather than general grievances. Framing it as a process question ("I want to make sure attribution is clear going forward") is often more effective than an accusation, and harder to dismiss.'
+    },
+    {
+      q: 'Is it wrong to stay silent about a coworker\'s mistake?',
+      a: 'It depends on the stakes. Staying silent about a minor error that harms no one is generally acceptable; staying silent about a mistake that could harm a customer, patient, or the public crosses into complicity. Research on moral disengagement shows that people routinely underestimate harm through diffusion of responsibility — telling themselves "someone else will catch it." If you are the person who knows, that rationalisation does not hold. The ethical question is not just what you owe your colleague, but what you owe whoever is downstream of the mistake.'
+    },
+    {
+      q: 'Why are workplace ethical dilemmas harder than philosophical thought experiments?',
+      a: 'Philosophical dilemmas like the trolley problem are designed to isolate a single variable. Workplace dilemmas are entangled: your livelihood, your relationships, power imbalances, and career consequences all interact simultaneously. You also usually have incomplete information and limited time. This is why people who reason clearly in the abstract often behave differently under real professional pressure — the conditions that produce ethical failure at work are structural, not just personal.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'The Moral Arena Nobody Warns You About'
+    },
+    {
+      type: 'p',
+      text: 'Philosophy professors love trolleys. A runaway tram, five people on the tracks, a lever you can pull. It is a clean machine for isolating one ethical variable at a time. But most people will never stand at a rail junction making life-or-death decisions. They will, however, sit in a meeting and watch a colleague present their work as his own. They will notice a teammate\'s error going out to a client and feel the pull of silence. They will be offered a promotion that requires someone else to be let go. These are the real moral dilemmas of adult life — and they happen at the office, almost every week, to ordinary people who would never describe themselves as facing an ethical crisis.'
+    },
+    {
+      type: 'p',
+      text: 'What makes workplace dilemmas particularly interesting — and particularly underexamined — is that they do not announce themselves. Nobody calls a meeting to say "we are about to navigate a conflict between loyalty and honesty." The situation just unfolds, and you decide in the moment, and then it is over. Only later, sometimes years later, does the weight of the choice become clear.'
+    },
+    {
+      type: 'h2',
+      text: 'Why Work Makes Ethics Harder Than Theory Does'
+    },
+    {
+      type: 'p',
+      text: 'In a textbook dilemma, the variables are controlled and your decision carries no personal cost. In the workplace, everything is entangled. Your livelihood is at stake. Your relationships are at stake. The person you would need to confront is also the person who signs your annual review. The error you would need to report belongs to someone whose children you have met at the company picnic. These are not incidental complications — they are the whole problem.'
+    },
+    {
+      type: 'p',
+      text: 'Researchers who study organisational ethics consistently find that context overwhelms character. Linda Treviño\'s work at Penn State showed that institutional factors — reward systems, authority signals, peer behaviour — predict ethical conduct more reliably than individual moral reasoning scores. People behave better or worse depending on the environment they are placed in, not just the values they believe they hold. This is uncomfortable. It means that identifying yourself as an honest person does not immunise you against dishonest choices when the structural pressure is strong enough.'
+    },
+    {
+      type: 'h2',
+      text: 'When Someone Else Takes the Credit'
+    },
+    {
+      type: 'p',
+      text: 'The stolen-credit scenario is one of the most common — and most psychologically charged — dilemmas in professional life. You built something. Someone else presented it and absorbed the praise. Now you are deciding whether to say something. The stakes feel asymmetric: speaking up risks the relationship, risks being seen as difficult, risks the label of someone who does not play well with others. Staying silent feels like the path of least resistance, and it is easy to rationalise: "It doesn\'t really matter. My manager probably knows anyway."'
+    },
+    {
+      type: 'p',
+      text: 'But silence compounds. What is tolerated becomes a pattern. Research on workplace fairness consistently shows that perceived attribution injustice — the sense that your contributions are not recognised — is one of the strongest predictors of disengagement and turnover. The cost of staying silent is paid over months, not in the immediate moment. And crucially, the colleague who takes credit is often not malicious; they are simply filling a narrative vacuum you left open. This does not make it right. It does make it more tractable: clear documentation and prompt attribution habits, not confrontation, are often the most effective interventions.'
+    },
+    {
+      type: 'cta',
+      label: 'Would you speak up about stolen credit? Vote now →',
+      href: '/play/stolen-credit'
+    },
+    {
+      type: 'h2',
+      text: 'The Covered Mistake: Loyalty or Complicity?'
+    },
+    {
+      type: 'p',
+      text: 'A colleague makes an error. You notice it. The error has already gone to a client, or is about to. Your colleague is a friend, or at least someone you like, and exposing the mistake will hurt them. So you stay quiet — or you quietly fix it yourself without telling anyone. This feels like kindness. It might actually be harm displacement: the risk does not disappear, it just moves downstream to whoever relies on accurate work.'
+    },
+    {
+      type: 'p',
+      text: 'The distinction philosophers draw here is between doing harm and allowing harm — a distinction most people treat as morally significant even when consequentialists argue it should not be. Covering for a colleague feels different from causing the error yourself. But if the downstream harm materialises, that distinction offers cold comfort to whoever bore the cost. The ethical calculus shifts with stakes: covering a formatting error in an internal document is categorically different from covering a dosage error in a clinical report. Most workplace situations fall somewhere in between, which is exactly what makes them dilemmas.'
+    },
+    {
+      type: 'h2',
+      text: 'The Rule-Exception Dilemma: Fairness vs. Care'
+    },
+    {
+      type: 'p',
+      text: 'Rules exist for reasons, and one of those reasons is fairness — if everyone were granted exceptions based on personal circumstance, the rule would become meaningless. But rules are written for average cases, and the person in front of you is never the average case; they are a specific human being with specific pressures. The manager who bends a deadline for someone going through a divorce is not just being kind — they are also setting an invisible precedent and potentially disadvantaging the colleague who did not ask for an exception.'
+    },
+    {
+      type: 'p',
+      text: 'Carol Gilligan\'s ethics of care and the more rule-bound Kantian tradition pull in opposite directions here. The care perspective says that relationships and context matter morally and that rigid rule-application can itself be a form of callousness. The Kantian perspective says that you cannot universalise a policy of making exceptions for people you happen to feel sympathy for. Neither position is obviously wrong. Most working managers navigate this tension implicitly, without frameworks, every day — which is why it so often produces inconsistent, quietly resented outcomes.'
+    },
+    {
+      type: 'h2',
+      text: 'Getting Promoted at Someone Else\'s Cost'
+    },
+    {
+      type: 'p',
+      text: 'Competitive advancement is built into most organisational structures: there is one role and multiple candidates. But when the process is transparent and the outcome determined by merit, most people accept it as legitimate even when they lose. The harder version is when you learn that your promotion is contingent on a teammate being let go — someone you know, perhaps someone you respect. Are you taking something, or simply accepting what was offered?'
+    },
+    {
+      type: 'p',
+      text: 'The moral weight of this scenario depends heavily on whether you played any role in engineering the outcome. Passively receiving a promotion while a colleague is made redundant is morally different from advocating for the redundancy as a precondition for your own advancement. But the psychological discomfort people feel even in the passive case is informative — it points to a real intuition that gain at another\'s specific expense carries a burden that gain from a neutral pool does not. Philosophers call this the difference between non-identity-preserving and identity-affecting harms. Most people call it feeling bad about it, and then going quiet.'
+    },
+    {
+      type: 'h2',
+      text: 'AI at Work: The Disclosure Dilemma Nobody Has Solved Yet'
+    },
+    {
+      type: 'p',
+      text: 'In just a few years, a new category of workplace ethical dilemma has emerged with almost no professional consensus around it: how much should you disclose about your use of AI tools when delivering work? If you used a language model to draft a memo, structure an analysis, or generate code that you then reviewed and revised, did you do the work? Most organisations have not answered this question formally. Most employees are making individual judgement calls in the dark.'
+    },
+    {
+      type: 'p',
+      text: 'The issue is not just honesty for its own sake. It connects to questions of skill development (are you building expertise or renting it?), client expectations (are they paying for your judgement or your output?), and competitive fairness (is undisclosed AI use an advantage that distorts evaluation?). Studies suggest norms are forming rapidly but unevenly — tech companies are far more accepting than legal or medical contexts, where provenance of reasoning matters enormously. For now, the dilemma is live and unresolved, which makes it genuinely interesting territory to navigate.'
+    },
+    {
+      type: 'h2',
+      text: 'Why Good People Make Questionable Choices at Work'
+    },
+    {
+      type: 'p',
+      text: 'Albert Bandura\'s concept of moral disengagement is perhaps the most useful single framework for understanding workplace ethical failures. Bandura identified a set of cognitive mechanisms that allow people who hold genuinely good values to behave in ways that contradict those values — without experiencing significant distress. These mechanisms include moral justification ("the client was going to find out anyway"), euphemistic labelling ("we restructured the team" rather than "we fired people to save money"), diffusion of responsibility ("it\'s the organisation\'s decision, not mine"), and dehumanisation of victims through abstraction ("the affected stakeholder").'
+    },
+    {
+      type: 'list',
+      items: [
+        'Moral justification: reframing a harmful act as serving a higher purpose',
+        'Diffusion of responsibility: attributing the decision to the group, the system, or leadership',
+        'Displacement of responsibility: "I was just following procedure"',
+        'Euphemistic labelling: sanitising the language to soften the moral weight',
+        'Advantageous comparison: "At least I\'m not doing what they do"',
+        'Dehumanisation: treating the affected person as a category rather than an individual'
+      ]
+    },
+    {
+      type: 'p',
+      text: 'What makes Bandura\'s framework so practically useful is that it is diagnostic: when you find yourself reaching for one of these mechanisms in a professional context, that is often a signal that you are navigating a moral dilemma rather than a purely logistical one. Noticing the rationalisation is the first step to examining whether it is justified.'
+    },
+    {
+      type: 'h2',
+      text: 'Legal vs. Ethical: Not the Same Frontier'
+    },
+    {
+      type: 'p',
+      text: 'A persistent confusion in professional settings is the equation of legality with ethics. If the company policy permits it, if no law is broken, if HR signs off — it must be okay. But legality sets the floor, not the ceiling. Many things that are entirely legal carry genuine moral costs: credit that goes unattributed, errors that go unreported, exceptions that are granted selectively. The law cannot anticipate every relational injury or unfairness that happens between colleagues.'
+    },
+    {
+      type: 'p',
+      text: 'The opposite error is equally real: treating every legal obligation as the complete definition of ethical behaviour leads to a brittle, compliance-driven culture that fails the moment a situation arises that the rulebook does not cover. Organisations with strong ethical cultures tend to invest in developing the judgement to handle the space between legal and right — not just the procedures that cover the clearly prohibited. That judgement is cultivated by taking individual dilemmas seriously, not by treating them as edge cases to be closed quickly.'
+    },
+    {
+      type: 'h2',
+      text: 'A Framework for Deciding Before You Have To'
+    },
+    {
+      type: 'p',
+      text: 'The most reliable way to navigate workplace moral dilemmas well is to think about them in advance, not in the heat of the moment. Several practical approaches have empirical support. The "newspaper test" — ask whether your decision would be reported as wrong by a journalist covering workplace misconduct — surfaces obviously bad choices but can miss more subtle failures. The "respected mentor" test — imagine a person you genuinely admire watching your decision — engages a more nuanced standard. The "reversibility" check — ask whether you can undo this if you turn out to be wrong — correctly weights the asymmetric cost of irreversible harms.'
+    },
+    {
+      type: 'list',
+      items: [
+        'Name the dilemma explicitly — is there a genuine conflict between values here, or just a difficult conversation?',
+        'Identify who is affected and how seriously, including people not in the room',
+        'Distinguish what you know from what you are assuming',
+        'Notice if you are rationalising rather than reasoning',
+        'Ask whether you could defend the decision openly to the person most harmed by it',
+        'Check whether there is a less harmful path you have not considered because it is inconvenient'
+      ]
+    },
+    {
+      type: 'p',
+      text: 'None of these frameworks guarantees the right answer. Genuine dilemmas are genuine precisely because competing values are both legitimate. But deliberate frameworks make it less likely that you will arrive at a decision by default — by inertia, by deference to authority, or by the rationalisation that someone else will handle it.'
+    },
+    {
+      type: 'h2',
+      text: 'The Trolley Problem Was Never the Point'
+    },
+    {
+      type: 'p',
+      text: 'Most of us will go our entire lives without standing at a rail junction. But nearly all of us will, at some point, sit in a meeting and watch someone else\'s work get claimed. We will notice an error going out with our company\'s logo on it. We will be offered something we want that comes at someone else\'s cost. We will be asked — implicitly, by silence, by the absence of any rule — whether we use AI to do our work and how much that matters.'
+    },
+    {
+      type: 'p',
+      text: 'These are the trolley problems of actual life. They are smaller and murkier and the stakes feel lower, which is exactly what makes them easier to navigate badly. The philosophical machinery built around the trolley problem — consequentialism, deontology, virtue ethics, the ethics of care — was never really about trolleys. It was always about helping people think more clearly under moral pressure. The workplace is where that pressure actually lives.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'This article discusses ethical frameworks and research findings for informational purposes. It does not constitute legal, HR, or professional conduct advice. If you face a workplace situation with legal implications, consult a qualified professional.'
+    }
+  ]
+},
+  {
+  slug: 'would-you-trust-a-robot-judge',
+  locale: 'en',
+  title: 'Would You Trust a Robot Judge?',
+  seoTitle: 'Would You Trust a Robot Judge? AI in Justice Systems',
+  description: 'From COMPAS to the EU AI Act, algorithms are already shaping who goes to prison. Here\'s what the research — and 40 million votes — reveals about trusting AI with justice.',
+  seoDescription: 'AI judges are already in courtrooms. Explore the bias, accuracy, and accountability problems with algorithms in criminal justice — and vote on the dilemma yourself.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['ai ethics', 'criminal justice', 'algorithmic bias', 'robot judge', 'ai decision making'],
+  relatedDilemmaIds: ['robot-judge', 'ai-hiring', 'innocent-juror', 'self-driving-crash', 'ai-replaces-jobs'],
+  alternateSlug: 'ti-fideresti-di-un-giudice-robot',
+  faq: [
+    {
+      q: 'Are AI judges used in real courts?',
+      a: 'Yes. Risk-scoring tools like COMPAS are used in courts across the United States to inform bail, sentencing, and parole decisions. They do not replace judges outright, but their recommendations carry significant weight in real rulings.'
+    },
+    {
+      q: 'Is AI bias in criminal justice a real problem?',
+      a: 'Research strongly suggests it is. A 2016 ProPublica investigation found that the COMPAS algorithm incorrectly flagged Black defendants as future criminals at nearly twice the rate of white defendants, raising serious fairness concerns.'
+    },
+    {
+      q: 'Can an algorithm make fair sentencing decisions?',
+      a: 'This is genuinely contested. Algorithms are consistent — they apply the same criteria every time — but consistency is not the same as fairness. If the training data reflects historical bias, the algorithm will reproduce and potentially amplify that bias.'
+    },
+    {
+      q: 'What is the COMPAS algorithm?',
+      a: 'COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) is a risk-assessment tool made by Equivant, widely used in U.S. courts. It scores defendants on their likelihood of reoffending using factors like criminal history, age, and questionnaire responses — but not race directly.'
+    },
+    {
+      q: 'Should AI be used in criminal justice?',
+      a: 'Opinions are sharply divided. Proponents argue AI reduces human inconsistency and unconscious bias. Critics argue it encodes historical injustice, lacks transparency, and removes the human judgment that justice sometimes requires. The EU AI Act classifies AI in criminal justice as high-risk and imposes strict requirements.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'The Algorithm That Sent People to Prison'
+    },
+    {
+      type: 'p',
+      text: 'In 2013, a Wisconsin man named Eric Loomis was sentenced to six years in prison. The judge cited, among other evidence, a risk score generated by a software system called COMPAS. Loomis appealed, arguing he had a constitutional right to know how the score was calculated. The Wisconsin Supreme Court disagreed. The algorithm\'s methodology was a trade secret. He had no way to challenge a number that helped determine years of his life.'
+    },
+    {
+      type: 'p',
+      text: 'This was not science fiction. It was not a dystopian thought experiment. It was American jurisprudence in 2013, and variants of this story have played out in courtrooms across the country ever since. The question of whether we should trust machines with justice is no longer hypothetical — it is administrative procedure.'
+    },
+    {
+      type: 'h2',
+      text: 'What an AI Judge Actually Is (and Isn\'t)'
+    },
+    {
+      type: 'p',
+      text: 'The term "AI judge" conjures a robot in robes, pronouncing sentences with metallic authority. Reality is both more mundane and, in some ways, more troubling. The tools in use today are risk-assessment instruments: statistical models that ingest data about a defendant — age, criminal history, employment status, answers to a questionnaire — and output a score predicting the likelihood of reoffending. Judges then use that score when deciding bail amounts, sentencing ranges, and parole eligibility.'
+    },
+    {
+      type: 'p',
+      text: 'COMPAS is the best-known example, but it is not alone. Arnold Foundation\'s Public Safety Assessment is used in dozens of U.S. jurisdictions. The Netherlands, the UK, and several Australian states have piloted similar tools. None of these systems make the final call — that remains, legally, a human judge\'s prerogative. But when a number sits in a case file and a judge is overloaded with hundreds of decisions a week, the distinction between "recommendation" and "decision" can blur in practice.'
+    },
+    {
+      type: 'h2',
+      text: 'The Bias Problem: When Data Inherits History\'s Sins'
+    },
+    {
+      type: 'p',
+      text: 'In 2016, ProPublica published a landmark investigation into COMPAS. Journalists analysed risk scores for more than 7,000 people arrested in Broward County, Florida, and compared those scores against whether defendants actually reoffended over the following two years. The results were damning. Black defendants who did not reoffend were incorrectly flagged as high-risk at nearly twice the rate of white defendants. White defendants who went on to commit new crimes were more often labelled low-risk.'
+    },
+    {
+      type: 'p',
+      text: 'Equivant, the company behind COMPAS, disputed the methodology. Other researchers — notably Northpointe itself and a team at MIT — argued that the algorithm was actually calibrated fairly, meaning its score meant the same thing regardless of race. Both sides were, in a specific technical sense, correct. The problem is that fairness in machine learning has multiple incompatible mathematical definitions, and you cannot satisfy all of them simultaneously. This is not a bug that can be patched. It is a fundamental tension baked into what it means to be fair.'
+    },
+    {
+      type: 'list',
+      items: [
+        'Black defendants were flagged as high-risk at roughly twice the rate of white defendants, according to ProPublica\'s analysis',
+        'The algorithm does not use race as an input — yet racial disparities emerged from correlated variables like neighbourhood and criminal history',
+        'Multiple peer-reviewed papers confirmed that no risk-scoring tool can simultaneously satisfy all formal definitions of statistical fairness',
+        'Defendants are rarely told their score or given meaningful opportunity to contest it',
+        'The same accuracy rate can mean very different things depending on which group bears the cost of the errors'
+      ]
+    },
+    {
+      type: 'h2',
+      text: 'Are Algorithms Actually More Accurate Than Human Judges?'
+    },
+    {
+      type: 'p',
+      text: 'One of the strongest arguments for algorithmic sentencing is that human judges are not particularly consistent. Research has shown that parole boards are more lenient right after lunch. Judges give harsher sentences on Mondays after their sports team lost. The same crime gets wildly different sentences depending on which courtroom you walk into. Proponents argue that a consistent algorithm, even an imperfect one, is preferable to capricious human intuition.'
+    },
+    {
+      type: 'p',
+      text: 'The empirical record is more complicated. A 2018 study in Science found that COMPAS was no more accurate than predictions made by random people recruited online with no legal training — a finding that received considerable attention. But subsequent meta-analyses have been more mixed. Some structured risk tools do outperform unaided clinical judgment in specific contexts. The honest answer is that accuracy depends heavily on what you are predicting, for whom, and over what time horizon. The category of "accurate" conceals enormous variation.'
+    },
+    {
+      type: 'h2',
+      text: 'When the Algorithm Is Wrong, Who Pays?'
+    },
+    {
+      type: 'p',
+      text: 'Legal accountability for algorithmic errors is, at present, mostly undefined. If a human judge makes a demonstrably unjust ruling, there are mechanisms — appeals, professional sanctions, public accountability — however imperfect. If an algorithm contributes to an unjust ruling, the trail goes cold fast. The vendor claims the judge had final authority. The judge says the score was just one factor. The company says its model is proprietary. The defendant serves the sentence.'
+    },
+    {
+      type: 'p',
+      text: 'This diffusion of responsibility is not accidental — it is one of the structural features that makes algorithmic systems attractive to institutions. When no individual is clearly culpable, accountability becomes everyone\'s problem in theory and no one\'s problem in practice. Legal scholars have begun calling this "the accountability gap," and closing it requires either new law, new transparency requirements, or both.'
+    },
+    {
+      type: 'h2',
+      text: 'Black Boxes in the Courtroom: The Right to Know Why'
+    },
+    {
+      type: 'p',
+      text: 'Due process, in most democratic legal systems, includes the right to confront evidence used against you. The Loomis case tested whether that principle extends to algorithmic scores, and the Wisconsin Supreme Court said it did not — at least not in a way that required the vendor to open its code. Critics see this as a profound rupture in legal tradition. For centuries, defendants could scrutinise witness testimony, challenge forensic evidence, and cross-examine experts. A proprietary risk score is, by design, immune to all of that.'
+    },
+    {
+      type: 'p',
+      text: 'The European Union has taken a different position. The GDPR includes a right to "meaningful information about the logic involved" when automated decisions have significant legal effects. The forthcoming AI Act goes further, classifying AI systems used in criminal justice as high-risk, requiring transparency, human oversight, and robust documentation. Whether these requirements will be enforced with meaningful teeth remains to be seen — but the regulatory philosophy represents a genuine departure from the American approach.'
+    },
+    {
+      type: 'h2',
+      text: 'Can an Algorithm Understand Justice?'
+    },
+    {
+      type: 'p',
+      text: 'Beyond the practical problems of bias and accountability lies a deeper philosophical question: is justice the kind of thing a statistical model can compute? Philosophers in the consequentialist tradition might say yes — if we can measure outcomes accurately enough, we can optimise for them. But most legal traditions embed something else: mercy, context, the recognition that two cases with identical statistics can carry entirely different moral weight because of circumstances no dataset fully captures.'
+    },
+    {
+      type: 'p',
+      text: 'A judge who hears that a defendant stole food to feed their children can weigh that differently from a defendant who stole for profit, even if both score identically on a risk instrument. Some theorists argue this kind of contextual judgment is not a deviation from justice — it is what justice is. An algorithm that cannot be moved by a compelling story is not neutral; it is inflexible in a way that the concept of equity was specifically designed to correct.'
+    },
+    {
+      type: 'h2',
+      text: 'The Same Debate, Smaller Stakes: Hiring, Credit, and Insurance'
+    },
+    {
+      type: 'p',
+      text: 'The courtroom is the most visible arena for this debate, but the same logic plays out daily in decisions with life-altering consequences that fall short of incarceration. Credit-scoring models determine who can buy a house. Hiring algorithms screen resumes before any human eye sees them. Insurance pricing tools adjust premiums based on behavioural proxies. In each case, the structural questions are identical: who audits the model, what recourse do you have when it\'s wrong, and whose historical patterns did it learn from?'
+    },
+    {
+      type: 'p',
+      text: 'The difference in criminal justice is the severity of the stakes and the coercive power of the state. When a loan algorithm rejects you, you can apply elsewhere. When a sentencing algorithm contributes to a five-year term, there is no elsewhere. This asymmetry is why courts have received the most scrutiny — and why the lessons learned there will shape how we govern algorithmic decision-making across every institution that uses it.'
+    },
+    {
+      type: 'h2',
+      text: 'What SplitVote Users Actually Chose'
+    },
+    {
+      type: 'p',
+      text: 'SplitVote puts this question to a global audience without softening it: should a robot judge determine your sentence? The split in responses is sharp and illuminating. A significant plurality choose "no" — citing fairness, transparency, and the irreducible importance of human judgment. But a meaningful minority choose "yes," and their reasoning tends to focus on the failures of the human alternative: unconscious bias, inconsistency, overburdened courts where the quality of your lawyer matters more than the quality of your case.'
+    },
+    {
+      type: 'p',
+      text: 'What the data reveals is not a clean culture war. Younger users are not uniformly more trusting of AI. Legal professionals who encounter the dilemma often vote against algorithmic authority — but so do many people with prior experience of the criminal justice system, for reasons that have nothing to do with technological scepticism. The distribution suggests people are weighing two competing fears: bias in algorithms versus bias in humans. Neither option feels safe.'
+    },
+    {
+      type: 'cta',
+      label: 'Cast your vote: should a robot judge decide your sentence?',
+      href: '/play/robot-judge'
+    },
+    {
+      type: 'h2',
+      text: 'The Regulatory Moment: From Executive Orders to the EU AI Act'
+    },
+    {
+      type: 'p',
+      text: 'Governments are beginning to catch up, though unevenly. The Biden administration\'s 2023 Executive Order on AI included provisions on equity in criminal justice algorithms and called for auditing federal use of risk-assessment tools. The Trump administration subsequently rolled back parts of that order, reflecting deep political disagreement about whether regulation or market discipline should govern AI deployment. In Congress, the Algorithmic Accountability Act — requiring impact assessments for automated decision systems — has been introduced in multiple sessions without passing.'
+    },
+    {
+      type: 'p',
+      text: 'The EU AI Act, which entered into force in 2024, represents the most comprehensive binding framework to date. It designates AI systems used for risk assessment in criminal justice as high-risk, mandating human oversight, technical documentation, and the ability to contest decisions. Whether the Act\'s requirements will translate into meaningful change in courtrooms — or remain compliance theatre — depends on enforcement capacity that most regulators are still building.'
+    },
+    {
+      type: 'h2',
+      text: 'The Question Isn\'t Whether AI Enters the Courtroom. It Already Has.'
+    },
+    {
+      type: 'p',
+      text: 'The frame of "should we allow AI in justice systems" is already outdated. COMPAS has been in use for over two decades. Hundreds of thousands of sentencing and parole decisions have been touched by algorithmic scoring. The real question — the one that carries moral weight going forward — is on whose terms AI continues to operate in these institutions, and who gets to set those terms.'
+    },
+    {
+      type: 'p',
+      text: 'That question is not primarily technical. It is political and philosophical. It asks what we think justice is for, who counts as a legitimate decision-maker, and what it means to hold power accountable when that power is distributed across code, corporations, and courts. The algorithm does not answer those questions. It inherits the answers we have already given — or failed to give — and scales them. Which is precisely why the conversation happening on platforms like SplitVote, wherever it is happening, is not a game. It is a rehearsal for governance decisions that are already being made.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'This article discusses ongoing research and regulatory developments in algorithmic criminal justice. SplitVote dilemma response data is aggregate and anonymised. Individual legal situations vary by jurisdiction — this content is for informational purposes only and does not constitute legal advice.'
+    }
+  ]
+},
+  {
+  slug: 'loyalty-vs-justice-what-the-data-says',
+  locale: 'en',
+  title: 'Loyalty vs Justice: What the Voting Data Reveals',
+  seoTitle: 'Loyalty vs Justice: What Thousands of Votes Reveal',
+  description: "The dilemma that splits people most evenly isn't about life and death — it's about who you owe something to. Here's what the data shows.",
+  seoDescription: 'SplitVote data reveals how loyalty and justice collide in real moral choices. Discover what thousands of votes say about our deepest ethical tension. Vote now.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['loyalty vs justice', 'moral foundations theory', 'moral dilemmas', 'ethics and friendship', 'in-group morality'],
+  relatedDilemmaIds: ['friend-cheats-exam', 'friend-partner-cheating', 'report-friend', 'whistleblower', 'loyalty-job'],
+  alternateSlug: 'lealta-vs-giustizia-cosa-dice-il-voto',
+  faq: [
+    {
+      q: 'Is loyalty a moral virtue?',
+      a: 'Most philosophical traditions treat loyalty as a genuine moral virtue, but a conditional one. Loyalty to a friend, institution, or group is admirable when the object of that loyalty is itself morally decent. When loyalty requires covering up harm or injustice, philosophers such as Simon Keller argue it becomes a moral vice — a form of partiality that corrupts rather than honours the relationship.'
+    },
+    {
+      q: 'What is the conflict between loyalty and justice in ethics?',
+      a: 'The conflict arises because loyalty is inherently partial — it privileges specific people — while justice demands impartiality. Covering for a friend who cheated an exam protects your relationship but harms everyone who played fair. Reporting a colleague who broke the rules serves justice but feels like betrayal. The tension is structural: the same act cannot fully honour both values simultaneously.'
+    },
+    {
+      q: 'Why do people feel more obligation to friends than strangers?',
+      a: 'Evolutionary psychology suggests in-group loyalty was adaptive: early humans who reliably defended their coalition survived better than those who treated everyone equally. Philosopher Samuel Scheffler calls these "agent-centred prerogatives" — the moral permission to weight the interests of people close to us more heavily. Most ethical frameworks, including moderate deontology and virtue ethics, accept some degree of special obligation to those we are in relationship with.'
+    },
+    {
+      q: 'What does moral foundations theory say about loyalty?',
+      a: 'Jonathan Haidt\'s Moral Foundations Theory identifies Loyalty/Betrayal as one of six foundational moral modules. People who score high on this foundation feel strong pull toward in-group solidarity, honour, and team cohesion. Research shows conservatives tend to weight loyalty more heavily than liberals, who prioritise the Care and Fairness foundations. Neither profile is irrational — they reflect genuinely different but coherent moral grammars.'
+    },
+    {
+      q: 'What does SplitVote data reveal about loyalty versus justice dilemmas?',
+      a: 'Across the loyalty-adjacent dilemmas on SplitVote — including scenarios about a friend cheating an exam, a partner\'s infidelity, and reporting a colleague — the splits cluster near 50/50 more reliably than almost any other moral category. This near-perfect division suggests loyalty versus justice sits at the exact fault line between two equally popular but incompatible moral intuitions.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'The Dilemma That Splits People More Evenly Than Death Itself'
+    },
+    {
+      type: 'p',
+      text: 'The classic trolley problem divides people sharply — pull the lever or don\'t — but most respondents, given enough time, lean toward the utilitarian answer. The dilemmas that produce the most genuinely even splits on SplitVote are quieter, more personal, and far more likely to have already happened to you. Your best friend copied their thesis. Your colleague padded the expense report. Your partner\'s old flame sent a suspicious message. Do you say something — or do you stay loyal?'
+    },
+    {
+      type: 'p',
+      text: 'These scenarios don\'t ask whether to sacrifice a stranger for the greater good. They ask something harder: how much does your relationship with someone change what you owe them? And that question, it turns out, exposes the deepest fault line in moral psychology.'
+    },
+    {
+      type: 'h2',
+      text: 'Jonathan Haidt\'s Map of the Moral Mind'
+    },
+    {
+      type: 'p',
+      text: 'In the early 2000s, social psychologist Jonathan Haidt and his colleagues proposed that human moral thinking isn\'t built on a single principle but on six distinct emotional foundations, each with evolutionary roots. Two of these foundations sit in direct tension with each other almost everywhere they appear: Loyalty/Betrayal — the pull to stand by your group, your team, your people — and Fairness/Cheating — the pull toward impartial rules that apply equally to everyone.'
+    },
+    {
+      type: 'p',
+      text: 'Neither is more "moral" than the other in any absolute sense. Haidt\'s insight was that both are real, both are ancient, and both can be activated by the same situation pointing in opposite directions. When your friend cheats on an exam, loyalty says protect them; fairness says report them. The moral discomfort you feel isn\'t confusion — it\'s two equally valid systems firing at once.'
+    },
+    {
+      type: 'h2',
+      text: 'What Thousands of SplitVote Voters Actually Chose'
+    },
+    {
+      type: 'p',
+      text: 'Three dilemmas on SplitVote probe the loyalty-justice axis directly, and all three produce splits that cluster uncannily close to 50/50. In the friend-cheats-exam scenario — your closest friend has clearly copied their work, and you know it — roughly half of voters stay silent and roughly half would report or confront. The gap between sides is rarely larger than a few percentage points, regardless of locale.'
+    },
+    {
+      type: 'p',
+      text: 'The friend-partner-cheating scenario shows a similar pattern with a slight skew: marginally more voters would tell the betrayed partner than stay out of it, but the margin is thin enough that every comment section beneath it reads like a genuine debate rather than a verdict. The report-friend dilemma — in which a friend has committed something more serious and you are the only witness — shifts the balance more toward justice, but loyalty still claims a substantial share. What the aggregate data suggests is that loyalty and justice aren\'t fringe positions for most people. They\'re two equally inhabited poles.'
+    },
+    {
+      type: 'h3',
+      text: 'When Loyalty and Justice Pull in the Same Direction'
+    },
+    {
+      type: 'p',
+      text: 'It is worth noting that loyalty and justice often don\'t conflict at all. Defending a friend who has been falsely accused is both loyal and just. Refusing to lie for a colleague who genuinely did wrong is both just and, in the longer view, loyal — it refuses to enable behaviour that will ultimately harm them. The moral drama only emerges in the genuinely hard cases, where the two values cannot be simultaneously honoured and something real must be sacrificed.'
+    },
+    {
+      type: 'h2',
+      text: 'The Science of In-Group Morality: Different Rules for Different People'
+    },
+    {
+      type: 'p',
+      text: 'Experimental moral psychology has repeatedly confirmed what most of us know intuitively: we do not apply the same moral standards to those inside our circle as to those outside it. A landmark 1994 study by Marilyn Brewer and Wendi Gardner distinguished between collective and relational self-concepts, finding that people with strong in-group identification consistently weighted in-group welfare more heavily even in zero-sum scenarios. More recent work by psychologists Molly Crockett and others using fMRI has shown that harm to in-group members activates stronger disgust responses than equivalent harm to strangers.'
+    },
+    {
+      type: 'p',
+      text: 'From an evolutionary standpoint, this asymmetry makes sense. Small-band human societies depended on reliable coalitional support; a member who treated every stranger as deserving equal moral consideration was, in the ancestral environment, potentially a liability. The "moral circle" we now extend to strangers, and to animals, and to future generations, is a cultural and intellectual achievement built on top of emotional hardware still wired for the tribe.'
+    },
+    {
+      type: 'h2',
+      text: 'Collectivist vs Individualist Cultures: Is Loyalty Universal?'
+    },
+    {
+      type: 'p',
+      text: 'Cross-cultural research adds another layer. Psychologist Geert Hofstede\'s landmark studies of work-related values across dozens of countries found that societies vary enormously on the individualism-collectivism axis — the degree to which personal identity is understood as separate from versus embedded in group membership. In highly collectivist societies, such as those in East Asia or Latin America, loyalty to family and in-group is not merely one value among many; it is structurally prior to abstract fairness principles.'
+    },
+    {
+      type: 'p',
+      text: 'This plays out in moral judgment research. Studies comparing Chinese and American participants on friendship loyalty scenarios consistently find that Chinese respondents are more likely to endorse protecting a friend over reporting wrongdoing, particularly when the wrongdoing is victimless or reputational rather than physically harmful. The implication is not that collectivist cultures are less ethical — it\'s that they are operating with a different but coherent moral grammar, one in which the integrity of relationships is itself a primary moral good.'
+    },
+    {
+      type: 'h2',
+      text: 'The Whistleblower: Loyalty to an Organisation vs Justice to the Public'
+    },
+    {
+      type: 'p',
+      text: 'The whistleblower scenario scales the loyalty-justice conflict from personal relationships to institutions. An employee discovers that their employer is causing serious harm — environmental, financial, or physical — and must decide whether to blow the whistle. Loyalty to the organisation, to colleagues, and to professional norms of confidentiality all counsel silence. Justice to those being harmed, and to society\'s interest in accountability, counsel disclosure.'
+    },
+    {
+      type: 'p',
+      text: 'On SplitVote, the whistleblower dilemma leans toward disclosure — but not by the comfortable margin you might expect. A meaningful minority consistently choose loyalty, and the comment threads suggest their reasoning is more sophisticated than blind obedience: many cite uncertainty about consequences, fear of retaliation, and the possibility that internal channels might work better than public scandal. Real whistleblower cases — from Enron to the NSA — show that this calculation is genuinely complex. Many people who stayed quiet did so not from cowardice but from a considered judgment that organisational loyalty served more people than the alternatives.'
+    },
+    {
+      type: 'h2',
+      text: 'Is Loyalty a Virtue or a Bias? Philosophers Disagree'
+    },
+    {
+      type: 'p',
+      text: 'The philosophical literature on loyalty is surprisingly contentious. Samuel Scheffler\'s influential work on "agent-centred prerogatives" defends the moral legitimacy of giving special weight to our particular attachments — to our children, friends, and communities — against the impartialist demand that we treat everyone\'s interests equally. Scheffler\'s argument is that a life in which you had no special obligations to anyone would be not just psychologically impossible but morally impoverished. Relationships constitute part of what makes us who we are, and they generate genuine moral claims.'
+    },
+    {
+      type: 'p',
+      text: 'Against this, philosopher Simon Keller has argued that genuine loyalty is rarer than we think and more morally perilous. Much of what we call loyalty, Keller contends, is actually self-interest dressed in relational language: we protect our friends partly because their disgrace reflects on us, partly because maintaining the relationship benefits us. True impartial justice, on this view, is more demanding precisely because it strips away these motivated distortions. Neither position has won the debate, because both are tracking something real: the costs of total impartiality, and the costs of unchecked partiality.'
+    },
+    {
+      type: 'h3',
+      text: 'The loyalty-job Scenario: Where Institutional and Personal Loyalty Diverge'
+    },
+    {
+      type: 'p',
+      text: 'One of SplitVote\'s most revealing loyalty scenarios asks whether you would take a better job offer even if it meant abandoning a team mid-project. Here, the loyalty tension isn\'t between justice and a friend — it\'s between loyalty to colleagues and loyalty to yourself and your career. Voters split fairly evenly, but what\'s most striking is the asymmetry of moral language: those who would stay frame it in terms of obligation and honour; those who would leave frame it in terms of personal growth and institutional impermanence. Same act, completely different moral vocabulary.'
+    },
+    {
+      type: 'h2',
+      text: 'What Your Answer Might Suggest About Your Moral Foundations'
+    },
+    {
+      type: 'p',
+      text: 'If you consistently choose loyalty over justice in the SplitVote scenarios, research suggests you are likely to score high on the Loyalty/Betrayal and Authority/Subversion foundations in Haidt\'s framework — a profile associated with prioritising group cohesion, honour, and relational integrity. You tend to think moral life is embedded in specific relationships and communities, not derivable from universal principles applied from the outside.'
+    },
+    {
+      type: 'p',
+      text: 'If you consistently choose justice over loyalty, you are likely to weight the Care/Harm and Fairness/Cheating foundations more heavily — a profile associated with concern for impartial rules, individual rights, and outcomes that can be defended to anyone regardless of their relationship to you. Neither profile is more empathetic or more principled than the other. They are different architectures for the same fundamental human concern: doing right.'
+    },
+    {
+      type: 'cta',
+      label: 'Vote: Would you report a friend who cheated?',
+      href: '/play/friend-cheats-exam'
+    },
+    {
+      type: 'h2',
+      text: 'The Real Choice: How Much Context Do Your Moral Rules Need?'
+    },
+    {
+      type: 'p',
+      text: 'The deepest insight from both the SplitVote data and the philosophical literature is that most people are not choosing between loyalty and justice as abstract principles. They are choosing how much context their moral rules require. Strict impartialists say rules should apply identically regardless of who is involved. Relationalists say rules can only be applied well when we account for the specific history and obligations that bind us to the people affected.'
+    },
+    {
+      type: 'p',
+      text: 'Most voters — and most people in real life — sit somewhere in between. They would report a stranger for the same offence they\'d excuse in a friend, not because they\'re hypocrites but because they genuinely believe relationships create moral weight. The question isn\'t whether loyalty or justice wins. It\'s how much loyalty your particular moral system allows before fairness has to intervene. And on that question, as the vote totals show, the jury remains genuinely out.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'SplitVote voting data reflects the choices of anonymous users on this platform and should not be interpreted as a representative sample of the general population. Percentages cited are approximate and may shift as new votes are cast.'
+    }
+  ]
+},
+  {
+  slug: 'trolley-problem-60-years',
+  locale: 'en',
+  title: 'The Trolley Problem at 60: What It Still Teaches Us',
+  seoTitle: 'The Trolley Problem at 60 — History, Ethics & What It Reveals',
+  description: 'Philippa Foot\'s 1967 thought experiment has outlasted most philosophy papers. Here\'s why the trolley problem still matters — and what 60 years of research have uncovered.',
+  seoDescription: 'The trolley problem turns 60. Explore its history, Judith Jarvis Thomson\'s footbridge twist, Greene\'s fMRI studies, and AI ethics. Take the dilemma yourself.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['trolley problem', 'moral philosophy', 'ethics history', 'thought experiments', 'ai ethics'],
+  relatedDilemmaIds: ['trolley', 'fat-man', 'self-driving-crash', 'innocent-juror'],
+  alternateSlug: 'problema-del-carrello-60-anni',
+  faq: [
+    {
+      q: 'Who invented the trolley problem?',
+      a: 'The trolley problem was introduced by British philosopher Philippa Foot in her 1967 paper "The Problem of Abortion and the Doctrine of Double Effect." She used it to explore the doctrine of double effect — the distinction between harm intended as a means and harm foreseen as a side effect. The "footbridge" variant, involving a large man pushed from a bridge, was introduced by Judith Jarvis Thomson in 1985.'
+    },
+    {
+      q: 'What does the trolley problem teach us about ethics?',
+      a: 'The trolley problem reveals a deep tension in moral reasoning: most people accept pulling a lever to save five at the cost of one, but recoil from pushing someone to achieve the same arithmetic outcome. This suggests our moral intuitions are not consistently rule-based. Philosophers use it to probe the difference between consequentialism (outcomes matter most) and deontology (some actions are wrong regardless of outcome). It also shows that moral judgments can shift based on physical proximity and the directness of harm.'
+    },
+    {
+      q: 'Why do people answer the trolley problem and footbridge problem differently?',
+      a: 'In the standard trolley scenario, most people say they would pull the lever — diverting the trolley to save five, killing one as a side effect. In the footbridge variant, where saving five requires physically pushing a bystander off a bridge, most people say they would not act, even though the numbers are identical. Neuroscientist Joshua Greene\'s fMRI research (2001) showed that the footbridge scenario activates brain regions associated with emotion and personal distress more strongly than the lever scenario, suggesting that the personal, physical nature of the action — not just the outcome — drives the intuitive refusal.'
+    },
+    {
+      q: 'How do self-driving cars relate to the trolley problem?',
+      a: 'Self-driving cars must be programmed with decision-making rules for unavoidable collision scenarios — effectively encoding trolley-problem logic into software. MIT\'s Moral Machine experiment (2018) collected over 40 million decisions from people in 233 countries, revealing wide cultural variation in how people want autonomous vehicles to prioritize lives. The research exposed that there is no single universal answer, complicating the design of ethical AI for situations where harm is unavoidable.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'The Thought Experiment That Outlasted Most of the Philosophy Around It'
+    },
+    {
+      type: 'p',
+      text: 'Most academic philosophy papers are read by a few hundred specialists, disputed briefly, and quietly forgotten. Philippa Foot\'s 1967 scenario about a runaway trolley has instead colonised undergraduate syllabuses, neuroscience labs, automotive engineering departments, and the comment sections of the internet. Sixty years after its publication, the trolley problem is not merely alive — it has become the most recognised moral thought experiment in history, a shared cultural shorthand for the collision between cold arithmetic and something that feels irreducibly human.'
+    },
+    {
+      type: 'p',
+      text: 'Why? The simplest answer is that the scenario crystallises a genuine conflict rather than manufacturing a fake one. It does not ask you to imagine a world operating by different laws of physics. It asks only that you imagine a moment of terrible choice — and then confronts you with the fact that your answer probably does not survive a minor variation in the setup.'
+    },
+    {
+      type: 'h2',
+      text: 'Foot\'s Original Formulation: It Was Never Really About Trolleys'
+    },
+    {
+      type: 'p',
+      text: 'Philippa Foot did not sit down in 1967 with the goal of creating an internet meme. She was working through a much thornier problem: the doctrine of double effect, a principle with roots in Aquinas that holds it can be permissible to cause harm as a foreseen but unintended side effect of achieving a good outcome, even when it would be impermissible to cause the same harm as a means to the same end. Foot introduced the trolley scenario in "The Problem of Abortion and the Doctrine of Double Effect" as a vehicle — pun unavoidable — for testing where that doctrine held and where it cracked.'
+    },
+    {
+      type: 'p',
+      text: 'In her original version, the driver of a runaway tram can steer onto a side track, killing one worker, or continue straight, killing five. Most readers agreed the driver should turn. Foot contrasted this with a surgeon who might kill one healthy patient to harvest organs and save five dying ones — a case that felt obviously monstrous despite identical arithmetic. Her question was precise: what makes the tram case acceptable while the organ case is not? The answer she pursued had to do with the direction of harm: in the tram scenario, the one death is a side effect; in the organ scenario, it is the mechanism. The trolley problem was, from its birth, a tool for dissecting moral logic — not a puzzle with a correct answer.'
+    },
+    {
+      type: 'h2',
+      text: 'Thomson\'s Footbridge: Same Numbers, Opposite Gut'
+    },
+    {
+      type: 'p',
+      text: 'Judith Jarvis Thomson sharpened the experiment considerably with her 1985 paper "The Trolley Problem," published in the Yale Law Journal. Thomson introduced what philosophers now call the footbridge variant: you are standing on a bridge above the tracks, next to a large stranger. The trolley is coming. The only way to stop it and save five workers is to push the stranger off the bridge — his body will halt the trolley, but he will die. Would you push him? The vast majority of people, across cultures and decades of replication, say no.'
+    },
+    {
+      type: 'p',
+      text: 'The arithmetic is indistinguishable from the original: one life against five. Yet the intuition reverses. This is not a quirk of the experiment — it is the finding. Thomson\'s variation exposed a fracture in moral reasoning that has kept philosophers and, later, cognitive scientists occupied for four decades. Something about personal physical force, about using a body as an instrument, triggers a revulsion that pulling a lever does not. The question of why became the next sixty years of work.'
+    },
+    {
+      type: 'h2',
+      text: 'When Neuroscience Entered the Trolley Car'
+    },
+    {
+      type: 'p',
+      text: 'Joshua Greene, then a Princeton graduate student, put people inside fMRI scanners in 2001 and presented them with trolley-style dilemmas. His findings, published in Science, were striking: the footbridge scenario lit up regions of the brain associated with emotion and social cognition — the medial prefrontal cortex and posterior cingulate — far more intensely than the impersonal lever scenario. Greene interpreted this through the lens of what he called dual-process moral psychology: fast, emotional intuitions generated by one system clash with slower, deliberative utilitarian reasoning generated by another. When the emotional system wins, we refuse to push. When we override it — and some people do — we tend to give more consequentialist justifications.'
+    },
+    {
+      type: 'p',
+      text: 'Greene\'s work was controversial — some philosophers argued he was committing a naturalistic fallacy by using brain data to adjudicate between moral theories — but it opened a new empirical programme. Moral psychology became a legitimate science, not just a branch of armchair speculation. The trolley problem had become a laboratory instrument.'
+    },
+    {
+      type: 'h2',
+      text: 'Trolleyology Goes to Silicon Valley'
+    },
+    {
+      type: 'p',
+      text: 'By the 2010s, the thought experiment had migrated from seminars to engineering offices. Self-driving car developers faced genuine versions of the dilemma: what decision rules should an autonomous vehicle follow when a collision is unavoidable and the algorithm must, in effect, choose who bears the risk? The question is not hypothetical. It sits inside real software deployed on public roads.'
+    },
+    {
+      type: 'p',
+      text: 'MIT\'s Moral Machine project, launched in 2014 and publishing its landmark results in Nature in 2018, collected over 40 million moral decisions from participants in 233 countries. The data revealed something uncomfortable for anyone hoping to encode a universal ethical standard: preferences varied dramatically by culture, geography, and socioeconomic context. In some regions, participants prioritised younger lives; in others, higher-status individuals received implicit protection. In collectivist cultures, group survival was weighted differently than in individualistic ones. The trolley problem, scaled to the size of the global internet, did not produce convergence. It produced a map of moral heterogeneity.'
+    },
+    {
+      type: 'list',
+      items: [
+        'Western participants tended to prioritise saving the most lives regardless of age or status',
+        'East Asian participants showed stronger deference to elders compared to Western samples',
+        'Latin American and French samples penalised jaywalkers more heavily in collision scenarios',
+        'Across all cultures, humans and children were consistently valued over animals',
+        'No single ethical rule commanded majority support across all 233 countries studied'
+      ]
+    },
+    {
+      type: 'h2',
+      text: 'The Critics Have a Point — And It\'s Worth Hearing'
+    },
+    {
+      type: 'p',
+      text: 'Not everyone found the trolleyology boom illuminating. Philosopher Peter Unger, in his 1996 book "Living High and Letting Die," argued that intuitions elicited by trolley problems are artefacts of the scenarios themselves — morally irrelevant features like physical distance or the number of causal steps between action and outcome were doing the ethical work, not any principled distinction. Unger\'s "physical belief" hypothesis suggested that people\'s responses track shallow physical cues, not moral truths. On this view, the experiment does not teach us what ethics requires; it teaches us how badly calibrated our gut reactions are.'
+    },
+    {
+      type: 'p',
+      text: 'There is also a practical objection. Real emergencies rarely resemble trolley scenarios. Paramedics, pilots, and soldiers making split-second decisions operate under time pressure, incomplete information, and the weight of training — not the sterile binary of a thought experiment with stipulated certainty. Studies of actual decision-making in crisis situations suggest people rely heavily on pattern recognition and procedural rules, not real-time utilitarian calculation. The trolley problem, critics argue, may reveal something about moral intuitions without revealing much about moral action.'
+    },
+    {
+      type: 'h2',
+      text: 'What Makes a Thought Experiment Last Sixty Years?'
+    },
+    {
+      type: 'p',
+      text: 'The durability of the trolley problem is not accidental. It survives because it does something rare: it makes a structural feature of ethical reasoning visible without requiring any technical vocabulary. You do not need to know what consequentialism or deontology mean to feel the pull of both when you encounter the scenario. The experiment renders the abstract concrete, the philosophical personal. That is extraordinarily difficult to achieve, and most thought experiments fail at it.'
+    },
+    {
+      type: 'p',
+      text: 'At its deepest level, the trolley problem is a question about whether our moral rules are rules or heuristics. If they are genuine rules — inviolable constraints on action — then the footbridge refusal is principled and the lever-pull is a concession to the doctrine of double effect. If they are heuristics — evolved intuitions that generally track good outcomes but can misfire — then our reluctance to push the large stranger is a cognitive bias to be examined, not a moral insight to be trusted. Both views have serious defenders. Neither has won. That unresolved tension is why the problem is still being taught, still being researched, and still being argued about in comment sections at midnight.'
+    },
+    {
+      type: 'h2',
+      text: 'How SplitVote Users Split: A 50/50 Fracture After Millions of Votes'
+    },
+    {
+      type: 'p',
+      text: 'When SplitVote users encounter the trolley dilemma, the results are striking — not because one side dominates, but because it remains one of the most evenly divided questions on the entire platform. Despite generations of philosophical argument, empirical research, and cultural saturation, the scenario continues to cleave voters almost exactly in half. The lever-pullers and the non-pullers coexist in near-perfect equilibrium, a statistical reflection of the same tension Foot identified in 1967.'
+    },
+    {
+      type: 'p',
+      text: 'What the data also shows is the variability by demographic and by how users arrive at the question. Users who have already encountered the fat-man variant — where the scenario requires direct physical contact — become significantly less likely to pull the lever in the original. Moral intuitions, it turns out, are not isolated; they shift in response to context, sequence, and framing. SplitVote captures that fluidity in real time, across a genuinely global population, in a way that laboratory experiments rarely can.'
+    },
+    {
+      type: 'cta',
+      label: 'Take the trolley dilemma — see how you compare to everyone else',
+      href: '/play/trolley'
+    },
+    {
+      type: 'h2',
+      text: 'The Diagnostic That Became a Mirror'
+    },
+    {
+      type: 'p',
+      text: 'Philippa Foot died in 2010, having watched her trolley scenario become something she never fully anticipated: a cultural touchstone, a neuroscience instrument, a design brief for AI engineers, and a litmus test for moral personality. She remained skeptical, to the end, of overconfident moral theorising — a philosopher who used the thought experiment to expose complexity, not to resolve it. That intellectual humility may be the most important thing the trolley problem models.'
+    },
+    {
+      type: 'p',
+      text: 'Sixty years on, the scenario has not told us what the right answer is. It has done something more valuable: it has shown us that we disagree, that our disagreement is structured and predictable, and that the disagreement itself is philosophically significant. A thought experiment that makes us see our own inconsistency clearly is not a failure. It is doing exactly what philosophy should do.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'This article discusses moral philosophy, cognitive science research, and AI ethics for educational purposes. Vote data referenced reflects anonymised aggregate results from SplitVote users and does not constitute a representative sample of any population.'
+    }
+  ]
+},
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -10908,6 +11779,860 @@ const IT_POSTS: BlogPost[] = [
       },
     ],
   },
+
+  {
+  slug: 'perche-cambi-risposta-a-meta-dilemma',
+  locale: 'it',
+  title: 'Perché cambi risposta a metà di un dilemma morale',
+  seoTitle: 'Perché cambi idea nei dilemmi morali | Psicologia della scelta',
+  description: 'Il cursore si ferma, poi torna indietro. La psicologia spiega perché invertire la scelta a metà di un dilemma morale rivela più di qualsiasi risposta definitiva.',
+  seoDescription: 'Perché il tuo cervello inverte la scelta a metà di un dilemma morale? Kahneman, Haidt e i dati reali spiegano cosa succede davvero. Scopri la tua bussola morale.',
+  date: '2026-06-16',
+  readingTime: 6,
+  tags: ['psicologia morale', 'dilemmi etici', 'sistema 1 sistema 2', 'cambio di idea', 'moral dumbfounding'],
+  relatedDilemmaIds: ['trolley', 'fat-man', 'organ-harvest', 'mercy-kill', 'innocent-juror'],
+  alternateSlug: 'why-you-change-your-mind',
+  faq: [
+    {
+      q: 'Perché cambio idea a metà di un dilemma morale?',
+      a: 'Cambiare idea a metà di un dilemma morale è una risposta normale e psicologicamente sana. Il cervello elabora le scelte etiche su due livelli: una reazione emotiva immediata (Sistema 1) e un ragionamento deliberato (Sistema 2). Quando i due sistemi entrano in conflitto, l\'esitazione — e l\'inversione della scelta — è il segno che entrambi stanno lavorando.'
+    },
+    {
+      q: 'Esitare su domande etiche è un segno di debolezza morale?',
+      a: 'No, al contrario. La ricerca in psicologia morale suggerisce che le persone che esitano di fronte a dilemmi etici mostrano maggiore sensibilità morale rispetto a quelle che rispondono in modo automatico. L\'esitazione indica che si stanno ponderando valori in conflitto reale, non che si sia privi di bussola morale.'
+    },
+    {
+      q: 'Cos\'è il moral dumbfounding?',
+      a: 'Il moral dumbfounding è un fenomeno descritto dallo psicologo Jonathan Haidt: le persone esprimono un giudizio morale forte ma non riescono a giustificarlo razionalmente quando vengono messe alle strette. Continuano ad affermare che qualcosa è sbagliato anche dopo che ogni obiezione razionale è stata smontata, rivelando che l\'intuizione emotiva precede e guida il ragionamento morale consapevole.'
+    },
+    {
+      q: 'Il problema del carrello e il problema del ponte sono la stessa cosa?',
+      a: 'Strutturalmente sì: in entrambi i casi si tratta di sacrificare una persona per salvarne cinque. Eppure la maggior parte delle persone risponde diversamente ai due scenari. La differenza non è logica ma emotiva: nel caso del ponte si agisce fisicamente su una persona, il che attiva circuiti empatici più profondi e porta spesso a invertire la scelta.'
+    },
+    {
+      q: 'Cosa rivelano i dilemmi morali su chi siamo?',
+      a: 'I dilemmi morali non misurano la correttezza delle risposte — non esiste una risposta oggettivamente giusta — ma rivelano quali valori si mettono al primo posto quando due principi etici entrano in conflitto: utilità collettiva versus inviolabilità della persona, dovere versus conseguenze, lealtà versus imparzialità.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'Il momento in cui il cursore si ferma — e torna indietro'
+    },
+    {
+      type: 'p',
+      text: 'Conosci quella frazione di secondo. Stai leggendo un dilemma, la risposta sembra ovvia, il dito è già sul pulsante — e poi qualcosa si blocca. Il cursore si ferma, oppure hai già selezionato un\'opzione e la stai fissando come se non riconoscessi più la tua stessa scelta. Poi cambi. Non perché non hai capito la domanda: proprio perché l\'hai capita troppo bene.'
+    },
+    {
+      type: 'p',
+      text: 'Questo momento di inversione è uno dei segnali più interessanti che la psicologia morale possa osservare. Non è indecisione nel senso debole del termine — non è come scegliere tra due pizze al menu. È il segno che dentro di te stanno lavorando contemporaneamente due sistemi che raramente si mettono d\'accordo.'
+    },
+    {
+      type: 'h2',
+      text: 'Due cervelli in un cranio: Kahneman e il conflitto interiore'
+    },
+    {
+      type: 'p',
+      text: 'Daniel Kahneman, premio Nobel per l\'economia e uno degli psicologi più influenti del XX secolo, ha trascorso decenni a documentare come il nostro cervello utilizzi due modalità di elaborazione radicalmente diverse. Il Sistema 1 è veloce, automatico, emotivo: produce risposte in millisecondi e lo fa senza sforzo consapevole. Il Sistema 2 è lento, deliberato, analitico: richiede attenzione, consuma energia mentale e arriva sempre in ritardo.'
+    },
+    {
+      type: 'p',
+      text: 'I dilemmi morali sono uno dei pochi contesti in cui i due sistemi entrano in aperto conflitto, in modo visibile e misurabile. Il Sistema 1 legge «cinque persone stanno per morire» e produce immediatamente una risposta emotiva di allarme. Il Sistema 2 legge l\'intero scenario, inizia a scomporre le implicazioni etiche, e arriva a una conclusione diversa. Quando le due conclusioni non coincidono, il cervello esita. E quella esitazione — quell\'inversione del cursore — è esattamente il conflitto che diventa osservabile.'
+    },
+    {
+      type: 'h3',
+      text: 'Perché il Sistema 1 non ha sempre torto'
+    },
+    {
+      type: 'p',
+      text: 'Sarebbe comodo pensare che il Sistema 2 sia sempre quello affidabile: più lento, più razionale, più corretto. Ma la ricerca non lo conferma in modo così netto. In molte situazioni etiche, la reazione emotiva immediata cattura qualcosa di reale che il ragionamento astratto rischia di perdere: la concretezza della sofferenza, l\'irreversibilità di un\'azione, il valore intrinseco di una persona al di là dei calcoli numerici. Cambiare idea sotto l\'influenza del Sistema 2 non significa necessariamente avvicinarsi alla risposta «giusta» — significa spostare il peso da una sensibilità morale a un\'altra.'
+    },
+    {
+      type: 'h2',
+      text: 'Haidt e la scoperta scomoda: prima si decide, poi si giustifica'
+    },
+    {
+      type: 'p',
+      text: 'Negli anni Novanta lo psicologo Jonathan Haidt condusse una serie di esperimenti destinati a diventare classici. Presentò ai partecipanti scenari moralmente disturbanti ma privi di vittime reali — come mangiare un cane morto di cause naturali, o pulire il bagno con la bandiera nazionale — e chiese loro di giustificare il loro giudizio etico. Il risultato fu inaspettato: la quasi totalità delle persone giudicava immediatamente gli scenari come «sbagliati» o «disgustosi», ma non riusciva a spiegare perché in modo logicamente coerente.'
+    },
+    {
+      type: 'p',
+      text: 'Haidt chiamò questo fenomeno «moral dumbfounding»: uno stato di stupore morale in cui la persona continua a insistere che qualcosa è sbagliato anche dopo che ogni obiezione razionale è stata sistematicamente smontata. Il punto rivoluzionario della sua ricerca non era che le persone fossero irrazionali, ma che il ragionamento morale consapevole è spesso post-hoc: arriva dopo che l\'intuizione emotiva ha già emesso il suo verdetto, e serve principalmente a giustificarlo, non a formarlo.'
+    },
+    {
+      type: 'p',
+      text: 'Questo cambia profondamente il modo in cui interpretiamo il cambio di risposta nei dilemmi. Se la prima risposta è spesso dettata dall\'intuizione, e la seconda dal ragionamento razionalizzante, nessuna delle due è necessariamente più «vera» — sono due facce dello stesso giudizio morale, espresse da livelli diversi della stessa persona.'
+    },
+    {
+      type: 'h2',
+      text: 'Cosa dicono i dati di SplitVote: l\'esitazione è informazione'
+    },
+    {
+      type: 'p',
+      text: 'Su SplitVote, i pattern di votazione mostrano qualcosa di coerente con la letteratura psicologica: gli scenari che generano più inversioni di scelta — quelli in cui una percentuale significativa di utenti modifica la propria risposta dopo averla selezionata — non sono i più confusi o mal formulati. Sono i più eticamente densi. Il trolley problem, il dilemma dell\'organo, l\'eutanasia: tutti scenari in cui valori fondamentali confliggono in modo reale e irrisolvibile.'
+    },
+    {
+      type: 'p',
+      text: 'L\'esitazione, in questo senso, è un segnale di sensibilità morale genuina, non di incertezza intellettuale. Chi risponde in modo immediato e sicuro a un dilemma come il trapianto d\'organi — «ovvio, salvo le cinque persone» oppure «mai, è omicidio» — potrebbe semplicemente non aver attivato entrambi i sistemi. Chi esita, chi cambia, chi torna sulla scelta, sta elaborando davvero il conflitto che il dilemma è stato costruito per sollevare.'
+    },
+    {
+      type: 'h2',
+      text: 'Trolley vs ponte: stessa matematica, emozioni opposte'
+    },
+    {
+      type: 'p',
+      text: 'Il confronto tra il classico problema del carrello e la sua variante del ponte pedonale è diventato un banco di prova standard per la psicologia morale. Nello scenario originale, devii un tram su un binario secondario: muore una persona invece di cinque. Nella variante del ponte, spingi una persona giù da un cavalcavia per fermare il tram con il suo corpo: il risultato numerico è identico. Eppure la stragrande maggioranza delle persone considera accettabile la prima azione e inaccettabile la seconda.'
+    },
+    {
+      type: 'p',
+      text: 'Da un punto di vista strettamente consequenzialista, non c\'è differenza: una vita contro cinque. Ma il cervello non ragiona in modo consequenzialista puro. Nel caso del ponte, si usa fisicamente il corpo di una persona come strumento, si stabilisce un contatto diretto, si compie un\'azione che attiva i circuiti neurali legati all\'empatia e alla violazione dell\'inviolabilità corporea. Il Sistema 1 si oppone con forza, e molte persone — che avevano appena detto di sì al deviare il tram — si trovano a dire no, quasi senza capire perché. Poi cambiano ancora. Poi tornano al no. Il cursore oscilla.'
+    },
+    {
+      type: 'h3',
+      text: 'Non è incoerenza: è sensibilità a contesti diversi'
+    },
+    {
+      type: 'p',
+      text: 'La filosofa Judith Jarvis Thomson, che ha contribuito a formalizzare questi scenari negli anni Ottanta, non li ha mai pensati come test di coerenza logica. Servivano a isolare variabili eticamente rilevanti — contatto fisico, intenzionalità, uso strumentale di una persona — e a mostrare che la morale umana è sensibile a queste differenze in modo sistematico, non arbitrario. Cambiare risposta tra il trolley e il ponte non è una contraddizione: è la prova che si distinguono moralmente situazioni che la matematica considera equivalenti.'
+    },
+    {
+      type: 'h2',
+      text: 'Il cambio di risposta È il punto: i dilemmi come specchi'
+    },
+    {
+      type: 'p',
+      text: 'C\'è una tentazione ricorrente quando si parla di dilemmi morali: cercare la risposta corretta. Pensare che da qualche parte esista la soluzione giusta, e che il compito sia trovarla. Ma i dilemmi morali classici sono stati costruiti precisamente per resistere a questa tentazione — per mettere in conflitto principi etici che nella vita ordinaria non si scontrano mai così frontalmente, e rendere impossibile soddisfarli entrambi.'
+    },
+    {
+      type: 'p',
+      text: 'In questo senso, il cambio di risposta non è un errore da correggere. È l\'esperienza del dilemma stesso che funziona. Quando inverti la scelta, non stai fallendo il test: stai scoprendo in tempo reale quale dei tuoi valori pesa di più in quel contesto specifico, e quanto siano difficili da tenere insieme. Questo è esattamente ciò che un dilemma morale ben costruito deve fare.'
+    },
+    {
+      type: 'p',
+      text: 'I dati aggregati di piattaforme come SplitVote mostrano qualcosa di affascinante: su alcuni dilemmi le risposte si dividono quasi al 50%, con variazioni minime tra culture, generi e fasce d\'età. Non perché le persone non sappiano cosa pensare, ma perché il conflitto di valori incorporato nel dilemma è genuinamente irrisolvibile — e persone ragionevoli, oneste e moralmente serie continuano a dividersi su di esso.'
+    },
+    {
+      type: 'cta',
+      label: 'Prova il trolley problem e osserva la tua esitazione',
+      href: '/it/play/trolley'
+    },
+    {
+      type: 'h2',
+      text: 'La prossima volta che esiti: di quale sistema ti fidi?'
+    },
+    {
+      type: 'p',
+      text: 'La domanda che resta aperta — e che la psicologia morale non ha ancora risolto in modo definitivo — è quale dei due sistemi dovremmo seguire quando confliggono. Kahneman stesso ha sottolineato che il Sistema 2 non è automaticamente più affidabile: è più lento, ma anche più vulnerabile alle razionalizzazioni post-hoc, alla pressione sociale, alla ricerca di coerenza apparente. Il Sistema 1 cattura intuizioni morali che possono contenere saggezza evolutiva e culturale accumulata nel tempo.'
+    },
+    {
+      type: 'p',
+      text: 'Forse la risposta più onesta è che la domanda stessa è mal posta. Non si tratta di scegliere tra emozione e ragione come se fossero avversari. Si tratta di imparare a leggere entrambi i segnali con attenzione: cosa sta dicendo la reazione immediata? Cosa aggiunge il ragionamento deliberato? Dove i due si incontrano — o dove divergono in modo irriducibile — è lì che si trova qualcosa di genuinamente importante su come si è fatti moralmente.'
+    },
+    {
+      type: 'p',
+      text: 'La prossima volta che il cursore si ferma a metà di un dilemma, non affrettarti a correggere l\'esitazione. Osservala. Chiedi da dove viene. E poi scegli — sapendo che la scelta stessa è già una risposta su chi sei.'
+    },
+    {
+      type: 'list',
+      items: [
+        'L\'esitazione nei dilemmi morali indica conflitto tra Sistema 1 ed Sistema 2, non confusione',
+        'Secondo Haidt, i giudizi morali sono spesso intuitivi: il ragionamento arriva dopo, a giustificare',
+        'Il trolley e il ponte sono matematicamente identici ma emotivamente opposti — e questo è significativo',
+        'Cambiare risposta non è incoerenza: è sensibilità a variabili eticamente rilevanti',
+        'I dilemmi servono a rivelare conflitti tra valori, non a trovare risposte oggettivamente corrette',
+        'L\'esitazione è un indicatore di profondità morale, non di debolezza'
+      ]
+    },
+    {
+      type: 'disclaimer',
+      text: 'Questo articolo ha scopo divulgativo. I riferimenti a ricerche e studiosi citati (Kahneman, Haidt, Thomson) si basano su pubblicazioni scientifiche consolidate; i dati comportamentali di SplitVote riflettono pattern aggregati anonimi della piattaforma e non costituiscono dati clinici o diagnostici.'
+    }
+  ]
+},
+  {
+  slug: 'dilemmi-morali-al-lavoro',
+  locale: 'it',
+  title: 'Dilemmi morali al lavoro: le scelte etiche che nessuno discute',
+  seoTitle: 'Dilemmi morali al lavoro: cosa faresti davvero?',
+  description: "Dal credito rubato all'errore coperto: i dilemmi etici che affrontiamo ogni giorno in ufficio sono più difficili di qualsiasi caso da manuale.",
+  seoDescription: "Scopri i dilemmi morali più comuni sul lavoro, dalla lealtà al collega alla trasparenza sull'IA. Metti alla prova le tue scelte su SplitVote.",
+  date: '2026-06-16',
+  readingTime: 6,
+  tags: ['dilemmi morali lavoro', 'etica professionale', 'scelte difficili ufficio', 'psicologia morale', 'dilemmi etici quotidiani'],
+  relatedDilemmaIds: ['stolen-credit', 'cover-coworker-error', 'rule-exception-manager', 'promotion-fire-teammate', 'ai-work-disclosure'],
+  alternateSlug: 'moral-dilemmas-at-work',
+  faq: [
+    {
+      q: 'Quali sono i dilemmi morali più comuni sul lavoro?',
+      a: 'I dilemmi etici più frequenti in ambito lavorativo includono: prendersi o cedere il merito di un lavoro altrui, coprire o segnalare un errore di un collega, scegliere tra l\'applicazione rigida di una regola e l\'eccezione umana, e decidere se dichiarare l\'uso dell\'IA in un compito assegnato. Sono situazioni in cui valori legittimi entrano in conflitto — lealtà, onestà, equità, autoprotezione — senza una risposta universalmente corretta.'
+    },
+    {
+      q: 'Come si gestisce un dilemma etico al lavoro?',
+      a: 'Un metodo utile è chiedersi: chi viene danneggiato e in che misura? Qual è la differenza tra ciò che è legale e ciò che è giusto in questa situazione specifica? Cosa farebbe una persona che rispetto in questo contesto? Prendere tempo, evitare la decisione sotto pressione emotiva immediata e, quando possibile, cercare un interlocutore neutro aiuta a uscire dalla paralisi.'
+    },
+    {
+      q: 'Cosa fare se un collega si prende il merito del tuo lavoro?',
+      a: 'Le opzioni principali sono tre: affrontare il collega direttamente in privato, documentare il proprio contributo e coinvolgere il responsabile, oppure assorbire la situazione valutando se il costo relazionale del confronto supera il danno subito. Non esiste una risposta giusta uguale per tutti: dipende dalla cultura aziendale, dalla relazione con il collega e dalla rilevanza del riconoscimento per la propria carriera.'
+    },
+    {
+      q: 'È sbagliato tacere sull\'errore di un collega?',
+      a: 'Dipende dalla gravità dell\'errore e da chi ne subisce le conseguenze. Se l\'errore riguarda solo processi interni e il collega può correggerlo, il silenzio può essere una forma di lealtà ragionevole. Se invece il danno ricade su clienti, terze parti o sull\'organizzazione stessa, il silenzio diventa complicità attiva. La ricerca sul disimpegno morale mostra che in questi casi le persone tendono a minimizzare il danno per proteggersi dal disagio del conflitto.'
+    },
+    {
+      q: 'Bisogna dichiarare l\'uso dell\'IA al lavoro?',
+      a: 'Non esiste ancora una norma legale uniforme in Italia o in Europa sull\'obbligo di dichiarare l\'uso di strumenti di IA nei compiti professionali, salvo settori specifici. Sul piano etico, la questione dipende dal contesto: se il datore di lavoro o il cliente si aspetta un lavoro interamente umano, non dichiararlo può configurare una forma di inganno. Molte aziende stanno introducendo policy interne proprio per colmare questo vuoto.'
+    }
+  ],
+  content: [
+    {
+      type: 'h2',
+      text: 'L\'arena morale più comune non è un binario ferroviario: è il tuo ufficio'
+    },
+    {
+      type: 'p',
+      text: 'Il problema del tram è entrato nei libri di testo, nei podcast e nei test di filosofia universitari. Ma quante volte nella vita ti sei trovato davanti a un carrello lanciato a tutta velocità? Probabilmente mai. Ti sei trovato, invece, davanti a un collega che in riunione ha presentato il tuo lavoro come proprio. O davanti all\'errore di qualcuno che stimi e che potresti coprire con una parola sola. Questi sono i veri dilemmi morali della vita adulta — non i casi da manuale, ma le situazioni in cui relazioni, reddito e identità professionale si intrecciano in modi che nessun corso di etica ha mai preparato davvero a gestire.'
+    },
+    {
+      type: 'p',
+      text: 'I dilemmi lavorativi sono sottovalutati proprio perché sembrano banali rispetto alle grandi questioni filosofiche. In realtà sono più difficili, non meno. Coinvolgono persone reali che ci vedono ogni giorno, gerarchie con cui dobbiamo convivere, e conseguenze economiche concrete. È esattamente per questo che meritano una riflessione seria.'
+    },
+    {
+      type: 'h2',
+      text: 'Perché i dilemmi sul lavoro sono più difficili dei casi da manuale'
+    },
+    {
+      type: 'p',
+      text: 'Nei casi filosofici classici, gli attori sono anonimi e le variabili sono controllate. Sul lavoro, invece, chi ti chiede di coprire un errore è la stessa persona che ti ha aiutato durante la settimana più difficile dell\'anno scorso. Il manager che potrebbe beneficiare della tua omissione controlla la tua valutazione annuale. Il collega che si è preso il merito del tuo progetto è anche quello con cui pranzi ogni giorno. Le relazioni rendono ogni scelta moralmente più costosa.'
+    },
+    {
+      type: 'p',
+      text: 'A questo si aggiunge la dimensione del potere. Denunciare un problema verso l\'alto — verso un superiore, un cliente, un consiglio di amministrazione — implica rischi asimmetrici che i casi da manuale non contemplano. Studi sulla voce dei dipendenti nelle organizzazioni mostrano che le persone tagliano sistematicamente i costi attesi della parola onesta, spesso perché li sopravvalutano, ma talvolta perché li sottovalutano nel senso opposto. L\'incertezza stessa è parte del dilemma.'
+    },
+    {
+      type: 'h2',
+      text: 'Il credito rubato: quando il silenzio ha un prezzo'
+    },
+    {
+      type: 'p',
+      text: 'Immagina di aver lavorato settimane su un\'analisi. In riunione, il tuo collega la presenta senza citarti. Il responsabile lo elogia. Tu sei lì, muto. Parlare in quel momento significa interrompere una riunione, imbarazzare qualcuno, rischiare di sembrare piccino. Assorbirlo significa normalizzare una dinamica che potrebbe ripetersi.'
+    },
+    {
+      type: 'p',
+      text: 'Questo è uno dei dilemmi lavorativi più diffusi, e quasi nessuno lo affronta con un piano. La letteratura organizzativa distingue tra confronto costruttivo — affrontare il collega in privato, chiedere chiarimenti, stabilire aspettative per il futuro — e confronto distruttivo, che mira a punire o umiliare. Il primo ha probabilità molto più alte di produrre un cambiamento reale senza deteriorare il clima. Ma richiede una cosa rara: la capacità di parlare di sé senza attaccare l\'altro.'
+    },
+    {
+      type: 'h2',
+      text: 'Coprire l\'errore di un collega: lealtà o complicità?'
+    },
+    {
+      type: 'p',
+      text: 'Un collega ha commesso un errore. Lo sai. Puoi coprirlo con un piccolo aggiustamento, o puoi segnalarlo. Se l\'errore non ha conseguenze esterne, coprirlo sembra un gesto di solidarietà — il tipo di protezione reciproca che tiene insieme i team. Se invece l\'errore può danneggiare un cliente, un paziente, un partner, o l\'organizzazione stessa, il silenzio cambia natura: diventa complicità attiva.'
+    },
+    {
+      type: 'p',
+      text: 'La difficoltà sta nel valutare la soglia. Gli studi sul comportamento non etico nelle organizzazioni mostrano che le persone tendono a minimizzare progressivamente la gravità percepita degli errori altrui — specialmente quando provano empatia o debito di gratitudine verso il collega coinvolto. Questo non è un difetto morale: è un meccanismo cognitivo normale. Riconoscerlo è già metà del lavoro di valutazione.'
+    },
+    {
+      type: 'h2',
+      text: 'Il dilemma dell\'eccezione: la regola vale sempre, o esiste la persona?'
+    },
+    {
+      type: 'p',
+      text: 'Un dipendente chiede un\'eccezione alla policy aziendale per una circostanza personale difficile. Tu hai l\'autorità per concederla. Concederla è un atto di cura e flessibilità umana. Non concederla è coerenza e equità verso tutti gli altri. Concederla senza dichiararla crea un precedente opaco. Il dilemma non è tra giusto e sbagliato — è tra valori ugualmente legittimi che in quel momento non possono coesistere.'
+    },
+    {
+      type: 'p',
+      text: 'I manager che gestiscono meglio questi casi tendono a fare una cosa specifica: esplicitano il ragionamento, anche quando la decisione è discrezionale. Dire "sto facendo un\'eccezione in questo caso specifico per queste ragioni, e non costituisce un precedente generale" non elimina la tensione, ma la rende trasparente e governabile. Il silenzio discrezionale, invece, erode lentamente la fiducia sistemica.'
+    },
+    {
+      type: 'h2',
+      text: 'Promozione al costo di un teammate: quando il sistema mette le persone in competizione'
+    },
+    {
+      type: 'p',
+      text: 'Alcune strutture aziendali creano dilemmi strutturali: il budget per le promozioni è fisso, e avanzare tu può significare che qualcun altro non avanza — o peggio, viene tagliato. In questi casi il dilemma non nasce da una scelta individuale sbagliata, ma dal sistema stesso. Riconoscere questa distinzione è importante: ti permette di valutare la tua responsabilità in modo più preciso, senza né assolvere il sistema né assumerti colpe che non appartengono alla tua decisione.'
+    },
+    {
+      type: 'p',
+      text: 'La domanda morale rilevante in questi casi non è "è giusto che io avanzi?" ma "come mi comporto con il collega che non è avanzato?" La risposta a quella seconda domanda dice molto di più sul carattere professionale di una persona che la decisione di accettare o rifiutare la promozione stessa.'
+    },
+    {
+      type: 'h2',
+      text: 'L\'IA al lavoro: il dilemma che nessuno sa ancora come inquadrare'
+    },
+    {
+      type: 'p',
+      text: 'Hai usato un modello di linguaggio per scrivere una proposta che il cliente crede sia interamente tua. Il datore di lavoro ti ha chiesto un\'analisi e l\'hai affidata in parte a strumenti automatizzati. Dichiari l\'uso dell\'IA o no? A differenza dei dilemmi precedenti, questo non ha ancora una cornice normativa consolidata — né in Italia né altrove. Quello che esiste è una zona grigia in cui le aspettative implicite variano enormemente da settore a settore, da azienda ad azienda, persino da manager a manager.'
+    },
+    {
+      type: 'p',
+      text: 'La questione non riguarda solo l\'onestà individuale. Riguarda chi definisce gli standard di qualità e autenticità in una professione, e chi ha il potere di farlo. Le organizzazioni che stanno gestendo meglio questa transizione sono quelle che hanno iniziato a discuterne apertamente — non quelle che hanno semplicemente vietato o consentito tutto.'
+    },
+    {
+      type: 'cta',
+      label: 'Cosa faresti se un collega si prende il merito del tuo lavoro? Vota ora',
+      href: '/it/play/stolen-credit'
+    },
+    {
+      type: 'h2',
+      text: 'Perché le persone perbene fanno cose sbagliate al lavoro: il disimpegno morale'
+    },
+    {
+      type: 'p',
+      text: "Albert Bandura ha descritto negli anni Novanta un insieme di meccanismi cognitivi che permettono alle persone di agire in modo contrario ai propri valori senza sperimentare senso di colpa. Li ha chiamati meccanismi di disimpegno morale, e il contesto lavorativo li attiva con straordinaria efficienza. La giustificazione morale (\"lo faccio per il bene del team\"), la diffusione della responsabilità (\"la decisione finale non spettava a me\"), il confronto vantaggioso (\"altri hanno fatto di peggio\"), la disumanizzazione del danneggiato (\"il cliente non capirà comunque\") — tutte strategie che permettono di mantenere un'immagine di sé coerente mentre si agisce in modo discutibile."
+    },
+    {
+      type: 'p',
+      text: 'Riconoscere questi meccanismi non è un invito al cinismo. È il contrario: è il prerequisito per esercitare un giudizio morale reale invece di uno automatico. Quando ci accorgiamo di star costruendo una giustificazione particolarmente elaborata per qualcosa, spesso è il segnale che sappiamo già cosa dovremmo fare.'
+    },
+    {
+      type: 'h2',
+      text: 'La distanza tra legale ed etico: il confine che conta davvero'
+    },
+    {
+      type: 'p',
+      text: 'Moltissimi comportamenti discutibili sul lavoro sono perfettamente legali. Prendersi il merito del lavoro altrui non è reato. Omettere informazioni rilevanti a un cliente non viola necessariamente nessuna norma. Costruire una narrazione aziendale che oscura responsabilità individuali è prassi comune. Il diritto fissa un pavimento minimo, non un soffitto etico. La domanda "è legale?" è necessaria, ma del tutto insufficiente.'
+    },
+    {
+      type: 'p',
+      text: 'Questo divario è particolarmente acuto nei contesti professionali perché la legalità viene spesso usata come scudo retorico per chiudere la conversazione morale prima che inizi. "Non abbiamo fatto nulla di illegale" è una risposta alla domanda sbagliata. La domanda giusta è: "Abbiamo agito in modo che potremmo difendere pubblicamente, davanti alle persone coinvolte, senza omettere nulla di rilevante?"'
+    },
+    {
+      type: 'h2',
+      text: 'Come ragionare su un dilemma lavorativo prima di decidere'
+    },
+    {
+      type: 'p',
+      text: 'Non esiste un algoritmo per i dilemmi morali — se esistesse, non sarebbero dilemmi. Esistono però domande che aiutano a uscire dalla paralisi. Prima di tutto: chi viene danneggiato, e quanto? Spesso il danno è più diffuso o più concentrato di quanto sembrasse a prima vista. Poi: qual è la differenza tra la cosa più comoda e la cosa che potrei spiegare apertamente a chi rispetto? Infine: questa decisione si regge su un principio che potrei accettare universalmente, o è un\'eccezione che sto costruendo solo per questo caso specifico?'
+    },
+    {
+      type: 'list',
+      items: [
+        'Mappa chi subisce le conseguenze, non solo chi è visibile nel momento immediato',
+        'Separa la lealtà personale dalla complicità sistemica — possono sembrare la stessa cosa',
+        'Considera l\'effetto cumulativo: se tutti facessero la stessa cosa, cosa succederebbe?',
+        'Valuta la reversibilità: alcune scelte chiudono porte che non si riaprono',
+        'Cerca un interlocutore neutro prima di decidere sotto pressione emotiva',
+        'Distingui tra disaccordo con la decisione altrui e responsabilità di cambiarla'
+      ]
+    },
+    {
+      type: 'h2',
+      text: 'La maggior parte di noi non incontrerà mai un tram. Ma tutti incontreremo il momento del credito rubato'
+    },
+    {
+      type: 'p',
+      text: 'I casi da manuale ci affascinano perché hanno i bordi netti — una leva, un binario, cinque persone. I dilemmi reali hanno bordi sfumati, storie pregresse, implicazioni finanziarie, e un interlocutore che ci guarda negli occhi il giorno dopo. È proprio per questo che sono più rivelatori del nostro carattere morale effettivo. Non quello che dichiariamo di avere, ma quello che emerge quando c\'è qualcosa di concreto in gioco.'
+    },
+    {
+      type: 'p',
+      text: 'Riflettere su questi dilemmi — anche solo per qualche minuto, anche solo per chiedersi cosa si farebbe davvero — è un esercizio che cambia il modo in cui si agisce quando arriva il momento. Non perché produca certezze, ma perché abitudina alla complessità invece di fuggirla.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'Questo articolo ha scopo divulgativo. I riferimenti alla ricerca psicologica e organizzativa citata sono rappresentativi della letteratura sul tema; per approfondimenti accademici si rimanda alle pubblicazioni originali di Bandura (1999) sul disimpegno morale e agli studi empirici sui comportamenti non etici nelle organizzazioni.'
+    }
+  ]
+},
+  {
+  slug: 'ti-fideresti-di-un-giudice-robot',
+  locale: 'it',
+  title: 'Ti fideresti di un giudice robot? Il dibattito sull\'IA in tribunale',
+  seoTitle: 'Giudice AI: dovremmo fidarci degli algoritmi in tribunale?',
+  description: 'Dal caso COMPAS nel Wisconsin ai bias razziali di ProPublica: quando un algoritmo decide chi va in prigione, la giustizia può ancora dirsi uguale per tutti?',
+  seoDescription: 'Gli algoritmi AI decidono già chi va in carcere. Scopri il caso COMPAS, i bias razziali, il problema della trasparenza e il dibattito etico sui giudici robot. Vota su SplitVote.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['giudice ai', 'algoritmo giustizia', 'bias intelligenza artificiale', 'etica algoritmi', 'compas recidiva', 'diritto e tecnologia'],
+  relatedDilemmaIds: ['robot-judge', 'ai-hiring', 'surveillance-city', 'innocent-juror', 'privacy-terror'],
+  alternateSlug: 'would-you-trust-a-robot-judge',
+  faq: [
+    {
+      q: 'I giudici AI vengono usati nei tribunali reali?',
+      a: 'Sì. In molti stati americani, sistemi di scoring del rischio come COMPAS vengono già utilizzati per informare decisioni su libertà vigilata, cauzione e in alcuni casi la durata della pena. In Europa l\'adozione è più cauta, ma strumenti di analisi predittiva sono in uso in ambito giudiziario in Francia, Paesi Bassi e Regno Unito.'
+    },
+    {
+      q: 'Il bias dell\'IA nella giustizia penale è un problema reale?',
+      a: 'Sì, è documentato. Un\'inchiesta di ProPublica del 2016 ha rilevato che l\'algoritmo COMPAS classificava i detenuti neri come ad alto rischio di recidiva quasi il doppio delle volte rispetto ai detenuti bianchi, anche a parità di reati precedenti. L\'azienda produttrice ha contestato la metodologia, ma il dibattito scientifico non è risolto.'
+    },
+    {
+      q: 'Un algoritmo può prendere decisioni di condanna eque?',
+      a: 'Dipende da cosa si intende per "equità". Gli algoritmi possono ottimizzare per diversi criteri di equità statistica, ma questi criteri sono spesso matematicamente incompatibili tra loro. La scelta di quale equità privilegiare è una decisione politica e morale, non tecnica — e resta nelle mani degli umani che progettano il sistema.'
+    },
+    {
+      q: 'Cos\'è l\'algoritmo COMPAS?',
+      a: 'COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) è un sistema sviluppato dalla società Equivant che assegna ai detenuti un punteggio di rischio di recidiva da 1 a 10. Il punteggio si basa su oltre 130 fattori tra cui storia criminale, situazione familiare e risposta a questionari comportamentali. Viene usato da giudici e funzionari penitenziari in almeno una decina di stati USA.'
+    },
+    {
+      q: 'L\'IA dovrebbe essere usata nella giustizia penale?',
+      a: 'Non esiste consenso. I sostenitori sostengono che gli algoritmi riducano le disparità legate all\'umore o al pregiudizio implicito dei giudici umani. I critici rispondono che codificano e amplificano bias storici, tolgono responsabilità ai decisori umani e violano il diritto dell\'imputato a conoscere le prove a suo carico. L\'Unione Europea, con l\'AI Act, ha classificato questi sistemi come "ad alto rischio" con obblighi stringenti di trasparenza.'
+    }
+  ],
+  content: [
+    {
+      type: 'p',
+      text: 'Nel 2013 un giudice del Wisconsin condannò Eric Loomis a sei anni di carcere. La difesa impugnò la sentenza sostenendo che il giudice avesse basato la propria decisione, almeno in parte, su un punteggio prodotto da un algoritmo proprietario chiamato COMPAS — un software che Loomis non poteva interrogare, contestare o comprendere. La Corte Suprema del Wisconsin respinse il ricorso nel 2016. Il caso divenne un banco di prova mondiale per una domanda che non smette di farsi più urgente: può un algoritmo fare giustizia?'
+    },
+    {
+      type: 'h2',
+      text: 'COMPAS e il Wisconsin: quando l\'algoritmo entra nell\'aula'
+    },
+    {
+      type: 'p',
+      text: 'COMPAS non è un giudice nel senso letterale. Non pronuncia sentenze. Quello che fa è assegnare a ogni imputato un punteggio di rischio di recidiva da 1 a 10, calcolato su oltre 130 variabili: reati precedenti, storia familiare, condizione lavorativa, risposta a questionari comportamentali. Quel numero finisce nel fascicolo del giudice, che teoricamente può ignorarlo — ma in pratica lo vede, lo legge, e raramente dispone degli strumenti per confutarlo. La distinzione tra "strumento di supporto" e "decisore effettivo" è più sottile di quanto voglia ammettere chi ha progettato il sistema.'
+    },
+    {
+      type: 'p',
+      text: 'Il Wisconsin non è un caso isolato. Almeno una decina di stati americani usano sistemi analoghi per decisioni su cauzione, libertà vigilata e, in alcuni contesti, sulla durata della pena. L\'algoritmo è diventato parte dell\'infrastruttura giudiziaria americana con una velocità che ha lasciato indietro il dibattito pubblico, la dottrina giuridica e — come dimostreremo — la valutazione accurata dei rischi.'
+    },
+    {
+      type: 'h2',
+      text: 'Cosa fa davvero un sistema di scoring del rischio'
+    },
+    {
+      type: 'p',
+      text: 'Per capire il dibattito è utile distinguere tra diverse categorie di strumenti. I sistemi di valutazione del rischio come COMPAS sono progettati per prevedere la probabilità che un individuo commetta nuovi reati — e fornire questa previsione in forma di punteggio numerico. I sistemi di raccomandazione della pena vanno oltre: suggeriscono direttamente l\'entità della condanna, a volte confrontando il caso con uno storico di casi simili. I sistemi di analisi predittiva del crimine, invece, operano prima ancora dell\'arresto, identificando zone o individui "a rischio".'
+    },
+    {
+      type: 'p',
+      text: 'Ciascuno di questi strumenti ha una logica tecnica diversa, ma condivide un presupposto filosofico problematico: che il comportamento futuro di una persona possa essere stimato statisticamente sulla base delle caratteristiche del gruppo a cui appartiene. Un punteggio che prevede che il 70% delle persone con un certo profilo recidivi non dice nulla di certo sull\'individuo di fronte al giudice. Eppure è quell\'individuo che sconterà la pena.'
+    },
+    {
+      type: 'h2',
+      text: 'Il problema del bias: cosa ha trovato ProPublica'
+    },
+    {
+      type: 'p',
+      text: 'Nel 2016 ProPublica pubblicò un\'inchiesta destinata a diventare un punto di riferimento nel dibattito sull\'IA e la giustizia. I giornalisti analizzarono i dati di oltre 7.000 imputati nella contea di Broward, in Florida, confrontando i punteggi COMPAS assegnati con i tassi di recidiva effettivi nei due anni successivi. Il risultato fu scomodo: gli imputati neri venivano classificati come ad alto rischio quasi il doppio delle volte rispetto agli imputati bianchi, anche controllando per i reati precedenti. Allo stesso tempo, i detenuti bianchi che avevano poi effettivamente recidivato venivano classificati come a basso rischio più spesso.'
+    },
+    {
+      type: 'p',
+      text: 'Northpointe — l\'azienda produttrice, oggi Equivant — contestò la metodologia di ProPublica, sostenendo che l\'algoritmo fosse in realtà calibrato correttamente in termini di accuracy complessiva. Aveva ragione, tecnicamente: ma questo aprì un dibattito ancora più fondamentale. Tre ricercatori di Stanford dimostrarono matematicamente che alcuni criteri di equità statistica sono incompatibili tra loro — non per un difetto del software, ma per un teorema. Non esiste un algoritmo che sia contemporaneamente calibrato per tutti i gruppi e che erri in modo simmetrico tra gruppi. La scelta di quale equità privilegiare è, inevitabilmente, una scelta politica.'
+    },
+    {
+      type: 'h2',
+      text: 'Gli algoritmi sono davvero più bravi degli esseri umani?'
+    },
+    {
+      type: 'p',
+      text: 'Uno degli argomenti più ricorrenti a favore degli strumenti algoritmici è che i giudici umani sono sistematicamente distorte da fattori irrilevanti: il momento della giornata, la stanchezza, il pregiudizio implicito, persino l\'umore. Una serie di studi — tra cui una ricerca molto citata sui giudici israeliani che concedevano più spesso la libertà vigilata dopo la pausa pranzo — suggerisce che l\'arbitrarietà umana sia un problema reale. In questo quadro, un algoritmo coerente sembrerebbe preferibile.'
+    },
+    {
+      type: 'p',
+      text: 'Il problema è che l\'evidenza empirica non supporta in modo uniforme la superiorità algoritmica. Una ricerca di Dressel e Farid pubblicata su Science Advances nel 2018 mostrò che COMPAS non era più accurato di persone senza alcuna formazione giuridica o criminologica a cui veniva chiesto di fare una previsione sulla base di una breve descrizione del caso. L\'accuratezza dell\'algoritmo era intorno al 65%; quella dei partecipanti umani era simile. La promessa della macchina più accurata dell\'uomo, nella giustizia penale, è ancora ampiamente da dimostrare.'
+    },
+    {
+      type: 'h2',
+      text: 'Chi risponde quando l\'algoritmo sbaglia?'
+    },
+    {
+      type: 'p',
+      text: 'La questione della responsabilità è forse la più spinosa di tutte. Quando un giudice umano emette una sentenza ingiusta, esiste un sistema di appello, una responsabilità professionale, una storia documentata delle sue decisioni. Quando un algoritmo sbaglia, la catena di responsabilità si dissolve in modo preoccupante. Il giudice dice di aver seguito lo strumento. Il produttore dice che lo strumento era "di supporto". Il legislatore non ha ancora definito cosa significhi impugnare una decisione presa con l\'aiuto di un software proprietario.'
+    },
+    {
+      type: 'p',
+      text: 'Nel caso Loomis, la Corte Suprema del Wisconsin stabilì che l\'utilizzo di COMPAS non violava il diritto al due process — ma solo perché il giudice aveva dichiarato di non aver basato la sentenza esclusivamente sul punteggio. Una distinzione sottile, quasi impossibile da verificare. L\'imputato non aveva e non ha il diritto di esaminare il codice sorgente del software, perché protetto da segreto industriale. La scatola nera rimane chiusa.'
+    },
+    {
+      type: 'h2',
+      text: 'Il diritto di sapere perché: trasparenza e black box'
+    },
+    {
+      type: 'p',
+      text: 'Il problema della trasparenza non riguarda solo la giustizia penale. Lo stesso tipo di sistema — un modello che produce una raccomandazione sulla base di variabili opache — viene usato per decidere se un candidato supera il primo screening di un colloquio, se una domanda di mutuo viene approvata, se un\'assicurazione sanitaria applica un premio più alto. In tutti questi contesti, il soggetto colpito dalla decisione spesso non sa perché è stato rifiutato, non può contestare la logica, non può nemmeno identificare il fattore discriminante.'
+    },
+    {
+      type: 'p',
+      text: 'La differenza con la giustizia penale è che qui le posta in gioco è la libertà personale. Il diritto a conoscere le prove a proprio carico è un principio fondamentale dei sistemi di common law e di quelli di civil law. Un punteggio algoritmico che non può essere spiegato in termini comprensibili all\'imputato — e al suo avvocato — è difficilmente compatibile con questo principio. Non è una questione tecnica. È una questione costituzionale.'
+    },
+    {
+      type: 'h2',
+      text: 'La domanda più profonda: la giustizia è calcolabile?'
+    },
+    {
+      type: 'p',
+      text: 'Dietro il dibattito tecnico sul bias e sull\'accuratezza si nasconde una domanda filosofica più radicale. La giustizia — nel senso di giudicare un individuo per le sue azioni, tenendo conto delle circostanze, dell\'intenzione, del contesto morale — è il tipo di cosa che un algoritmo può fare? O la natura stessa di questo compito richiede qualcosa che i sistemi statistici non possono avere: la comprensione di ciò che significa essere umani, sbagliare, essere vulnerabili?'
+    },
+    {
+      type: 'p',
+      text: 'I filosofi del diritto si dividono su questo punto. Chi abbraccia una visione consequenzialista della pena — la punizione è giustificata in quanto riduce la criminalità futura — può trovare ragionevole che uno strumento predittivo informi le decisioni. Chi sostiene una visione retributiva o basata sulla dignità personale — la pena risponde a un atto passato, non a una probabilità futura — troverà l\'intero impianto degli strumenti predittivi fondamentalmente fuori luogo. Non è un bug nel codice. È un disaccordo su cosa significhi fare giustizia.'
+    },
+    {
+      type: 'h2',
+      text: 'Dallo stesso dibattito: assunzioni, credito, assicurazioni'
+    },
+    {
+      type: 'list',
+      items: [
+        'Screening delle assunzioni: sistemi come HireVue o Pymetrics analizzano video-interviste e test comportamentali per filtrare i candidati — con denunce documentate di bias su genere, etnia e disabilità',
+        'Credit scoring: i modelli di rischio creditizio usano proxy che correlano con la razza o il quartiere di residenza, perpetuando cicli di esclusione finanziaria',
+        'Assicurazioni sanitarie: algoritmi di previsione della spesa medica negli USA sono stati accusati di sottostimare sistematicamente i bisogni dei pazienti neri',
+        'Sorveglianza preventiva: sistemi di polizia predittiva come PredPol (ora Geolitica) concentrano il pattugliamento in quartieri già iper-sorvegliati, amplificando le disparità esistenti',
+        'Valutazione degli studenti: durante la pandemia, sistemi di standardizzazione dei voti automatizzati nel Regno Unito hanno abbassato sistematicamente i voti degli studenti nelle scuole di quartieri svantaggiati'
+      ]
+    },
+    {
+      type: 'p',
+      text: 'Questi casi condividono una struttura comune: un sistema addestrato su dati storici produce raccomandazioni che riflettono e amplificano le disuguaglianze presenti in quei dati. La giustizia penale è il caso più estremo — perché le conseguenze sono più gravi — ma non è un caso eccezionale. È il caso più visibile di un problema diffuso.'
+    },
+    {
+      type: 'h2',
+      text: 'Come vota il pubblico su SplitVote: il dilemma del giudice robot'
+    },
+    {
+      type: 'p',
+      text: 'Sul dilemma "robot-judge" di SplitVote — che chiede direttamente se affideresti a un\'IA una decisione di condanna — le risposte rivelano una frattura netta. La maggioranza degli utenti si dichiara contraria all\'uso autonomo dell\'IA in questo contesto, ma una quota significativa ritiene accettabile l\'uso come strumento di supporto, a condizione che la decisione finale resti in mano a un giudice umano. La distinzione tra "IA che decide" e "IA che consiglia" è la linea di confine intorno a cui si organizza il dissenso. Come in molti dilemmi sul limite della tecnologia, il voto cambia sensibilmente in base alla nazionalità e all\'età degli utenti: i più giovani tendono a essere più aperti all\'uso algoritmicoanche in ambiti sensibili, purché sia presente un meccanismo di appello.'
+    },
+    {
+      type: 'cta',
+      label: 'Vota: ti fideresti di un giudice robot?',
+      href: '/it/play/robot-judge'
+    },
+    {
+      type: 'h2',
+      text: 'Il quadro normativo: l\'EU AI Act e la risposta americana'
+    },
+    {
+      type: 'p',
+      text: 'L\'Unione Europea ha classificato i sistemi di IA usati nella giustizia penale come "ad alto rischio" nell\'AI Act entrato in vigore nel 2024. Questo significa obblighi stringenti: trasparenza sul funzionamento, supervisione umana obbligatoria, valutazione d\'impatto sui diritti fondamentali, diritto degli individui a una spiegazione comprensibile delle decisioni che li riguardano. Gli Stati Uniti si muovono in modo più frammentato: alcuni stati hanno già approvato leggi che richiedono audit indipendenti degli strumenti algoritmici usati in tribunale, mentre a livello federale gli ordini esecutivi sull\'IA si sono succeduti con approcci divergenti nelle diverse amministrazioni.'
+    },
+    {
+      type: 'p',
+      text: 'La differenza di approccio riflette una differenza di cultura giuridica. Il sistema europeo tende a regolare in anticipo, per principio. Il sistema americano tende a litigare caso per caso, per giurisprudenza. In entrambi i contesti, la velocità del deployment tecnologico ha superato quella della risposta normativa — e il gap si sta richiudendo, ma lentamente.'
+    },
+    {
+      type: 'h2',
+      text: 'L\'IA è già in tribunale. La domanda è a quali condizioni'
+    },
+    {
+      type: 'p',
+      text: 'Sarebbe comodo concludere che la soluzione è semplice: o vietare l\'IA nella giustizia, o abbracciarla pienamente. La realtà è più complicata. I sistemi algoritmici sono già presenti in molti tribunali del mondo, e la domanda non è se entreranno — è già entrata. La domanda è sotto quali condizioni, con quale supervisione, con quale possibilità di contestazione, e con chi porta la responsabilità quando sbagliano.'
+    },
+    {
+      type: 'p',
+      text: 'Queste condizioni non sono domande tecniche. Sono domande politiche, filosofiche e morali — del tipo che non ammette una risposta ovvia. Richiede di decidere cosa valorizzare di più: la coerenza o la compassione, la prevedibilità o il caso per caso, l\'efficienza o la dignità. Sono, in altri termini, esattamente il tipo di domande che SplitVote esiste per portare a galla — perché il modo in cui le persone rispondono rivela qualcosa di reale su come concepiscono la giustizia stessa.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'Questo articolo ha scopo divulgativo e giornalistico. I dati citati si riferiscono a studi e inchieste pubblicamente disponibili. I risultati di voto SplitVote riportati sono indicativi e si aggiornano in tempo reale con le risposte degli utenti.'
+    }
+  ]
+},
+  {
+  slug: 'lealta-vs-giustizia-cosa-dice-il-voto',
+  locale: 'it',
+  title: 'Lealtà contro giustizia: cosa rivelano migliaia di voti',
+  seoTitle: 'Lealtà vs giustizia: cosa rivela il tuo voto morale',
+  description: 'Il dilemma che divide le persone più equamente non riguarda la vita e la morte — riguarda chi dobbiamo qualcosa. Dati reali, psicologia morale, filosofia.',
+  seoDescription: 'Lealtà o giustizia? Scopri cosa dicono la psicologia morale e i dati di SplitVote sui nostri conflitti morali più profondi. Vota e confronta la tua risposta.',
+  date: '2026-06-16',
+  readingTime: 6,
+  tags: ['lealtà e giustizia', 'fondamenti morali', 'psicologia morale', 'dilemmi etici', 'valori morali'],
+  relatedDilemmaIds: ['friend-cheats-exam', 'friend-partner-cheating', 'report-friend', 'whistleblower', 'cover-coworker-error'],
+  alternateSlug: 'loyalty-vs-justice-what-the-data-says',
+  faq: [
+    {
+      q: 'La lealtà è una virtù morale?',
+      a: 'Secondo la maggior parte delle tradizioni filosofiche, la lealtà è considerata una virtù morale — ma una virtù condizionata. Samuel Scheffler e altri filosofi distinguono tra obblighi speciali verso chi amiamo e doveri universali verso tutti. La lealtà diventa problematica quando ci porta a coprire comportamenti ingiusti o a danneggiare terzi innocenti.'
+    },
+    {
+      q: 'Qual è il conflitto tra lealtà e giustizia nell\'etica?',
+      a: 'Il conflitto nasce quando proteggere qualcuno che ci è vicino — un amico, un collega, un familiare — richiede di sacrificare un principio di equità o di verità che vale per tutti. La filosofia morale chiama questi "obblighi speciali" e dibatte da secoli se possano giustificare trattamenti preferenziali rispetto alla giustizia imparziale.'
+    },
+    {
+      q: 'Perché sentiamo più obblighi verso gli amici che verso gli estranei?',
+      a: 'La psicologia evolutiva suggerisce che la moralità in-group — la tendenza a proteggere il proprio gruppo — si è sviluppata come meccanismo di sopravvivenza tribale. Jonathan Haidt, nella Teoria dei Fondamenti Morali, identifica la lealtà come uno dei sei fondamenti innati del giudizio morale, più saliente nelle relazioni strette perché segnala affidabilità e coesione sociale.'
+    },
+    {
+      q: 'Cosa dice la teoria dei fondamenti morali sulla lealtà?',
+      a: 'La Moral Foundations Theory di Jonathan Haidt identifica Lealtà/Tradimento come uno dei sei fondamenti morali universali. Le persone con profili morali più orientati alla comunità (spesso associati a valori conservatori) tendono a pesare maggiormente questo fondamento rispetto a quelle con profili più orientati all\'individuo e all\'equità imparziale.'
+    },
+    {
+      q: 'Come risponde la maggior parte delle persone ai dilemmi tra lealtà e giustizia?',
+      a: 'I dati di piattaforme di voto morale mostrano divisioni sorprendentemente equilibrate nei dilemmi che oppongono lealtà e giustizia — molto più di quanto accada nei classici dilemmi vita/morte. Questo suggerisce che il conflitto tocca un punto di genuina ambivalenza morale nella maggior parte delle persone, non una risposta intuitiva chiara.'
+    }
+  ],
+  content: [
+    {
+      type: 'p',
+      text: 'Esiste una categoria di dilemma che divide le persone in modo più preciso, più ostinato, di qualsiasi problema del tram. Non riguarda quante vite salvare — riguarda chi ti senti in debito. Un amico ha barato all\'esame: lo denunci? Il tuo collega ha commesso un errore grave: lo copri o no? Il tuo partner ha tradito il migliore amico: lo dici? Questi scenari non hanno una risposta intuitiva ovvia. E questo, in sé, ci rivela qualcosa di fondamentale su come funziona la nostra bussola morale.'
+    },
+    {
+      type: 'h2',
+      text: 'L\'asse lealtà-giustizia: il cuore della psicologia morale'
+    },
+    {
+      type: 'p',
+      text: 'Jonathan Haidt, psicologo dell\'Università di New York, ha trascorso decenni a mappare l\'anatomia del giudizio morale. La sua Teoria dei Fondamenti Morali — sviluppata insieme a Jesse Graham e altri collaboratori — sostiene che la moralità umana non si riduce a un unico principio come "non fare del male". Si costruisce invece su sei fondamenti innati, selezionati dall\'evoluzione perché aiutavano a risolvere problemi ricorrenti della vita sociale.'
+    },
+    {
+      type: 'p',
+      text: 'Uno di questi fondamenti è Lealtà/Tradimento: la capacità di distinguere chi è con noi da chi è contro di noi, di premiare la coesione e di punire il tradimento. Un altro è Equità/Imbroglio: la sensibilità all\'ingiustizia, all\'asimmetria, alla violazione delle regole condivise. Nella vita quotidiana questi due fondamenti spesso si allineano — ma quando collidono, il risultato è esattamente il tipo di paralisi morale che i dilemmi di SplitVote sanno innescare.'
+    },
+    {
+      type: 'h2',
+      text: 'Cosa dicono i dati: dove si spezza l\'equità tra lealtà e giustizia'
+    },
+    {
+      type: 'p',
+      text: 'Tra i dilemmi con le distribuzioni di voto più equilibrate su SplitVote figurano tre scenari che hanno in comune la stessa struttura morale: qualcuno di vicino a te ha fatto qualcosa di sbagliato, e tu devi decidere se proteggere quella persona o la verità. In "Il tuo amico ha barato all\'esame" la spaccatura è netta e quasi simmetrica: chi voterebbe per denunciarlo e chi no si equivalgono. Lo stesso vale per "Il tuo partner tradisce il tuo migliore amico" — un dilemma in cui la lealtà verso due persone diverse entra in conflitto contemporaneamente. E in "Denuncia l\'amico" la proporzione cambia leggermente, ma il nucleo del conflitto rimane identico.'
+    },
+    {
+      type: 'p',
+      text: 'Ciò che colpisce non è la spaccatura in sé — è il fatto che i votanti trovino questi dilemmi genuinamente difficili molto più di quelli in cui si tratta di scegliere tra salvare una o cinque persone. La vita e la morte attivano risposte intuitive potenti. I legami sociali attivano qualcosa di più ambiguo: un senso di obbligo che non segue le regole dell\'aritmetica morale.'
+    },
+    {
+      type: 'h2',
+      text: 'Quando lealtà e giustizia non sono nemiche'
+    },
+    {
+      type: 'p',
+      text: 'Vale la pena notare che nella maggior parte delle situazioni quotidiane lealtà e giustizia non si contraddicono. Essere leali a un amico onesto non viola alcun principio di equità. Difendere un collega trattato ingiustamente è insieme atto di lealtà e atto di giustizia. Il conflitto emerge solo in condizioni specifiche: quando la persona a cui siamo leali ha fatto qualcosa di sbagliato, o quando la lealtà richiede di tacere una verità che altri hanno il diritto di conoscere.'
+    },
+    {
+      type: 'p',
+      text: 'Questa distinzione è cruciale. Molte persone che si definiscono "leali" non stanno scegliendo la lealtà contro la giustizia in senso assoluto — stanno applicando un modello morale in cui le relazioni strette generano obblighi speciali che possono, in determinate circostanze, pesare più delle regole generali. Il problema è capire dove si trova quel confine.'
+    },
+    {
+      type: 'h2',
+      text: 'La scienza della moralità in-group: perché abbiamo regole diverse per chi amiamo'
+    },
+    {
+      type: 'p',
+      text: 'La ricerca in psicologia sociale mostra che tratiamo le persone del nostro gruppo con standard morali sistematicamente diversi da quelli che applichiamo agli estranei. Non si tratta soltanto di preferenza emotiva: studi sull\'attribuzione causale dimostrano che tendiamo a spiegare gli errori degli amici con fattori situazionali ("era sotto pressione", "ha avuto una brutta giornata") mentre interpretiamo gli stessi comportamenti negli estranei come tratti stabili di carattere. Questo bias attributivo ha conseguenze dirette su chi decidiamo di proteggere.'
+    },
+    {
+      type: 'p',
+      text: 'Dal punto di vista evolutivo, questa asimmetria aveva senso. I gruppi in cui i membri si coprivano a vicenda erano più coesi e più capaci di cooperare contro minacce esterne. La lealtà era un segnale di affidabilità, e l\'affidabilità era valuta sociale di sopravvivenza. Il problema è che le intuizioni modellate per bande di cacciatori-raccoglitori si trovano ora a operare in contesti — università, aziende, istituzioni pubbliche — dove le conseguenze di coprire qualcuno possono danneggiare molte più persone di quante ne proteggano.'
+    },
+    {
+      type: 'h2',
+      text: 'Collettivismo e individualismo: la lealtà non pesa uguale ovunque'
+    },
+    {
+      type: 'p',
+      text: 'La variazione cross-culturale in questo dominio è consistente e documentata. Le ricerche di Geert Hofstede e, più recentemente, quelle comparative sulla cognizione morale mostrano che nelle culture ad alto collettivismo — tipicamente Asia orientale, Africa subsahariana, America Latina — la lealtà verso il gruppo familiare o comunitario è considerata un dovere morale primario, non una preferenza personale. Denunciare un familiare o un collega non è solo socialmente costoso: è percepito come intrinsecamente sbagliato.'
+    },
+    {
+      type: 'p',
+      text: 'Nelle culture più individualiste — Nord Europa, Nord America anglosassone — la giustizia imparziale tende a essere il metro di giudizio dominante. Non perché la lealtà non conti, ma perché il confine del gruppo morale rilevante si estende tendenzialmente oltre i legami personali. Interessante: i dati di SplitVote mostrano pattern coerenti con questa variazione anche all\'interno delle lingue, suggerendo che l\'identità culturale influisce sul voto indipendentemente dalla familiarità con il dilemma.'
+    },
+    {
+      type: 'h2',
+      text: 'Il caso del whistleblower: lealtà istituzionale contro verità pubblica'
+    },
+    {
+      type: 'p',
+      text: 'Il dilemma del whistleblower — la persona che denuncia illeciti all\'interno della propria organizzazione — è il caso più estremo e socialmente rilevante del conflitto tra lealtà e giustizia. Chi soffia nel fischietto viola quasi sempre una norma di lealtà implicita o esplicita: ha accesso a informazioni riservate proprio perché fa parte del gruppo, e usarle contro il gruppo è vissuto come tradimento. Eppure, se quelle informazioni riguardano danni a terzi, il silenzio diventa complicità.'
+    },
+    {
+      type: 'p',
+      text: 'Le ricerche sui whistleblower reali — da Edward Snowden a Frances Haugen — mostrano che quasi tutti descrivono il loro percorso come un processo doloroso e graduale, non come una scelta istantanea. Molti hanno tentato prima di cambiare le cose dall\'interno. Quasi tutti hanno subito costi personali enormi. E quasi tutti continuano a descrivere il proprio gesto come un atto di lealtà — non verso l\'organizzazione, ma verso valori che considerano più fondamentali. Questo ci dice qualcosa di importante: la lealtà non è semplicemente un\'emozione tribale. Può essere anche un principio morale, applicato a un gruppo più ampio.'
+    },
+    {
+      type: 'h2',
+      text: 'La lealtà è una virtù o un bias? I filosofi non trovano accordo'
+    },
+    {
+      type: 'p',
+      text: 'Il filosofo Samuel Scheffler ha sviluppato una delle analisi più rigorose del problema degli "obblighi speciali": il fatto che abbiamo verso chi ci è vicino doveri morali che non esistono verso gli estranei. Scheffler sostiene che questi obblighi sono genuini e non riducibili a semplice favoritismo — fanno parte di ciò che significa avere relazioni autentiche e impegni personali. Una filosofia che li negasse completamente produrrebbe agenti morali così imparziali da non poter essere veri amici, genitori o partner.'
+    },
+    {
+      type: 'p',
+      text: 'Dall\'altro lato, Peter Singer e la tradizione utilitarista globale vedono in questa asimmetria un bias evolutivo da superare razionalmente. Se il valore di una vita non dipende da quanto la persona è vicina a me geograficamente o geneticamente, allora il mio dovere morale verso un estraneo che soffre dovrebbe essere simile al mio dovere verso un amico. La lealtà, in questa prospettiva, non è una virtù ma un residuo tribale che distorce il calcolo morale. Il dibattito è aperto, e difficilmente si chiuderà presto — perché tocca domande fondamentali su cosa significa essere un agente morale incorporato in relazioni concrete.'
+    },
+    {
+      type: 'list',
+      items: [
+        'La lealtà è uno dei sei fondamenti morali innati secondo la Moral Foundations Theory di Haidt',
+        'I dilemmi lealtà-giustizia producono divisioni di voto più equilibrate dei classici dilemmi vita/morte',
+        'Le culture collettiviste pesano maggiormente la lealtà; quelle individualiste l\'equità imparziale',
+        'Scheffler difende gli obblighi speciali come costitutivi delle relazioni autentiche',
+        'I whistleblower reali descrivono spesso la denuncia come lealtà a valori superiori, non tradimento',
+        'Il bias attributivo ci porta a giudicare gli errori di amici e estranei con standard diversi'
+      ]
+    },
+    {
+      type: 'h2',
+      text: 'Cosa potrebbe rivelare la tua risposta sui tuoi fondamenti morali'
+    },
+    {
+      type: 'p',
+      text: 'Chi sceglie la giustizia nei dilemmi lealtà-giustizia non è necessariamente più "onesto" o più "coraggioso" di chi sceglie la lealtà. Sta semplicemente applicando un modello morale in cui le regole valgono indipendentemente da chi le ha violate. Chi sceglie la lealtà non è necessariamente meno etico — sta applicando un modello in cui le relazioni creano obblighi che non possono essere ignorati senza costo morale reale. La differenza non è tra bravura e vigliaccheria: è tra due sistemi di valori entrambi internamente coerenti.'
+    },
+    {
+      type: 'p',
+      text: 'Ciò che i dati di SplitVote rendono visibile è quanto questa differenza sia distribuita nella popolazione. Non stiamo parlando di una minoranza deviante e di una maggioranza virtuosa. Stiamo parlando di una spaccatura profonda e quasi simmetrica — il che suggerisce che entrambe le posizioni rispecchiano intuizioni morali genuine, non errori di ragionamento. Conoscere la propria posizione in questo asse può aiutare a capire perché certi conflitti con persone che rispettiamo sembrano irrisolvibili: non perché uno dei due abbia torto, ma perché partono da fondamenti diversi.'
+    },
+    {
+      type: 'cta',
+      label: 'Vota: denunceresti un amico che ha barato all\'esame?',
+      href: '/it/play/friend-cheats-exam'
+    },
+    {
+      type: 'h2',
+      text: 'La vera scelta: regole assolute o regole condizionali?'
+    },
+    {
+      type: 'p',
+      text: 'La maggior parte delle persone, a ben guardare, non sta scegliendo tra lealtà e giustizia come valori assoluti. Sta scegliendo quante condizioni ha bisogno la propria moralità per funzionare. Chi privilegia la giustizia tende a credere che le regole morali debbano valere universalmente — altrimenti non sono davvero regole. Chi privilegia la lealtà tende a credere che le regole morali siano necessariamente contestuali — che applicarle senza tener conto delle relazioni specifiche sia non purezza morale, ma freddezza.'
+    },
+    {
+      type: 'p',
+      text: 'Questa distinzione — tra moralità incondizionata e moralità relazionale — è forse la più profonda che i dilemmi di SplitVote riescono a mettere a fuoco. Non perché esista una risposta giusta, ma perché la risposta che dai rivela qualcosa che probabilmente non sapevi di credere fino al momento in cui ti è stato chiesto.'
+    },
+    {
+      type: 'disclaimer',
+      text: 'I dati citati riflettono pattern aggregati e anonimi dei voti su SplitVote. Le distribuzioni possono variare nel tempo con l\'arrivo di nuovi votanti. I riferimenti teorici (Haidt, Scheffler, Hofstede) sono semplificazioni divulgative: per approfondire, si rimanda alle fonti originali citate.'
+    }
+  ]
+},
+  {
+  slug: 'problema-del-carrello-60-anni',
+  locale: 'it',
+  title: 'Il problema del carrello a 60 anni: storia, influenza e cosa ci insegna ancora',
+  seoTitle: 'Problema del carrello: 60 anni di filosofia morale',
+  description: 'Da Philippa Foot alle auto a guida autonoma: come un esperimento mentale del 1967 ha trasformato l\'etica, la psicologia e l\'intelligenza artificiale.',
+  seoDescription: 'Il problema del carrello compie 60 anni. Scopri la storia, le varianti, gli studi fMRI e perché è ancora il test morale più influente del mondo. Mettiti alla prova.',
+  date: '2026-06-16',
+  readingTime: 7,
+  tags: ['problema del carrello', 'filosofia morale', 'etica', 'dilemmi etici', 'psicologia morale'],
+  relatedDilemmaIds: ['trolley', 'fat-man', 'self-driving-crash', 'organ-harvest', 'pandemic-dose'],
+  alternateSlug: 'trolley-problem-60-years',
+  faq: [
+    {
+      q: 'Chi ha inventato il problema del carrello?',
+      a: 'Il problema del carrello è stato formulato dalla filosofa britannica Philippa Foot nel 1967, nell\'articolo "Il problema dell\'aborto e la dottrina del doppio effetto". Foot lo concepì come strumento per testare la distinzione tra uccidere attivamente e lasciare morire, non come dilemma autonomo. Judith Jarvis Thomson lo rese celebre nella sua forma attuale nel 1985 introducendo la variante del passerella.'
+    },
+    {
+      q: 'Cosa ci insegna il problema del carrello sull\'etica?',
+      a: 'Il problema del carrello rivela che le nostre intuizioni morali non sono coerenti: quasi tutti accettano di deviare un tram per salvare cinque persone a scapito di una, ma rifiutano di spingere fisicamente qualcuno per ottenere lo stesso risultato. Questo ci mostra che il ragionamento morale non segue una logica puramente consequenzialista — i fattori emotivi, la distanza psicologica e il tipo di azione contano tanto quanto il risultato.'
+    },
+    {
+      q: 'Perché le persone rispondono diversamente al problema del carrello e al problema del passerella?',
+      a: 'Studi di neuroimaging (Greene et al., 2001) mostrano che la variante del passerella — spingere fisicamente qualcuno — attiva regioni cerebrali legate alle emozioni (corteccia prefrontale ventromediale e amigdala), mentre la variante classica del cambio di binario coinvolge principalmente l\'elaborazione cognitiva. Il contatto fisico diretto innesca una risposta avversiva più forte, rendendo l\'azione emotivamente inaccettabile anche quando matematicamente identica.'
+    },
+    {
+      q: 'Come si relaziona la guida autonoma al problema del carrello?',
+      a: 'Le auto a guida autonoma devono essere programmate con algoritmi decisionali per situazioni di collisione inevitabile, rendendo il problema del carrello un caso pratico reale. Il progetto MIT Moral Machine (2018), che ha raccolto oltre 40 milioni di risposte da 233 paesi, ha rilevato differenze culturali significative nelle preferenze: alcune culture privilegiano i giovani, altre le figure di autorità, altre ancora il numero di vite. Nessun consenso globale è stato raggiunto su come codificare queste scelte.'
+    },
+    {
+      q: 'Il problema del carrello ha una risposta giusta?',
+      a: 'Non esiste una risposta universalmente accettata. I consequenzialisti sostengono che deviare il tram sia corretto perché massimizza le vite salvate. I deontologi kantiani obiettano che usare una persona come mezzo — anche per salvarne cinque — viola la sua dignità. I filosofi della virtù chiedono invece cosa farebbe una persona di buon carattere. Il valore del dilemma non è la risposta, ma la mappa che traccia delle nostre intuizioni morali profonde.'
+    }
+  ],
+  content: [
+    {
+      type: 'p',
+      text: 'Pochi esperimenti mentali hanno la resistenza di un buon tram. Nel 1967, la filosofa britannica Philippa Foot pubblicò un articolo sull\'aborto e, quasi di passaggio, propose un dilemma su un macchinista e cinque operai. Quasi sessant\'anni dopo, quel dilemma ha generato centinaia di articoli accademici, cambiato il modo in cui i neurologi studiano il cervello morale e persino influenzato il codice delle automobili autonome. Pochi costrutti filosofici possono vantare una carriera simile.'
+    },
+    {
+      type: 'h2',
+      text: 'Come nacque il problema: Philippa Foot e il 1967'
+    },
+    {
+      type: 'p',
+      text: 'Philippa Foot non stava cercando di costruire un genere. Il suo articolo "Il problema dell\'aborto e la dottrina del doppio effetto" usava il carrello come uno strumento diagnostico — un modo per testare se la distinzione tra uccidere attivamente e lasciare morire fosse moralmente rilevante, o soltanto un\'illusione confortante. Nel dilemma originale, un macchinista perde il controllo del tram: può continuare dritto e travolgere cinque operai, oppure deviare su un binario laterale dove si trova un solo lavoratore. La stragrande maggioranza delle persone sceglie di deviare. Foot interpretò questa risposta come evidenza che il numero conta — che non è indifferente lasciare morire cinque persone quando si può salvarne cinque a costo di uno.'
+    },
+    {
+      type: 'p',
+      text: 'Quello che Foot non prevedeva era che il suo strumento diagnostico sarebbe diventato più famoso del problema che tentava di risolvere. La dottrina del doppio effetto — l\'idea che sia lecito causare un danno come effetto collaterale di un\'azione buona, ma non come mezzo diretto — rimane un concetto fondamentale in bioetica. Ma il carrello ha preso vita propria, trascinandosi dietro decenni di varianti, studi empirici e polemiche.'
+    },
+    {
+      type: 'h2',
+      text: 'Il passerella cambia tutto: la mossa di Thomson nel 1985'
+    },
+    {
+      type: 'p',
+      text: 'Fu Judith Jarvis Thomson, nel 1985, a portare il dilemma nella sua forma più destabilizzante. Thomson immaginò una variante: questa volta non sei il macchinista, ma un osservatore su un ponte. Il tram sfrenato si avvicina ai cinque operai. Accanto a te c\'è un uomo robusto — se lo spingi giù dal corrimano, il suo corpo fermerà il tram, salvando i cinque ma uccidendo lui. La matematica è identica: cinque vite contro una. Ma l\'intuizione si rovescia quasi universalmente. Quasi nessuno è disposto a spingere.'
+    },
+    {
+      type: 'p',
+      text: 'Thomson usò questa asimmetria per sostenere che la differenza non è banale: c\'è qualcosa di moralmente rilevante nel fare di una persona un mezzo diretto per salvare altri, qualcosa che la semplice aritmetica delle vite non cattura. Questa distinzione è al cuore del pensiero kantiano — usare un essere umano come strumento viola la sua dignità intrinseca, indipendentemente dal risultato. Il passerella trasformò un esercizio relativamente ordinato in un campo di battaglia tra consequenzialismo e deontologia.'
+    },
+    {
+      type: 'h2',
+      text: 'La "carrellologia" diventa scienza: Greene e gli studi fMRI'
+    },
+    {
+      type: 'p',
+      text: 'Per decenni il carrello rimase proprietà dei filosofi. Poi, nel 2001, il neuroscienziato Joshua Greene e i suoi colleghi di Princeton portarono i soggetti in scanner fMRI e mostrarono loro entrambe le varianti. I risultati furono sorprendenti. Di fronte al dilemma classico del binario, i partecipanti mostravano attività nelle regioni cognitive della corteccia dorsale. Di fronte alla variante del passerella, si accendevano l\'amigdala e la corteccia prefrontale ventromediale — strutture legate all\'elaborazione emotiva e alle reazioni viscerali. Il cervello, letteralmente, si comportava in modo diverso a seconda di come il problema era presentato.'
+    },
+    {
+      type: 'p',
+      text: 'Greene ne trasse la sua teoria a doppio processo: il ragionamento morale coinvolge due sistemi che spesso confliggono. Un sistema rapido, automatico ed emotivo risponde con orrore all\'idea di spingere qualcuno giù da un ponte; un sistema lento, deliberativo e calcolatore valuta i numeri e tende verso la risposta consequenzialista. Quando i due sistemi sono in conflitto — e nei dilemmi morali lo sono quasi sempre — le persone esitano, cambiano idea o si sentono genuinamente lacerati. Non è incoerenza: è l\'architettura del giudizio morale umano.'
+    },
+    {
+      type: 'h2',
+      text: 'Troppo astratto per essere utile? Le critiche che contano'
+    },
+    {
+      type: 'p',
+      text: 'Non tutti sono rimasti affascinati. Il filosofo Peter Unger ha sostenuto, con elegante provocazione, che le nostre intuizioni sui dilemmi del carrello non ci dicono nulla di stabile — variano a seconda di dettagli irrilevanti come la distanza fisica, il colore dei vestiti delle persone coinvolte, persino l\'ordine in cui le informazioni vengono presentate. Se le nostre risposte morali cambiano per ragioni arbitrarie, forse non stiamo accedendo a principi profondi ma a riflessi superficiali. Unger le chiamò "intuizioni filosoficamente inutili".'
+    },
+    {
+      type: 'p',
+      text: 'C\'è anche una critica più pratica: le emergenze reali raramente assomigliano a dilemmi del carrello. I soccorritori in situazioni di crisi non calcolano vite contro vite con distacco olimpico — agiscono sotto stress estremo, con informazioni incomplete, in frazioni di secondo. La ricerca sul comportamento reale durante catastrofi mostra che le persone tendono all\'altruismo spontaneo molto più spesso di quanto i dilemmi astratti lascerebbero prevedere. Forse il carrello ci dice più su come ragioniamo a freddo che su come ci comportiamo davvero.'
+    },
+    {
+      type: 'h2',
+      text: 'Il carrello esce dalla filosofia: le auto autonome e il MIT Moral Machine'
+    },
+    {
+      type: 'p',
+      text: 'Nel 2016 l\'esperimento mentale smise di essere solo mentale. I produttori di veicoli autonomi si trovarono di fronte a una domanda concreta: come deve comportarsi un\'auto quando una collisione è inevitabile e la scelta è tra investire il passeggero, un pedone o più persone? Gli ingegneri del software si resero conto, con un certo disagio, che stavano cercando di codificare filosofia morale in istruzioni if-then.'
+    },
+    {
+      type: 'p',
+      text: 'Il MIT lanciò nel 2014 il progetto Moral Machine, una piattaforma online che presentava varianti del carrello — bambini contro anziani, pedoni contro passeggeri, ricchi contro poveri — e raccoglieva le preferenze degli utenti. Entro il 2018 aveva accumulato oltre 40 milioni di risposte da 233 paesi. I risultati, pubblicati su Nature, rivelarono pattern culturali profondi: le culture occidentali individualiste tendevano a privilegiare il numero di vite; alcune culture asiatiche mostravano maggiore preferenza per gli anziani; le culture con alta disuguaglianza economica penalizzavano di meno i personaggi di basso status. Nessun algoritmo universale è mai emerso da quei dati — il che è di per sé una risposta.'
+    },
+    {
+      type: 'cta',
+      label: 'Mettiti alla prova: scegli tu sul carrello originale',
+      href: '/it/play/trolley'
+    },
+    {
+      type: 'h2',
+      text: 'Perché sopravvive: non parla di tram, parla delle nostre regole morali'
+    },
+    {
+      type: 'p',
+      text: 'La durata del problema del carrello non dipende dal tram. Dipende dal fatto che espone, con chirurgica precisione, una tensione irrisolta nel cuore di ogni sistema etico serio: le nostre regole morali sono principi assoluti o euristiche utili che possiamo correggere quando i numeri diventano abbastanza grandi? I deontologi sostengono che certe azioni siano intrinsecamente vietate, qualunque sia il conto delle conseguenze. I consequenzialisti rispondono che una moralità che ignora i risultati è un lusso che ci possiamo permettere solo finché il costo ricade su altri.'
+    },
+    {
+      type: 'p',
+      text: 'Nessuno dei due campi ha vinto il dibattito. Quello che ha vinto è il metodo: l\'uso di scenari ipotetici estremi per sondare intuizioni che nella vita ordinaria rimangono invisibili. Il dilemma del carrello ha insegnato alla filosofia a lavorare in modo quasi sperimentale — costruire casi, variare un parametro alla volta, osservare dove le intuizioni collassano. Questo approccio, impensabile prima di Foot, è oggi standard nei dipartimenti di etica di tutto il mondo.'
+    },
+    {
+      type: 'h2',
+      text: 'Come si divide il voto su SplitVote'
+    },
+    {
+      type: 'p',
+      text: 'Su SplitVote, la versione classica del carrello genera una delle divisioni più nette della piattaforma. La maggioranza degli utenti sceglie di deviare — un risultato coerente con decenni di sondaggi filosofici, che tipicamente trovano tra il 85 e il 90 percento a favore della deviazione nel dilemma originale. Ma la distribuzione cambia con l\'età, il paese e il percorso che l\'utente ha fatto prima di arrivare al dilemma. Chi ha già affrontato lo scenario del passerella tende a essere più cauto, come se il confronto tra le due varianti avesse reso visibile qualcosa che prima restava opaco.'
+    },
+    {
+      type: 'p',
+      text: 'È uno dei motivi per cui il problema del carrello rimane uno strumento così potente: non fornisce risposte, ma rende le persone più consapevoli delle domande. Chi vota e poi legge le motivazioni degli altri scopre spesso che le ragioni dietro la stessa scelta sono radicalmente diverse — un consequenzialista e un deontologista possono entrambi deviare il tram, ma per ragioni che si contraddicono a vicenda.'
+    },
+    {
+      type: 'h2',
+      text: 'Da esperimento mentale a test diagnostico: l\'eredità a sessant\'anni'
+    },
+    {
+      type: 'p',
+      text: 'Philippa Foot morì nel 2010, abbastanza a lungo da vedere il suo strumento diventare un\'industria. Non era entusiasta di tutto quello che era cresciuto intorno al suo dilemma — trovava alcune varianti eccessive e il dibattito spesso distante dai problemi morali reali. Eppure sarebbe difficile negare il contributo. Prima del 1967, l\'etica analitica lavorava prevalentemente su principi astratti. Dopo il carrello, aveva un laboratorio.'
+    },
+    {
+      type: 'p',
+      text: 'A sessant\'anni dalla sua formulazione, il problema del carrello non è un reperto museale. È uno specchio. Ci mostra che il nostro senso morale non è un sistema coerente e uniforme, ma un mosaico di regole, emozioni, abitudini culturali e ragionamenti che si tengono insieme — fino a quando un tram sfrenato non li mette alla prova. La domanda che Foot pose nel 1967 è la stessa che poniamo oggi ai progettisti di algoritmi: quando le regole non bastano, chi decide, e come?'
+    },
+    {
+      type: 'disclaimer',
+      text: 'Questo articolo ha scopo divulgativo. I dati sui comportamenti di voto si riferiscono alle tendenze aggregate anonime degli utenti SplitVote e non costituiscono dati di ricerca scientifica certificata.'
+    }
+  ]
+},
 ]
 
 export const allPosts: BlogPost[] = [...EN_POSTS, ...IT_POSTS]

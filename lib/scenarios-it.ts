@@ -51,9 +51,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Resto in silenzio. 1.000 famiglie non possono perdere il reddito.',
   },
   'confess-crime': {
-    question: 'Hai commesso un piccolo reato 20 anni fa. Nessuno si è fatto male e nessuno lo sa. Confessare distruggerebbe carriera e famiglia.',
-    optionA: "Confesso. Devo vivere con integrità.",
-    optionB: 'Resto in silenzio. Il passato è passato.',
+    question: "A 22 anni, ubriaco dopo una festa, hai tamponato un'altra macchina. Il conducente si è fatto male — 3 mesi di riabilitazione. Sei fuggito. Ora hai 40 anni, sei un professionista rispettato. Nessuno ti ha mai collegato a quell'incidente.",
+    optionA: 'Mi costituisco. Gli devo almeno questo, anche adesso.',
+    optionB: 'Resto in silenzio. Rovinerebbe tutto quello che ho costruito — e non cambierebbe nulla per lui.',
   },
   lifeboat: {
     question: "Una scialuppa regge 8 persone. Siete in 9. Nessuno si offre. Qualcuno propone che vada l'anziano del gruppo — vi guarda e annuisce.",
@@ -71,9 +71,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: 'Lo cedo a qualcun altro. La sua vita prima.',
   },
   'zombie-apocalypse': {
-    question: "Durante un'apocalisse zombie, il tuo gruppo trova un rifugio fortificato con scorte per 10 persone. Siete in 15. Tu hai l'unica chiave.",
-    optionA: 'Faccio entrare tutti. Troviamo una soluzione insieme.',
-    optionB: 'Faccio entrare solo 10. Assicuro la sopravvivenza del gruppo.',
+    question: "Il tuo gruppo di 13 persone raggiunge un rifugio già occupato da 8 sconosciuti al massimo della capienza. Si rifiutano di aprire. Nel tuo gruppo ci sono bambini. Potreste forzare la porta — loro non hanno armi.",
+    optionA: "Forziamo l'ingresso. La sopravvivenza viene prima della loro regola.",
+    optionB: 'Rispettiamo il loro spazio. Erano lì prima e hanno il diritto di rifiutare.',
   },
   'pandemic-dose': {
     question: "Una nuova pandemia: in città resta una sola dose di vaccino. Tu e un anziano sconosciuto ne avete entrambi bisogno per sopravvivere. Il medico la consegna a te.",
@@ -81,9 +81,9 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionB: "La do all'anziano sconosciuto.",
   },
   'truth-friend': {
-    question: 'Il tuo migliore amico ti chiede se ti piace il suo nuovo partner. Tu pensi che quella persona sia pessima per lui.',
-    optionA: 'Sono brutalmente sincero. Meritano la verità.',
-    optionB: 'Mantengo la pace. Sto zitto.',
+    question: "Il tuo migliore amico sta per lasciare il lavoro, vendere l'appartamento e trasferirsi all'estero per una relazione di 4 mesi. Ti chiede onestamente: 'Pensi che stia sbagliando?'",
+    optionA: 'Sii onesto. Digli quello che vedi davvero — anche se te ne vorrà.',
+    optionB: 'Supportalo. È la sua vita e ha già deciso.',
   },
   'report-friend': {
     question: 'Scopri che il tuo amico più caro ha commesso un grave reato finanziario, sottraendo soldi a un ente benefico. Lo denunci?',
@@ -319,6 +319,26 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     question: 'Un membro del gruppo non ha quasi fatto nulla, ma avrà lo stesso merito e lo stesso voto degli altri. Chi vi valuta sta per decidere.',
     optionA: 'Lo dico a chi valuta. Il merito deve rispecchiare il lavoro fatto.',
     optionB: 'Sto zitto. Me lo assorbo invece di farlo affondare.',
+  },
+  'ai-work-disclosure': {
+    question: "Hai usato l'IA per produrre un report che il tuo capo ha definito 'la migliore analisi che tu abbia mai fatto.' In riunione plenaria, lo cita come prova che 'non serve assumere un terzo analista.' Dici come lo hai realizzato?",
+    optionA: "Sì, lo rivelo. Lo strumento usato conta quanto il risultato.",
+    optionB: 'No, sto zitto. Ho preso io tutte le decisioni chiave.',
+  },
+  'teen-influencer-secret': {
+    question: "Scopri che tuo figlio di 13 anni ha un account segreto con 50.000 follower. Pubblica da un anno senza che tu lo sapessi. Guadagna 800€ al mese. Ti implora di non chiuderlo.",
+    optionA: "Lo chiudo. Ha 13 anni — non è una decisione che può prendere lui.",
+    optionB: 'Lo aiuto a gestirlo in sicurezza. Chiuderlo cancella un anno di lavoro.',
+  },
+  'climate-flight': {
+    question: "Il tuo genitore malato terminale sta morendo in un altro paese. Hai giurato pubblicamente di non volare mai più per il clima — i tuoi 80.000 follower se lo ricordano. Il treno impiegherebbe 4 giorni e potrebbe arrivare tardi.",
+    optionA: "Prendo l'aereo. Certe emergenze giustificano qualsiasi regola.",
+    optionB: 'Prendo il treno. Il senso di un principio è che regge sotto pressione.',
+  },
+  'ai-friend-reveal': {
+    question: "Da 3 anni confidavi i tuoi pensieri più profondi a qualcuno online che sembrava un vero amico. Hai appena scoperto che è un personaggio IA creato da un'azienda che vende abbonamenti di supporto emotivo. Continueresti a usarlo?",
+    optionA: 'Sì. Il conforto che mi ha dato era reale — la fonte non cambia questo.',
+    optionB: "No. Stavo pagando per un'illusione di connessione.",
   },
 }
 

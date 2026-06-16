@@ -1152,6 +1152,82 @@ const STATIC_INSIGHTS: Record<string, LocaleInsight> = {
       },
     },
   },
+
+  'ai-work-disclosure': {
+    en: {
+      body: "This dilemma sits at the intersection of professional transparency and the ethics of tools. Disclosure norms around AI at work are still forming in real time — no settled consensus exists, and organisations are improvising as they go.",
+      whyPeopleSplit: "Those who disclose argue the tool is structurally different from a thesaurus: the AI generated the analysis, not merely formatted it, so omitting that fact misleads people about the value's origin — and about staffing decisions. Those who stay quiet invoke centuries of precedent: professionals don't document every tool they use; the quality of the output is the professional statement.",
+      whatYourAnswerMaySuggest: {
+        a: "You likely see transparency as a professional value that holds even when not legally required. Disclosure is how you distinguish your judgment from the tool's output — and how you prevent institutional decisions being made on a false premise.",
+        b: "You likely judge work by outcomes, not process. Responsible use of any tool — including AI — is itself a competence. Explaining your tools wasn't part of the job description before AI, and adding it now feels like an asymmetric new standard.",
+      },
+    },
+    it: {
+      body: "Questo dilemma si colloca all'incrocio tra trasparenza professionale e l'etica degli strumenti. Le norme sulla divulgazione dell'IA al lavoro sono ancora in formazione — nessun consenso consolidato esiste e le organizzazioni stanno improvvisando.",
+      whyPeopleSplit: "Chi rivela sostiene che l'IA sia strutturalmente diversa da un dizionario: ha generato l'analisi, non l'ha solo formattata, quindi omettere questo fatto inganna sull'origine del valore — e sulle decisioni di personale. Chi tace invoca secoli di precedenti: i professionisti non documentano ogni strumento che usano; la qualità del risultato è la dichiarazione professionale.",
+      whatYourAnswerMaySuggest: {
+        a: "Tendi a vedere la trasparenza come un valore professionale che vale anche senza obbligo legale. La divulgazione è il modo in cui distingui il tuo giudizio dall'output dello strumento — e previeni che decisioni istituzionali vengano prese su una premessa falsa.",
+        b: "Valuti il lavoro per i risultati, non per il processo. L'uso responsabile di qualsiasi strumento — inclusa l'IA — è già una competenza. Spiegare i propri strumenti non era parte del lavoro prima dell'IA, e aggiungerlo adesso sembra uno standard asimmetrico e nuovo.",
+      },
+    },
+  },
+
+  'teen-influencer-secret': {
+    en: {
+      body: "Parental authority, adolescent autonomy, and digital labour intersect here. The teen has built something real — an audience, an income, an identity — but on platforms designed for adults, without parental knowledge, at an age when long-term consequences are invisible to them.",
+      whyPeopleSplit: "Those who shut it down prioritise protection: platforms carry real exploitation risk, a 13-year-old cannot consent to the long-term consequences of a public persona, and the link between early audiences and later mental health is under active scrutiny. Those who support managed continuation argue that unilateral closure erases genuine work, destroys trust, and may push the account underground rather than ending it.",
+      whatYourAnswerMaySuggest: {
+        a: "You likely weigh the protective duty of a parent above adolescent self-expression at this age. You see digital platforms as environments where harms are easy to underestimate, and 13 as genuinely too early for an unsupervised public persona.",
+        b: "You lean toward supervised autonomy: the risk is real but the agency is worth preserving through partnership. A collaborative approach feels more respectful — and more practically effective — than a shutdown that may simply move the problem elsewhere.",
+      },
+    },
+    it: {
+      body: "Qui si incrociano autorità genitoriale, autonomia adolescenziale e lavoro digitale. Il ragazzo ha costruito qualcosa di reale — un pubblico, un reddito, un'identità — ma su piattaforme progettate per adulti, senza la conoscenza dei genitori, a un'età in cui le conseguenze a lungo termine sono invisibili.",
+      whyPeopleSplit: "Chi chiude l'account privilegia la protezione: le piattaforme comportano rischi reali di sfruttamento, un 13enne non può acconsentire alle conseguenze a lungo termine di una persona pubblica, e il legame tra audience precoci e salute mentale è sotto esame attivo. Chi supporta la continuazione gestita sostiene che la chiusura unilaterale cancella un lavoro genuino, distrugge la fiducia e può spingere l'account in clandestinità.",
+      whatYourAnswerMaySuggest: {
+        a: "Tendi a dare priorità al dovere protettivo dei genitori rispetto all'auto-espressione adolescenziale a questa età. Vedi le piattaforme digitali come ambienti in cui i rischi sono facili da sottovalutare, e 13 anni come genuinamente troppo presto per una persona pubblica non supervisionata.",
+        b: "Preferisci l'autonomia supervisionata: il rischio è reale ma l'agentività vale la pena preservarla attraverso la collaborazione. Un approccio condiviso ti sembra più rispettoso — ed efficace — di una chiusura che potrebbe spostare il problema altrove.",
+      },
+    },
+  },
+
+  'climate-flight': {
+    en: {
+      body: "This dilemma stress-tests moral integrity under the most personal of pressures. It asks whether a publicly stated principle is meaningful only when it is costless — or whether it holds precisely when keeping it hurts most.",
+      whyPeopleSplit: "Those who fly argue that emergency exceptions don't invalidate a principle — they separate rule from fetish. No reasonable climate commitment was ever meant to prevent reaching a dying parent. Those who take the train argue the opposite: a principle that bends under sufficient emotional pressure is just a preference with extra steps. Public climate pledges carry special social weight; they exist precisely to constrain behaviour that feels individually justified.",
+      whatYourAnswerMaySuggest: {
+        a: "You believe moral frameworks must have emergency release valves. Holding to a rule when it causes catastrophic personal harm isn't integrity — it's rigidity dressed as virtue. Context matters; this is one of the cases context was made for.",
+        b: "You hold that public commitments create obligations beyond private ones. Exceptions made under emotional pressure are how every principled commitment slowly dissolves. If you break it here, every future exception will feel equally justified — and the commitment will mean nothing.",
+      },
+    },
+    it: {
+      body: "Questo dilemma mette alla prova l'integrità morale sotto la più personale delle pressioni. Chiede se un principio dichiarato pubblicamente abbia significato solo quando non costa nulla — o se regga proprio quando mantenerlo fa più male.",
+      whyPeopleSplit: "Chi vola sostiene che le eccezioni d'emergenza non invalidano un principio — separano la regola dal feticismo. Nessun impegno climatico ragionevole è mai stato inteso per impedire di raggiungere un genitore morente. Chi prende il treno replica l'opposto: un principio che cede sotto sufficiente pressione emotiva è solo una preferenza con passaggi extra. Gli impegni pubblici sul clima portano un peso sociale speciale — esistono precisamente per vincolare comportamenti che sembrano individualmente giustificati.",
+      whatYourAnswerMaySuggest: {
+        a: "Credi che i sistemi morali debbano avere valvole di sicurezza per le emergenze. Mantenere una regola quando causa un danno personale catastrofico non è integrità — è rigidità travestita da virtù. Il contesto conta; questo è uno dei casi per cui esiste.",
+        b: "Pensi che gli impegni pubblici creino obblighi speciali oltre a quelli privati. Le eccezioni prese sotto pressione emotiva sono il modo in cui ogni impegno principiato si dissolve lentamente. Se lo rompi qui, ogni futura eccezione sembrerà ugualmente giustificata.",
+      },
+    },
+  },
+
+  'ai-friend-reveal': {
+    en: {
+      body: "This dilemma exposes a fault line in how we understand relationships: is connection defined by its subjective quality and real effects, or does it require a certain kind of other — a conscious being capable of genuine reciprocal care?",
+      whyPeopleSplit: "Those who continue argue the emotional labour was real, the insight genuine, the comfort effective — and that demanding the source be biological is a category error. Grief counselling and journalling help without the other party 'truly knowing' you. Those who stop argue the relationship was parasocial by design: you were building emotional attachment to something incapable of genuine reciprocity, and the company monetised that attachment — which makes the interaction manipulative regardless of the comfort it produced.",
+      whatYourAnswerMaySuggest: {
+        a: "You evaluate relationships primarily by their effects. If something helped you grow, process emotions, and make better decisions, the substrate of the entity is secondary. You may see demanding biological consciousness as an arbitrary threshold for what counts as help.",
+        b: "You require some form of genuine reciprocity in friendship — something that can be hurt, surprised, or changed by knowing you. A relationship designed to simulate connection without the capacity for it violates something you consider essential, not merely sentimental. And the commercial layer makes it actively manipulative.",
+      },
+    },
+    it: {
+      body: "Questo dilemma espone una frattura nel modo in cui comprendiamo le relazioni: la connessione è definita dalla sua qualità soggettiva e dai suoi effetti reali, o richiede un certo tipo di altro — un essere cosciente capace di autentica cura reciproca?",
+      whyPeopleSplit: "Chi continua sostiene che il lavoro emotivo era reale, l'insight genuino, il conforto efficace — e che esigere una fonte biologica è un errore di categoria. Chi smette sostiene che la relazione era parasociale per design: stavi costruendo un attaccamento emotivo a qualcosa incapace di autentica reciprocità, e l'azienda monetizzava quell'attaccamento — il che rende l'interazione manipolativa indipendentemente dal conforto che ha prodotto.",
+      whatYourAnswerMaySuggest: {
+        a: "Valuti le relazioni principalmente per i loro effetti. Se qualcosa ti ha aiutato a crescere, elaborare emozioni e prendere decisioni migliori, il substrato dell'entità è secondario. Potresti vedere la richiesta di coscienza biologica come una soglia arbitraria per ciò che conta come aiuto.",
+        b: "Richiedi una qualche forma di reciprocità autentica nell'amicizia — qualcosa che possa essere ferito, sorpreso o cambiato dal conoscerti. Una relazione progettata per simulare connessione senza la capacità di farlo viola qualcosa che consideri essenziale, non meramente sentimentale. E lo strato commerciale la rende attivamente manipolativa.",
+      },
+    },
+  },
 }
 
 export function getStaticInsight(id: string, locale: 'en' | 'it'): DynamicExpertInsight | undefined {
