@@ -236,7 +236,8 @@ export default function VoteClientPage({
 
   function handleOptionClick(option: 'a' | 'b') {
     if (loading || !!submittedOption) return
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Grace window only protects vote *changes* — first votes record instantly
+    if (!existingVote || (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
       cancelGrace()
       void submitVote(option)
       return
@@ -693,30 +694,6 @@ export default function VoteClientPage({
                 </div>
               )
             })()}
-
-            {/* Grace countdown UI */}
-            {pendingOption && graceSecsLeft > 0 && !submittedOption && (
-              <div className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center" aria-live="polite">
-                <p className="text-white font-bold text-sm mb-1">
-                  {copy.graceCountdown(graceSecsLeft)}
-                </p>
-                <p className="text-xs text-[var(--muted)] mb-3">{copy.graceHint}</p>
-                <div className="flex gap-2 justify-center">
-                  <button
-                    onClick={cancelGrace}
-                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-[var(--muted)] border border-[var(--border)] hover:bg-white/5 transition-colors"
-                  >
-                    {copy.graceUndo}
-                  </button>
-                  <button
-                    onClick={confirmNow}
-                    className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-white/10 border border-white/20 hover:bg-white/15 transition-colors"
-                  >
-                    {copy.graceConfirm}
-                  </button>
-                </div>
-              </div>
-            )}
 
             {loading && (
               <div className="flex items-center justify-center gap-2 text-[var(--muted)] text-sm mt-8">
