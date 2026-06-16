@@ -7,6 +7,11 @@ import {
   findProductByStripePriceId,
   type ProductId,
 } from '@/lib/purchases'
+import {
+  claimWebhookEvent,
+  markWebhookEventProcessed,
+  markWebhookEventFailed,
+} from '@/lib/stripe-webhook-events'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -49,16 +54,77 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server config error' }, { status: 500 })
   }
 
+  // Idempotency guard — Stripe retries on 5xx/timeout; XP grants and
+  // name_change counters are read-modify-write and would double-apply.
+  const claim = await claimWebhookEvent(admin, event.id, event.type)
+  if (!claim.claimed) {
+    return NextResponse.json({ received: true, skipped: claim.reason })
+  }
+
+  let res: NextResponse
+  try {
+    res = await handleEvent(stripe, admin, event)
+  } catch (err) {
+    await markWebhookEventFailed(admin, event.id, err)
+    console.error('[stripe/webhook] Unhandled handler error:', err instanceof Error ? err.message : String(err))
+    return NextResponse.json({ error: 'Handler error' }, { status: 500 })
+  }
+
+  if (res.status >= 400) {
+    await markWebhookEventFailed(admin, event.id, `handler returned ${res.status}`)
+  } else {
+    await markWebhookEventProcessed(admin, event.id)
+  }
+  return res
+}
+
+async function handleEvent(
+  stripe: Stripe,
+  admin: ReturnType<typeof createAdminClient>,
+  event: Stripe.Event,
+): Promise<NextResponse> {
   // ── checkout.session.completed ──────────────────────────────────────────────
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
-    if (session.payment_status !== 'paid') {
+    // Subscription checkouts can complete as 'no_payment_required'
+    if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
       return NextResponse.json({ received: true })
     }
 
     const type   = session.metadata?.type
     const userId = session.metadata?.userId
+
+    // ── Premium subscription activated ────────────────────────────────────────
+    if (type === 'subscription') {
+      if (!userId) {
+        console.warn('[webhook] subscription: missing userId metadata', session.id)
+        return NextResponse.json({ received: true })
+      }
+
+      const customerId = typeof session.customer === 'string'
+        ? session.customer
+        : session.customer?.id ?? null
+      const subscriptionId = typeof session.subscription === 'string'
+        ? session.subscription
+        : session.subscription?.id ?? null
+
+      const { error } = await admin
+        .from('profiles')
+        .update({
+          is_premium: true,
+          ...(customerId ? { stripe_customer_id: customerId } : {}),
+          ...(subscriptionId ? { stripe_subscription_id: subscriptionId } : {}),
+        })
+        .eq('id', userId)
+
+      if (error) {
+        console.error('[webhook] Failed to activate premium:', error)
+        return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+      }
+
+      console.log(`✅ Premium activated: user=${userId.slice(0, 8)} sub=${subscriptionId ?? 'n/a'}`)
+    }
 
     // ── Name change ───────────────────────────────────────────────────────────
     if (type === 'name_change') {
@@ -209,6 +275,55 @@ export async function POST(req: NextRequest) {
       }
 
       console.log(`✅ Cosmetic [${category}]: user=${userId.slice(0, 8)} → "${productId}" (+${item.xpBonus} XP)`)
+    }
+  }
+
+  // ── customer.subscription.updated / deleted ────────────────────────────────
+  // Keeps is_premium in sync with the Stripe subscription lifecycle:
+  // cancellations, payment failures, and reactivations. 'past_due' is left
+  // untouched (Stripe's own retry/grace window decides the final state).
+  if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
+    const sub = event.data.object as Stripe.Subscription
+    const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer.id
+
+    const { data: profile } = await admin
+      .from('profiles')
+      .select('id, is_premium')
+      .or(`stripe_subscription_id.eq.${sub.id},stripe_customer_id.eq.${customerId}`)
+      .maybeSingle()
+
+    if (!profile) {
+      console.warn(`[webhook] ${event.type}: no profile for customer=${customerId} sub=${sub.id}`)
+      return NextResponse.json({ received: true })
+    }
+
+    const ended = event.type === 'customer.subscription.deleted'
+      || sub.status === 'canceled'
+      || sub.status === 'unpaid'
+      || sub.status === 'incomplete_expired'
+      || sub.status === 'paused'
+    const active = sub.status === 'active' || sub.status === 'trialing'
+
+    if (ended && profile.is_premium) {
+      const { error } = await admin
+        .from('profiles')
+        .update({ is_premium: false, stripe_subscription_id: null })
+        .eq('id', profile.id)
+      if (error) {
+        console.error('[webhook] Failed to revoke premium:', error)
+        return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+      }
+      console.log(`↩️ Premium revoked: user=${profile.id.slice(0, 8)} (sub ${sub.status})`)
+    } else if (active && !profile.is_premium) {
+      const { error } = await admin
+        .from('profiles')
+        .update({ is_premium: true, stripe_subscription_id: sub.id, stripe_customer_id: customerId })
+        .eq('id', profile.id)
+      if (error) {
+        console.error('[webhook] Failed to re-activate premium:', error)
+        return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+      }
+      console.log(`✅ Premium re-activated: user=${profile.id.slice(0, 8)}`)
     }
   }
 
