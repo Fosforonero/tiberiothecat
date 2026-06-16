@@ -2,12 +2,9 @@
  * /api/dilemma-result-card
  *
  * Edge SVG OG card for /results/[id] and /it/results/[id] pages.
- * Reads live vote split from Redis and renders a 1200×630 card with:
- *  - The dilemma question (up to 2 wrapped lines)
- *  - Big A% / B% numbers
- *  - A visual split bar
- *  - Option labels
- *  - Total vote count + CTA
+ * Curiosity-gap design: shows the dilemma question + options + vote count
+ * but deliberately hides the vote split — percentages are NOT shown so that
+ * recipients are compelled to click and find out.
  *
  * Query params:
  *  ?id=<dilemmaId>   — required
@@ -97,24 +94,27 @@ export async function GET(request: NextRequest) {
 
   const votesLabel = totalVotes > 0
     ? IT
-      ? `${totalVotes.toLocaleString('it-IT')} voti nel mondo`
-      : `${totalVotes.toLocaleString('en-US')} votes worldwide`
+      ? `${totalVotes.toLocaleString('it-IT')} persone hanno già votato`
+      : `${totalVotes.toLocaleString('en-US')} people have already voted`
     : IT ? 'Sii il primo a votare!' : 'Be the first to vote!'
 
+  // Curiosity gap: never reveal the split — the teaser drives clicks
+  const teaser1 = IT ? 'Sai come si divide il voto?' : 'Can you guess how'
+  const teaser2 = IT ? '' : 'the vote splits?'
   const ctaText = IT
-    ? 'Cosa sceglieresti? → splitvote.io'
-    : 'What would YOU choose? → splitvote.io'
+    ? 'Vota e scopri il risultato → splitvote.io'
+    : 'Vote and see the result → splitvote.io'
 
-  // ── Bar geometry ─────────────────────────────────────────────────
+  // ── Bar geometry (hidden percentages — curiosity gap) ────────────
   const BAR_W = 1080
   const barA  = Math.max(4, Math.round(BAR_W * pctA / 100))
   const barB  = Math.max(4, BAR_W - barA)
 
   // Vertical positions shift when there are two question lines
-  const barY   = twoLines ? 265 : 218
-  const bigY   = twoLines ? 390 : 345
-  const vsY    = twoLines ? 375 : 330
-  const optY   = twoLines ? 435 : 390
+  const barY    = twoLines ? 265 : 218
+  const teaserY = twoLines ? 370 : 325
+  const teaser2Y = teaserY + 68
+  const optY    = twoLines ? 480 : 435
 
   const svg = `<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
       <stop offset="100%" style="stop-color:#3b82f6"/>
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -178,54 +178,49 @@ export async function GET(request: NextRequest) {
   <!-- Split bar track -->
   <rect x="60" y="${barY}" width="1080" height="14" rx="7" fill="#1e293b"/>
 
-  <!-- Split bar A (red) -->
+  <!-- Split bar A (red) — shown without labels to intrigue, not inform -->
   <rect x="60" y="${barY}" width="${barA}" height="14" rx="7" fill="url(#gA)"/>
 
-  <!-- Split bar B (blue) — overlaps right side -->
+  <!-- Split bar B (blue) -->
   <rect x="${60 + barA}" y="${barY}" width="${barB}" height="14" rx="7" fill="url(#gB)"/>
 
-  <!-- Big % A -->
-  <text x="60" y="${bigY}"
+  <!-- Option A label (left) -->
+  <text x="60" y="${barY - 12}"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="110" font-weight="900" fill="#ef4444"
-        filter="url(#glow)">${pctA}%</text>
+        font-size="18" font-weight="600" fill="#ef4444">${optA.length > 28 ? optA.slice(0, 27) + '…' : optA}</text>
 
-  <!-- Big % B -->
-  <text x="1140" y="${bigY}"
+  <!-- Option B label (right) -->
+  <text x="1140" y="${barY - 12}"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="110" font-weight="900" fill="#3b82f6"
-        text-anchor="end" filter="url(#glow)">${pctB}%</text>
+        font-size="18" font-weight="600" fill="#60a5fa"
+        text-anchor="end">${optB.length > 28 ? optB.slice(0, 27) + '…' : optB}</text>
 
-  <!-- VS divider -->
-  <text x="600" y="${vsY}"
-        font-family="system-ui, sans-serif"
-        font-size="24" font-weight="900" fill="#334155"
-        text-anchor="middle">VS</text>
-
-  <!-- Option A label -->
-  <text x="60" y="${optY}"
+  <!-- Curiosity gap teaser -->
+  <text x="600" y="${teaserY}"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="22" font-weight="600" fill="#94a3b8">${optA.length > 30 ? optA.slice(0, 29) + '…' : optA}</text>
+        font-size="52" font-weight="900" fill="#f1f5f9"
+        filter="url(#glow)"
+        text-anchor="middle">${teaser1}</text>
 
-  <!-- Option B label -->
-  <text x="1140" y="${optY}"
+  ${teaser2 ? `<text x="600" y="${teaser2Y}"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="22" font-weight="600" fill="#94a3b8"
-        text-anchor="end">${optB.length > 30 ? optB.slice(0, 29) + '…' : optB}</text>
+        font-size="52" font-weight="900" fill="#f1f5f9"
+        filter="url(#glow)"
+        text-anchor="middle">${teaser2}</text>` : ''}
+
+  <!-- Vote count (social proof without direction) -->
+  <text x="600" y="${optY}"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="19" font-weight="500" fill="#475569"
+        text-anchor="middle">${votesLabel}</text>
 
   <!-- Separator -->
   <rect x="60" y="565" width="1080" height="1" fill="#1e293b"/>
 
-  <!-- Vote count -->
-  <text x="600" y="535"
-        font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="18" font-weight="500" fill="#334155"
-        text-anchor="middle">${votesLabel}</text>
-
   <!-- CTA -->
-  <text x="600" y="600"
+  <text x="600" y="605"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
-        font-size="22" font-weight="700" fill="#475569"
+        font-size="22" font-weight="700" fill="#94a3b8"
         text-anchor="middle">${ctaText}</text>
 </svg>`
 
