@@ -32,7 +32,10 @@ const STATIC_LAST_MOD = new Date('2026-05-16')
 // volunteered for crawl.
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static scenario pages — EN + IT
+  // Static scenario pages — EN + IT. /results/[id] is intentionally NOT
+  // listed: it carries `robots: noindex,follow` (near-duplicate of the
+  // /play twin, thin at low vote counts — the AdSense "low value content"
+  // profile). /play/[id] is the single indexable URL per dilemma.
   const scenarioRoutes = scenarios.flatMap((s) => [
     {
       url: `${BASE}/play/${s.id}`,
@@ -41,22 +44,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${BASE}/results/${s.id}`,
-      lastModified: STATIC_LAST_MOD,
-      changeFrequency: 'daily' as const,
-      priority: 0.9,
-    },
-    {
       url: `${BASE}/it/play/${s.id}`,
       lastModified: STATIC_LAST_MOD,
       changeFrequency: 'weekly' as const,
       priority: 0.75,
-    },
-    {
-      url: `${BASE}/it/results/${s.id}`,
-      lastModified: STATIC_LAST_MOD,
-      changeFrequency: 'daily' as const,
-      priority: 0.85,
     },
   ])
 

@@ -14,7 +14,6 @@ import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from '@/app/results/[id]/ResultsClientPage'
 import DilemmaInsightSection from '@/components/DilemmaInsightSection'
-import { hasStaticInsight } from '@/lib/static-insights'
 import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
@@ -38,15 +37,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = dynamicScenario?.seoDescription
     ?? `Scopri come si dividono i votanti di SplitVote su questo dilemma morale. "${scenario.optionA}" contro "${scenario.optionB}".`
   const keywords = dynamicScenario?.keywords?.length ? dynamicScenario.keywords.join(', ') : undefined
-  // Exclude dynamic AI scenarios without a per-id editorial insight from
-  // Google's index. Static IT dilemmas remain indexable.
-  const noindex = !getItalianScenario(params.id) && !hasStaticInsight(params.id)
 
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
-    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+    // Results pages are near-duplicates of the /play twin and thin at low
+    // vote counts — noindex,follow keeps them out of Google while link
+    // equity flows to /it/play/[id], the single indexable URL per dilemma.
+    robots: { index: false, follow: true },
     alternates: {
       canonical: `${BASE_URL}/it/results/${params.id}`,
       languages: {
@@ -151,7 +150,6 @@ export default async function ItResultsPage({ params, searchParams }: Props) {
     name: `Risultati: ${scenario.question}`,
     description: `Distribuzione dei voti globali sul dilemma morale: "${scenario.optionA}" contro "${scenario.optionB}".`,
     url: `${BASE_URL}/it/results/${params.id}`,
-    dateModified: new Date().toISOString().split('T')[0],
     license: 'https://creativecommons.org/licenses/by/4.0/',
     creator: { '@type': 'Organization', name: 'SplitVote', url: BASE_URL },
     variableMeasured: [

@@ -9,7 +9,6 @@ import { cookies } from 'next/headers'
 import { getVotes } from '@/lib/redis'
 import ResultsClientPage from './ResultsClientPage'
 import DilemmaInsightSection from '@/components/DilemmaInsightSection'
-import { hasStaticInsight } from '@/lib/static-insights'
 import JsonLd from '@/components/JsonLd'
 import type { Metadata } from 'next'
 
@@ -36,15 +35,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = ds?.seoDescription
     ?? `See how SplitVote voters split on this moral dilemma. "${scenario.optionA}" vs "${scenario.optionB}".`
   const keywords = ds?.keywords?.length ? ds.keywords.join(', ') : undefined
-  // Exclude dynamic AI scenarios without a per-id editorial insight from
-  // Google's index. Static dilemmas remain indexable.
-  const noindex = !staticScenario && !hasStaticInsight(params.id)
 
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
-    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+    // Results pages are near-duplicates of the /play twin and thin at low
+    // vote counts — noindex,follow keeps them out of Google while link
+    // equity flows to /play/[id], the single indexable URL per dilemma.
+    robots: { index: false, follow: true },
     alternates: {
       canonical: `${BASE_URL}/results/${params.id}`,
       languages: {
@@ -149,7 +148,6 @@ export default async function ResultsPage({ params, searchParams }: Props) {
     name: `Results: ${scenario.question}`,
     description: `Global vote distribution on the moral dilemma: "${scenario.optionA}" vs "${scenario.optionB}".`,
     url: `${BASE_URL}/results/${params.id}`,
-    dateModified: new Date().toISOString().split('T')[0],
     license: 'https://creativecommons.org/licenses/by/4.0/',
     creator: { '@type': 'Organization', name: 'SplitVote', url: BASE_URL },
     variableMeasured: [
