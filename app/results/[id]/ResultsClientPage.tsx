@@ -391,7 +391,9 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
   // prior stronger sizing so the page doesn't open with a small heading.
   const hasRevealBanner = voted !== null && pctVoted !== null && total >= 10
 
-  // Aggregate share text — always uses majority stats, never reveals user's own vote
+  // Aggregate share text — curiosity gap by design: never reveal the
+  // percentages, the majority option, or the user's own vote. The recipient
+  // must vote to see the split — that's the whole loop.
   const webShareText = total === 0
     ? (isIT
         ? `Cosa faresti?\n"${scenario.question}"`
@@ -402,15 +404,15 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         : `This one splits SplitVote exactly 50/50. What would you choose?\n"${scenario.question}"`)
     : isClose
     ? (isIT
-        ? `${pctA}% vs ${pctB}% — i votanti su SplitVote non riescono a decidere. Da che parte stai?\n"${scenario.question}"`
-        : `${pctA}% vs ${pctB}% — SplitVote voters can barely decide. Which side are you on?\n"${scenario.question}"`)
+        ? `Questo dilemma divide SplitVote quasi a metà. Da che parte stai?\n"${scenario.question}"`
+        : `This one splits SplitVote almost down the middle. Which side are you on?\n"${scenario.question}"`)
     : isAggregateLandslide
     ? (isIT
-        ? `Il ${majorityPct}% dei votanti su SplitVote sceglie la stessa cosa. Sei d'accordo?\n"${scenario.question}"`
-        : `${majorityPct}% of SplitVote voters agree on this one. Do you?\n"${scenario.question}"`)
+        ? `Su questa quasi tutti scelgono lo stesso lato. Scommetto che non indovini quale.\n"${scenario.question}"`
+        : `Almost everyone picks the same side on this one. Bet you can't guess which.\n"${scenario.question}"`)
     : (isIT
-        ? `Il ${majorityPct}% ha scelto "${majorityLabel}". Tu cosa faresti?\n"${scenario.question}"`
-        : `${majorityPct}% chose "${majorityLabel}". What would you do?\n"${scenario.question}"`)
+        ? `Io ho già votato. Scommetto che non indovini cosa ha scelto la maggioranza.\n"${scenario.question}"`
+        : `I already voted. Bet you can't guess what most people chose.\n"${scenario.question}"`)
 
   // Platform share texts
   const twitterText = total === 0
@@ -423,39 +425,39 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         : `This one splits SplitVote 50/50 🤝 Which side are you on?`)
     : isClose
     ? (isIT
-        ? `SplitVote è quasi diviso a metà. ${pctA}% vs ${pctB}% 🌍 Tu cosa faresti?`
-        : `SplitVote voters are almost split on this. ${pctA}% vs ${pctB}% 🌍 What would YOU choose?`)
+        ? `Questo divide SplitVote quasi a metà 🌍 Tu da che parte stai?`
+        : `This one splits SplitVote almost down the middle 🌍 Which side are you on?`)
     : isAggregateLandslide
     ? (isIT
-        ? `Il ${majorityPct}% dei votanti su SplitVote è d'accordo su questa. Sei tra loro? 🌊`
-        : `${majorityPct}% of SplitVote voters agree on this one. Are you? 🌊`)
+        ? `Quasi tutti su SplitVote scelgono lo stesso lato. Indovina quale 🌊`
+        : `Almost everyone on SplitVote picks the same side. Guess which 🌊`)
     : (isIT
-        ? `Il ${majorityPct}% ha scelto: "${majorityLabel}". Tu cosa sceglieresti? 🌍`
-        : `${majorityPct}% chose: "${majorityLabel}". What would YOU choose? 🌍`)
+        ? `Io ho già votato. Indovina cosa ha scelto la maggioranza 🌍`
+        : `I already voted. Guess what most people chose 🌍`)
   const tiktokCaption = isIT
     ? (total === 0
         ? `E tu cosa faresti? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`
-        : `Il ${pctA}% lo farebbe davvero… e tu? 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`)
+        : `Io ho già votato — scommetto che non indovini il risultato 😱\n\n"${scenario.question}"\n\n🔗 Vota su splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #dilemmamorale #viral #splitvote #psicologia #dibattito`)
     : (total === 0
         ? `What would you do? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`
-        : `${pctA}% of SplitVote voters would do this… would you? 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`)
+        : `I already voted — bet you can't guess the result 😱\n\n"${scenario.question}"\n\n🔗 Vote at splitvote.io\n${SOCIAL_LINKS.tiktokHandle}\n\n#wouldyourather #moraldilemma #viral #splitvote #psychology #debate`)
   const instagramCaption = isIT
     ? (total === 0
         ? `"${scenario.question}"\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`
-        : `"${scenario.question}"\n\n${pctA}% ha scelto ${scenario.optionA}. ${pctB}% ha scelto ${scenario.optionB}.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`)
+        : `"${scenario.question}"\n\nIo ho già votato. Scommetto che non indovini come si divide il voto.\n\nTu cosa sceglieresti? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#dilemmamorale #wouldyourather #psicologia #viral #splitvote`)
     : (total === 0
         ? `"${scenario.question}"\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`
-        : `"${scenario.question}"\n\n${pctA}% chose ${scenario.optionA}. ${pctB}% chose ${scenario.optionB}.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`)
+        : `"${scenario.question}"\n\nI already voted. Bet you can't guess how the vote splits.\n\nWhat would YOU choose? 👇\n🔗 splitvote.io — ${SOCIAL_LINKS.instagramHandle}\n\n#moraldilemma #wouldyourather #psychology #viral #splitvote`)
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(shareUrl)}`
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${webShareText}\n${shareUrl}`)}`
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(webShareText)}`
   const discordText = isIT
     ? (total === 0
         ? `${scenario.emoji} **"${scenario.question}"**\nNessun voto ancora — tu cosa sceglieresti?\n🔗 ${shareUrl}`
-        : `${scenario.emoji} **"${scenario.question}"**\nSplitVote è diviso **${pctA}%** vs **${pctB}%** — tu cosa sceglieresti?\n🔗 ${shareUrl}`)
+        : `${scenario.emoji} **"${scenario.question}"**\nIo ho già votato — scommetto che non indovini come si divide il voto. Tu cosa sceglieresti?\n🔗 ${shareUrl}`)
     : (total === 0
         ? `${scenario.emoji} **"${scenario.question}"**\nNo votes yet — what would YOU choose?\n🔗 ${shareUrl}`
-        : `${scenario.emoji} **"${scenario.question}"**\nSplitVote is split **${pctA}%** vs **${pctB}%** — what would YOU choose?\n🔗 ${shareUrl}`)
+        : `${scenario.emoji} **"${scenario.question}"**\nI already voted — bet you can't guess how the vote splits. What would YOU choose?\n🔗 ${shareUrl}`)
 
   // Fire-and-forget server-side event tracking for mission verification.
   // Silently ignored if user is not authenticated (server returns 401).
@@ -551,13 +553,13 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         await navigator.share({
           files: [file],
           title: `SplitVote — ${scenario.question.slice(0, 60)}`,
-          text: `${pctA}% vs ${pctB}% — ${locale === 'it' ? 'Cosa faresti?' : 'What would you choose?'} 👇`,
+          text: locale === 'it' ? 'Tu cosa faresti? 👇' : 'What would YOU choose? 👇',
         })
         setStoryShared(true)
         trackServerEvent('story_card_share')
       } else if (navigator.share) {
         // File sharing not supported — share URL instead
-        await navigator.share({ title: 'SplitVote', url: shareUrl, text: `${pctA}% vs ${pctB}%` })
+        await navigator.share({ title: 'SplitVote', url: shareUrl, text: webShareText })
         setStoryShared(true)
         trackServerEvent('story_card_share')
       } else {
@@ -762,6 +764,19 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         </div>
       )}
 
+      {/* ── Primary Web Share CTA — above Next dilemma: the post-reveal
+          emotional peak is the moment a share happens, so it gets the first
+          slot instead of funneling users straight to the next question. ── */}
+      <div className="mb-4">
+        <button
+          onClick={handleWebShare}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-base px-6 py-4 transition-all"
+        >
+          {webShareCopied ? copy.webShareCopied : copy.webShareCTA}
+        </button>
+        <p className="text-[11px] text-[var(--muted)] text-center mt-2">{copy.webShareSub}</p>
+      </div>
+
       {/* ── Next dilemma / Path CTA ── */}
       <div className="mb-8">
         {pathCategory && pathStep !== undefined && pathTarget !== undefined ? (
@@ -897,17 +912,6 @@ export default function ResultsClientPage({ scenario, pctA, pctB, total, voted, 
         </p>
         </div>
       </details>
-
-      {/* ── Primary Web Share CTA ── */}
-      <div className="mb-8">
-        <button
-          onClick={handleWebShare}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-base px-6 py-4 transition-all"
-        >
-          {webShareCopied ? copy.webShareCopied : copy.webShareCTA}
-        </button>
-        <p className="text-[11px] text-[var(--muted)] text-center mt-2">{copy.webShareSub}</p>
-      </div>
 
       {/* ── Dilemma quality feedback ── */}
       <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 text-center">
