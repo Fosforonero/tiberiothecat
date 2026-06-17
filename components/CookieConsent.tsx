@@ -27,6 +27,14 @@ function updateConsentMode(prefs: CookiePrefs) {
   })
 }
 
+// Tell <AdSenseLoader /> it may now inject the AdSense library. Only fired when
+// advertising consent is granted, so no ad tag loads before consent.
+function notifyAdsConsent(prefs: CookiePrefs) {
+  if (typeof window !== 'undefined' && prefs.ads) {
+    window.dispatchEvent(new Event('sv:adsConsentGranted'))
+  }
+}
+
 function loadSavedPrefs(): CookiePrefs | null {
   try {
     const stored = localStorage.getItem(CONSENT_KEY)
@@ -88,6 +96,7 @@ export default function CookieConsent() {
     const p: CookiePrefs = { analytics: true, ads: true }
     savePrefs(p)
     updateConsentMode(p)
+    notifyAdsConsent(p)
     sendConsentPageView()
     setVisible(false)
     setCustomizing(false)
@@ -104,6 +113,7 @@ export default function CookieConsent() {
   function saveCustom() {
     savePrefs(prefs)
     updateConsentMode(prefs)
+    notifyAdsConsent(prefs)
     if (prefs.analytics) sendConsentPageView()
     setVisible(false)
     setCustomizing(false)

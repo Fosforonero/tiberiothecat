@@ -20,7 +20,7 @@ export default function ItPrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Informativa sulla Privacy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 4 maggio 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Ultimo aggiornamento: 17 giugno 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 
@@ -50,7 +50,7 @@ export default function ItPrivacyPage() {
               <strong className="text-white">Dati di pagamento</strong> (solo utenti Premium) — i pagamenti per abbonamento Premium o cambio nome a pagamento sono elaborati da Stripe. Riceviamo solo un ID cliente Stripe e lo stato dell&apos;abbonamento; non conserviamo mai numeri di carta o dati di pagamento completi.
             </li>
             <li>
-              <strong className="text-white">Dati analitici</strong> — con il tuo consenso, Google Analytics 4 raccoglie visualizzazioni di pagina, durata delle sessioni e metriche di coinvolgimento generali tramite un proxy first-party sul nostro dominio. Vercel Analytics può raccogliere segnali di utilizzo anonimizzati. Vedi la Sezione 4 per come il consenso controlla questi trattamenti.
+              <strong className="text-white">Dati analitici</strong> — con il tuo consenso, Google Analytics 4 raccoglie visualizzazioni di pagina, durata delle sessioni e metriche di coinvolgimento generali. Vercel Analytics può raccogliere segnali di utilizzo anonimizzati e senza cookie. Vedi la Sezione 4 per come il consenso controlla questi trattamenti.
             </li>
             <li>
               <strong className="text-white">Dati pubblicitari</strong> — con il tuo consenso, Google AdSense può usare cookie per mostrare annunci personalizzati. Senza consenso, possono essere mostrati solo annunci non personalizzati.
@@ -95,14 +95,16 @@ export default function ItPrivacyPage() {
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">6. Proxy first-party GA4</h2>
+          <h2 className="text-base font-bold text-white mb-2">6. Google Analytics e il tuo indirizzo IP</h2>
           <p>
-            I dati di misurazione GA4 vengono inoltrati tramite un endpoint first-party sul nostro dominio
-            (<code className="text-xs bg-white/10 px-1 rounded">/api/_g/g/collect</code>). Questo proxy
-            inoltra intenzionalmente l&apos;indirizzo IP reale del visitatore a Google nell&apos;intestazione{' '}
-            <code className="text-xs bg-white/10 px-1 rounded">X-Forwarded-For</code> affinché GA4
-            possa determinare accuratamente la regione geografica. Questo inoltro avviene solo quando
-            il consenso agli analytics è stato concesso.
+            Google Analytics 4 viene caricato direttamente da Google
+            (<code className="text-xs bg-white/10 px-1 rounded">googletagmanager.com</code>) e i dati di
+            misurazione vengono inviati dal tuo browser agli endpoint di Google. Nell&apos;ambito di questa
+            connessione Google riceve il tuo indirizzo IP e lo tratta secondo la propria policy GA4 sulla
+            gestione degli IP; noi non conserviamo il tuo indirizzo IP per finalità analitiche. Gli analytics
+            si attivano solo dopo il tuo consenso — il Consent Mode v2 di GA4 mantiene i segnali analitici e
+            pubblicitari su &ldquo;denied&rdquo; per impostazione predefinita e impedisce l&apos;invio di dati
+            prima del consenso.
           </p>
         </div>
 

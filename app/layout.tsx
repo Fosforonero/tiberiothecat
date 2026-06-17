@@ -4,6 +4,7 @@ import Script from 'next/script'
 import Link from 'next/link'
 import { Analytics } from '@vercel/analytics/next'
 import CookieConsent from '@/components/CookieConsent'
+import AdSenseLoader from '@/components/AdSenseLoader'
 import AuthButton from '@/components/AuthButton'
 import AdBlockBanner from '@/components/AdBlockBanner'
 import MobileMenu from '@/components/MobileMenu'
@@ -139,12 +140,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             });
           `}
         </Script>
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5232020244793649"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        {/* AdSense library is NOT loaded here. It is injected by <AdSenseLoader />
+            below only after the user grants advertising consent (ePrivacy /
+            Garante compliance — no ad tags before consent). */}
         <Script id="sw-register" strategy="afterInteractive">{`
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(function(){});
@@ -198,6 +196,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <GAPageView />
         <CookieConsent />
+        <AdSenseLoader />
         <AdBlockBanner />
         <Footer />
       </body>

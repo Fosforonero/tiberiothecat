@@ -18,7 +18,7 @@ export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 text-[var(--text)]">
       <h1 className="text-3xl font-black mb-2">Privacy Policy</h1>
-      <p className="text-sm text-[var(--muted)] mb-10">Last updated: May 4, 2026</p>
+      <p className="text-sm text-[var(--muted)] mb-10">Last updated: June 17, 2026</p>
 
       <section className="space-y-6 text-sm leading-relaxed text-[var(--muted)]">
 
@@ -61,9 +61,8 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong className="text-white">Analytics data</strong> — with your consent, Google Analytics
-              4 collects page views, session duration, and general engagement metrics via a first-party
-              proxy on our own domain. Vercel Analytics may collect anonymised usage signals. See
-              Section 4 for how consent controls this.
+              4 collects page views, session duration, and general engagement metrics. Vercel Analytics
+              may collect anonymised, cookieless usage signals. See Section 4 for how consent controls this.
             </li>
             <li>
               <strong className="text-white">Advertising data</strong> — with your consent, Google AdSense
@@ -102,15 +101,15 @@ export default function PrivacyPage() {
         </div>
 
         <div>
-          <h2 className="text-base font-bold text-white mb-2">5. GA4 first-party proxy</h2>
+          <h2 className="text-base font-bold text-white mb-2">5. Google Analytics and your IP address</h2>
           <p>
-            GA4 measurement hits are relayed through a first-party endpoint on our own domain
-            (<code className="text-xs bg-white/10 px-1 rounded">/api/_g/g/collect</code>). This proxy
-            intentionally forwards the visitor&apos;s real IP address to Google in the
-            <code className="text-xs bg-white/10 px-1 rounded ml-1">X-Forwarded-For</code> header
-            so that GA4 can determine geographic region accurately. This forwarding only occurs when
-            analytics consent has been granted; GA4 Consent Mode prevents hits from being sent before
-            consent.
+            Google Analytics 4 loads directly from Google
+            (<code className="text-xs bg-white/10 px-1 rounded">googletagmanager.com</code>), and
+            measurement hits are sent from your browser to Google&apos;s endpoints. As part of this
+            connection Google receives your IP address and processes it under its own GA4 IP-handling
+            policy; we do not store your IP address for analytics. Analytics runs only after you grant
+            consent — GA4 Consent Mode v2 keeps analytics and advertising signals set to
+            &ldquo;denied&rdquo; by default and prevents hits from being sent before consent.
           </p>
         </div>
 
