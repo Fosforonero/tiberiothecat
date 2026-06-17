@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **4 commit locali NON pushati** (`f725e7b`, `ecabd21`, `7d76602`, `9a16b2a`). 2 azioni HUMAN_ONLY aperte: migrazione `v21` (is_premium) da lanciare a mano + decisione push. Vedi sezione 0-bis sotto.
+Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **PUSHATO e live** (`1315993..79e866f`, 5 commit). Smoke-test verde: route nuove 200 EN/IT, AdSense fuori dall'HTML pre-consenso, privacy senza proxy fantasma. **Unica azione aperta: migrazione `v21` (is_premium P0) da lanciare a mano** (guardrail harness blocca l'apply automatico). Vedi sezione 0-bis sotto.
 
 ## 0-bis. Session 17 Jun 2026 (mattina) — Animal cluster + audit + compliance fix
 
