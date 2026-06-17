@@ -556,6 +556,87 @@ export const scenarios: Scenario[] = [
     emoji: '💬',
     category: 'technology',
   },
+  // ── FAT-MAN (FOOTBRIDGE VARIANT) ─────────────────────────────
+  {
+    id: 'fat-man',
+    question: "A runaway trolley will kill five people tied to the tracks. You're on a bridge above them, standing next to a large stranger. Pushing them off would stop the trolley and save the five — they would die on impact. Jumping yourself would not stop it. There is no other option.",
+    optionA: 'Push them. Five lives saved, one lost — the arithmetic is identical to pulling the lever.',
+    optionB: "Don't push. Deliberately using a person as a physical obstacle is categorically different from redirecting a threat.",
+    emoji: '🌉',
+    category: 'morality',
+  },
+  // ── RIVER FACTORY ─────────────────────────────────────────────
+  {
+    id: 'river-factory',
+    question: "You are the new environmental inspector in a small town. The only major employer — 800 jobs, three generations of families — has been quietly contaminating the river for years. The health damage will not be measurable for 15 more years, but the projections are unambiguous. You have the legal authority to shut them down today or grant a 2-year remediation window.",
+    optionA: 'Shut them down now. The contamination is real and delay only compounds the damage.',
+    optionB: 'Grant the 2-year window. 800 families cannot wait — give them a real chance to fix it.',
+    emoji: '🏭',
+    category: 'society',
+  },
+  // ── REFORMED OFFENDER ─────────────────────────────────────────
+  {
+    id: 'reformed-offender',
+    question: "Twelve years ago someone broke into your home and held you at gunpoint for 40 minutes. They served their sentence. They now have a family and mentor at-risk youth full-time. A school has called you asking for a character reference — they do not know you are the victim. You are one of very few people in the community who knows about the conviction.",
+    optionA: 'Tell the school the truth about what happened. They have the right to know.',
+    optionB: 'Say nothing incriminating. People can genuinely change, and one phone call could destroy a rebuilt life.',
+    emoji: '⚖️',
+    category: 'justice',
+  },
+  // ── INHERITED SECRET ──────────────────────────────────────────
+  {
+    id: 'inherited-secret',
+    question: "On his deathbed, your father tells you he secretly rewrote his will 20 years ago to give your brother a larger share — your brother was struggling and your father could not bring himself to discuss it. Your brother never knew. Your father asks you to keep it that way. You are the executor of the estate.",
+    optionA: "Tell your brother after the funeral. He has the right to know the full truth of his own life.",
+    optionB: "Honor your father's dying wish. Knowing this now changes nothing that matters.",
+    emoji: '📜',
+    category: 'loyalty',
+  },
+  // ── DEBT CHILDHOOD ────────────────────────────────────────────
+  {
+    id: 'debt-childhood',
+    question: "You could take on significant debt to give your children an extraordinary childhood — the best schools, meaningful travel, formative experiences. You would spend your 60s working to pay it off, and they would never know the sacrifice you made. If you do not, they will have a solid, ordinary upbringing and you will retire comfortably. Either way, they turn out fine.",
+    optionA: "Take the debt. Formative experiences shape who they become — and the sacrifice is yours alone to make.",
+    optionB: "Don't. A stable, loving childhood is more than enough — and your future self matters too.",
+    emoji: '👨‍👩‍👧',
+    category: 'morality',
+  },
+  // ── EAT MEAT ──────────────────────────────────────────────────
+  {
+    id: 'eat-meat',
+    question: "You've seen the footage from industrial farms — the confinement, the standardized suffering behind cheap meat. Nothing forces your hand: you can afford alternatives, and plant-based options are everywhere. Knowing what you know, do you keep eating meat?",
+    optionA: "Keep eating it. Humans have always eaten animals, and one person's diet won't change an industry.",
+    optionB: 'Give it up. Once you know how the animal lived and died, paying for it makes you complicit.',
+    emoji: '🥩',
+    category: 'morality',
+  },
+  // ── ANIMAL TESTING FOR A CURE ─────────────────────────────────
+  {
+    id: 'animal-testing-cure',
+    question: "You sit on the ethics board reviewing a promising cancer therapy. To reach human trials, it must first be tested on animals that will suffer and be killed. Your vote is the deciding one.",
+    optionA: 'Approve it. Reducing human suffering and death outweighs the harm to lab animals.',
+    optionB: "Reject it. Medical progress bought with caged, engineered suffering crosses a line we shouldn't.",
+    emoji: '🐀',
+    category: 'morality',
+  },
+  // ── BREEDER VS SHELTER ────────────────────────────────────────
+  {
+    id: 'breeder-vs-shelter',
+    question: "You finally have the space and time for a dog. You can buy the specific breed you've always dreamed of from a breeder, or adopt an adult shelter dog who is harder to place and may be put down if no one takes them.",
+    optionA: "Buy the breed you want. It's a years-long commitment — start with the dog you'll love most.",
+    optionB: 'Adopt from the shelter. When a life is on the line, getting the exact breed you pictured matters less.',
+    emoji: '🐶',
+    category: 'lifestyle',
+  },
+  // ── ZOO CONSERVATION ──────────────────────────────────────────
+  {
+    id: 'zoo-conservation',
+    question: "A zoo keeps endangered animals in enclosures a tiny fraction of their natural range. It also funds breeding programs that have pulled real species back from extinction and teaches millions of children to care about wildlife. Is keeping the animals there justified?",
+    optionA: 'Justified. Conservation and education save whole species — that outweighs the cost to the individual animals.',
+    optionB: 'Not justified. No mission makes a lifetime in an enclosure acceptable for a wild animal.',
+    emoji: '🦁',
+    category: 'society',
+  },
 ]
 
 export const CATEGORIES: { value: Category | 'all'; label: string; emoji: string }[] = [

@@ -1228,6 +1228,172 @@ const STATIC_INSIGHTS: Record<string, LocaleInsight> = {
       },
     },
   },
+  'fat-man': {
+    en: {
+      body: "The footbridge variant of the trolley problem is one of the most studied divergences in moral psychology. It presents identical arithmetic to the lever — one death prevents five — yet acceptance rates collapse from roughly 85% to around 25–30%. This gap is not noise. It reveals a deep structural feature of human moral cognition that neither pure consequentialism nor pure deontology fully predicts.",
+      whyPeopleSplit: "Those who push reason that consequences are what matter morally: if pulling a lever to redirect a trolley killing one to save five is permissible, then pushing someone off a bridge to achieve the identical outcome must be equally so. The physical mechanism is irrelevant — what is morally relevant is the outcome. Those who refuse invoke the doctrine of double effect and Kantian ethics: in the lever case, the one death is a foreseen but unintended side-effect of diverting the trolley. In the footbridge case, the death is the instrument of rescue — you need the person's body to stop the trolley. Using a human being as a means, not merely as someone who happens to be in the way, crosses a categorical line regardless of the arithmetic.",
+      whatYourAnswerMaySuggest: {
+        a: "Your moral reasoning is strongly consequentialist: the right action is determined by its outcomes, and the physical or causal mechanism through which harm occurs is morally irrelevant. You may find deontological constraints on 'using people as means' to be arbitrary rules that can produce worse outcomes than the alternatives.",
+        b: "You treat some acts as categorically impermissible regardless of their consequences — and using a person's body as a physical obstacle to save others is one of them. You likely believe that respecting human dignity places constraints on what may be done to people even for good ends, and that these constraints are not negotiable.",
+      },
+    },
+    it: {
+      body: "La variante del passerella del problema del carrello è uno dei divergenze più studiate nella psicologia morale. Presenta una matematica identica alla leva — una morte ne previene cinque — eppure il tasso di accettazione crolla da circa l'85% a circa il 25–30%. Questo divario non è rumore statistico. Rivela una caratteristica strutturale profonda della cognizione morale umana che né il puro consequenzialismo né la pura deontologia predice completamente.",
+      whyPeopleSplit: "Chi spinge ragiona che le conseguenze sono ciò che conta moralmente: se tirare una leva per deviare un tram è lecito, allora spingere qualcuno da un ponte per ottenere lo stesso risultato deve esserlo ugualmente. Il meccanismo fisico è irrilevante. Chi si rifiuta invoca la dottrina del doppio effetto e l'etica kantiana: nel caso della leva, la morte è un effetto collaterale previsto ma non intenzionale della deviazione. Nel caso del passerella, la morte è lo strumento del salvataggio — hai bisogno del corpo della persona per fermare il tram. Usare un essere umano come mezzo, non come qualcuno che si trova semplicemente sul percorso, supera un confine categorico indipendentemente dalla matematica.",
+      whatYourAnswerMaySuggest: {
+        a: "Il tuo ragionamento morale è fortemente consequenzialista: l'azione giusta è determinata dai suoi esiti, e il meccanismo fisico o causale attraverso cui si produce il danno è moralmente irrilevante. Potresti trovare arbitrari i vincoli deontologici sull'uso delle persone come mezzi.",
+        b: "Tratti alcuni atti come categoricamente impermissibili indipendentemente dalle loro conseguenze — e usare il corpo di una persona come ostacolo fisico per salvare altri è uno di questi. Credi probabilmente che il rispetto della dignità umana imponga vincoli a ciò che può essere fatto alle persone anche per fini buoni, e che questi vincoli non siano negoziabili.",
+      },
+    },
+  },
+
+  'river-factory': {
+    en: {
+      body: "This dilemma maps onto one of the most contested tensions in environmental ethics and governance: the conflict between immediate, visible harm to identifiable people (800 workers, their families) and diffuse, future harm to a community (river contamination affecting health in 15 years). It is also a test of institutional courage — what inspectors, regulators, and public officials are actually supposed to do when the law gives them authority and the community gives them pressure.",
+      whyPeopleSplit: "Those who shut down immediately argue that the harm is certain — the contamination is not hypothetical, only its timeline is. Delay allows more contamination to accumulate, and 'giving time to fix it' creates a precedent where violators negotiate their way out of enforcement. Those who grant the window argue that enforcement divorced from local economic reality is not justice but cruelty — and that 800 immediate job losses are a harm as real as future health damage. A 2-year remediation window costs little if the company genuinely complies, and enforcement can escalate if they do not.",
+      whatYourAnswerMaySuggest: {
+        a: "You believe rules and environmental law exist precisely so that economic pressure cannot override them. You may also believe that 'give them time' has historically been how environmental enforcement is indefinitely deferred, and that communities bear health costs that never appear in the cost-benefit analysis that justified the factory in the first place.",
+        b: "You weigh present, certain harm against future, probabilistic harm — and you find the immediate devastation of 800 jobs and a town's economic base to be a harm that demands consideration. You likely believe that enforcement should serve the community, not be applied abstractly, and that a 2-year window is a reasonable test of good faith.",
+      },
+    },
+    it: {
+      body: "Questo dilemma si sovrappone a una delle tensioni più controverse nell'etica ambientale e nella governance: il conflitto tra danno immediato e visibile a persone identificabili (800 lavoratori, le loro famiglie) e danno diffuso e futuro a una comunità (inquinamento del fiume che colpirà la salute tra 15 anni). È anche un test di coraggio istituzionale — ciò che gli ispettori, i regolatori e i funzionari pubblici sono effettivamente chiamati a fare quando la legge dà loro autorità e la comunità dà loro pressione.",
+      whyPeopleSplit: "Chi chiude immediatamente sostiene che il danno è certo — l'inquinamento non è ipotetico, solo la sua tempistica lo è. Il ritardo consente l'accumulo di ulteriore inquinamento, e 'dare tempo per rimediare' crea un precedente in cui chi viola la legge negozia la propria via d'uscita. Chi concede la finestra sostiene che un'applicazione della legge svincolata dalla realtà economica locale non è giustizia ma crudeltà — e che 800 posti persi immediatamente sono un danno reale quanto il futuro danno alla salute.",
+      whatYourAnswerMaySuggest: {
+        a: "Credi che le norme e il diritto ambientale esistano proprio perché la pressione economica non possa superarli. Potresti anche credere che 'dare tempo' sia storicamente il modo in cui l'applicazione ambientale viene indefinitamente rinviata, e che le comunità sopportino costi sanitari che non compaiono mai nell'analisi costi-benefici che ha giustificato la fabbrica.",
+        b: "Pesi il danno presente e certo rispetto a quello futuro e probabilistico — e trovi che la devastazione immediata di 800 posti di lavoro sia un danno che esige considerazione. Credi probabilmente che l'applicazione della legge debba servire la comunità, non essere applicata in astratto, e che una finestra di 2 anni sia un test ragionevole di buona fede.",
+      },
+    },
+  },
+
+  'reformed-offender': {
+    en: {
+      body: "This dilemma sits at the intersection of two ideas we hold simultaneously: that people can change, and that victims retain legitimate claims. The complication is that you are both the most qualified person to speak to the offender's past and a party with an obvious interest in how that past is used. There is no neutral position.",
+      whyPeopleSplit: "Those who tell the school argue that they have a duty of care toward children that overrides the offender's interest in a clean slate — and that concealing relevant criminal history from a school is not 'giving someone a chance' but potentially putting others at risk. The victim's perspective is also legitimate information, not just a personal grievance. Those who stay silent argue that justice already happened: the sentence was served, the debt to society was paid. A person who has genuinely rebuilt their life — family, mentoring work, community presence — has earned the right not to have their worst moment follow them forever. Blocking rehabilitation through informal blacklisting compounds the original harm.",
+      whatYourAnswerMaySuggest: {
+        a: "You believe that institutional trust — especially in settings involving children — requires transparency about relevant history, and that your direct experience gives you information the school cannot otherwise obtain. You may also feel that the victim's perspective is not merely personal; it is evidence.",
+        b: "You believe rehabilitation is the point of the justice system, and that informal perpetuation of consequences after the formal sentence is served is a second punishment that society does not endorse. You may also think that one armed robbery, 12 years ago, tells a school relatively little about who this person is today.",
+      },
+    },
+    it: {
+      body: "Questo dilemma si colloca all'intersezione di due idee che teniamo simultaneamente: che le persone possano cambiare, e che le vittime mantengano richieste legittime. La complicazione è che sei sia la persona più qualificata a parlare del passato di chi ha commesso il reato, sia una parte con un interesse ovvio nel modo in cui quel passato viene utilizzato. Non esiste una posizione neutrale.",
+      whyPeopleSplit: "Chi dice la verità alla scuola sostiene di avere un dovere di cura verso i ragazzi che supera l'interesse di chi ha sbagliato in una lavagna pulita — e che nascondere una storia criminale rilevante a una scuola non è 'dare una possibilità' ma potenzialmente mettere altri a rischio. Chi tace sostiene che la giustizia è già avvenuta: la pena è stata scontata, il debito verso la società è stato pagato. Una persona che ha genuinamente ricostruito la propria vita ha guadagnato il diritto a che il suo momento peggiore non la segua per sempre.",
+      whatYourAnswerMaySuggest: {
+        a: "Credi che la fiducia istituzionale — specialmente in contesti che coinvolgono ragazzi — richieda trasparenza sulla storia rilevante, e che la tua esperienza diretta ti fornisca informazioni che la scuola non può altrimenti ottenere. Potresti anche sentire che la prospettiva della vittima non è meramente personale: è una prova.",
+        b: "Credi che la riabilitazione sia il punto del sistema giudiziario, e che la perpetuazione informale delle conseguenze dopo la pena formale sia una seconda punizione che la società non approva. Potresti anche pensare che una rapina a mano armata, 12 anni fa, dica relativamente poco a una scuola su chi è questa persona oggi.",
+      },
+    },
+  },
+
+  'inherited-secret': {
+    en: {
+      body: "This dilemma distills the conflict between two forms of fidelity: to the truth, and to a dying person's last wish. It is complicated by the fact that you hold knowledge about your brother's life that he does not — and that your father's request places you in the uncomfortable position of executor of both the estate and a secret.",
+      whyPeopleSplit: "Those who tell argue that your brother has a fundamental right to know the facts of his own life — including the financial decisions made about him, however well-intentioned. Keeping the secret means deciding, on his behalf, that he is better off not knowing — a paternalistic choice he never consented to. Those who keep the secret argue that your father asked you to hold it in his last moments, that the inheritance was already disbursed years ago, and that introducing this information now would only cause pain without any corrective benefit. The money is spent; the past cannot be changed. What good does knowing do?",
+      whatYourAnswerMaySuggest: {
+        a: "You place high value on epistemic autonomy — your brother's right to know the true facts of his own history, even if the knowledge is painful and offers no practical remedy. You may also feel that keeping the secret involves a form of ongoing deception that conflicts with the executor role.",
+        b: "You weigh the value of truth against its practical consequences, and find that truth without remedy — knowledge that changes nothing except how someone feels — is a burden, not a gift. You give significant weight to your father's final request and the emotional reality of what disclosure would cost your brother now.",
+      },
+    },
+    it: {
+      body: "Questo dilemma distilla il conflitto tra due forme di fedeltà: alla verità, e all'ultimo desiderio di una persona morente. È complicato dal fatto che detieni conoscenze sulla vita di tuo fratello che lui non possiede — e che la richiesta di tuo padre ti colloca nell'incómodo ruolo di esecutore sia del patrimonio che di un segreto.",
+      whyPeopleSplit: "Chi racconta la verità sostiene che tuo fratello ha un diritto fondamentale di conoscere i fatti della propria vita — incluse le decisioni finanziarie prese su di lui, per quanto ben intenzionate. Mantenere il segreto significa decidere, a suo nome, che sta meglio senza sapere — una scelta paternalistica a cui non ha mai acconsentito. Chi mantiene il segreto sostiene che tuo padre te lo ha chiesto nei suoi ultimi momenti, che l'eredità era già stata distribuita anni fa, e che introdurre questa informazione ora causerebbe solo dolore senza alcun beneficio correttivo.",
+      whatYourAnswerMaySuggest: {
+        a: "Dai grande valore all'autonomia epistemica — il diritto di tuo fratello di conoscere i veri fatti della propria storia, anche se la conoscenza è dolorosa e non offre rimedi pratici. Potresti anche sentire che mantenere il segreto implica una forma di inganno continuativo che confligge con il ruolo di esecutore.",
+        b: "Pesi il valore della verità rispetto alle sue conseguenze pratiche, e trovi che la verità senza rimedio — conoscenza che non cambia nulla tranne come qualcuno si sente — sia un peso, non un dono. Dai peso significativo all'ultima richiesta di tuo padre e alla realtà emotiva di ciò che la rivelazione costerebbe a tuo fratello ora.",
+      },
+    },
+  },
+
+  'debt-childhood': {
+    en: {
+      body: "This dilemma is unusual in the SplitVote catalog because neither option involves wrongdoing. It is a question about what we owe our children, what we owe our future selves, and whether invisible sacrifice — sacrifice the beneficiary never knows about — carries the same moral weight as acknowledged sacrifice. It is also about whether 'extraordinary' childhoods produce better outcomes than 'ordinary' ones.",
+      whyPeopleSplit: "Those who take the debt reason that formative years are irreplaceable — that travel, excellent education, and enriching experiences genuinely compound across a life in ways that financial stability in retirement does not. The sacrifice is theirs to make, and the children will never be burdened by knowledge of it. Those who refuse argue that a financially stable, loving upbringing already places children in the best position to thrive — and that the model of sacrificing your 60s to fund a richer 0–18 is based on assumptions (that experiences make better outcomes, that debt is manageable) that may not hold. There is also a subtle autonomy argument: the children cannot consent to being the beneficiaries of a debt they will never know about.",
+      whatYourAnswerMaySuggest: {
+        a: "You believe the most important resource you can give children is richness of experience during formation — and that personal financial sacrifice for children's benefit is an extension of parental duty, not a transaction requiring their knowledge or consent.",
+        b: "You believe that parental wellbeing is itself part of what children need, and that modeling financial prudence, security, and self-care is also parenting. You may also question whether the 'extraordinary childhood' premium is as large as intuition suggests — and whether taking on serious debt for it is a bet worth placing.",
+      },
+    },
+    it: {
+      body: "Questo dilemma è insolito nel catalogo SplitVote perché nessuna delle due opzioni implica comportamenti scorretti. È una domanda su cosa dobbiamo ai nostri figli, cosa dobbiamo al nostro sé futuro, e se il sacrificio invisibile — il sacrificio di cui il beneficiario non saprà mai — abbia lo stesso peso morale del sacrificio riconosciuto.",
+      whyPeopleSplit: "Chi fa il debito ragiona che gli anni formativi sono insostituibili — che i viaggi, l'istruzione eccellente e le esperienze arricchenti si compongono davvero nel corso di una vita in modi che la stabilità finanziaria in pensione non fa. Il sacrificio è suo da fare. Chi rifiuta sostiene che un'infanzia finanziariamente stabile e amorevole già pone i figli nella posizione migliore per prosperare — e che il modello di sacrificare i propri anni 60 per finanziare un'infanzia 0-18 più ricca si basa su assunzioni che potrebbero non reggere.",
+      whatYourAnswerMaySuggest: {
+        a: "Credi che la risorsa più importante che puoi dare ai figli sia la ricchezza di esperienze durante la formazione — e che il sacrificio finanziario personale per il beneficio dei figli sia un'estensione del dovere genitoriale, non una transazione che richiede la loro conoscenza o consenso.",
+        b: "Credi che il benessere dei genitori faccia parte di ciò di cui i figli hanno bisogno, e che modellare prudenza finanziaria, sicurezza e cura di sé sia anch'essa genitorialità. Potresti anche mettere in discussione se il 'premio infanzia straordinaria' sia grande quanto l'intuizione suggerisce.",
+      },
+    },
+  },
+  'eat-meat': {
+    en: {
+      body: "This dilemma isolates a gap many people live with quietly: the distance between what we know about industrial animal farming and what we choose to buy. The facts are largely undisputed — the real question is whether knowing them creates a personal obligation to act, or whether individual diet is simply the wrong lever for a structural, industry-scale problem.",
+      whyPeopleSplit: "Those who keep eating meat reason that one person's choice is invisible against an industry of billions, that humans are long-standing omnivores, and that moral energy is better spent on systemic reform than private abstention. Those who stop argue that complicity is personal — every purchase funds the exact conditions you say you oppose, and 'my share is tiny' is the reasoning that keeps every harmful system alive.",
+      whatYourAnswerMaySuggest: {
+        a: "You may separate personal consumption from moral responsibility, locating the problem in industry and policy rather than your own plate — and trusting that real change comes from systems, not symbolic individual sacrifice.",
+        b: "You may treat consistency between what you know and what you fund as central to integrity — believing that if you cannot defend paying for a practice, you should stop paying for it, whether or not your single choice moves the total.",
+      },
+    },
+    it: {
+      body: "Questo dilemma isola una distanza che molti vivono in silenzio: quella tra ciò che sappiamo sugli allevamenti intensivi e ciò che scegliamo di comprare. I fatti sono in gran parte non contestati — la vera domanda è se conoscerli crei un obbligo personale di agire, oppure se la dieta individuale sia semplicemente la leva sbagliata per un problema strutturale, di scala industriale.",
+      whyPeopleSplit: "Chi continua a mangiare carne ragiona che la scelta di una persona è invisibile contro un'industria di miliardi, che gli esseri umani sono onnivori da sempre, e che l'energia morale renda di più nella riforma del sistema che nell'astensione privata. Chi smette sostiene che la complicità è personale — ogni acquisto finanzia proprio le condizioni che dici di osteggiare, e 'la mia parte è minima' è il ragionamento che tiene in vita ogni sistema dannoso.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti separare il consumo personale dalla responsabilità morale, collocando il problema nell'industria e nella politica più che nel tuo piatto — e confidando che il cambiamento vero venga dai sistemi, non dal sacrificio individuale simbolico.",
+        b: "Potresti considerare la coerenza tra ciò che sai e ciò che finanzi come centrale per l'integrità — credendo che se non puoi difendere il pagare per una pratica, dovresti smettere di pagarla, che la tua singola scelta sposti o no il totale.",
+      },
+    },
+  },
+  'animal-testing-cure': {
+    en: {
+      body: "Animal testing for medicine is one of the sharpest applied-ethics conflicts because both sides point to real suffering. Refusing the research protects animals from deliberate harm; approving it can shorten the path to treatments that spare human suffering and death. Unlike abstract thought experiments, this trade-off plays out in real ethics boards and regulatory bodies every week.",
+      whyPeopleSplit: "Those who approve weigh sentient suffering on a scale where preventable human death carries the most weight, and see animal research as a regrettable but justified cost of medical progress. Those who reject deny that the scale is the right tool at all — they hold that deliberately engineering suffering into a living creature is a wrong that cannot be redeemed by a downstream benefit, however large.",
+      whatYourAnswerMaySuggest: {
+        a: "You may reason in terms of aggregate welfare, accepting hard trade-offs when the expected reduction in suffering is large — and treating a refusal that lets more humans die as itself a morally serious choice, not a neutral one.",
+        b: "You may hold that some acts are wrong in themselves regardless of payoff — and that intentionally inflicting suffering on a defenceless creature is one of them, a line that good ends do not erase even when the ends are real.",
+      },
+    },
+    it: {
+      body: "La sperimentazione animale per la medicina è uno dei conflitti di etica applicata più netti perché entrambe le parti indicano sofferenza reale. Rifiutare la ricerca protegge gli animali da un danno deliberato; approvarla può accorciare la strada verso terapie che risparmiano sofferenza e morte umana. A differenza degli esperimenti mentali astratti, questo dilemma si gioca in veri comitati etici e organismi regolatori ogni settimana.",
+      whyPeopleSplit: "Chi approva pesa la sofferenza senziente su una bilancia in cui la morte umana evitabile conta di più, e vede la ricerca animale come un costo deplorevole ma giustificato del progresso medico. Chi rifiuta nega che la bilancia sia lo strumento giusto — ritiene che ingegnerizzare deliberatamente sofferenza in una creatura viva sia un torto che nessun beneficio successivo, per quanto grande, può riscattare.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti ragionare in termini di benessere aggregato, accettando compromessi duri quando la riduzione attesa di sofferenza è grande — e trattando un rifiuto che lascia morire più persone come una scelta moralmente seria, non neutra.",
+        b: "Potresti ritenere che alcuni atti siano sbagliati in sé a prescindere dal risultato — e che infliggere intenzionalmente sofferenza a una creatura indifesa sia uno di questi, una linea che i fini buoni non cancellano nemmeno quando sono reali.",
+      },
+    },
+  },
+  'breeder-vs-shelter': {
+    en: {
+      body: "Choosing a dog rarely feels like an ethical decision, but this one quietly is. A breeder lets you start with the temperament, size and traits you planned for; a shelter adoption may directly save a life that would otherwise end. The conflict is between a legitimate personal preference for a years-long companion and the weight of a concrete life on the line.",
+      whyPeopleSplit: "Those who choose the breeder note that a dog is a decade-plus commitment, that matching temperament to your home reduces the chance the animal is later surrendered, and that wanting a specific companion is not a moral failing. Those who adopt argue that when a healthy animal may be euthanised for lack of a home, getting the exact breed you pictured is a preference that should yield to a life.",
+      whatYourAnswerMaySuggest: {
+        a: "You may weight the long-term fit of the relationship most — reasoning that the best outcome for an animal is a home that lasts, and that starting from the dog you are most likely to keep for life is itself a responsible choice.",
+        b: "You may weight the immediacy of a life at stake most — reasoning that when adoption and purchase are both available, letting a savable animal die so you can have your preferred breed is a cost you are not willing to accept.",
+      },
+    },
+    it: {
+      body: "Scegliere un cane raramente sembra una decisione etica, ma questa lo è in silenzio. Un allevatore ti permette di partire dal temperamento, dalla taglia e dai tratti che avevi pianificato; l'adozione in canile può salvare direttamente una vita che altrimenti finirebbe. Il conflitto è tra una legittima preferenza personale per un compagno di molti anni e il peso di una vita concreta in gioco.",
+      whyPeopleSplit: "Chi sceglie l'allevatore osserva che un cane è un impegno di oltre dieci anni, che adattare il temperamento alla tua casa riduce il rischio che l'animale venga poi abbandonato, e che volere un compagno specifico non è una colpa morale. Chi adotta sostiene che quando un animale sano rischia la soppressione per mancanza di una casa, avere esattamente la razza immaginata è una preferenza che dovrebbe cedere a una vita.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti dare più peso alla tenuta a lungo termine della relazione — ragionando che l'esito migliore per un animale è una casa che dura, e che partire dal cane che più probabilmente terrai per sempre è anch'esso una scelta responsabile.",
+        b: "Potresti dare più peso all'immediatezza di una vita in gioco — ragionando che quando adozione e acquisto sono entrambi possibili, lasciar morire un animale salvabile per avere la razza preferita è un costo che non sei disposto ad accettare.",
+      },
+    },
+  },
+  'zoo-conservation': {
+    en: {
+      body: "Modern zoos sit on a genuine tension rather than a clear wrong. Their enclosures confine wild animals to a fraction of their natural range, yet their breeding programs have brought species back from the edge of extinction and their visitors — especially children — often build the only connection to wildlife they will ever have. The dilemma asks whether a real collective good can justify a real individual cost.",
+      whyPeopleSplit: "Those who say it is justified weigh species-level survival and public education as goods large enough to offset the confinement of individuals, and note that for some animals no safe wild habitat remains. Those who say it is not hold that the unit of moral concern is the individual animal living the captive life — and that no population statistic, experienced by no one, can be cashed out against its lifelong confinement.",
+      whatYourAnswerMaySuggest: {
+        a: "You may reason at the level of populations and systems — accepting that protecting a species and shaping how millions think about nature can outweigh the cost borne by individual animals, especially where the wild alternative is extinction.",
+        b: "You may insist that only individuals can suffer, so only individuals can be wronged — and that a conservation mission, however valuable, cannot consent on behalf of the animal that actually spends its life behind the glass.",
+      },
+    },
+    it: {
+      body: "Gli zoo moderni si reggono su una tensione reale più che su un torto evidente. I loro recinti confinano animali selvatici a una frazione del loro habitat, eppure i loro programmi di riproduzione hanno riportato indietro specie sull'orlo dell'estinzione e i loro visitatori — soprattutto i bambini — spesso costruiscono lì l'unico legame con la fauna selvatica che avranno mai. Il dilemma chiede se un bene collettivo reale possa giustificare un costo individuale reale.",
+      whyPeopleSplit: "Chi dice che è giustificato pesa la sopravvivenza a livello di specie e l'educazione pubblica come beni abbastanza grandi da compensare la reclusione dei singoli, e nota che per alcuni animali non resta più un habitat selvatico sicuro. Chi dice di no ritiene che l'unità di interesse morale sia il singolo animale che vive la vita in cattività — e che nessuna statistica di popolazione, vissuta da nessuno, possa essere scambiata con la sua reclusione a vita.",
+      whatYourAnswerMaySuggest: {
+        a: "Potresti ragionare a livello di popolazioni e sistemi — accettando che proteggere una specie e plasmare come milioni di persone pensano alla natura possa superare il costo sostenuto dai singoli animali, soprattutto dove l'alternativa selvatica è l'estinzione.",
+        b: "Potresti insistere che solo gli individui possono soffrire, quindi solo gli individui possono subire un torto — e che una missione di conservazione, per quanto preziosa, non può acconsentire al posto dell'animale che davvero passa la vita dietro il vetro.",
+      },
+    },
+  },
 }
 
 export function getStaticInsight(id: string, locale: 'en' | 'it'): DynamicExpertInsight | undefined {

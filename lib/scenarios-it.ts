@@ -335,10 +335,61 @@ export const IT_SCENARIO_TRANSLATIONS: Record<string, ItalianScenarioText> = {
     optionA: "Prendo l'aereo. Certe emergenze giustificano qualsiasi regola.",
     optionB: 'Prendo il treno. Il senso di un principio è che regge sotto pressione.',
   },
+
+  'fat-man': {
+    question: "Un tram sfrenato ucciderà cinque persone legate ai binari. Sei su un ponte sopra di loro, accanto a un grosso sconosciuto. Spingerlo giù fermerebbe il tram e salverebbe i cinque — lui morirebbe nell'impatto. Saltare tu non bastererebbe. Non c'è altra opzione.",
+    optionA: "Lo spingi. Cinque vite salvate, una persa — la matematica è identica a quella della leva.",
+    optionB: "Non lo spingi. Usare deliberatamente una persona come ostacolo fisico è categoricamente diverso dal deviare una minaccia.",
+  },
+  'river-factory': {
+    question: "Sei il nuovo ispettore ambientale in una piccola città. L'unico grande datore di lavoro — 800 posti, tre generazioni di famiglie — inquina silenziosamente il fiume da anni. Il danno alla salute non sarà misurabile per altri 15 anni, ma le proiezioni sono inequivocabili. Hai l'autorità legale di chiuderli oggi o concedere una finestra di 2 anni per il risanamento.",
+    optionA: "Chiudi subito. L'inquinamento è reale e il ritardo non fa che aggravare i danni.",
+    optionB: "Concedi i 2 anni. 800 famiglie non possono aspettare — dagli una vera possibilità di rimediare.",
+  },
+  'reformed-offender': {
+    question: "Dodici anni fa qualcuno è entrato in casa tua e ti ha tenuto sotto minaccia di pistola per 40 minuti. Ha scontato la pena. Oggi ha una famiglia e fa da mentore ai giovani a rischio. Una scuola ti ha chiamato per una referenza — non sanno che sei la vittima. Sei uno dei pochi in comunità a conoscere la condanna.",
+    optionA: "Dici la verità alla scuola su quello che è successo. Hanno il diritto di sapere.",
+    optionB: "Non dici nulla di incriminante. Le persone possono cambiare davvero, e una telefonata potrebbe distruggere una vita ricostruita.",
+  },
+  'inherited-secret': {
+    question: "Sul letto di morte, tuo padre ti rivela di aver segretamente riscritto il testamento 20 anni fa per lasciare una quota maggiore a tuo fratello — tuo fratello stava attraversando un periodo difficile e tuo padre non riusciva ad affrontarlo. Tuo fratello non lo sa. Tuo padre ti chiede di tenerlo così. Tu sei l'esecutore testamentario.",
+    optionA: "Dici la verità a tuo fratello dopo il funerale. Ha il diritto di conoscere la verità completa della sua vita.",
+    optionB: "Onori il desiderio di tuo padre morente. Saperlo adesso non cambia nulla di ciò che conta.",
+  },
+  'debt-childhood': {
+    question: "Potresti fare un debito significativo per dare ai tuoi figli un'infanzia straordinaria — le migliori scuole, viaggi significativi, esperienze che formano il carattere. Passeresti i tuoi anni 60 a ripagarlo, e loro non sapranno mai del sacrificio. Se non lo fai, avranno un'infanzia solida e ordinaria e ti ritirerai comodamente. In entrambi i casi, staranno bene.",
+    optionA: "Fai il debito. Le esperienze formative plasmano chi diventano — e il sacrificio tocca solo a te.",
+    optionB: "Non lo fai. Un'infanzia stabile e amorevole è più che sufficiente — e anche il tuo futuro conta.",
+  },
+
   'ai-friend-reveal': {
     question: "Da 3 anni confidavi i tuoi pensieri più profondi a qualcuno online che sembrava un vero amico. Hai appena scoperto che è un personaggio IA creato da un'azienda che vende abbonamenti di supporto emotivo. Continueresti a usarlo?",
     optionA: 'Sì. Il conforto che mi ha dato era reale — la fonte non cambia questo.',
     optionB: "No. Stavo pagando per un'illusione di connessione.",
+  },
+
+  'eat-meat': {
+    question: "Hai visto le immagini degli allevamenti intensivi — la reclusione, la sofferenza standardizzata dietro la carne a basso costo. Niente ti obbliga: puoi permetterti alternative, e le opzioni vegetali sono ovunque. Sapendo ciò che sai, continui a mangiare carne?",
+    optionA: "Continuo. Gli esseri umani hanno sempre mangiato animali, e la dieta di una persona non cambia un'industria.",
+    optionB: "Smetto. Una volta che sai come l'animale è vissuto ed è morto, pagare per quella carne ti rende complice.",
+  },
+
+  'animal-testing-cure': {
+    question: "Sei nel comitato etico che valuta una promettente terapia contro il cancro. Per arrivare alla sperimentazione umana, deve prima essere testata su animali che soffriranno e verranno uccisi. Il tuo è il voto decisivo.",
+    optionA: "La approvo. Ridurre la sofferenza e la morte umana vale più del danno agli animali da laboratorio.",
+    optionB: "La respingo. Il progresso medico comprato con sofferenza ingabbiata e indotta supera un limite che non dovremmo superare.",
+  },
+
+  'breeder-vs-shelter': {
+    question: "Hai finalmente lo spazio e il tempo per un cane. Puoi comprare la razza specifica che hai sempre sognato da un allevatore, oppure adottare un cane adulto dal canile, più difficile da piazzare e che potrebbe essere soppresso se nessuno lo prende.",
+    optionA: "Compro la razza che voglio. È un impegno di anni — è giusto partire dal cane che amerò di più.",
+    optionB: "Adotto dal canile. Quando c'è una vita in gioco, avere esattamente la razza che immaginavo conta meno.",
+  },
+
+  'zoo-conservation': {
+    question: "Uno zoo tiene animali in via d'estinzione in recinti grandi una frazione minima del loro habitat naturale. Allo stesso tempo finanzia programmi di riproduzione che hanno salvato davvero alcune specie dall'estinzione e insegna a milioni di bambini a tenere alla fauna selvatica. Tenere lì quegli animali è giustificato?",
+    optionA: "Giustificato. Conservazione ed educazione salvano intere specie — vale più del costo per i singoli animali.",
+    optionB: "Non giustificato. Nessuna missione rende accettabile una vita intera in un recinto per un animale selvatico.",
   },
 }
 

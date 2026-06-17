@@ -1198,6 +1198,98 @@ export const SEO_TOPICS: SeoTopic[] = [
     status: 'published',
     noindexUntilReady: false
   },
+  {
+    slug: 'types-of-ethical-dilemmas',
+    locale: 'en',
+    alternateSlug: 'tipi-di-dilemmi-etici',
+    topic: 'Types of Ethical Dilemmas',
+    searchIntent: 'informational — taxonomy and framework',
+    tension: 'How do we categorise moral conflicts so we can reason about them more clearly?',
+    headline: 'The 4 Types of Ethical Dilemmas — and Where You Stand on Each',
+    intro: "Most moral conflicts are not between good and evil. They are between two goods: honesty and loyalty, individual rights and community welfare, immediate needs and long-term consequences, justice and mercy. Philosopher Rushworth Kidder identified these four core paradigms in 1995. On SplitVote, every dilemma maps onto at least one of them — and the data shows which type splits people most persistently.",
+    primaryScenarioId: 'truth-friend',
+    relatedScenarioIds: ['innocent-juror', 'zombie-apocalypse', 'mandatory-vaccine', 'river-factory', 'reformed-offender', 'mercy-kill', 'climate-flight', 'confess-crime'],
+    relatedTopicSlugs: ['ethical-dilemmas', 'would-you-rather-hard', 'workplace-dilemmas'],
+    researchNote: "Framework from Rushworth Kidder, How Good People Make Tough Choices (1995). Truth vs Loyalty: honesty versus allegiance. Individual vs Community: autonomy versus collective welfare. Short-term vs Long-term: immediate costs versus future consequences. Justice vs Mercy: consistent rules versus compassionate exceptions. SplitVote data shows Justice vs Mercy and Truth vs Loyalty produce the most even splits.",
+    researchSources: [
+      {
+        title: 'How Good People Make Tough Choices',
+        institution: 'Free Press / Simon & Schuster',
+        url: 'https://www.simonandschuster.com/books/How-Good-People-Make-Tough-Choices/Rushworth-M-Kidder/9780688175337'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'tipi-di-dilemmi-etici',
+    locale: 'it',
+    alternateSlug: 'types-of-ethical-dilemmas',
+    topic: 'Tipi di dilemmi etici',
+    searchIntent: 'informazionale — tassonomia e quadro concettuale',
+    tension: "Come categorizziamo i conflitti morali per ragionarci con più chiarezza?",
+    headline: 'I 4 tipi di dilemmi etici — e dove ti posizioni su ciascuno',
+    intro: "La maggior parte dei conflitti morali non contrappone il bene al male. Contrappone il bene al bene: onestà e lealtà, diritti individuali e benessere comunitario, bisogni immediati e conseguenze a lungo termine, giustizia e misericordia. Il filosofo Rushworth Kidder ha identificato questi quattro paradigmi nel 1995. Su SplitVote, ogni dilemma mappa su almeno uno di essi — e i dati mostrano quale tipo divide le persone più persistentemente.",
+    primaryScenarioId: 'truth-friend',
+    relatedScenarioIds: ['innocent-juror', 'zombie-apocalypse', 'mandatory-vaccine', 'river-factory', 'reformed-offender', 'mercy-kill', 'climate-flight', 'confess-crime'],
+    relatedTopicSlugs: ['dilemmi-etici', 'domande-impossibili-difficili', 'dilemmi-sul-lavoro'],
+    researchNote: "Quadro da Rushworth Kidder, Come le persone oneste affrontano le scelte difficili (1995). I dati di SplitVote mostrano che Giustizia vs. Misericordia e Verità vs. Lealtà producono le divisioni più equilibrate tra le quattro categorie.",
+    researchSources: [
+      {
+        title: 'How Good People Make Tough Choices',
+        institution: 'Free Press / Simon & Schuster',
+        url: 'https://www.simonandschuster.com/books/How-Good-People-Make-Tough-Choices/Rushworth-M-Kidder/9780688175337'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'animal-ethics',
+    locale: 'en',
+    alternateSlug: 'etica-animale',
+    topic: 'Animal Ethics',
+    searchIntent: 'informational — animal rights, speciesism, ethics of eating meat and animal testing',
+    tension: "Do animals' interests count morally — and how much — when respecting them costs us something?",
+    headline: 'Animal Ethics: Where Do You Draw the Line?',
+    intro: "Almost everyone agrees animals deserve some moral consideration. The disagreement starts the moment it costs us something — a meal, a medicine, a pet, a zoo ticket. Animal ethics asks one underlying question: if a creature can suffer, how much weight do its interests carry against ours? These dilemmas move the line by changing the price of the principle — from giving up meat to approving research that harms animals to save human lives. Vote, then see where you stand against everyone else.",
+    primaryScenarioId: 'eat-meat',
+    relatedScenarioIds: ['eat-meat', 'animal-testing-cure', 'breeder-vs-shelter', 'zoo-conservation'],
+    relatedTopicSlugs: ['ethical-dilemmas', 'bioethics', 'moral-psychology-test'],
+    researchNote: "Modern animal ethics is shaped by Peter Singer's argument that the capacity to suffer, not species, grounds moral consideration, and by Tom Regan's rights-based view that some animals are 'subjects of a life' with inherent value.",
+    researchSources: [
+      {
+        title: 'Animal Liberation',
+        institution: 'HarperCollins',
+        url: 'https://www.harpercollins.com/products/animal-liberation-now-peter-singer'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
+  {
+    slug: 'etica-animale',
+    locale: 'it',
+    alternateSlug: 'animal-ethics',
+    topic: 'Etica animale',
+    searchIntent: 'informazionale — diritti degli animali, specismo, etica del mangiare carne e della sperimentazione',
+    tension: "Gli interessi degli animali contano moralmente — e quanto — quando rispettarli ci costa qualcosa?",
+    headline: 'Etica animale: dove tracci il confine?',
+    intro: "Quasi tutti concordano che gli animali meritino una qualche considerazione morale. Il disaccordo inizia nel momento in cui ci costa qualcosa — un pasto, una medicina, un animale domestico, un biglietto dello zoo. L'etica animale pone una domanda di fondo: se una creatura può soffrire, quanto pesano i suoi interessi rispetto ai nostri? Questi dilemmi spostano il confine cambiando il prezzo del principio — dal rinunciare alla carne all'approvare una ricerca che danneggia gli animali per salvare vite umane. Vota, poi scopri dove ti collochi rispetto a tutti gli altri.",
+    primaryScenarioId: 'eat-meat',
+    relatedScenarioIds: ['eat-meat', 'animal-testing-cure', 'breeder-vs-shelter', 'zoo-conservation'],
+    relatedTopicSlugs: ['dilemmi-etici', 'bioetica', 'test-psicologia-morale'],
+    researchNote: "L'etica animale moderna è plasmata dall'argomento di Peter Singer secondo cui è la capacità di soffrire, non la specie, a fondare la considerazione morale, e dalla prospettiva dei diritti di Tom Regan, per cui alcuni animali sono 'soggetti di una vita' con valore intrinseco.",
+    researchSources: [
+      {
+        title: 'Animal Liberation',
+        institution: 'HarperCollins',
+        url: 'https://www.harpercollins.com/products/animal-liberation-now-peter-singer'
+      }
+    ],
+    status: 'published',
+    noindexUntilReady: false
+  },
 ]
 
 export function getTopicBySlugAndLocale(slug: string, locale: 'en' | 'it'): SeoTopic | undefined {

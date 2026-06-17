@@ -6396,6 +6396,483 @@ const EN_POSTS: BlogPost[] = [
     }
   ]
 },
+  {
+    slug: "trolley-problem-real-data",
+    locale: "en",
+    title: "The Trolley Problem: What Real Voting Data Reveals About Moral Choices",
+    seoTitle: "Trolley Problem Data: What % of People Pull the Lever? | SplitVote",
+    description: "The classic lever gets ~85% — but step onto the footbridge and the number collapses to 25%. Real voting data from SplitVote explains why identical arithmetic produces radically different moral answers.",
+    seoDescription: "What percentage of people would pull the lever in the trolley problem? What about the footbridge variant? Real voting data, the doing-allowing distinction, and what your answer reveals about your moral framework.",
+    date: "2026-06-17",
+    readingTime: 7,
+    tags: ["trolley problem", "footbridge variant", "moral philosophy", "voting data", "doing-allowing distinction", "moral psychology"],
+    relatedDilemmaIds: ["trolley", "fat-man", "organ-harvest", "mercy-kill"],
+    alternateSlug: "problema-del-carrello-dati-reali",
+    faq: [
+      {
+        q: "What percentage of people would pull the lever in the trolley problem?",
+        a: "Academic surveys consistently find between 80% and 90% of respondents would pull the lever in the classic trolley problem. On SplitVote, real user data shows a similar majority, with the precise split varying by age and region."
+      },
+      {
+        q: "What is the footbridge variant of the trolley problem?",
+        a: "Introduced by philosopher Judith Jarvis Thomson in 1985: you stand on a bridge above the tracks next to a large stranger. Pushing them off would stop the trolley and save five people. The arithmetic is identical to the lever case, but most people refuse. The difference reveals how human moral psychology distinguishes physical contact from redirecting a threat."
+      },
+      {
+        q: "What percentage of people would push in the footbridge trolley problem?",
+        a: "In controlled academic studies, roughly 20-30% say they would push the large person off the bridge, compared to 80-90% who pull the lever. This gap — identical arithmetic, radically different acceptance — is one of the most cited findings in experimental moral philosophy."
+      },
+      {
+        q: "What was Philippa Foot's answer to the trolley problem?",
+        a: "Philippa Foot was primarily interested in the doing-versus-allowing distinction, not the lever result itself. Her 1967 paper asked why it is permissible to divert a threat as a side-effect but impermissible to use a person as an instrument. The fat-man variant was introduced by Judith Jarvis Thomson in 1985, not by Foot."
+      },
+      {
+        q: "Why do people answer differently for the lever vs the footbridge?",
+        a: "The main explanations are: (1) the doing-allowing distinction — using a person as a means differs from accepting their death as a side-effect; (2) the doctrine of double effect — the footbridge violates it (the death is the instrument of rescue), the lever does not; (3) aversion to direct physical contact with the person being harmed, studied in Joshua Greene's dual-process moral psychology research."
+      },
+      {
+        q: "Is SplitVote data comparable to academic trolley problem studies?",
+        a: "SplitVote data reflects voluntary anonymous responses from real users, not controlled laboratory conditions. The directional findings are consistent with academic literature, but precise percentages should be understood as platform trends rather than representative population estimates."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "In 1967, philosopher Philippa Foot asked a deceptively simple question: if a runaway trolley is heading toward five people, and you can pull a lever to divert it onto a side track where it will kill one person instead, should you pull it? For most people, the answer feels obvious. Pull the lever. But Foot was not interested in the answer — she was interested in the tension it created when compared to a different case: harvesting organs from a healthy patient to save five dying ones. Same arithmetic. Completely different intuition."
+      },
+      {
+        type: "h2",
+        text: "The lever: what the real data shows"
+      },
+      {
+        type: "p",
+        text: "Across decades of academic surveys, the lever version generates one of the most consistent findings in moral psychology: between 80% and 90% of respondents say they would pull the lever. On SplitVote, where the trolley dilemma is one of the most-voted scenarios, real user data tells a similar story. The minority who refuse are not confused — they often express a deontological intuition that active intervention to cause a death, even to save more lives, is categorically different from allowing the original trajectory to continue."
+      },
+      {
+        type: "p",
+        text: "The lever variant works as a near-consensus case because it maintains moral distance. The person on the side track dies as a side-effect of redirecting the trolley, not as the means of stopping it. You are not using their death — you are accepting it as a cost of changing the trolley's path."
+      },
+      {
+        type: "h2",
+        text: "Step onto the bridge: the footbridge variant"
+      },
+      {
+        type: "p",
+        text: "Judith Jarvis Thomson introduced the footbridge (fat-man) variant in 1985. You are on a bridge above the tracks, standing next to a large stranger. Pushing them off would stop the trolley and save five people — they would die on impact. Jumping yourself would not stop it. The arithmetic is identical to the original case. But acceptance rates collapse to roughly 20-30%."
+      },
+      {
+        type: "p",
+        text: "This is not noise. It is one of the most studied divergences in experimental philosophy. The gap between the lever (80-90% yes) and the footbridge (20-30% yes) reveals something structural about human moral cognition that neither pure consequentialism nor pure deontology fully predicts."
+      },
+      {
+        type: "h2",
+        text: "The doing-allowing distinction and Philippa Foot's real question"
+      },
+      {
+        type: "p",
+        text: "Foot was primarily interested in what scholars call the doing-versus-allowing distinction. There is a widely shared intuition that doing harm — even to produce a better outcome — is morally different from allowing harm to occur. The trolley lever sits in a grey zone: the harm to the one person is a foreseen but unintended side-effect of changing the trolley's path. In the footbridge case, the death is the instrument of rescue — you need the person's body to stop the trolley. The distinction is explored in depth in academic literature including scholarship on Foot's original contribution (Cambridge University Press, The Trolley Problem: The Doing-Allowing Distinction). Scholars continue to debate whether this distinction holds as a moral principle or reflects cognitive bias — but the empirical reality of the gap is not in dispute."
+      },
+      {
+        type: "h2",
+        text: "The doctrine of double effect"
+      },
+      {
+        type: "p",
+        text: "A second framework explaining the lever-footbridge gap is the doctrine of double effect, developed in scholastic moral theology and refined by 20th-century philosophers. It holds that an action with both good and bad effects is permissible if the bad effect is not the means to the good effect — it must be a side-effect. The lever satisfies this: one death is a side-effect of diverting the trolley, not the means of saving five. The footbridge violates it: stopping the trolley requires using the person as a physical obstacle. Their death is the means, not the side-effect."
+      },
+      {
+        type: "h2",
+        text: "What the gap between lever and footbridge reveals about you"
+      },
+      {
+        type: "p",
+        text: "If you would pull the lever but not push the stranger off the bridge, you are not being inconsistent. You are applying different moral reasoning to structurally different cases — and that reasoning is philosophically defensible. If you would do both, or neither, you are applying a coherent framework: either consistent consequentialism (outcomes determine rightness, mechanisms are irrelevant) or consistent deontological refusal (using any person as a means to an end is wrong regardless of outcomes). The trolley problem is uniquely useful because it isolates these frameworks and makes the differences visible."
+      },
+      {
+        type: "cta",
+        label: "Vote on the fat-man variant now",
+        href: "/play/fat-man"
+      },
+      {
+        type: "h2",
+        text: "What SplitVote data shows across demographics"
+      },
+      {
+        type: "p",
+        text: "On SplitVote, users who vote on both the classic trolley and the footbridge variant show a consistent pattern: the footbridge generates a significantly more even split. Younger users show slightly higher acceptance of the footbridge — possibly reflecting more exposure to utilitarian frameworks in education. The split also varies across regions, with users from countries with stronger collective-welfare cultural norms slightly more likely to push. These are trends, not conclusions: SplitVote data is self-selected and not a representative population sample."
+      },
+      {
+        type: "h2",
+        text: "Frequently asked questions"
+      },
+      {
+        type: "h3",
+        text: "What percentage of people would pull the lever in the trolley problem?"
+      },
+      {
+        type: "p",
+        text: "Between 80% and 90% in controlled academic studies. Real-world platform data from SplitVote shows a similar majority, with regional and demographic variation."
+      },
+      {
+        type: "h3",
+        text: "What is the footbridge (fat-man) variant?"
+      },
+      {
+        type: "p",
+        text: "Introduced by Judith Jarvis Thomson in 1985: you stand on a bridge next to a large stranger. Pushing them off stops the trolley and saves five people. Most people refuse even though the arithmetic is identical to pulling the lever."
+      },
+      {
+        type: "h3",
+        text: "Why do answers differ between the lever and the footbridge?"
+      },
+      {
+        type: "p",
+        text: "The doing-allowing distinction: in the lever case, the death is a side-effect of redirecting the trolley. In the footbridge case, the death is the instrument of stopping it. The doctrine of double effect formalises this distinction. Joshua Greene's dual-process research adds the role of physical contact in triggering stronger emotional responses."
+      },
+      {
+        type: "h3",
+        text: "What was Philippa Foot's view on the trolley problem?"
+      },
+      {
+        type: "p",
+        text: "Foot's interest was the doing-versus-allowing distinction, not the lever result per se. She was asking why some harmful actions feel permissible and others do not. The fat-man variant was added by Thomson in 1985, not by Foot."
+      },
+      {
+        type: "disclaimer",
+        text: "This article is for educational purposes. SplitVote voting data reflects anonymous aggregate user trends and does not constitute scientifically certified research. For peer-reviewed analysis, consult the academic literature on experimental moral philosophy."
+      }
+    ]
+  },
+  {
+    slug: "4-types-of-ethical-dilemmas",
+    locale: "en",
+    title: "The 4 Types of Ethical Dilemmas (And Which One Splits People Most Evenly)",
+    seoTitle: "The 4 Types of Ethical Dilemmas Explained | SplitVote",
+    description: "Truth vs. Loyalty. Individual vs. Community. Short-term vs. Long-term. Justice vs. Mercy. Four categories cover almost every moral conflict that matters — and real vote data shows which one people find hardest.",
+    seoDescription: "What are the 4 types of ethical dilemmas? Philosopher Rushworth Kidder identified four core tensions. See which type splits people most evenly on SplitVote — and where you stand on each one.",
+    date: "2026-06-17",
+    readingTime: 8,
+    tags: ["ethical dilemmas", "types of dilemmas", "moral philosophy", "truth vs loyalty", "justice vs mercy", "individual vs community"],
+    relatedDilemmaIds: ["truth-friend", "innocent-juror", "zombie-apocalypse", "mandatory-vaccine", "river-factory", "reformed-offender"],
+    alternateSlug: "4-tipi-di-dilemmi-etici",
+    faq: [
+      {
+        q: "What are the 4 types of ethical dilemmas?",
+        a: "Philosopher Rushworth Kidder, in How Good People Make Tough Choices (1995), identified four core paradigms: Truth vs. Loyalty (honesty versus allegiance to a person or group), Individual vs. Community (one person's rights versus collective welfare), Short-term vs. Long-term (immediate needs versus future consequences), and Justice vs. Mercy (applying rules equally versus granting exceptions based on context)."
+      },
+      {
+        q: "What is an example of a Truth vs. Loyalty dilemma?",
+        a: "Your closest friend is about to make a major life decision and asks your honest opinion. You see serious risks they are not acknowledging. Do you tell the truth, knowing it may damage the relationship? Or support them out of loyalty, knowing you are not helping? On SplitVote, this type generates some of the most even splits in the catalog."
+      },
+      {
+        q: "What is an example of an Individual vs. Community dilemma?",
+        a: "A patient refuses quarantine despite a contagious illness. A mandatory vaccine programme would protect the population but override individual medical autonomy. An inspector must shut down a factory polluting a river — but 800 families depend on it. These are all Individual vs. Community dilemmas."
+      },
+      {
+        q: "What is an example of a Short-term vs. Long-term dilemma?",
+        a: "A factory contaminates a river at a low level today, producing serious health consequences in 15 years — shut it down now (800 jobs lost) or give it time to remediate? This is the most underrepresented category in most dilemma collections. SplitVote is actively expanding it."
+      },
+      {
+        q: "What is an example of a Justice vs. Mercy dilemma?",
+        a: "Someone who committed a serious crime 12 years ago has served their sentence and rebuilt their life. A school calls for a reference — they don't know you're the victim. Do you tell the truth (justice) or say nothing (mercy)?"
+      },
+      {
+        q: "Which type of ethical dilemma is hardest to resolve?",
+        a: "On SplitVote data, Justice vs. Mercy and Truth vs. Loyalty dilemmas produce the most even splits — suggesting these are genuinely harder to resolve than consequentialist trade-offs. Short-term vs. Long-term often shows more consensus in the abstract, but approaches 50/50 when both sides are made vivid and personal."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "Most moral dilemmas do not pit good against evil. They pit good against good — two legitimate values, two defensible positions, and no option that satisfies both. The difficulty is not knowing the right answer. The difficulty is that both answers are partly right. In 1995, ethicist Rushworth Kidder proposed in How Good People Make Tough Choices that nearly all genuine moral conflicts fall into one of four categories. The framework has since been used in business ethics, healthcare, policy, and journalism to help people reason more clearly about decisions that feel impossible."
+      },
+      {
+        type: "h2",
+        text: "Type 1: Truth vs. Loyalty"
+      },
+      {
+        type: "p",
+        text: "The tension between honesty and allegiance to a person, institution, or set of ideas. Truth vs. Loyalty dilemmas arise when telling the truth would hurt someone you care about, betray a confidence, or damage a relationship that matters. Loyalty-based silence protects the relationship — but at the cost of honesty, and sometimes at the cost of the other person's real interests."
+      },
+      {
+        type: "list",
+        items: [
+          "Your best friend is about to make a serious financial mistake and asks your honest opinion.",
+          "You discover a trusted colleague has been falsifying data — truth versus team loyalty.",
+          "Your father dies asking you to keep a secret that affects your sibling's understanding of their own life.",
+          "A close friend is moving abroad for a relationship you believe is a mistake. They asked what you think."
+        ]
+      },
+      {
+        type: "p",
+        text: "On SplitVote, Truth vs. Loyalty dilemmas include truth-friend, confess-crime, sibling-secret, and inherited-secret. They consistently produce near-even splits — people are genuinely divided, not because they are confused, but because both values are real."
+      },
+      {
+        type: "h2",
+        text: "Type 2: Individual vs. Community"
+      },
+      {
+        type: "p",
+        text: "The tension between one person's rights, privacy, or needs and the welfare of the group. This is the structure behind vaccination debates, quarantine orders, eminent domain, and every triage decision in medicine. It is also behind everyday decisions about when to report someone, when to stay quiet, and whether rules should apply universally or contextually."
+      },
+      {
+        type: "list",
+        items: [
+          "A patient refuses quarantine despite a highly contagious illness — individual freedom versus community health.",
+          "An environmental inspector must choose between shutting down the town's only employer or allowing river contamination.",
+          "A lifeboat can hold ten. Fourteen people need it. Who decides who boards?",
+          "Mandatory vaccination: bodily autonomy versus herd immunity."
+        ]
+      },
+      {
+        type: "p",
+        text: "On SplitVote, this category includes mandatory-vaccine, zombie-apocalypse, lifeboat, and river-factory. The most even splits occur when the individual is identifiable and sympathetic — abstract trade-offs favour collective welfare, but when you picture the individual, autonomy arguments gain weight."
+      },
+      {
+        type: "h2",
+        text: "Type 3: Short-term vs. Long-term"
+      },
+      {
+        type: "p",
+        text: "The tension between immediate, certain costs and future, diffuse consequences. This is the most structurally underrated category in most dilemma collections — because future harms are easy to discount, and the people who will bear them do not yet exist. Short-term vs. Long-term dilemmas appear in climate policy, pension funding, urban planning, and personal financial decisions."
+      },
+      {
+        type: "list",
+        items: [
+          "A factory contaminates a river at a low level today, with serious health consequences in 15 years. Shut down now (800 jobs) or give 2 years to remediate?",
+          "You pledged not to fly again for climate reasons. Your parent is dying abroad and the train takes 4 days.",
+          "Take on significant debt for an extraordinary childhood for your children, paying it off in your 60s.",
+          "A company can hit this quarter's targets by deferring safety maintenance. The risk is real but years away."
+        ]
+      },
+      {
+        type: "p",
+        text: "On SplitVote, this category includes climate-flight, river-factory, and debt-childhood. The data shows something consistent: when future harm affects strangers, people accept more short-term comfort. When it affects people they identify with, they shift toward sacrifice."
+      },
+      {
+        type: "h2",
+        text: "Type 4: Justice vs. Mercy"
+      },
+      {
+        type: "p",
+        text: "The tension between applying rules consistently and allowing exceptions based on context, compassion, or circumstances. Justice says rules exist precisely so they can be applied without exception — the moment you make one, the rule loses meaning. Mercy says rules are tools for human flourishing, not ends in themselves, and applying them without judgment can violate the spirit of the rule."
+      },
+      {
+        type: "list",
+        items: [
+          "Someone who held you at gunpoint 12 years ago has rebuilt their life. A school asks for a reference. Do you say what you know?",
+          "A student plagiarised under genuine family crisis. Zero-tolerance says fail. Mercy says there are exceptions.",
+          "A dying patient begs for an end to suffering. The law says no.",
+          "A death row exoneree spent 18 years inside for a crime they didn't commit."
+        ]
+      },
+      {
+        type: "p",
+        text: "On SplitVote, Justice vs. Mercy dilemmas include reformed-offender, innocent-juror, mercy-kill, death-row-exonerated, and revenge-vs-forgiveness. They produce the most sustained discussion — people do not just pick a side, they want to explain why."
+      },
+      {
+        type: "h2",
+        text: "Which type splits people most evenly?"
+      },
+      {
+        type: "p",
+        text: "Based on SplitVote data, Justice vs. Mercy and Truth vs. Loyalty produce the most even splits — suggesting these are the two categories where reasonable people most persistently disagree. Individual vs. Community shows more context-sensitivity: abstract cases lean toward community welfare, but concrete identifiable individuals shift the balance toward autonomy. Short-term vs. Long-term shows the least even splits in abstract framing but approaches 50/50 when both sides are made vivid and personal."
+      },
+      {
+        type: "h2",
+        text: "How to use this framework"
+      },
+      {
+        type: "p",
+        text: "Identifying which type of dilemma you are facing does not solve it — but it clarifies it. Knowing you are in a Truth vs. Loyalty conflict tells you both sides have legitimate claims, and resolution requires deciding which value is weightier in this specific context, not declaring the other value wrong. Knowing you are in a Justice vs. Mercy conflict tells you consistency and compassion are both real goods, and the question is not which one is right but what this specific situation actually requires."
+      },
+      {
+        type: "cta",
+        label: "Test yourself on all four types",
+        href: "/play/truth-friend"
+      },
+      {
+        type: "h2",
+        text: "Frequently asked questions"
+      },
+      {
+        type: "h3",
+        text: "What are the 4 types of ethical dilemmas?"
+      },
+      {
+        type: "p",
+        text: "Truth vs. Loyalty, Individual vs. Community, Short-term vs. Long-term, and Justice vs. Mercy. This framework was proposed by ethicist Rushworth Kidder in How Good People Make Tough Choices (1995) and covers the majority of genuine moral conflicts in personal, professional, and civic life."
+      },
+      {
+        type: "h3",
+        text: "What is the difference between a moral dilemma and an ethical dilemma?"
+      },
+      {
+        type: "p",
+        text: "The terms are often used interchangeably. Technically, ethics refers to codified systems of rules (professional ethics, medical ethics), while morality refers to personal values and intuitions. In practice, both describe situations where two legitimate values or duties conflict."
+      },
+      {
+        type: "h3",
+        text: "Is there a right answer to ethical dilemmas?"
+      },
+      {
+        type: "p",
+        text: "Genuine ethical dilemmas do not have objectively correct answers all reasonable people would converge on. What thoughtful reasoning can do is help you identify which value is more relevant to the specific context, what consequences each choice produces, and whether your decision is one you can account for transparently."
+      },
+      {
+        type: "h3",
+        text: "Which ethical dilemma type is most common in the workplace?"
+      },
+      {
+        type: "p",
+        text: "Truth vs. Loyalty is most frequently cited in professional ethics research — reporting misconduct, being honest with a manager about a colleague, disclosing information that could damage a client relationship. Justice vs. Mercy is a close second, particularly in management: applying performance standards consistently versus accounting for individual circumstances."
+      },
+      {
+        type: "disclaimer",
+        text: "This article is for educational purposes. SplitVote voting data reflects anonymous aggregate user trends and does not constitute scientifically certified research."
+      }
+    ]
+  },
+  {
+    slug: "animal-rights-where-do-you-draw-the-line",
+    locale: "en",
+    title: "Animal Rights: Where Do You Draw the Line?",
+    seoTitle: "Animal Rights: Where Do You Draw the Line? | SplitVote",
+    description: "Almost everyone agrees animals deserve some moral consideration. The disagreement starts the moment it costs us something — meat, medicine, a pet, a zoo ticket. Here is where the lines actually fall.",
+    seoDescription: "What are animal rights, what is speciesism, and where do people actually draw the line on eating meat, animal testing, breeding and zoos? A clear guide with real dilemmas you can vote on.",
+    date: "2026-06-17",
+    readingTime: 9,
+    tags: ["animal rights", "animal ethics", "speciesism", "ethics of eating meat", "animal testing", "moral philosophy"],
+    relatedDilemmaIds: ["eat-meat", "animal-testing-cure", "breeder-vs-shelter", "zoo-conservation"],
+    alternateSlug: "diritti-degli-animali-dove-tracci-il-confine",
+    faq: [
+      {
+        q: "What are animal rights?",
+        a: "Animal rights is the idea that non-human animals have moral interests — at minimum an interest in not suffering — that we are obliged to take seriously. Stronger versions hold that some animals have rights that cannot be overridden for human benefit; weaker versions argue only for welfare protections. Almost everyone accepts some version; the disagreement is about how much weight those interests carry against human interests."
+      },
+      {
+        q: "What is speciesism?",
+        a: "Speciesism, a term popularised by philosopher Peter Singer, is giving less moral weight to a being simply because it belongs to another species. The charge is that it works like racism or sexism: discounting a morally relevant trait — the capacity to suffer — because of group membership. Critics argue species membership can be morally relevant; defenders of the term argue suffering is what counts."
+      },
+      {
+        q: "Is it wrong to eat meat?",
+        a: "Philosophers disagree. Singer argues that if an animal can suffer, causing it avoidable suffering for a minor benefit like taste is hard to justify. Others hold that humans are part of a natural food chain, or that humane farming resolves the problem. On SplitVote, this is one of the most evenly split animal-ethics questions — knowing how meat is produced changes some minds and not others."
+      },
+      {
+        q: "Do animals have rights or just welfare protections?",
+        a: "This is the core split in animal ethics. The welfare view says we may use animals if we minimise their suffering. The rights view, associated with Tom Regan, says some animals are 'subjects of a life' with inherent value that cannot be traded away for human benefit at all. Most laws follow the welfare model; many activists argue for the rights model."
+      },
+      {
+        q: "What did Peter Singer argue about animals?",
+        a: "In Animal Liberation (1975), Singer argued that the capacity to suffer — not intelligence or species — is what entitles a being to equal consideration of its interests. From a utilitarian basis, he concluded that much of how we treat animals, especially in factory farming and research, inflicts suffering that no comparable human benefit justifies."
+      },
+      {
+        q: "Where do most people draw the line on animal ethics?",
+        a: "Most people land between the extremes: they oppose cruelty and factory-farm conditions, accept animal testing for serious medical need, and are divided on eating meat and keeping animals in zoos. The line tends to move with cost — people grant animals more consideration when doing so asks little of them, and less when it asks a lot."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "Ask whether animals deserve moral consideration and almost everyone says yes. Ask whether that means you should give up bacon, refuse a medicine tested on mice, adopt instead of buying the breed you want, or boycott zoos — and the consensus shatters. Animal ethics is interesting precisely because the disagreement does not appear until the principle starts to cost us something. This guide maps where the lines fall, and lets you vote on the cases that draw them."
+      },
+      {
+        type: "h2",
+        text: "The one question underneath all of it: can they suffer?"
+      },
+      {
+        type: "p",
+        text: "In 1789 the philosopher Jeremy Bentham wrote that the question about animals is not 'Can they reason?' nor 'Can they talk?' but 'Can they suffer?' That sentence reframed the whole debate. If the capacity to suffer is what makes a being's interests matter, then the morally relevant fact about an animal is not its intelligence or its species but whether there is something it is like to be it — and whether what happens to it can go well or badly for it."
+      },
+      {
+        type: "h2",
+        text: "Speciesism and Peter Singer"
+      },
+      {
+        type: "p",
+        text: "In Animal Liberation (1975), Peter Singer pushed Bentham's point to its conclusion. He argued that ignoring an animal's suffering simply because it is not human is a prejudice he called speciesism — structurally similar to racism or sexism, in that it discounts a morally relevant interest on the basis of group membership. Singer's claim is not that a mouse and a human are equal in worth, but that equal suffering deserves equal moral weight whoever experiences it. It is one of the most influential — and most contested — arguments in modern ethics."
+      },
+      {
+        type: "h2",
+        text: "Welfare or rights? The split that organises the debate"
+      },
+      {
+        type: "p",
+        text: "Two broad camps follow. The welfare view holds that using animals is acceptable if we minimise their suffering — better conditions, humane slaughter, anaesthesia in labs. The rights view, argued by Tom Regan, holds that animals who are 'subjects of a life' have inherent value that cannot be traded away for human benefit at all, no matter how humane the method. Almost every law in the world follows the welfare model. Much of the activist movement argues the welfare model is a comfortable way to keep using animals while feeling better about it."
+      },
+      {
+        type: "h2",
+        text: "Where the line actually gets drawn — four real cases"
+      },
+      {
+        type: "p",
+        text: "Abstract principles are easy to agree with. The disagreement lives in the cases. Here are four where SplitVote voters genuinely split — each one moves the line by changing what the principle costs you."
+      },
+      {
+        type: "h3",
+        text: "Eating meat"
+      },
+      {
+        type: "p",
+        text: "You can afford alternatives and you have seen how cheap meat is produced. Keeping it on your plate means deciding that taste, habit or the invisibility of your individual choice outweighs what you know. Giving it up means accepting that knowledge creates obligation. This is the case where the gap between stated values and actual behaviour tends to be widest."
+      },
+      {
+        type: "cta",
+        label: "Vote: would you give up meat?",
+        href: "/play/eat-meat"
+      },
+      {
+        type: "h3",
+        text: "Animal testing for medicine"
+      },
+      {
+        type: "p",
+        text: "Most people who oppose factory farming still hesitate here, because the benefit is no longer taste — it is human lives. Approving research that harms animals to reach a cancer therapy forces the welfare view to show its price. Rejecting it forces the rights view to accept human deaths it could have prevented. Few questions separate 'I care about animals' from 'animal interests can never be outweighed' as sharply."
+      },
+      {
+        type: "cta",
+        label: "Vote: approve the animal-tested cure?",
+        href: "/play/animal-testing-cure"
+      },
+      {
+        type: "h3",
+        text: "Buying a breed vs adopting"
+      },
+      {
+        type: "p",
+        text: "No grand principle here — just an ordinary choice millions make. Buy the breed you have always wanted, or adopt a shelter dog whose life may depend on it. It tests whether a real but minor preference should yield to a concrete life, in a situation with no villain and no abstraction."
+      },
+      {
+        type: "cta",
+        label: "Vote: breeder or shelter?",
+        href: "/play/breeder-vs-shelter"
+      },
+      {
+        type: "h3",
+        text: "Zoos and conservation"
+      },
+      {
+        type: "p",
+        text: "Zoos confine individuals but can save species. The case pits a collective good — preventing extinction, teaching millions of children to care — against an individual cost paid by the animal in the enclosure. Your answer often reveals whether your moral unit is the species or the individual."
+      },
+      {
+        type: "cta",
+        label: "Vote: are zoos justified?",
+        href: "/play/zoo-conservation"
+      },
+      {
+        type: "h2",
+        text: "What your answers reveal"
+      },
+      {
+        type: "p",
+        text: "Read across your four votes and a pattern usually appears. If you consistently weigh outcomes — accepting animal testing for cures, defending zoos for conservation — you reason like a utilitarian, asking which choice produces the least suffering overall. If you refuse to use animals as means regardless of the payoff, you reason more like a rights theorist, treating some lines as not for sale. Most people are neither pure type: they grant animals strong consideration when it is cheap and weaker consideration when it is expensive — which is exactly the inconsistency animal ethics exists to surface."
+      },
+      {
+        type: "disclaimer",
+        text: "This article is for educational purposes and summarises positions in animal ethics without endorsing one. SplitVote voting data reflects anonymous aggregate user trends and does not constitute scientifically certified research."
+      }
+    ]
+  },
 ]
 
 const IT_POSTS: BlogPost[] = [
@@ -12633,6 +13110,483 @@ const IT_POSTS: BlogPost[] = [
     }
   ]
 },
+  {
+    slug: "problema-del-carrello-dati-reali",
+    locale: "it",
+    title: "Il problema del carrello: cosa rivelano i dati reali sul voto morale",
+    seoTitle: "Problema del carrello: quante persone tirano la leva? Dati reali | SplitVote",
+    description: "La leva classica raccoglie circa l'85% — ma salite sul passerella e il numero crolla al 25%. I dati reali di SplitVote spiegano perché una matematica identica produce risposte morali radicalmente diverse.",
+    seoDescription: "Quante persone tirerebbero la leva nel problema del carrello? Dati reali, distinzione fare-permettere, e cosa rivela la tua risposta sul tuo quadro morale.",
+    date: "2026-06-17",
+    readingTime: 7,
+    tags: ["problema del carrello", "variante passerella", "filosofia morale", "dati di voto", "psicologia morale"],
+    relatedDilemmaIds: ["trolley", "fat-man", "organ-harvest", "mercy-kill"],
+    alternateSlug: "trolley-problem-real-data",
+    faq: [
+      {
+        q: "Quante persone tirerebbero la leva nel problema del carrello?",
+        a: "I sondaggi accademici trovano consistentemente tra l'80% e il 90% dei partecipanti disposti a tirare la leva nella versione classica. I dati reali di SplitVote mostrano una maggioranza analoga, con variazioni per eta e provenienza geografica."
+      },
+      {
+        q: "Cos'è la variante del passerella del problema del carrello?",
+        a: "Introdotta dalla filosofa Judith Jarvis Thomson nel 1985: sei su un ponte sopra i binari accanto a un grosso sconosciuto. Spingerlo giù fermerebbe il tram e salverebbe cinque persone. La matematica è identica alla leva, ma la maggioranza si rifiuta. Il divario rivela come la psicologia morale umana distingua il contatto fisico diretto dal deviare una minaccia."
+      },
+      {
+        q: "Quante persone spingerebbero nella variante del passerella?",
+        a: "Negli studi accademici controllati, circa il 20-30% dice che spingerebbe la persona giù dal ponte, rispetto all'80-90% che tira la leva. Questo divario con matematica identica è uno dei risultati più citati nella filosofia morale sperimentale."
+      },
+      {
+        q: "Qual era la risposta di Philippa Foot al problema del carrello?",
+        a: "Philippa Foot era principalmente interessata alla distinzione fare-permettere, non al risultato della leva in sé. Il suo articolo del 1967 chiedeva perché sia lecito deviare una minaccia come effetto collaterale ma non prelevare organi da un paziente sano. La variante fat-man è stata introdotta da Judith Jarvis Thomson nel 1985, non da Foot."
+      },
+      {
+        q: "Perché le persone rispondono diversamente alla leva e al passerella?",
+        a: "Le spiegazioni principali: (1) la distinzione fare-permettere — usare una persona come mezzo differisce dall'accettare la sua morte come effetto collaterale; (2) la dottrina del doppio effetto — il passerella la viola, la leva no; (3) l'avversione al contatto fisico diretto con la persona colpita, studiata nella ricerca di Joshua Greene."
+      },
+      {
+        q: "I dati di SplitVote sono paragonabili agli studi accademici?",
+        a: "I dati di SplitVote riflettono risposte volontarie e anonime di utenti reali, non condizioni di laboratorio controllate. I risultati direzionali sono coerenti con la letteratura accademica, ma le percentuali precise vanno intese come tendenze della piattaforma, non come stime rappresentative della popolazione."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "Nel 1967, la filosofa Philippa Foot pose una domanda ingannevolmente semplice: se un tram sfrenato sta per travolgere cinque persone, e puoi tirare una leva per deviarlo su un binario secondario dove ucciderà una persona sola, dovresti farlo? Per la maggior parte delle persone, la risposta sembra ovvia. Ma Foot non era interessata alla risposta — era interessata alla tensione che creava rispetto a un altro caso: prelevare organi da un paziente sano per salvarne cinque moribondi. Stessa matematica. Intuizione completamente diversa."
+      },
+      {
+        type: "h2",
+        text: "La leva: cosa mostrano i dati reali"
+      },
+      {
+        type: "p",
+        text: "In decenni di sondaggi accademici, la versione con la leva genera uno dei risultati più consistenti nella psicologia morale: tra l'80% e il 90% dei partecipanti dichiara che tirerebbe la leva. Su SplitVote, dove il dilemma del tram è uno degli scenari più votati, i dati reali degli utenti raccontano una storia simile. La minoranza che si rifiuta non è confusa — spesso esprime un'intuizione deontologica che intervenire attivamente per causare una morte, anche per salvarne di più, è categoricamente diverso dal lasciare che la traiettoria originale continui."
+      },
+      {
+        type: "p",
+        text: "La variante con la leva funziona come caso di quasi-consenso perché mantiene la distanza morale intatta. La persona sul binario secondario muore come effetto collaterale della deviazione del tram, non come mezzo per fermarlo."
+      },
+      {
+        type: "h2",
+        text: "Sul ponte: la variante del passerella"
+      },
+      {
+        type: "p",
+        text: "Judith Jarvis Thomson ha introdotto la variante del passerella nel 1985. Sei su un ponte sopra i binari, accanto a un grosso sconosciuto. Spingerlo giù fermerebbe il tram e salverebbe cinque persone. La matematica è identica al caso originale. Ma i tassi di accettazione crollano a circa il 20-30%."
+      },
+      {
+        type: "p",
+        text: "Questo non è rumore statistico. È uno dei divari più studiati nella filosofia sperimentale. Il gap tra leva e passerella rivela qualcosa di strutturale nel funzionamento della cognizione morale umana che né il puro consequenzialismo né la pura deontologia predice completamente da soli."
+      },
+      {
+        type: "h2",
+        text: "La distinzione fare-permettere e la domanda originale di Foot"
+      },
+      {
+        type: "p",
+        text: "Foot era principalmente interessata alla distinzione fare-permettere: fare del male è moralmente diverso dal permettere che avvenga. La leva del tram è una zona grigia: stai facendo qualcosa, ma il danno alla persona sul binario secondario è un effetto collaterale della deviazione, non il mezzo per salvarsi. Nel caso del passerella, la morte è lo strumento del salvataggio: hai bisogno del corpo della persona per fermare il tram. La distinzione è approfondita nella letteratura accademica sul problema fare-permettere, incluso il lavoro di Cambridge University Press, The Trolley Problem (capitolo: The Doing-Allowing Distinction). Gli studiosi continuano a dibattere se regga come principio morale o rifletta un bias cognitivo — ma il fatto empirico del divario non è in discussione."
+      },
+      {
+        type: "h2",
+        text: "La dottrina del doppio effetto"
+      },
+      {
+        type: "p",
+        text: "Un secondo quadro che spiega il divario è la dottrina del doppio effetto: un'azione con effetti sia buoni che cattivi è lecita se l'effetto cattivo non è il mezzo dell'effetto buono. La leva la soddisfa: la morte è un effetto collaterale della deviazione. Il passerella la viola: fermare il tram richiede di usare la persona come ostacolo fisico — la sua morte è il mezzo, non il collaterale."
+      },
+      {
+        type: "h2",
+        text: "Cosa rivela il divario tra leva e passerella su di te"
+      },
+      {
+        type: "p",
+        text: "Se tireresti la leva ma non spingeresti lo sconosciuto, non stai essendo incoerente. Stai applicando ragionamenti morali diversi a casi strutturalmente diversi — e quel ragionamento è filosoficamente difendibile. Se faresti entrambe le cose, o nessuna, stai applicando un quadro coerente: consequenzialismo consistente (i risultati sono tutto ciò che conta) o rifiuto deontologico consistente (usare qualsiasi persona come mezzo è sbagliato, anche con la leva)."
+      },
+      {
+        type: "cta",
+        label: "Vota sulla variante del passerella",
+        href: "/it/play/fat-man"
+      },
+      {
+        type: "h2",
+        text: "Cosa mostrano i dati SplitVote per fasce demografiche"
+      },
+      {
+        type: "p",
+        text: "Su SplitVote, gli utenti che votano su entrambi i dilemmi mostrano un pattern consistente: il passerella genera una divisione significativamente più equilibrata rispetto alla leva. Gli utenti più giovani tendono a mostrare una leggermente maggiore accettazione del passerella. La divisione varia anche tra regioni. Queste sono tendenze, non conclusioni: i dati SplitVote sono auto-selezionati."
+      },
+      {
+        type: "h2",
+        text: "Domande frequenti"
+      },
+      {
+        type: "h3",
+        text: "Quante persone tirerebbero la leva nel problema del carrello?"
+      },
+      {
+        type: "p",
+        text: "Tra l'80% e il 90% negli studi accademici controllati. I dati di SplitVote mostrano una maggioranza analoga con variazioni regionali e demografiche."
+      },
+      {
+        type: "h3",
+        text: "Cos'è la variante del passerella?"
+      },
+      {
+        type: "p",
+        text: "Introdotta da Judith Jarvis Thomson nel 1985: sei su un ponte accanto a un grosso sconosciuto. Spingerlo ferma il tram e salva cinque persone. La maggioranza si rifiuta anche se la matematica è identica alla leva."
+      },
+      {
+        type: "h3",
+        text: "Perché le risposte differiscono tra leva e passerella?"
+      },
+      {
+        type: "p",
+        text: "Distinzione fare-permettere (usare una persona come mezzo differisce dall'accettare la sua morte come effetto collaterale), dottrina del doppio effetto (il passerella la viola, la leva no), e avversione al contatto fisico diretto studiata da Joshua Greene."
+      },
+      {
+        type: "h3",
+        text: "Qual era la visione di Philippa Foot sul problema del carrello?"
+      },
+      {
+        type: "p",
+        text: "L'interesse di Foot era la distinzione fare-permettere, non la leva in sé. La variante fat-man è stata aggiunta da Thomson nel 1985, non da Foot."
+      },
+      {
+        type: "disclaimer",
+        text: "Questo articolo ha scopo divulgativo. I dati di voto di SplitVote riflettono tendenze aggregate anonime degli utenti e non costituiscono ricerca scientifica certificata."
+      }
+    ]
+  },
+  {
+    slug: "4-tipi-di-dilemmi-etici",
+    locale: "it",
+    title: "I 4 tipi di dilemmi etici (e quale divide le persone più equamente)",
+    seoTitle: "I 4 tipi di dilemmi etici spiegati | SplitVote",
+    description: "Verità vs. Lealtà. Individuo vs. Comunità. Breve termine vs. Lungo termine. Giustizia vs. Misericordia. Quattro categorie coprono quasi ogni conflitto morale che conta — e i dati reali mostrano quale le persone trovano più difficile.",
+    seoDescription: "Quali sono i 4 tipi di dilemmi etici? Il filosofo Rushworth Kidder ha identificato quattro tensioni fondamentali. Scopri quale tipo divide le persone più equamente su SplitVote e dove ti posizioni su ciascuno.",
+    date: "2026-06-17",
+    readingTime: 8,
+    tags: ["dilemmi etici", "tipi di dilemmi", "filosofia morale", "verità vs lealtà", "giustizia vs misericordia"],
+    relatedDilemmaIds: ["truth-friend", "innocent-juror", "zombie-apocalypse", "mandatory-vaccine", "river-factory", "reformed-offender"],
+    alternateSlug: "4-types-of-ethical-dilemmas",
+    faq: [
+      {
+        q: "Quali sono i 4 tipi di dilemmi etici?",
+        a: "Il filosofo Rushworth Kidder, in Come le persone oneste affrontano le scelte difficili (1995), ha identificato quattro paradigmi fondamentali: Verità vs. Lealtà, Individuo vs. Comunità, Breve termine vs. Lungo termine, e Giustizia vs. Misericordia. La maggior parte dei conflitti morali genuini ricade in una di queste categorie."
+      },
+      {
+        q: "Qual è un esempio di dilemma Verità vs. Lealtà?",
+        a: "Il tuo migliore amico sta per prendere una decisione importante e ti chiede la tua opinione onesta. Vedi rischi seri che lui non sta riconoscendo. Dici la verità, sapendo che potrebbe danneggiare il rapporto? O lo sostieni per lealtà? Su SplitVote, questo tipo genera alcune delle divisioni più equilibrate del catalogo."
+      },
+      {
+        q: "Qual è un esempio di dilemma Individuo vs. Comunità?",
+        a: "Un paziente con una malattia contagiosa si rifiuta di mettersi in quarantena. Un programma di vaccinazione obbligatoria proteggerebbe la popolazione ma supererebbe l'autonomia individuale. Un ispettore deve chiudere una fabbrica che inquina il fiume — ma 800 famiglie ne dipendono."
+      },
+      {
+        q: "Qual è un esempio di dilemma Breve termine vs. Lungo termine?",
+        a: "Una fabbrica contamina un fiume a basso livello oggi, producendo gravi conseguenze per la salute tra 15 anni — chiuderla ora (800 posti) o dare 2 anni per rimediare? Questa è la categoria più sottorappresentata nella maggior parte delle raccolte di dilemmi."
+      },
+      {
+        q: "Qual è un esempio di dilemma Giustizia vs. Misericordia?",
+        a: "Qualcuno che ha commesso un reato grave 12 anni fa ha scontato la pena e ricostruito la vita. Una scuola ti chiede una referenza — non sanno che sei la vittima. Riveli il suo passato (giustizia) o taci (misericordia)?"
+      },
+      {
+        q: "Quale tipo di dilemma etico è più difficile da risolvere?",
+        a: "Dai dati di SplitVote, Giustizia vs. Misericordia e Verità vs. Lealtà producono le divisioni più equilibrate. Breve termine vs. Lungo termine mostra spesso più consenso in astratto, ma si avvicina al 50/50 quando entrambi i lati vengono resi vividi e personali."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "La maggior parte dei dilemmi morali non contrappone il bene al male. Contrappone il bene al bene — due valori legittimi, due posizioni difendibili, e nessuna opzione che soddisfi entrambi. Nel 1995, l'eticista Rushworth Kidder ha proposto in Come le persone oneste affrontano le scelte difficili che quasi tutti i conflitti morali genuini ricadono in una di quattro categorie. Il quadro è stato utilizzato nell'etica aziendale, nella sanità, nella politica e nel giornalismo per aiutare le persone a ragionare più chiaramente sulle decisioni che sembrano impossibili."
+      },
+      {
+        type: "h2",
+        text: "Tipo 1: Verità vs. Lealtà"
+      },
+      {
+        type: "p",
+        text: "La tensione tra onestà e fedeltà a una persona, istituzione o insieme di idee. I dilemmi Verità vs. Lealtà emergono quando dire la verità farebbe del male a qualcuno che ci importa, tradirebbe una confidenza, o danneggerebbe una relazione importante. Il silenzio fondato sulla lealtà protegge la relazione — ma a scapito dell'onestà, e talvolta a scapito dei veri interessi dell'altra persona."
+      },
+      {
+        type: "list",
+        items: [
+          "Il tuo migliore amico sta per fare un errore finanziario serio e ti chiede la tua opinione onesta.",
+          "Scopri che un collega di fiducia ha falsificato dei dati — verità contro lealtà al team.",
+          "Tuo padre muore chiedendoti di mantenere un segreto che riguarda la vita di tuo fratello.",
+          "Una cara amica sta per trasferirsi all'estero per una relazione che credi sia un errore. Ti ha chiesto cosa pensi."
+        ]
+      },
+      {
+        type: "p",
+        text: "Su SplitVote, i dilemmi Verità vs. Lealtà includono truth-friend, confess-crime, sibling-secret e inherited-secret. Producono consistentemente divisioni quasi equilibrate — le persone sono genuinamente divise perché entrambi i valori sono reali."
+      },
+      {
+        type: "h2",
+        text: "Tipo 2: Individuo vs. Comunità"
+      },
+      {
+        type: "p",
+        text: "La tensione tra i diritti, la privacy o i bisogni di una persona e il benessere del gruppo. Questa è la struttura alla base dei dibattiti sui vaccini, le quarantene, l'esproprio e ogni decisione di triage in medicina. È anche alla base delle decisioni quotidiane su quando denunciare qualcuno e se le regole debbano applicarsi universalmente o contestualmente."
+      },
+      {
+        type: "list",
+        items: [
+          "Un paziente si rifiuta di mettersi in quarantena nonostante una malattia altamente contagiosa.",
+          "Un ispettore deve scegliere tra chiudere l'unico datore di lavoro della città o consentire il continuo inquinamento del fiume.",
+          "Una scialuppa può portarne dieci. Quattordici persone ne hanno bisogno.",
+          "Vaccinazione obbligatoria: autonomia corporea contro immunità di gregge."
+        ]
+      },
+      {
+        type: "p",
+        text: "Su SplitVote, questa categoria include mandatory-vaccine, zombie-apocalypse, lifeboat e river-factory. Le divisioni più equilibrate si verificano quando l'individuo è identificabile e simpatico — i trade-off astratti favoriscono il benessere collettivo, ma visualizzare l'individuo sposta il peso verso l'autonomia."
+      },
+      {
+        type: "h2",
+        text: "Tipo 3: Breve termine vs. Lungo termine"
+      },
+      {
+        type: "p",
+        text: "La tensione tra costi immediati e certi e conseguenze future e diffuse. Questa è la categoria strutturalmente più sottovalutata — perché i danni futuri sono facili da scontare, e le persone che li sopporteranno non esistono ancora. I dilemmi Breve termine vs. Lungo termine appaiono nella politica climatica, nei fondi pensione, nell'urbanistica e nelle decisioni finanziarie personali."
+      },
+      {
+        type: "list",
+        items: [
+          "Una fabbrica contamina un fiume oggi con gravi conseguenze tra 15 anni. Chiuderla ora (800 posti) o dare 2 anni?",
+          "Hai promesso di non volare più per ragioni climatiche. Il tuo genitore sta morendo all'estero e il treno impiegherebbe 4 giorni.",
+          "Fare un debito significativo per dare ai tuoi figli esperienze formative straordinarie, ripagandolo negli anni 60.",
+          "Un'azienda può raggiungere gli obiettivi del trimestre posticipando la manutenzione della sicurezza."
+        ]
+      },
+      {
+        type: "p",
+        text: "Su SplitVote, questa categoria include climate-flight, river-factory e debt-childhood. I dati mostrano qualcosa di consistente: quando il danno futuro riguarda sconosciuti, le persone accettano più comfort a breve termine. Quando riguarda persone con cui si identificano, si spostano verso il sacrificio."
+      },
+      {
+        type: "h2",
+        text: "Tipo 4: Giustizia vs. Misericordia"
+      },
+      {
+        type: "p",
+        text: "La tensione tra l'applicazione coerente delle regole e la concessione di eccezioni basate sul contesto e la compassione. La giustizia stretta dice che le regole esistono proprio per poter essere applicate senza eccezioni. La misericordia dice che le regole sono strumenti per il fiorire umano, non fini in sé, e che applicarle senza giudizio può violarne lo spirito."
+      },
+      {
+        type: "list",
+        items: [
+          "Chi ti ha tenuto sotto minaccia di pistola 12 anni fa ha ricostruito la sua vita. Una scuola ti chiede una referenza.",
+          "Uno studente ha copiato in un esame durante una crisi familiare genuina. La tolleranza zero dice bocciatura.",
+          "Un paziente morente implora la fine della sofferenza. La legge dice no.",
+          "Un condannato a morte scagionato ha trascorso 18 anni in carcere per un crimine non commesso."
+        ]
+      },
+      {
+        type: "p",
+        text: "Su SplitVote, i dilemmi Giustizia vs. Misericordia includono reformed-offender, innocent-juror, mercy-kill, death-row-exonerated e revenge-vs-forgiveness. Tendono a produrre la discussione più sostenuta — le persone non si limitano a scegliere un lato, vogliono spiegare perché."
+      },
+      {
+        type: "h2",
+        text: "Quale tipo divide le persone più equamente?"
+      },
+      {
+        type: "p",
+        text: "In base ai dati di SplitVote, Giustizia vs. Misericordia e Verità vs. Lealtà producono le divisioni più equilibrate. Individuo vs. Comunità mostra più sensibilità al contesto. Breve termine vs. Lungo termine mostra le divisioni meno equilibrate nel framing astratto, ma si avvicina al 50/50 quando entrambi i lati vengono resi vividi e personali."
+      },
+      {
+        type: "h2",
+        text: "Come usare questo quadro"
+      },
+      {
+        type: "p",
+        text: "Identificare quale tipo di dilemma stai affrontando non lo risolve — ma lo chiarisce. Sapere di essere in un conflitto Verità vs. Lealtà ti dice che entrambi i lati hanno richieste legittime, e che la risoluzione richiede di decidere quale valore sia più rilevante in questo contesto specifico. Sapere di essere in un conflitto Giustizia vs. Misericordia ti dice che coerenza e compassione sono entrambi beni reali, e che la domanda non è quale sia giusta ma cosa richieda questa situazione."
+      },
+      {
+        type: "cta",
+        label: "Mettiti alla prova su tutti e quattro i tipi",
+        href: "/it/play/truth-friend"
+      },
+      {
+        type: "h2",
+        text: "Domande frequenti"
+      },
+      {
+        type: "h3",
+        text: "Quali sono i 4 tipi di dilemmi etici?"
+      },
+      {
+        type: "p",
+        text: "Verità vs. Lealtà, Individuo vs. Comunità, Breve termine vs. Lungo termine, e Giustizia vs. Misericordia. Quadro proposto dall'eticista Rushworth Kidder in Come le persone oneste affrontano le scelte difficili (1995)."
+      },
+      {
+        type: "h3",
+        text: "Qual è la differenza tra un dilemma morale e uno etico?"
+      },
+      {
+        type: "p",
+        text: "I termini vengono spesso usati in modo intercambiabile. Tecnicamente, l'etica si riferisce a sistemi codificati di regole, la moralità a valori e intuizioni personali. In pratica, entrambi descrivono situazioni in cui due valori o doveri legittimi entrano in conflitto."
+      },
+      {
+        type: "h3",
+        text: "Esiste una risposta giusta ai dilemmi etici?"
+      },
+      {
+        type: "p",
+        text: "I dilemmi etici genuini non hanno risposte oggettivamente corrette su cui tutte le persone ragionevoli convergerebbero. Il ragionamento etico attento può aiutarti a identificare quale valore è più rilevante al contesto specifico e se la tua decisione è una che puoi spiegare in modo trasparente."
+      },
+      {
+        type: "h3",
+        text: "Quale tipo di dilemma etico è più comune sul posto di lavoro?"
+      },
+      {
+        type: "p",
+        text: "Verità vs. Lealtà è il più frequentemente citato nella ricerca sull'etica professionale. Giustizia vs. Misericordia è un secondo prossimo, particolarmente nella gestione: applicare gli standard di performance coerentemente versus tenere conto delle circostanze individuali."
+      },
+      {
+        type: "disclaimer",
+        text: "Questo articolo ha scopo divulgativo. I dati di voto di SplitVote riflettono tendenze aggregate anonime degli utenti e non costituiscono ricerca scientifica certificata."
+      }
+    ]
+  },
+  {
+    slug: "diritti-degli-animali-dove-tracci-il-confine",
+    locale: "it",
+    title: "Diritti degli animali: dove tracci il confine?",
+    seoTitle: "Diritti degli animali: dove tracci il confine? | SplitVote",
+    description: "Quasi tutti concordano che gli animali meritino una qualche considerazione morale. Il disaccordo inizia nel momento in cui ci costa qualcosa — carne, medicine, un animale domestico, un biglietto dello zoo. Ecco dove cadono davvero i confini.",
+    seoDescription: "Cosa sono i diritti degli animali, cos'è lo specismo e dove tracciano davvero il confine le persone su carne, sperimentazione animale, allevamento e zoo? Una guida chiara con dilemmi reali su cui votare.",
+    date: "2026-06-17",
+    readingTime: 9,
+    tags: ["diritti degli animali", "etica animale", "specismo", "etica del mangiare carne", "sperimentazione animale", "filosofia morale"],
+    relatedDilemmaIds: ["eat-meat", "animal-testing-cure", "breeder-vs-shelter", "zoo-conservation"],
+    alternateSlug: "animal-rights-where-do-you-draw-the-line",
+    faq: [
+      {
+        q: "Cosa sono i diritti degli animali?",
+        a: "I diritti degli animali sono l'idea che gli animali non umani abbiano interessi morali — come minimo l'interesse a non soffrire — che siamo tenuti a prendere sul serio. Le versioni più forti sostengono che alcuni animali abbiano diritti non scavalcabili per il beneficio umano; quelle più deboli chiedono solo tutele di benessere. Quasi tutti accettano una qualche versione; il disaccordo è su quanto peso quegli interessi abbiano rispetto a quelli umani."
+      },
+      {
+        q: "Cos'è lo specismo?",
+        a: "Lo specismo, termine reso noto dal filosofo Peter Singer, è dare meno peso morale a un essere solo perché appartiene a un'altra specie. L'accusa è che funzioni come il razzismo o il sessismo: svalutare un tratto moralmente rilevante — la capacità di soffrire — in base all'appartenenza a un gruppo. I critici sostengono che l'appartenenza di specie possa essere rilevante; chi difende il termine sostiene che ciò che conta è la sofferenza."
+      },
+      {
+        q: "È sbagliato mangiare carne?",
+        a: "I filosofi non concordano. Singer sostiene che se un animale può soffrire, causargli sofferenza evitabile per un beneficio minore come il gusto è difficile da giustificare. Altri ritengono che gli umani facciano parte di una catena alimentare naturale, o che l'allevamento etico risolva il problema. Su SplitVote è una delle domande di etica animale più equilibrate — sapere come si produce la carne cambia idea ad alcuni e ad altri no."
+      },
+      {
+        q: "Gli animali hanno diritti o solo tutele di benessere?",
+        a: "È la divisione centrale dell'etica animale. La prospettiva del benessere dice che possiamo usare gli animali se ne minimizziamo la sofferenza. La prospettiva dei diritti, associata a Tom Regan, dice che alcuni animali sono 'soggetti di una vita' con valore intrinseco che non può essere barattato per il beneficio umano. Quasi tutte le leggi seguono il modello del benessere; molti attivisti chiedono il modello dei diritti."
+      },
+      {
+        q: "Cosa sosteneva Peter Singer sugli animali?",
+        a: "In Liberazione animale (1975), Singer sostenne che la capacità di soffrire — non l'intelligenza o la specie — è ciò che dà a un essere diritto a un'eguale considerazione dei suoi interessi. Su base utilitarista, concluse che gran parte di come trattiamo gli animali, specie negli allevamenti intensivi e nella ricerca, infligge sofferenze che nessun beneficio umano comparabile giustifica."
+      },
+      {
+        q: "Dove traccia il confine la maggior parte delle persone?",
+        a: "Quasi tutti si collocano tra gli estremi: si oppongono alla crudeltà e alle condizioni degli allevamenti intensivi, accettano la sperimentazione animale per gravi necessità mediche, e sono divisi sul mangiare carne e sul tenere animali negli zoo. Il confine tende a spostarsi col costo — si concede più considerazione agli animali quando chiede poco, e meno quando chiede molto."
+      }
+    ],
+    content: [
+      {
+        type: "p",
+        text: "Chiedi se gli animali meritino considerazione morale e quasi tutti dicono di sì. Chiedi se questo significhi rinunciare al prosciutto, rifiutare una medicina testata sui topi, adottare invece di comprare la razza che vuoi, o boicottare gli zoo — e il consenso si frantuma. L'etica animale è interessante proprio perché il disaccordo non compare finché il principio non inizia a costarci qualcosa. Questa guida mappa dove cadono i confini, e ti lascia votare i casi che li tracciano."
+      },
+      {
+        type: "h2",
+        text: "L'unica domanda sotto a tutto: possono soffrire?"
+      },
+      {
+        type: "p",
+        text: "Nel 1789 il filosofo Jeremy Bentham scrisse che la domanda sugli animali non è 'Possono ragionare?' né 'Possono parlare?' ma 'Possono soffrire?'. Quella frase riformulò l'intero dibattito. Se la capacità di soffrire è ciò che rende importanti gli interessi di un essere, allora il fatto moralmente rilevante di un animale non è la sua intelligenza o la sua specie, ma se esista un modo in cui è essere quell'animale — e se ciò che gli accade possa andargli bene o male."
+      },
+      {
+        type: "h2",
+        text: "Lo specismo e Peter Singer"
+      },
+      {
+        type: "p",
+        text: "In Liberazione animale (1975), Peter Singer portò il punto di Bentham alle sue conseguenze. Sostenne che ignorare la sofferenza di un animale solo perché non è umano è un pregiudizio che chiamò specismo — strutturalmente simile al razzismo o al sessismo, perché svaluta un interesse moralmente rilevante in base all'appartenenza a un gruppo. La tesi di Singer non è che un topo e un umano valgano uguale, ma che una sofferenza uguale meriti eguale peso morale chiunque la provi. È uno degli argomenti più influenti — e più contestati — dell'etica moderna."
+      },
+      {
+        type: "h2",
+        text: "Benessere o diritti? La divisione che organizza il dibattito"
+      },
+      {
+        type: "p",
+        text: "Ne seguono due grandi campi. La prospettiva del benessere ritiene accettabile usare gli animali se ne minimizziamo la sofferenza — condizioni migliori, macellazione umanitaria, anestesia nei laboratori. La prospettiva dei diritti, argomentata da Tom Regan, ritiene che gli animali che sono 'soggetti di una vita' abbiano un valore intrinseco non barattabile per il beneficio umano, per quanto umano sia il metodo. Quasi ogni legge al mondo segue il modello del benessere. Buona parte del movimento animalista sostiene che il modello del benessere sia un modo comodo per continuare a usare gli animali sentendosi a posto."
+      },
+      {
+        type: "h2",
+        text: "Dove si traccia davvero il confine — quattro casi reali"
+      },
+      {
+        type: "p",
+        text: "Sui principi astratti è facile essere d'accordo. Il disaccordo vive nei casi concreti. Eccone quattro su cui i voter di SplitVote si dividono davvero — ognuno sposta il confine cambiando ciò che il principio ti costa."
+      },
+      {
+        type: "h3",
+        text: "Mangiare carne"
+      },
+      {
+        type: "p",
+        text: "Puoi permetterti alternative e hai visto come viene prodotta la carne a basso costo. Tenerla nel piatto significa decidere che il gusto, l'abitudine o l'invisibilità della tua singola scelta valgono più di ciò che sai. Rinunciarvi significa accettare che la conoscenza crea obbligo. È il caso in cui il divario tra valori dichiarati e comportamento reale tende a essere più ampio."
+      },
+      {
+        type: "cta",
+        label: "Vota: rinunceresti alla carne?",
+        href: "/it/play/eat-meat"
+      },
+      {
+        type: "h3",
+        text: "Sperimentazione animale per la medicina"
+      },
+      {
+        type: "p",
+        text: "La maggior parte di chi si oppone agli allevamenti intensivi qui esita, perché il beneficio non è più il gusto — sono vite umane. Approvare una ricerca che danneggia gli animali per arrivare a una terapia contro il cancro costringe la prospettiva del benessere a mostrare il suo prezzo. Respingerla costringe la prospettiva dei diritti ad accettare morti umane che avrebbe potuto evitare. Poche domande separano 'tengo agli animali' da 'gli interessi animali non possono mai essere scavalcati' così nettamente."
+      },
+      {
+        type: "cta",
+        label: "Vota: approvi la cura testata sugli animali?",
+        href: "/it/play/animal-testing-cure"
+      },
+      {
+        type: "h3",
+        text: "Comprare una razza o adottare"
+      },
+      {
+        type: "p",
+        text: "Qui nessun grande principio — solo una scelta ordinaria che milioni di persone fanno. Comprare la razza che hai sempre voluto, o adottare un cane del canile la cui vita può dipendere da te. Mette alla prova se una preferenza reale ma minore debba cedere a una vita concreta, in una situazione senza cattivi e senza astrazioni."
+      },
+      {
+        type: "cta",
+        label: "Vota: allevatore o canile?",
+        href: "/it/play/breeder-vs-shelter"
+      },
+      {
+        type: "h3",
+        text: "Zoo e conservazione"
+      },
+      {
+        type: "p",
+        text: "Gli zoo confinano i singoli ma possono salvare le specie. Il caso contrappone un bene collettivo — prevenire l'estinzione, insegnare a milioni di bambini ad avere a cuore la natura — a un costo individuale pagato dall'animale nel recinto. La tua risposta spesso rivela se la tua unità morale sia la specie o l'individuo."
+      },
+      {
+        type: "cta",
+        label: "Vota: gli zoo sono giustificati?",
+        href: "/it/play/zoo-conservation"
+      },
+      {
+        type: "h2",
+        text: "Cosa rivelano le tue risposte"
+      },
+      {
+        type: "p",
+        text: "Leggi i tuoi quattro voti di fila e di solito emerge uno schema. Se pesi costantemente gli esiti — accettando la sperimentazione animale per le cure, difendendo gli zoo per la conservazione — ragioni come un utilitarista, chiedendoti quale scelta produca meno sofferenza complessiva. Se rifiuti di usare gli animali come mezzi a prescindere dal guadagno, ragioni più come un teorico dei diritti, trattando certe linee come non in vendita. Quasi nessuno è un tipo puro: si concede agli animali forte considerazione quando costa poco e debole considerazione quando costa molto — esattamente l'incoerenza che l'etica animale esiste per far emergere."
+      },
+      {
+        type: "disclaimer",
+        text: "Questo articolo ha scopo divulgativo e riassume posizioni dell'etica animale senza sposarne una. I dati di voto di SplitVote riflettono tendenze aggregate anonime degli utenti e non costituiscono ricerca scientifica certificata."
+      }
+    ]
+  },
 ]
 
 export const allPosts: BlogPost[] = [...EN_POSTS, ...IT_POSTS]
