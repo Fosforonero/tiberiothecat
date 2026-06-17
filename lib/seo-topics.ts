@@ -171,6 +171,51 @@ export const SEO_TOPICS: SeoTopic[] = [
     noindexUntilReady: false,
   },
   {
+    slug: 'moral-dilemma-questions-to-ask-friends',
+    locale: 'en',
+    alternateSlug: 'dilemmi-morali-da-fare-agli-amici',
+    topic: 'Questions to Ask Friends',
+    searchIntent:
+      'moral dilemma questions to ask friends, deep questions to ask friends, conversation starter ethical questions, would you rather moral questions, hard questions for a group',
+    tension: 'the gap between the values people profess out loud and the choices they actually make',
+    headline: 'Moral Dilemma Questions to Ask Friends',
+    intro:
+      'The fastest way to really know someone is to make them choose. Not "what is your favourite film" — but "would you turn in your best friend for cheating", "would you keep the extra change", "who gets the last seat in the lifeboat". Asked at the right moment, a good dilemma cuts past the rehearsed answers and reveals what a person actually weighs. The trick is not to judge the answer but to ask why. Here are dilemmas built for exactly that — drop one into a conversation, let everyone commit out loud, then vote and see how far your group really splits.',
+    primaryScenarioId: 'friend-cheats-exam',
+    relatedScenarioIds: ['overpaid-change', 'group-project-freeloader', 'truth-friend', 'report-friend'],
+    relatedTopicSlugs: ['four-types-of-ethical-dilemmas', 'trolley-problem', 'loyalty-vs-honesty'],
+    researchNote:
+      'Psychologists who study moral conversation find that people open up more when a question targets a concrete situation than an abstract principle, and when they are asked to explain rather than defend a choice. SplitVote turns each question into a live vote so a group can see where it actually lands.',
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'extreme-moral-dilemmas',
+    locale: 'en',
+    alternateSlug: 'dilemmi-morali-estremi',
+    topic: 'Extreme Moral Dilemmas',
+    searchIntent:
+      'extreme moral dilemmas, hardest moral dilemmas, impossible ethical choices, brain breaking moral dilemmas, most difficult moral questions',
+    tension: 'choices so costly that no available option can be taken without lasting moral damage',
+    headline: 'Extreme Moral Dilemmas — The Ones With No Clean Answer',
+    intro:
+      'Most everyday choices have a defensible way out. These do not. An extreme moral dilemma is one where every path causes grave, often irreversible harm — and you still have to pick. Sacrifice one stranger to save five. End a suffering parent\'s life because they begged you to. Decide who leaves the lifeboat. Philosophers call the harm you cannot undo a moral remainder, and these cases are nothing but remainder. They are uncomfortable on purpose: the discomfort is the data. Vote on the ones below and see whether the rest of the world flinches where you do.',
+    primaryScenarioId: 'organ-harvest',
+    relatedScenarioIds: ['fat-man', 'mercy-kill', 'lifeboat', 'steal-medicine'],
+    relatedTopicSlugs: ['footbridge-dilemma', 'trolley-problem', 'four-types-of-ethical-dilemmas'],
+    researchNote:
+      'Researchers distinguish ordinary trade-offs from tragic dilemmas, where both options cause serious harm that cannot be repaired afterward. The discomfort people report is itself studied as a signal of how the choice is being processed. SplitVote shows the live split on each one.',
+    researchSources: [
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
     slug: 'ai-ethics-dilemmas',
     locale: 'en',
     alternateSlug: 'dilemmi-etici-intelligenza-artificiale',
@@ -349,6 +394,51 @@ export const SEO_TOPICS: SeoTopic[] = [
         title: 'Moral Foundations Theory',
         institution: 'moralfoundations.org',
         url: 'https://moralfoundations.org/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'dilemmi-morali-da-fare-agli-amici',
+    locale: 'it',
+    alternateSlug: 'moral-dilemma-questions-to-ask-friends',
+    topic: 'Domande da fare agli amici',
+    searchIntent:
+      'dilemmi morali da fare agli amici, domande profonde da fare agli amici, domande etiche per rompere il ghiaccio, domande would you rather morali, domande difficili per un gruppo',
+    tension: 'la distanza tra i valori che le persone dichiarano e le scelte che fanno davvero ad alta voce',
+    headline: 'Dilemmi morali da fare agli amici',
+    intro:
+      "Il modo più rapido per conoscere davvero qualcuno è metterlo di fronte a una scelta. Non \"qual è il tuo film preferito\", ma \"denunceresti il tuo migliore amico che ha copiato\", \"terresti il resto sbagliato a tuo favore\", \"chi prende l'ultimo posto sulla scialuppa\". Al momento giusto, un buon dilemma scavalca le risposte preconfezionate e rivela cosa una persona pesa davvero. Il trucco non è giudicare la risposta, ma chiedere perché. Qui trovi dilemmi pensati esattamente per questo: lanciane uno nella conversazione, fai schierare tutti ad alta voce, poi votate e guardate quanto il gruppo si divide.",
+    primaryScenarioId: 'friend-cheats-exam',
+    relatedScenarioIds: ['overpaid-change', 'group-project-freeloader', 'truth-friend', 'report-friend'],
+    relatedTopicSlugs: ['quattro-tipi-di-dilemmi-etici', 'problema-del-carrello', 'lealta-vs-onesta'],
+    researchNote:
+      "Gli psicologi che studiano la conversazione morale notano che le persone si aprono di più quando la domanda riguarda una situazione concreta anziché un principio astratto, e quando viene chiesto loro di spiegare invece che difendere una scelta. SplitVote trasforma ogni domanda in un voto live così il gruppo vede dove si posiziona davvero.",
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'dilemmi-morali-estremi',
+    locale: 'it',
+    alternateSlug: 'extreme-moral-dilemmas',
+    topic: 'Dilemmi morali estremi',
+    searchIntent:
+      'dilemmi morali estremi, dilemmi morali più difficili, scelte etiche impossibili, dilemmi morali che spaccano il cervello, domande morali difficilissime',
+    tension: 'scelte così costose che nessuna opzione disponibile può essere presa senza un danno morale permanente',
+    headline: 'Dilemmi morali estremi — Quelli senza risposta pulita',
+    intro:
+      "La maggior parte delle scelte quotidiane ha una via d'uscita difendibile. Questi no. Un dilemma morale estremo è quello in cui ogni strada causa un danno grave, spesso irreversibile — e devi comunque scegliere. Sacrificare uno sconosciuto per salvarne cinque. Porre fine alla vita di un genitore che soffre perché te l'ha implorato. Decidere chi scende dalla scialuppa. I filosofi chiamano \"residuo morale\" il danno che non puoi annullare, e questi casi sono solo residuo. Sono scomodi di proposito: il disagio è il dato. Vota quelli qui sotto e scopri se il resto del mondo esita dove esiti tu.",
+    primaryScenarioId: 'organ-harvest',
+    relatedScenarioIds: ['fat-man', 'mercy-kill', 'lifeboat', 'steal-medicine'],
+    relatedTopicSlugs: ['dilemma-del-ponte', 'problema-del-carrello', 'quattro-tipi-di-dilemmi-etici'],
+    researchNote:
+      "I ricercatori distinguono i normali compromessi dai dilemmi tragici, dove entrambe le opzioni causano un danno serio che non può essere riparato dopo. Il disagio riferito dalle persone è esso stesso studiato come segnale di come la scelta viene elaborata. SplitVote mostra la divisione live su ciascuno.",
+    researchSources: [
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
       },
     ],
     status: 'published',

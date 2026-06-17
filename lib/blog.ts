@@ -63,6 +63,191 @@ export interface BlogPost {
 
 const EN_POSTS: BlogPost[] = [
   {
+    slug: 'moral-dilemma-questions',
+    locale: 'en',
+    title: '40 Moral Dilemma Questions That Reveal Who You Really Are',
+    seoTitle: '40 Moral Dilemma Questions (With Live Vote Results)',
+    description:
+      'Forty moral dilemma questions worth arguing over — sorted by theme, with the hardest ones linked to a live vote so you can see how the world actually splits.',
+    seoDescription:
+      'A curated list of 40 moral dilemma questions to ask friends or test yourself: life and death, loyalty, money, justice, tech, love. Vote on the hardest ones and compare your answer with people worldwide.',
+    date: '2026-06-17',
+    readingTime: 8,
+    tags: ['moral dilemmas', 'questions', 'conversation', 'ethics'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'friend-cheats-exam', 'mercy-kill', 'fat-man'],
+    alternateSlug: 'domande-dilemmi-morali',
+    faq: [
+      {
+        q: 'What makes a good moral dilemma question?',
+        a: 'A good one forces a genuine trade-off between two things you value, gives a concrete situation rather than an abstract principle, and has no answer that leaves you completely clean. If almost everyone picks the same option, it is a hard choice, not a dilemma — the interesting questions are the ones that split a room.',
+      },
+      {
+        q: 'What are good moral dilemma questions to ask friends?',
+        a: 'Start with concrete, personal-stakes questions: would you keep extra change a cashier handed you by mistake, would you report a friend who cheated, would you push one stranger to save five. Ask people to explain their reasoning, not just pick a side — that is where the real conversation begins.',
+      },
+      {
+        q: 'What is the hardest moral dilemma?',
+        a: 'There is no single answer, but the cases that divide people most tend to involve causing direct harm to save more lives (the footbridge variant of the trolley problem), ending suffering at someone\'s request, or rationing survival when not everyone can live. These are "tragic dilemmas" — both options cause harm that cannot be undone.',
+      },
+      {
+        q: 'Do these questions have right answers?',
+        a: 'The genuine dilemmas do not have a single right answer that every reasonable person would accept. Different ethical traditions — weighing outcomes, following absolute rules, or asking what a good person would do — reach different verdicts. That disagreement is the point, not a flaw.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'The fastest way to learn what someone actually values is to make them choose under pressure. Not "what do you believe" — but "what would you *do*". Below are forty moral dilemma questions worth arguing over, sorted by theme. They work as conversation starters with friends, as a private gut-check, or as a way to find out whether your instincts match the rest of the world. The hardest ones link to a live vote on SplitVote, so after you answer you can see exactly how far people split.',
+      },
+      {
+        type: 'h2',
+        text: 'How to use these questions',
+      },
+      {
+        type: 'list',
+        items: [
+          '**Ask for the choice first, the reasoning second.** Let people commit out loud, then ask why. The reasoning is where the real disagreement lives.',
+          '**Do not judge the answer.** The moment someone feels judged, they stop being honest and start defending. Stay curious.',
+          '**Watch the split, not the consensus.** A question everyone answers the same way is a warm-up. The ones that divide the group are the ones worth the next twenty minutes.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Life and death',
+      },
+      {
+        type: 'list',
+        items: [
+          'A runaway trolley will kill five people. You can pull a lever to divert it onto a track where it kills one. Do you pull it? [Vote on the trolley problem](/play/trolley).',
+          'Same five people, but this time the only way to stop the trolley is to [push the heavy stranger beside you off a footbridge](/play/fat-man). The math is identical. Could you do it?',
+          'You are a surgeon. Five patients will die without transplants tonight. One healthy person in the waiting room is a match for all five. [Would you harvest the one to save the five?](/play/organ-harvest)',
+          'A lifeboat holds eight. There are nine of you, and no one volunteers. [How do you decide who goes overboard?](/play/lifeboat)',
+          'Your terminally ill parent is in unbearable pain and begs you to end their suffering. [Do you honour the request?](/play/mercy-kill)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Loyalty and betrayal',
+      },
+      {
+        type: 'list',
+        items: [
+          'Your best friend cheated on an exam and a classmate is about to be wrongly blamed. [Do you say something?](/play/friend-cheats-exam)',
+          'You witness a close friend commit a crime that hurt someone. [Do you report them?](/play/report-friend)',
+          'On his deathbed your father reveals he secretly altered his will decades ago to favour your sibling, and asks you to keep the secret. You are the executor. [Do you tell your sibling?](/play/inherited-secret)',
+          'A friend asks if you think their partner is cheating — and you have seen something that suggests it. Do you tell them what you saw?',
+          'You could protect someone you love by lying under oath. Do you?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Money and honesty',
+      },
+      {
+        type: 'list',
+        items: [
+          'A cashier hands you far too much change and does not notice. [Do you keep it?](/play/overpaid-change)',
+          'Your child is dying and needs medicine you cannot afford. The pharmacist will not lower the price. [Do you steal it?](/play/steal-medicine)',
+          'You could take credit for a colleague\'s work and almost certainly get the promotion. No one would know. Do you?',
+          'You find a wallet with a large amount of cash and the owner\'s address. Returning it costs you a day and the temptation is real. What do you do?',
+          'A billionaire offers your struggling town a fortune — but only if you publicly endorse something you privately think is wrong. Do you take the deal?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Justice and mercy',
+      },
+      {
+        type: 'list',
+        items: [
+          'The person who robbed you at gunpoint twelve years ago has served their time, has a family, and now mentors at-risk kids. A school doing a reference check calls you, not knowing you were the victim. [Do you tell them about the robbery?](/play/reformed-offender)',
+          'You are on a jury. You are almost certain the defendant is guilty, but a key piece of evidence was obtained illegally. [Do you vote to convict anyway?](/play/innocent-juror)',
+          'A man wronged your family years ago and now needs your help to survive. [Revenge, or forgiveness?](/play/revenge-vs-forgiveness)',
+          'A new law would forgive all minor criminal records older than ten years. Fairer second chances, or an erasure of accountability? What do you choose?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Technology and the near future',
+      },
+      {
+        type: 'list',
+        items: [
+          'A self-driving car must choose between hitting a pedestrian and swerving to harm its own passenger. [Who should the algorithm protect?](/play/self-driving-crash)',
+          'An AI judge sentences more consistently than humans but cannot explain its reasoning. [Would you let it sentence you?](/play/robot-judge)',
+          'Your thirteen-year-old has fallen for an AI companion that says all the right things. [Do you intervene?](/play/ai-companion-teen)',
+          'You can expose a powerful person\'s wrongdoing — but only by releasing a deepfake that is convincing and false. [Do you publish it?](/play/deepfake-expose)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Love, family, and the long game',
+      },
+      {
+        type: 'list',
+        items: [
+          'A burning building. You can save your partner or two strangers, not both. [Who do you carry out?](/play/save-partner-vs-stranger)',
+          'Your partner cheated once, years ago, and has been faithful since. You only just found out. [Do you forgive?](/play/forgive-cheater)',
+          'You could take on heavy debt to give your kids an extraordinary childhood, working into your sixties to repay it — and they would never know the sacrifice. [Do you do it?](/play/debt-childhood)',
+          'You can take the flight to see family this year, or skip it for the climate and tell yourself it matters. [Which wins?](/play/climate-flight)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Which questions reveal the most?',
+      },
+      {
+        type: 'p',
+        text: 'The questions that divide people most are rarely the ones with the highest stakes — they are the ones where two values you both hold point in opposite directions. Loyalty against honesty. Mercy against justice. The individual against the group. These four recurring shapes are explored in [the four types of ethical dilemmas](/four-types-of-ethical-dilemmas), and they explain why a group can agree on every fact and still end up split down the middle. If you want the most reliable conversation-starters, pick the ones tagged as divisive — the [extreme moral dilemmas](/extreme-moral-dilemmas) are built for it.',
+      },
+      {
+        type: 'cta',
+        label: 'Vote on a live dilemma →',
+        href: '/moral-dilemmas',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Educational content, not professional advice.',
+      },
+      {
+        type: 'h2',
+        text: 'Frequently asked questions',
+      },
+      {
+        type: 'h3',
+        text: 'What makes a good moral dilemma question?',
+      },
+      {
+        type: 'p',
+        text: 'A good one forces a genuine trade-off between two things you value, gives a concrete situation rather than an abstract principle, and has no answer that leaves you completely clean. If almost everyone picks the same option, it is a hard choice, not a dilemma — the interesting questions are the ones that split a room.',
+      },
+      {
+        type: 'h3',
+        text: 'What are good moral dilemma questions to ask friends?',
+      },
+      {
+        type: 'p',
+        text: 'Start with concrete, personal-stakes questions: would you keep extra change a cashier handed you by mistake, would you report a friend who cheated, would you push one stranger to save five. Ask people to explain their reasoning, not just pick a side — that is where the real conversation begins.',
+      },
+      {
+        type: 'h3',
+        text: 'What is the hardest moral dilemma?',
+      },
+      {
+        type: 'p',
+        text: 'There is no single answer, but the cases that divide people most tend to involve causing direct harm to save more lives (the footbridge variant of the trolley problem), ending suffering at someone\'s request, or rationing survival when not everyone can live. These are "tragic dilemmas" — both options cause harm that cannot be undone.',
+      },
+      {
+        type: 'h3',
+        text: 'Do these questions have right answers?',
+      },
+      {
+        type: 'p',
+        text: 'The genuine dilemmas do not have a single right answer that every reasonable person would accept. Different ethical traditions — weighing outcomes, following absolute rules, or asking what a good person would do — reach different verdicts. That disagreement is the point, not a flaw.',
+      },
+    ],
+  },
+  {
     slug: 'what-is-a-moral-dilemma',
     locale: 'en',
     title: 'What Is a Moral Dilemma?',
@@ -6876,6 +7061,191 @@ const EN_POSTS: BlogPost[] = [
 ]
 
 const IT_POSTS: BlogPost[] = [
+  {
+    slug: 'domande-dilemmi-morali',
+    locale: 'it',
+    title: '40 domande sui dilemmi morali che rivelano chi sei davvero',
+    seoTitle: '40 domande sui dilemmi morali (con risultati di voto live)',
+    description:
+      'Quaranta domande sui dilemmi morali su cui vale la pena discutere — divise per tema, con le più difficili collegate a un voto live per vedere come si divide davvero il mondo.',
+    seoDescription:
+      'Una lista curata di 40 domande sui dilemmi morali da fare agli amici o per metterti alla prova: vita e morte, lealtà, denaro, giustizia, tecnologia, amore. Vota le più difficili e confronta la tua risposta con persone di tutto il mondo.',
+    date: '2026-06-17',
+    readingTime: 8,
+    tags: ['dilemmi morali', 'domande', 'conversazione', 'etica'],
+    relatedDilemmaIds: ['trolley', 'organ-harvest', 'friend-cheats-exam', 'mercy-kill', 'fat-man'],
+    alternateSlug: 'moral-dilemma-questions',
+    faq: [
+      {
+        q: 'Cosa rende buona una domanda su un dilemma morale?',
+        a: 'Una buona domanda impone un vero compromesso tra due cose a cui tieni, propone una situazione concreta invece di un principio astratto e non ha una risposta che ti lasci del tutto pulito. Se quasi tutti scelgono la stessa opzione è una scelta difficile, non un dilemma — le domande interessanti sono quelle che dividono una stanza.',
+      },
+      {
+        q: 'Quali sono buone domande sui dilemmi morali da fare agli amici?',
+        a: 'Parti da domande concrete e con una posta personale: terresti il resto sbagliato che ti ha dato il cassiere, denunceresti un amico che ha copiato, spingeresti uno sconosciuto per salvarne cinque. Chiedi alle persone di spiegare il ragionamento, non solo di schierarsi — è lì che inizia la conversazione vera.',
+      },
+      {
+        q: 'Qual è il dilemma morale più difficile?',
+        a: 'Non c\'è una risposta unica, ma i casi che dividono di più tendono a riguardare il causare un danno diretto per salvare più vite (la variante del ponte del problema del carrello), il porre fine a una sofferenza su richiesta, o il razionare la sopravvivenza quando non tutti possono vivere. Sono "dilemmi tragici": entrambe le opzioni causano un danno che non si può annullare.',
+      },
+      {
+        q: 'Queste domande hanno risposte giuste?',
+        a: 'I veri dilemmi non hanno un\'unica risposta giusta che ogni persona ragionevole accetterebbe. Tradizioni etiche diverse — pesare gli esiti, seguire regole assolute, o chiedersi cosa farebbe una persona buona — arrivano a verdetti diversi. Quel disaccordo è il punto, non un difetto.',
+      },
+    ],
+    content: [
+      {
+        type: 'p',
+        text: 'Il modo più rapido per capire cosa una persona valuta davvero è metterla di fronte a una scelta sotto pressione. Non "in cosa credi", ma "cosa *faresti*". Qui sotto trovi quaranta domande sui dilemmi morali su cui vale la pena discutere, divise per tema. Funzionano come rompighiaccio con gli amici, come prova privata, o come modo per scoprire se il tuo istinto coincide con quello del resto del mondo. Le più difficili rimandano a un voto live su SplitVote: dopo aver risposto vedi esattamente quanto le persone si dividono.',
+      },
+      {
+        type: 'h2',
+        text: 'Come usare queste domande',
+      },
+      {
+        type: 'list',
+        items: [
+          '**Chiedi prima la scelta, poi il ragionamento.** Lascia che le persone si schierino ad alta voce, poi chiedi perché. È nel ragionamento che vive il disaccordo vero.',
+          '**Non giudicare la risposta.** Nel momento in cui qualcuno si sente giudicato smette di essere onesto e inizia a difendersi. Resta curioso.',
+          '**Guarda la spaccatura, non il consenso.** Una domanda a cui tutti rispondono allo stesso modo è un riscaldamento. Quelle che dividono il gruppo sono quelle che valgono i prossimi venti minuti.',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Vita e morte',
+      },
+      {
+        type: 'list',
+        items: [
+          'Un carrello fuori controllo ucciderà cinque persone. Puoi abbassare una leva per deviarlo su un binario dove ne uccide una. La abbassi? [Vota il problema del carrello](/it/play/trolley).',
+          'Stesse cinque persone, ma stavolta l\'unico modo per fermare il carrello è [spingere giù dal ponte lo sconosciuto robusto accanto a te](/it/play/fat-man). I conti sono identici. Ci riusciresti?',
+          'Sei un chirurgo. Cinque pazienti moriranno stanotte senza trapianto. Una persona sana in sala d\'attesa è compatibile con tutti e cinque. [Sacrificheresti l\'uno per salvare i cinque?](/it/play/organ-harvest)',
+          'Una scialuppa regge otto persone. Siete in nove e nessuno si offre. [Come decidi chi finisce in mare?](/it/play/lifeboat)',
+          'Un tuo genitore malato terminale soffre in modo insopportabile e ti implora di porre fine al dolore. [Rispetti la richiesta?](/it/play/mercy-kill)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Lealtà e tradimento',
+      },
+      {
+        type: 'list',
+        items: [
+          'Il tuo migliore amico ha copiato a un esame e un compagno sta per essere accusato ingiustamente. [Dici qualcosa?](/it/play/friend-cheats-exam)',
+          'Assisti a un amico stretto che commette un reato che ha fatto del male a qualcuno. [Lo denunci?](/it/play/report-friend)',
+          'Sul letto di morte tuo padre rivela di aver modificato in segreto il testamento decenni fa per favorire tuo fratello, e ti chiede di mantenere il segreto. Tu sei l\'esecutore. [Lo dici a tuo fratello?](/it/play/inherited-secret)',
+          'Un amico ti chiede se pensi che il suo partner lo tradisca — e tu hai visto qualcosa che lo suggerisce. Gli dici cosa hai visto?',
+          'Potresti proteggere una persona che ami mentendo sotto giuramento. Lo fai?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Denaro e onestà',
+      },
+      {
+        type: 'list',
+        items: [
+          'Un cassiere ti dà molto più resto del dovuto e non se ne accorge. [Lo tieni?](/it/play/overpaid-change)',
+          'Tuo figlio sta morendo e ha bisogno di una medicina che non puoi permetterti. Il farmacista non abbassa il prezzo. [La rubi?](/it/play/steal-medicine)',
+          'Potresti prenderti il merito del lavoro di un collega e ottenere quasi certamente la promozione. Nessuno lo saprebbe. Lo fai?',
+          'Trovi un portafoglio con molti contanti e l\'indirizzo del proprietario. Restituirlo ti costa una giornata e la tentazione è reale. Cosa fai?',
+          'Un miliardario offre una fortuna alla tua cittadina in difficoltà — ma solo se appoggi pubblicamente qualcosa che in privato ritieni sbagliato. Accetti?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Giustizia e misericordia',
+      },
+      {
+        type: 'list',
+        items: [
+          'Chi ti ha rapinato a mano armata dodici anni fa ha scontato la pena, ha una famiglia e oggi fa da mentore a ragazzi a rischio. Una scuola che fa un controllo referenze ti chiama, senza sapere che sei la vittima. [Racconti della rapina?](/it/play/reformed-offender)',
+          'Sei in giuria. Sei quasi certo che l\'imputato sia colpevole, ma una prova chiave è stata ottenuta illegalmente. [Voti comunque per la condanna?](/it/play/innocent-juror)',
+          'Un uomo ha fatto un torto alla tua famiglia anni fa e ora ha bisogno del tuo aiuto per sopravvivere. [Vendetta o perdono?](/it/play/revenge-vs-forgiveness)',
+          'Una nuova legge cancellerebbe tutte le fedine penali minori più vecchie di dieci anni. Seconde possibilità più giuste, o cancellazione della responsabilità? Cosa scegli?',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Tecnologia e futuro prossimo',
+      },
+      {
+        type: 'list',
+        items: [
+          'Un\'auto a guida autonoma deve scegliere tra investire un pedone e sterzare danneggiando il proprio passeggero. [Chi dovrebbe proteggere l\'algoritmo?](/it/play/self-driving-crash)',
+          'Un giudice IA emette sentenze più coerenti degli umani ma non sa spiegare il suo ragionamento. [Lasceresti che giudichi te?](/it/play/robot-judge)',
+          'Tuo figlio tredicenne si è innamorato di un\'AI companion che dice tutte le cose giuste. [Intervieni?](/it/play/ai-companion-teen)',
+          'Puoi smascherare l\'illecito di una persona potente — ma solo diffondendo un deepfake convincente e falso. [Lo pubblichi?](/it/play/deepfake-expose)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Amore, famiglia e lungo termine',
+      },
+      {
+        type: 'list',
+        items: [
+          'Un edificio in fiamme. Puoi salvare il tuo partner oppure due sconosciuti, non entrambi. [Chi porti fuori?](/it/play/save-partner-vs-stranger)',
+          'Il tuo partner ti ha tradito una volta, anni fa, ed è stato fedele da allora. L\'hai scoperto solo adesso. [Perdoni?](/it/play/forgive-cheater)',
+          'Potresti fare un debito pesante per dare ai tuoi figli un\'infanzia straordinaria, lavorando fino a sessant\'anni per ripagarlo — e loro non sapranno mai il sacrificio. [Lo fai?](/it/play/debt-childhood)',
+          'Puoi prendere l\'aereo per vedere la famiglia quest\'anno, o rinunciarci per il clima dicendoti che conta. [Cosa vince?](/it/play/climate-flight)',
+        ],
+      },
+      {
+        type: 'h2',
+        text: 'Quali domande rivelano di più?',
+      },
+      {
+        type: 'p',
+        text: 'Le domande che dividono di più non sono quasi mai quelle con la posta più alta — sono quelle in cui due valori che condividi puntano in direzioni opposte. Lealtà contro onestà. Misericordia contro giustizia. L\'individuo contro il gruppo. Queste quattro forme ricorrenti sono spiegate ne [i quattro tipi di dilemmi etici](/it/quattro-tipi-di-dilemmi-etici), e spiegano perché un gruppo può concordare su ogni fatto e dividersi comunque a metà. Se cerchi i rompighiaccio più affidabili, scegli quelli marcati come divisivi — i [dilemmi morali estremi](/it/dilemmi-morali-estremi) sono fatti apposta.',
+      },
+      {
+        type: 'cta',
+        label: 'Vota un dilemma live →',
+        href: '/it/dilemmi-morali',
+      },
+      {
+        type: 'disclaimer',
+        text: 'Contenuto educativo, non un parere professionale.',
+      },
+      {
+        type: 'h2',
+        text: 'Domande frequenti',
+      },
+      {
+        type: 'h3',
+        text: 'Cosa rende buona una domanda su un dilemma morale?',
+      },
+      {
+        type: 'p',
+        text: 'Una buona domanda impone un vero compromesso tra due cose a cui tieni, propone una situazione concreta invece di un principio astratto e non ha una risposta che ti lasci del tutto pulito. Se quasi tutti scelgono la stessa opzione è una scelta difficile, non un dilemma — le domande interessanti sono quelle che dividono una stanza.',
+      },
+      {
+        type: 'h3',
+        text: 'Quali sono buone domande sui dilemmi morali da fare agli amici?',
+      },
+      {
+        type: 'p',
+        text: 'Parti da domande concrete e con una posta personale: terresti il resto sbagliato che ti ha dato il cassiere, denunceresti un amico che ha copiato, spingeresti uno sconosciuto per salvarne cinque. Chiedi alle persone di spiegare il ragionamento, non solo di schierarsi — è lì che inizia la conversazione vera.',
+      },
+      {
+        type: 'h3',
+        text: 'Qual è il dilemma morale più difficile?',
+      },
+      {
+        type: 'p',
+        text: 'Non c\'è una risposta unica, ma i casi che dividono di più tendono a riguardare il causare un danno diretto per salvare più vite (la variante del ponte del problema del carrello), il porre fine a una sofferenza su richiesta, o il razionare la sopravvivenza quando non tutti possono vivere. Sono "dilemmi tragici": entrambe le opzioni causano un danno che non si può annullare.',
+      },
+      {
+        type: 'h3',
+        text: 'Queste domande hanno risposte giuste?',
+      },
+      {
+        type: 'p',
+        text: 'I veri dilemmi non hanno un\'unica risposta giusta che ogni persona ragionevole accetterebbe. Tradizioni etiche diverse — pesare gli esiti, seguire regole assolute, o chiedersi cosa farebbe una persona buona — arrivano a verdetti diversi. Quel disaccordo è il punto, non un difetto.',
+      },
+    ],
+  },
   {
     slug: 'cos-e-un-dilemma-morale',
     locale: 'it',
