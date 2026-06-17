@@ -109,6 +109,68 @@ export const SEO_TOPICS: SeoTopic[] = [
     noindexUntilReady: false,
   },
   {
+    slug: 'footbridge-dilemma',
+    locale: 'en',
+    alternateSlug: 'dilemma-del-ponte',
+    topic: 'Footbridge Dilemma',
+    searchIntent:
+      'footbridge dilemma, trolley problem footbridge variant, difference between trolley and footbridge, would you push the man, what percentage would pull the lever',
+    tension: "redirecting harm at a distance vs using a person's body as the means to stop it",
+    headline: 'The Footbridge Dilemma — Would You Push?',
+    intro:
+      'Same runaway trolley, same five people on the track. But this time there is no lever. You are on a footbridge above the rails, and the only way to stop the trolley is to push the heavy stranger beside you onto the track — their body would halt it. You are too light to stop it yourself. The arithmetic is identical to the classic lever case: one life to save five. Yet far fewer people will push than will pull a lever. The difference is not the math — it is whether you are willing to use a person as the instrument of the rescue.',
+    primaryScenarioId: 'fat-man',
+    relatedScenarioIds: ['trolley', 'organ-harvest', 'lifeboat', 'pandemic-dose'],
+    relatedTopicSlugs: ['trolley-problem', 'consequentialism', 'deontology'],
+    researchNote:
+      "The footbridge case was introduced by Judith Jarvis Thomson as a variant of Philippa Foot's original trolley scenario, to probe why people accept diverting harm but refuse to cause it as a direct means. Studies consistently find that most people pull the lever yet refuse to push. SplitVote shows where its own voters land in real time.",
+    researchSources: [
+      {
+        title: 'Doing vs. Allowing Harm',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/doing-allowing/',
+      },
+      {
+        title: 'The Doctrine of Double Effect',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/double-effect/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'four-types-of-ethical-dilemmas',
+    locale: 'en',
+    alternateSlug: 'quattro-tipi-di-dilemmi-etici',
+    topic: '4 Types of Ethical Dilemmas',
+    searchIntent:
+      'what are the 4 types of ethical dilemmas, types of ethical dilemmas, truth vs loyalty justice vs mercy, categories of moral dilemmas',
+    tension: 'the four recurring shapes moral conflict takes when two genuine goods collide',
+    headline: 'The 4 Types of Ethical Dilemmas — Which One Are You Facing?',
+    intro:
+      'Most hard moral choices are not good versus evil — they are right versus right: two genuine values that cannot both win. Decades of applied ethics keep sorting these clashes into four recurring shapes — truth versus loyalty, the individual versus the community, the short term versus the long term, and justice versus mercy. Naming the type does not solve the dilemma, but it reveals which two goods are actually fighting, and that is usually where people quietly disagree. Each type below comes with a live dilemma you can vote on, and you can watch where the split falls.',
+    primaryScenarioId: 'inherited-secret',
+    relatedScenarioIds: ['report-friend', 'mandatory-vaccine', 'climate-flight', 'reformed-offender'],
+    relatedTopicSlugs: ['trolley-problem', 'loyalty-vs-honesty', 'moral-foundations'],
+    researchNote:
+      'The four-way classification — truth vs loyalty, individual vs community, short-term vs long-term, justice vs mercy — was popularised by ethicist Rushworth Kidder as a way to describe "right vs right" conflicts. SplitVote pairs each type with a real dilemma and live vote data.',
+    researchSources: [
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
+      },
+      {
+        title: 'Moral Foundations Theory',
+        institution: 'moralfoundations.org',
+        url: 'https://moralfoundations.org/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
     slug: 'ai-ethics-dilemmas',
     locale: 'en',
     alternateSlug: 'dilemmi-etici-intelligenza-artificiale',
@@ -225,6 +287,68 @@ export const SEO_TOPICS: SeoTopic[] = [
         title: 'Doing vs. Allowing Harm',
         institution: 'Stanford Encyclopedia of Philosophy',
         url: 'https://plato.stanford.edu/entries/doing-allowing/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'dilemma-del-ponte',
+    locale: 'it',
+    alternateSlug: 'footbridge-dilemma',
+    topic: 'Dilemma del ponte',
+    searchIntent:
+      "dilemma del ponte, variante del carrello sul ponte, differenza tra carrello e ponte, spingeresti l'uomo, che percentuale abbassa la leva",
+    tension: 'deviare il danno a distanza contro usare il corpo di una persona come mezzo per fermarlo',
+    headline: 'Il dilemma del ponte — Lo spingeresti?',
+    intro:
+      "Stesso carrello fuori controllo, stesse cinque persone sui binari. Ma questa volta non c'è nessuna leva. Sei su un ponte pedonale sopra i binari e l'unico modo per fermare il carrello è spingere giù lo sconosciuto robusto accanto a te — il suo corpo lo bloccherebbe. Tu sei troppo leggero per fermarlo da solo. L'aritmetica è identica al caso classico della leva: una vita per salvarne cinque. Eppure molte meno persone spingono di quante abbasserebbero una leva. La differenza non è nei numeri — è se sei disposto a usare una persona come strumento del salvataggio.",
+    primaryScenarioId: 'fat-man',
+    relatedScenarioIds: ['trolley', 'organ-harvest', 'lifeboat', 'pandemic-dose'],
+    relatedTopicSlugs: ['problema-del-carrello', 'consequenzialismo', 'deontologia'],
+    researchNote:
+      "Il caso del ponte fu introdotto da Judith Jarvis Thomson come variante dello scenario originale del carrello di Philippa Foot, per capire perché le persone accettino di deviare il danno ma rifiutino di causarlo come mezzo diretto. Gli studi trovano sistematicamente che la maggioranza abbassa la leva ma rifiuta di spingere. SplitVote mostra in tempo reale dove si posizionano i suoi votanti.",
+    researchSources: [
+      {
+        title: 'Doing vs. Allowing Harm',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/doing-allowing/',
+      },
+      {
+        title: 'The Doctrine of Double Effect',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/double-effect/',
+      },
+    ],
+    status: 'published',
+    noindexUntilReady: false,
+  },
+  {
+    slug: 'quattro-tipi-di-dilemmi-etici',
+    locale: 'it',
+    alternateSlug: 'four-types-of-ethical-dilemmas',
+    topic: '4 tipi di dilemmi etici',
+    searchIntent:
+      'quali sono i 4 tipi di dilemmi etici, tipi di dilemmi etici, verità contro lealtà giustizia contro misericordia, categorie di dilemmi morali',
+    tension: 'le quattro forme ricorrenti che assume il conflitto morale quando due beni autentici si scontrano',
+    headline: 'I 4 tipi di dilemmi etici — Quale stai affrontando?',
+    intro:
+      "Le scelte morali più difficili non sono bene contro male — sono giusto contro giusto: due valori autentici che non possono vincere entrambi. Decenni di etica applicata continuano a ricondurre questi scontri a quattro forme ricorrenti — verità contro lealtà, individuo contro comunità, breve termine contro lungo termine, giustizia contro misericordia. Dare un nome al tipo non risolve il dilemma, ma rivela quali due beni si stanno davvero scontrando, ed è di solito lì che le persone, in silenzio, non sono d'accordo. Ogni tipo qui sotto arriva con un dilemma reale su cui votare, e puoi vedere come si divide il voto.",
+    primaryScenarioId: 'inherited-secret',
+    relatedScenarioIds: ['report-friend', 'mandatory-vaccine', 'climate-flight', 'reformed-offender'],
+    relatedTopicSlugs: ['problema-del-carrello', 'lealta-vs-onesta', 'fondamenti-morali'],
+    researchNote:
+      'La classificazione in quattro tipi — verità vs lealtà, individuo vs comunità, breve vs lungo termine, giustizia vs misericordia — è stata resa popolare dall\'eticista Rushworth Kidder per descrivere i conflitti "giusto contro giusto". SplitVote abbina a ogni tipo un dilemma reale con dati di voto in tempo reale.',
+    researchSources: [
+      {
+        title: 'Moral Dilemmas',
+        institution: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu/entries/moral-dilemmas/',
+      },
+      {
+        title: 'Moral Foundations Theory',
+        institution: 'moralfoundations.org',
+        url: 'https://moralfoundations.org/',
       },
     ],
     status: 'published',

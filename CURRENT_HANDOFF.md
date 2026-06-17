@@ -2,6 +2,13 @@
 
 Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **PUSHATO e live** (`1315993..79e866f`, 5 commit). Smoke-test verde: route nuove 200 EN/IT, AdSense fuori dall'HTML pre-consenso, privacy senza proxy fantasma. **P0 `is_premium` CHIUSO**: migrazione `v21_protect_profile_billing_columns` **applicata in produzione il 17 Jun 2026** (trigger `enforce_billing_immutability_fn` + revoche RPC; verificato live: self-update billing bloccato, update non-billing OK). File: `supabase/migration_v21_protect_profile_billing_columns.sql`. Vedi sezione 0-bis sotto.
 
+## 0-ter. Session 17 Jun 2026 (pomeriggio) — v21 applicata + 4 landing SEO (footbridge + 4 tipi)
+
+- **P0 `is_premium` chiuso**: migrazione `v21_protect_profile_billing_columns` applicata in produzione (trigger `enforce_billing_immutability_fn` + revoche RPC). Verificato live: self-update billing bloccato, update non-billing OK. File: `supabase/migration_v21_protect_profile_billing_columns.sql`. Commit locale `bdb9599`.
+- **4 nuove landing SEO** in `lib/seo-topics.ts` (EN+IT, `status: published`), coprono query GSC scoperte: `footbridge-dilemma` ↔ `dilemma-del-ponte` (primario `fat-man`; tension "usare una persona come mezzo vs deviare il danno"; query footbridge/Foot/% leva) e `four-types-of-ethical-dilemmas` ↔ `quattro-tipi-di-dilemmi-etici` (query "4 types of ethical dilemmas"). Auto in sitemap + `/temi`, hreflang reciproco, JSON-LD via template `[topicSlug]`.
+- Verifica nel **container Docker Node 20** (`node:20-bullseye`, v20.20.2 / npm 10.8.2): typecheck ✅ · test 188/188 ✅ · build exit 0 (358 pagine statiche) ✅ · diff-check ✅. Nessun runtime globale usato.
+- Commit pendenti per il prossimo push: `a202201` (docs), `bdb9599` (v21), + content landing. **Un solo push batch.**
+
 ## 0-bis. Session 17 Jun 2026 (mattina) — Animal cluster + audit + compliance fix
 
 ### Commit locali (NON pushati — 4)
