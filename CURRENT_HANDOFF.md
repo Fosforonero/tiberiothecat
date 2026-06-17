@@ -1,6 +1,6 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **PUSHATO e live** (`1315993..79e866f`, 5 commit). Smoke-test verde: route nuove 200 EN/IT, AdSense fuori dall'HTML pre-consenso, privacy senza proxy fantasma. **Unica azione aperta: migrazione `v21` (is_premium P0) da lanciare a mano** (guardrail harness blocca l'apply automatico). Vedi sezione 0-bis sotto.
+Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **PUSHATO e live** (`1315993..79e866f`, 5 commit). Smoke-test verde: route nuove 200 EN/IT, AdSense fuori dall'HTML pre-consenso, privacy senza proxy fantasma. **P0 `is_premium` CHIUSO**: migrazione `v21_protect_profile_billing_columns` **applicata in produzione il 17 Jun 2026** (trigger `enforce_billing_immutability_fn` + revoche RPC; verificato live: self-update billing bloccato, update non-billing OK). File: `supabase/migration_v21_protect_profile_billing_columns.sql`. Vedi sezione 0-bis sotto.
 
 ## 0-bis. Session 17 Jun 2026 (mattina) — Animal cluster + audit + compliance fix
 
