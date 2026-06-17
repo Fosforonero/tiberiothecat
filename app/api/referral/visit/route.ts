@@ -6,6 +6,9 @@ export const dynamic = 'force-dynamic'
 
 // ref must be exactly 10 lowercase hex chars (format from gen_random_uuid backfill)
 const REF_PATTERN = /^[0-9a-f]{10}$/
+// scenario IDs are lowercase slug-form; ignore anything else so an anonymous
+// caller can't write arbitrary strings into a referrer's user_events rows.
+const SCENARIO_ID_PATTERN = /^[a-z0-9-]{1,80}$/
 
 /** POST /api/referral/visit — record that someone visited a referrer's challenge link.
  *  - No visitor authentication required.
@@ -18,6 +21,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { ref, scenarioId } = body as { ref?: string; scenarioId?: string }
+    const safeScenarioId =
+      typeof scenarioId === 'string' && SCENARIO_ID_PATTERN.test(scenarioId) ? scenarioId : null
 
     if (!ref || !REF_PATTERN.test(ref)) {
       return NextResponse.json({ ok: false, reason: 'invalid_ref' })
@@ -58,8 +63,8 @@ export async function POST(req: NextRequest) {
       .eq('event_type', 'referral_visit')
       .gte('created_at', todayStart.toISOString())
 
-    const dedupQuery = scenarioId
-      ? dedupBase.eq('scenario_id', scenarioId)
+    const dedupQuery = safeScenarioId
+      ? dedupBase.eq('scenario_id', safeScenarioId)
       : dedupBase.is('scenario_id', null)
 
     const { count } = await dedupQuery
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
     await admin.from('user_events').insert({
       user_id: referrerId,
       event_type: 'referral_visit',
-      scenario_id: scenarioId ?? null,
+      scenario_id: safeScenarioId,
     })
 
     return NextResponse.json({ ok: true })
