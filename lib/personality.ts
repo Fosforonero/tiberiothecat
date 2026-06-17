@@ -147,6 +147,51 @@ export const SCENARIO_AXIS_MAP: Record<string, ScenarioMapping> = {
     A: [{ axisId: 'loyalty', delta: -0.5 }, { axisId: 'risk', delta: -0.5 }],
     B: [{ axisId: 'loyalty', delta: +0.5 }, { axisId: 'risk', delta: +0.5 }],
   },
+  // Fat-man (footbridge): push = utilitarian (utility-left), refuse = deontological — mirrors trolley
+  'fat-man': {
+    A: [{ axisId: 'utility', delta: -1 }, { axisId: 'risk', delta: -0.5 }],
+    B: [{ axisId: 'utility', delta: +1 }, { axisId: 'risk', delta: +0.5 }],
+  },
+  // River-factory: shut down now = collective + precaution, grant window = community/short-term
+  'river-factory': {
+    A: [{ axisId: 'individual', delta: +0.5 }, { axisId: 'risk', delta: +0.5 }],
+    B: [{ axisId: 'individual', delta: -0.5 }, { axisId: 'risk', delta: -0.5 }],
+  },
+  // Reformed-offender: tell truth = justice/universalist, stay silent = mercy/loyalty
+  'reformed-offender': {
+    A: [{ axisId: 'loyalty', delta: +1 }],
+    B: [{ axisId: 'loyalty', delta: -1 }],
+  },
+  // Inherited-secret: tell brother = universalist truth, honor wish = loyalty
+  'inherited-secret': {
+    A: [{ axisId: 'loyalty', delta: +0.5 }],
+    B: [{ axisId: 'loyalty', delta: -0.5 }],
+  },
+  // Debt-childhood: take the debt = risk-taker, refuse = caution/conservative
+  'debt-childhood': {
+    A: [{ axisId: 'risk', delta: -1 }],
+    B: [{ axisId: 'risk', delta: +1 }],
+  },
+  // Eat-meat: keep = individualist + outcome-pragmatic, give up = collective + principled
+  'eat-meat': {
+    A: [{ axisId: 'individual', delta: -0.5 }, { axisId: 'utility', delta: -0.5 }],
+    B: [{ axisId: 'individual', delta: +0.5 }, { axisId: 'utility', delta: +0.5 }],
+  },
+  // Animal-testing-cure: approve = utilitarian, reject = deontological — mirrors organ-harvest
+  'animal-testing-cure': {
+    A: [{ axisId: 'utility', delta: -1 }],
+    B: [{ axisId: 'utility', delta: +1 }],
+  },
+  // Breeder-vs-shelter: buy the breed = individual preference, adopt = collective/altruistic
+  'breeder-vs-shelter': {
+    A: [{ axisId: 'individual', delta: -0.5 }],
+    B: [{ axisId: 'individual', delta: +0.5 }],
+  },
+  // Zoo-conservation: justified = collective + consequentialist, not justified = individual + deontological
+  'zoo-conservation': {
+    A: [{ axisId: 'individual', delta: +0.5 }, { axisId: 'utility', delta: -0.5 }],
+    B: [{ axisId: 'individual', delta: -0.5 }, { axisId: 'utility', delta: +0.5 }],
+  },
   // Forgive-cheater: forgive = risk-left (takes chance), leave = risk-right
   'forgive-cheater': {
     A: [{ axisId: 'loyalty', delta: -0.5 }, { axisId: 'risk', delta: -0.5 }],
