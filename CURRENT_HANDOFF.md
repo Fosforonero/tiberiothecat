@@ -1,8 +1,34 @@
 # CURRENT_HANDOFF — SplitVote
 
-Last updated: 17 Jun 2026 (notte) — Content sprint: 3 dilemmi fixati + 4 nuovi + 5 articoli blog EN+IT + 4 SEO topic EN+IT. Typecheck ✅, build ✅, git diff --check ✅. Commit `27d93ad`. **NON pushato** — hold Matteo (vuole valutare altri dilemmi prima).
+Last updated: 17 Jun 2026 (mattina) — Animal-ethics cluster + audit sicurezza/privacy + 2 fix legali P0 + hardening. **4 commit locali NON pushati** (`f725e7b`, `ecabd21`, `7d76602`, `9a16b2a`). 2 azioni HUMAN_ONLY aperte: migrazione `v21` (is_premium) da lanciare a mano + decisione push. Vedi sezione 0-bis sotto.
 
-## 0. Session 17 Jun 2026 — Content sprint + GSC intelligence (non pushato)
+## 0-bis. Session 17 Jun 2026 (mattina) — Animal cluster + audit + compliance fix
+
+### Commit locali (NON pushati — 4)
+
+| SHA | Cosa |
+|---|---|
+| `f725e7b` | Cluster Animal Ethics (4 dilemmi `eat-meat`/`animal-testing-cure`/`breeder-vs-shelter`/`zoo-conservation` + insight + cornerstone Singer + landing `animal-ethics`/`etica-animale`, EN+IT) + la tranche notturna (5 dilemmi + 4 articoli + 2 SEO topic) |
+| `ecabd21` | **Fix legale P0**: AdSense ora caricato solo post-consenso (`components/AdSenseLoader.tsx` + `layout.tsx` + `CookieConsent.tsx`) + privacy GA4-proxy fantasma corretta EN+IT + `LEGAL.md` |
+| `7d76602` | Profilo morale: 9 nuovi dilemmi mappati su `personality.ts` (assi) |
+| `9a16b2a` | **Fix sicurezza P2**: validazione `scenarioId` in `referral/visit` |
+
+Verifica su tutto: typecheck ✅ · 188/188 test ✅ · build ✅ · diff-check ✅. Pixie WIP fuori commit.
+
+### Audit sicurezza + privacy (2 agenti) — findings principali
+
+- 🔴 **P0 sicurezza (CONFERMATO sul DB, NON ancora fixato)**: la RLS `profiles` policy "Users can update own profile" ha `WITH CHECK = null` → utente loggato può `PATCH` il proprio record e settarsi `is_premium=true` (Premium gratis + no-ads). Migrazione `v21_protect_profile_billing_columns` **pronta e validata-safe** ma **bloccata dal guardrail harness** (migrazione prod = HUMAN_ONLY) → **Matteo deve lanciarla a mano** nel SQL editor Supabase (progetto `eaphpnaxonlbgiiehvhz`). SQL nel report di sessione.
+- 🔴 **P0 privacy ×2 (FIXATI in `ecabd21`)**: AdSense pre-consenso + policy che descriveva un proxy GA4 rimosso il 19 mag.
+- 🟠 **P1 (deferito)**: identità titolare incoerente (privacy nomina "Matteo Pizzi", `/about` "independent project", manca indirizzo) → decisione PII di Matteo, non fixato in autonomia.
+- ✅ Solido: anonimato reale (IP solo hash+TTL), nessun PII agli AI, processor dichiarati, Consent Mode v2 default-denied, webhook Stripe firmato+idempotente, admin server-gated.
+
+### Azioni HUMAN_ONLY aperte
+
+1. **Lanciare migrazione `v21`** (is_premium P0) — SQL pronto.
+2. **Decidere il push** dei 4 commit (hold sul gate esplicito "non pushare finché non te lo dico").
+3. **Tenuti fuori**: monetizzazione report-AI a pagamento + modalità B2B (da analisi competitiva) → richiedono `/premortem` su pricing prima di toccare Stripe/entitlements.
+
+## 0. Session 17 Jun 2026 (notte) — Content sprint + GSC intelligence (non pushato)
 
 ### TL;DR
 
